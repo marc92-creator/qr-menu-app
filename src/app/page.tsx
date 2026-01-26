@@ -21,7 +21,7 @@ export default function Home() {
             >
               Anmelden
             </Link>
-            <Link href="/register">
+            <Link href="/demo">
               <Button size="sm" className="text-sm shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                 <span className="hidden sm:inline">Demo starten</span>
                 <span className="sm:hidden">Starten</span>
@@ -64,7 +64,7 @@ export default function Home() {
 
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
-                  <Link href="/register" className="w-full sm:w-auto">
+                  <Link href="/demo" className="w-full sm:w-auto">
                     <Button size="lg" className="w-full min-h-[56px] text-base sm:text-lg px-8 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                       Demo starten
                       <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -326,7 +326,7 @@ export default function Home() {
                 <p className="text-gray-400 mb-8 sm:mb-10 max-w-xl mx-auto text-lg">
                   Starte jetzt die Demo und habe dein digitales Menü in weniger als 5 Minuten online.
                 </p>
-                <Link href="/register">
+                <Link href="/demo">
                   <Button size="lg" className="min-h-[56px] px-10 text-lg shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                     Demo starten
                     <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { MenuView } from './MenuView';
+import { getFixedDemoData } from '@/lib/sandboxStorage';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -8,6 +9,22 @@ interface PageProps {
 
 export default async function PublicMenuPage({ params }: PageProps) {
   const { slug } = await params;
+
+  // Check if this is the demo restaurant slug
+  if (slug === 'demo-doener-palace') {
+    // Return fixed demo data - not affected by user modifications
+    const demoData = getFixedDemoData();
+    return (
+      <MenuView
+        restaurant={demoData.restaurant}
+        categories={demoData.categories}
+        menuItems={demoData.menuItems}
+        showWatermark={true}
+        isDemo={true}
+      />
+    );
+  }
+
   const supabase = await createClient();
 
   // Fetch restaurant
@@ -19,6 +36,20 @@ export default async function PublicMenuPage({ params }: PageProps) {
 
   if (!restaurant) {
     notFound();
+  }
+
+  // If restaurant is marked as demo, show fixed demo data
+  if (restaurant.is_demo) {
+    const demoData = getFixedDemoData();
+    return (
+      <MenuView
+        restaurant={{ ...demoData.restaurant, name: restaurant.name, slug: restaurant.slug }}
+        categories={demoData.categories}
+        menuItems={demoData.menuItems}
+        showWatermark={true}
+        isDemo={true}
+      />
+    );
   }
 
   // Fetch categories
@@ -48,7 +79,6 @@ export default async function PublicMenuPage({ params }: PageProps) {
     .single();
 
   const showWatermark = !subscription || subscription.plan !== 'basic';
-  const isDemo = restaurant.is_demo || false;
 
   return (
     <MenuView
@@ -56,7 +86,7 @@ export default async function PublicMenuPage({ params }: PageProps) {
       categories={categories || []}
       menuItems={menuItems || []}
       showWatermark={showWatermark}
-      isDemo={isDemo}
+      isDemo={false}
     />
   );
 }
