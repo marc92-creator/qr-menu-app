@@ -441,20 +441,70 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
       {/* Categories and Items */}
       {categories.length === 0 ? (
-        <div className="bg-white rounded-3xl p-8 sm:p-12 text-center shadow-sm ring-1 ring-gray-100">
-          <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">📋</span>
+        <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm ring-1 ring-gray-100">
+          {/* Hero Section */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/30">
+              <span className="text-4xl">📋</span>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Erstelle dein Menü</h3>
+            <p className="text-gray-500 max-w-md mx-auto">
+              In nur 3 Schritten ist deine digitale Speisekarte bereit für deine Gäste.
+            </p>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Noch keine Kategorien</h3>
-          <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-            Erstelle deine erste Kategorie, um Gerichte hinzuzufügen.
-          </p>
-          <Button
-            onClick={() => setShowAddCategory(true)}
-            className="shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
-          >
-            Erste Kategorie erstellen
-          </Button>
+
+          {/* Steps Guide */}
+          <div className="grid sm:grid-cols-3 gap-4 mb-8">
+            <div className="relative p-4 bg-emerald-50 rounded-2xl border-2 border-emerald-200">
+              <div className="absolute -top-3 -left-3 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                1
+              </div>
+              <div className="pt-2">
+                <div className="text-2xl mb-2">📂</div>
+                <h4 className="font-semibold text-gray-900 mb-1">Kategorien anlegen</h4>
+                <p className="text-sm text-gray-600">z.B. Vorspeisen, Hauptgerichte, Getränke</p>
+              </div>
+            </div>
+
+            <div className="relative p-4 bg-gray-50 rounded-2xl border border-gray-200">
+              <div className="absolute -top-3 -left-3 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                2
+              </div>
+              <div className="pt-2">
+                <div className="text-2xl mb-2 grayscale opacity-50">🍽️</div>
+                <h4 className="font-semibold text-gray-400 mb-1">Gerichte hinzufügen</h4>
+                <p className="text-sm text-gray-400">Name, Preis, Beschreibung & Allergene</p>
+              </div>
+            </div>
+
+            <div className="relative p-4 bg-gray-50 rounded-2xl border border-gray-200">
+              <div className="absolute -top-3 -left-3 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                3
+              </div>
+              <div className="pt-2">
+                <div className="text-2xl mb-2 grayscale opacity-50">📱</div>
+                <h4 className="font-semibold text-gray-400 mb-1">QR-Code teilen</h4>
+                <p className="text-sm text-gray-400">Drucken und auf die Tische legen</p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center">
+            <Button
+              onClick={() => setShowAddCategory(true)}
+              size="lg"
+              className="shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all px-8"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Erste Kategorie erstellen
+            </Button>
+            <p className="text-sm text-gray-400 mt-4">
+              Tipp: Beginne mit deinen beliebtesten Kategorien
+            </p>
+          </div>
         </div>
       ) : (
         <div className="space-y-6">
@@ -486,16 +536,25 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 </div>
 
                 {items.length === 0 ? (
-                  <div className="px-5 sm:px-6 py-10 text-center">
-                    <p className="text-gray-400">Keine Gerichte in dieser Kategorie</p>
+                  <div className="px-5 sm:px-6 py-8 text-center">
+                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl mb-4">
+                      <span className="text-2xl">🍽️</span>
+                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Kategorie ist leer</h4>
+                    <p className="text-gray-500 text-sm mb-4 max-w-xs mx-auto">
+                      Füge dein erstes Gericht zu &quot;{category.name}&quot; hinzu.
+                    </p>
                     <button
                       onClick={() => {
                         setNewItemCategory(category.id);
                         setShowAddItem(true);
                       }}
-                      className="mt-3 text-emerald-600 hover:text-emerald-700 font-medium text-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
                     >
-                      + Gericht hinzufügen
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Erstes Gericht hinzufügen
                     </button>
                   </div>
                 ) : (
@@ -564,6 +623,61 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
               </div>
             );
           })}
+
+          {/* Quick Add Section */}
+          <div className="mt-6 p-5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <span className="text-2xl">✨</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-emerald-900">Menü erweitern</h4>
+                  <p className="text-sm text-emerald-700">
+                    {menuItems.length === 0
+                      ? 'Füge Gerichte hinzu, damit Gäste bestellen können'
+                      : `${menuItems.length} Gericht${menuItems.length !== 1 ? 'e' : ''} online • Weiter so!`
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAddCategory(true)}
+                  className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+                >
+                  + Kategorie
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => setShowAddItem(true)}
+                  disabled={categories.length === 0}
+                  className="rounded-xl shadow-lg shadow-emerald-500/20"
+                >
+                  + Gericht
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Tip for completed menus */}
+          {menuItems.length >= 5 && (
+            <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">💡</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-blue-900 text-sm">Tipp</h4>
+                  <p className="text-blue-700 text-sm mt-0.5">
+                    Dein Menü sieht gut aus! Vergiss nicht, den QR-Code zu drucken und auf die Tische zu legen.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
