@@ -17,7 +17,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
-  const categoryRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
