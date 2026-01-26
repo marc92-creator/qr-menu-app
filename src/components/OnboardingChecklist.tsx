@@ -22,6 +22,11 @@ interface ChecklistItem {
   };
 }
 
+// Helper to mark QR step as completed (called from QRCodeTab)
+export function markQrStepCompleted() {
+  localStorage.setItem('onboarding_qr_printed', 'true');
+}
+
 export function OnboardingChecklist({
   restaurantName,
   hasCategories,
@@ -30,12 +35,17 @@ export function OnboardingChecklist({
   onNavigate,
 }: OnboardingChecklistProps) {
   const [dismissed, setDismissed] = useState(false);
+  const [qrPrinted, setQrPrinted] = useState(false);
 
-  // Check localStorage for dismissed state
+  // Check localStorage for dismissed state and QR printed state
   useEffect(() => {
     const isDismissed = localStorage.getItem('onboarding_dismissed');
     if (isDismissed === 'true') {
       setDismissed(true);
+    }
+    const isQrPrinted = localStorage.getItem('onboarding_qr_printed');
+    if (isQrPrinted === 'true') {
+      setQrPrinted(true);
     }
   }, []);
 
@@ -43,6 +53,15 @@ export function OnboardingChecklist({
     localStorage.setItem('onboarding_dismissed', 'true');
     setDismissed(true);
     onDismiss();
+  };
+
+  const handleNavigate = (tab: string) => {
+    // Mark QR step as completed when user clicks "QR-Code ansehen"
+    if (tab === 'qr') {
+      markQrStepCompleted();
+      setQrPrinted(true);
+    }
+    onNavigate(tab);
   };
 
   const checklistItems: ChecklistItem[] = [
@@ -74,8 +93,8 @@ export function OnboardingChecklist({
       title: 'QR-Code drucken',
       description: 'Tischaufsteller für deine Gäste',
       icon: '📱',
-      completed: false, // We can't track this, so it's always shown as pending
-      action: hasItems ? { label: 'QR-Code ansehen', tab: 'qr' } : undefined,
+      completed: qrPrinted,
+      action: hasItems && !qrPrinted ? { label: 'QR-Code ansehen', tab: 'qr' } : undefined,
     },
   ];
 
@@ -166,7 +185,7 @@ export function OnboardingChecklist({
             {/* Action Button */}
             {item.action && !item.completed && (
               <button
-                onClick={() => onNavigate(item.action!.tab)}
+                onClick={() => handleNavigate(item.action!.tab)}
                 className="flex-shrink-0 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
               >
                 {item.action.label}

@@ -76,7 +76,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             </div>
             <div>
               <div className="font-bold text-lg">
-                {isPremium ? 'Basic Plan' : 'Demo-Version'}
+                {isPremium ? 'Pro' : 'Demo-Version'}
               </div>
               <div className="text-white/80 text-sm">
                 {isPremium ? 'Kein Wasserzeichen' : 'Testen Sie alle Features'}
@@ -140,13 +140,13 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
               <span className="text-xl">⭐</span>
             </div>
-            <h2 className="font-bold text-lg text-gray-900">Upgrade auf Basic</h2>
+            <h2 className="font-bold text-lg text-gray-900">Upgrade auf Pro</h2>
           </div>
 
           <div className="p-5 bg-gradient-to-br from-gray-50 to-white rounded-2xl border-2 border-emerald-200">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="font-bold text-gray-900">Basic Plan</div>
+                <div className="font-bold text-gray-900">Pro</div>
                 <div className="text-sm text-gray-500">Für professionelle Restaurants</div>
               </div>
               <div className="text-right">

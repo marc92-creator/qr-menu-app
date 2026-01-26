@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Restaurant } from '@/types/database';
 import { Button } from '@/components/Button';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { getMenuUrl } from '@/lib/utils';
 import { generateTableTentPDF } from '@/components/TableTentPDF';
+import { markQrStepCompleted } from '@/components/OnboardingChecklist';
 
 interface QRCodeTabProps {
   restaurant: Restaurant;
@@ -15,6 +16,11 @@ export function QRCodeTab({ restaurant }: QRCodeTabProps) {
   const [copied, setCopied] = useState(false);
   const qrContainerRef = useRef<HTMLDivElement>(null);
   const menuUrl = getMenuUrl(restaurant.slug);
+
+  // Mark QR step as completed when user visits QR tab
+  useEffect(() => {
+    markQrStepCompleted();
+  }, []);
 
   const handleCopyLink = async () => {
     try {
