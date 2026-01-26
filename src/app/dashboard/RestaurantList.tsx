@@ -5,6 +5,7 @@ import { Restaurant } from '@/types/database';
 import { Button } from '@/components/Button';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getMenuUrl } from '@/lib/utils';
+import { generateTableTentPDF } from '@/components/TableTentPDF';
 
 interface RestaurantListProps {
   restaurants: Restaurant[];
@@ -108,6 +109,20 @@ export function RestaurantList({
   const handleOpenMenu = (e: React.MouseEvent, restaurant: Restaurant) => {
     e.stopPropagation();
     window.open(getMenuUrl(restaurant.slug), '_blank');
+  };
+
+  // Generate and download PDF table tent
+  const handleDownloadPDF = (e: React.MouseEvent, restaurant: Restaurant) => {
+    e.stopPropagation();
+    const qrContainer = qrRefs.current.get(restaurant.id);
+    const canvas = qrContainer?.querySelector('canvas');
+    if (!canvas) return;
+
+    generateTableTentPDF({
+      restaurantName: restaurant.name,
+      slug: restaurant.slug,
+      qrCanvas: canvas,
+    });
   };
 
   // Format relative time
@@ -302,14 +317,27 @@ export function RestaurantList({
                     <button
                       onClick={(e) => handleDownloadQR(e, restaurant)}
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl
+                        bg-white text-gray-700 hover:bg-gray-100 ring-1 ring-gray-200
+                        text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px]"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      <span className="hidden sm:inline">QR</span>
+                    </button>
+
+                    {/* Print Table Tent PDF */}
+                    <button
+                      onClick={(e) => handleDownloadPDF(e, restaurant)}
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl
                         bg-emerald-500 text-white hover:bg-emerald-600
                         text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px]
                         shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                       </svg>
-                      <span className="hidden sm:inline">QR ↓</span>
+                      <span className="hidden sm:inline">Drucken</span>
                     </button>
                   </div>
                 </div>

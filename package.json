@@ -12,6 +12,7 @@
     "@stripe/stripe-js": "^8.6.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.91.1",
+    "jspdf": "^4.0.0",
     "next": "14.2.35",
     "qrcode": "^1.5.4",
     "qrcode.react": "^4.2.0",

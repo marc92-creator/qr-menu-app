@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Restaurant } from '@/types/database';
 import { Button } from '@/components/Button';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { getMenuUrl } from '@/lib/utils';
+import { generateTableTentPDF } from '@/components/TableTentPDF';
 
 interface QRCodeTabProps {
   restaurant: Restaurant;
@@ -12,6 +13,7 @@ interface QRCodeTabProps {
 
 export function QRCodeTab({ restaurant }: QRCodeTabProps) {
   const [copied, setCopied] = useState(false);
+  const qrContainerRef = useRef<HTMLDivElement>(null);
   const menuUrl = getMenuUrl(restaurant.slug);
 
   const handleCopyLink = async () => {
@@ -32,13 +34,24 @@ export function QRCodeTab({ restaurant }: QRCodeTabProps) {
     }
   };
 
+  const handleDownloadPDF = () => {
+    const canvas = qrContainerRef.current?.querySelector('canvas');
+    if (!canvas) return;
+
+    generateTableTentPDF({
+      restaurantName: restaurant.name,
+      slug: restaurant.slug,
+      qrCanvas: canvas,
+    });
+  };
+
   return (
     <div className="max-w-md mx-auto">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">QR-Code</h1>
 
       <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8">
         {/* QR Code - Centered, max width on mobile */}
-        <div className="flex justify-center">
+        <div className="flex justify-center" ref={qrContainerRef}>
           <QRCodeGenerator
             slug={restaurant.slug}
             restaurantName={restaurant.name}
@@ -54,6 +67,15 @@ export function QRCodeTab({ restaurant }: QRCodeTabProps) {
             className="w-full min-h-[48px] touch-manipulation"
           >
             {copied ? '✓ Kopiert!' : 'Link kopieren'}
+          </Button>
+          <Button
+            onClick={handleDownloadPDF}
+            className="w-full min-h-[48px] touch-manipulation shadow-lg shadow-emerald-500/20"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Tischaufsteller drucken
           </Button>
         </div>
 
