@@ -240,8 +240,8 @@ export function RestaurantList({
                       </div>
 
                       {/* Stats Row */}
-                      <div className="mt-3 flex items-center gap-4 flex-wrap">
-                        <div className="flex items-center gap-4">
+                      <div className="mt-3 flex items-center gap-3 sm:gap-4 flex-wrap">
+                        <div className="flex items-center gap-3 sm:gap-4">
                           <div className="flex items-center gap-1.5">
                             <div className="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center">
                               <span className="text-sm">📁</span>
@@ -260,6 +260,18 @@ export function RestaurantList({
                               <span className="text-gray-500 text-sm ml-1 hidden sm:inline">Gerichte</span>
                             </div>
                           </div>
+                          {/* Scan Stats */}
+                          {stats?.scanStats && stats.scanStats.totalScans > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <span className="text-sm">👁️</span>
+                              </div>
+                              <div>
+                                <span className="font-semibold text-gray-900">{stats.scanStats.totalScans}</span>
+                                <span className="text-gray-500 text-sm ml-1 hidden sm:inline">Scans</span>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         {/* Status Badge */}

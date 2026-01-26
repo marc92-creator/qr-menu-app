@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Restaurant, Category, MenuItem, Subscription, RestaurantStats } from '@/types/database';
+import { Restaurant, Category, MenuItem, Subscription, RestaurantStats, ScanStats } from '@/types/database';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 import { SetupWizard } from './SetupWizard';
@@ -11,6 +11,7 @@ import { MenuEditor } from './MenuEditor';
 import { QRCodeTab } from './QRCodeTab';
 import { SettingsTab } from './SettingsTab';
 import { RestaurantList } from './RestaurantList';
+import { OnboardingChecklist } from '@/components/OnboardingChecklist';
 
 type Tab = 'restaurants' | 'menu' | 'qr' | 'settings';
 
@@ -81,9 +82,35 @@ export default function DashboardPage() {
           itemCount = count || 0;
         }
 
+        // Try to get scan stats (may fail if table doesn't exist yet)
+        let scanStats: ScanStats | undefined;
+        try {
+          const { data: scanData } = await supabase
+            .from('menu_scans')
+            .select('scanned_at')
+            .eq('restaurant_id', restaurant.id);
+
+          if (scanData) {
+            const now = new Date();
+            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+            scanStats = {
+              totalScans: scanData.length,
+              scansToday: scanData.filter(s => new Date(s.scanned_at) > oneDayAgo).length,
+              scansThisWeek: scanData.filter(s => new Date(s.scanned_at) > oneWeekAgo).length,
+              scansThisMonth: scanData.filter(s => new Date(s.scanned_at) > oneMonthAgo).length,
+            };
+          }
+        } catch {
+          // Table might not exist yet
+        }
+
         statsMap[restaurant.id] = {
           categoryCount: categoryCount || 0,
           itemCount,
+          scanStats,
         };
       }
       setRestaurantStats(statsMap);
@@ -260,6 +287,17 @@ export default function DashboardPage() {
 
       {/* Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {/* Onboarding Checklist - Show on restaurants tab */}
+        {activeTab === 'restaurants' && selectedRestaurant && (
+          <OnboardingChecklist
+            restaurantName={selectedRestaurant.name}
+            hasCategories={categories.length > 0}
+            hasItems={menuItems.length > 0}
+            onDismiss={() => {}}
+            onNavigate={(tab) => setActiveTab(tab as Tab)}
+          />
+        )}
+
         {activeTab === 'restaurants' && (
           <RestaurantList
             restaurants={restaurants}

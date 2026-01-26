@@ -62,10 +62,26 @@ export interface RestaurantWithMenu extends Restaurant {
 export interface RestaurantStats {
   categoryCount: number;
   itemCount: number;
+  scanStats?: ScanStats;
 }
 
 export interface RestaurantWithStats extends Restaurant {
   stats: RestaurantStats;
+}
+
+export interface MenuScan {
+  id: string;
+  restaurant_id: string;
+  scanned_at: string;
+  user_agent: string | null;
+  referrer: string | null;
+}
+
+export interface ScanStats {
+  totalScans: number;
+  scansToday: number;
+  scansThisWeek: number;
+  scansThisMonth: number;
 }
 
 export interface Database {

@@ -37,6 +37,15 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
 
+  // Update the restaurant's updated_at timestamp when menu changes
+  const updateRestaurantTimestamp = async () => {
+    const supabase = createClient();
+    await supabase
+      .from('restaurants')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', restaurant.id);
+  };
+
   const toggleAllergen = (allergenId: string, isNewItem: boolean) => {
     if (isNewItem) {
       setNewItemAllergens(prev =>
@@ -83,6 +92,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       })
       .eq('id', editingItem.id);
 
+    await updateRestaurantTimestamp();
     setEditingItem(null);
     setLoading(false);
     onUpdate();
@@ -100,6 +110,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       position: categories.length,
     });
 
+    await updateRestaurantTimestamp();
     setNewCategoryName('');
     setShowAddCategory(false);
     setLoading(false);
@@ -129,6 +140,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       allergens: newItemAllergens,
     });
 
+    await updateRestaurantTimestamp();
     setNewItemName('');
     setNewItemDescription('');
     setNewItemPrice('');
@@ -144,6 +156,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
     const supabase = createClient();
     await supabase.from('menu_items').delete().eq('id', itemId);
+    await updateRestaurantTimestamp();
     onUpdate();
   };
 
@@ -153,6 +166,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     const supabase = createClient();
     await supabase.from('menu_items').delete().eq('category_id', categoryId);
     await supabase.from('menu_categories').delete().eq('id', categoryId);
+    await updateRestaurantTimestamp();
     onUpdate();
   };
 

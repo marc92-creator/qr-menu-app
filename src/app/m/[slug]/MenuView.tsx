@@ -12,6 +12,28 @@ interface MenuViewProps {
   showWatermark: boolean;
 }
 
+// Format the last updated date in a human-readable way
+const formatLastUpdated = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 1) return 'Gerade eben';
+  if (diffMins < 60) return `Vor ${diffMins} Minute${diffMins !== 1 ? 'n' : ''}`;
+  if (diffHours < 24) return `Vor ${diffHours} Stunde${diffHours !== 1 ? 'n' : ''}`;
+  if (diffDays === 1) return 'Gestern';
+  if (diffDays < 7) return `Vor ${diffDays} Tagen`;
+
+  return date.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+};
+
 export function MenuView({ restaurant, categories, menuItems, showWatermark }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
@@ -24,6 +46,23 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
       setActiveCategory(categories[0].id);
     }
   }, [categories, activeCategory]);
+
+  // Track page view / scan
+  useEffect(() => {
+    const trackScan = async () => {
+      try {
+        await fetch('/api/track-scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ restaurantId: restaurant.id }),
+        });
+      } catch {
+        // Silently fail - tracking shouldn't break the menu
+      }
+    };
+
+    trackScan();
+  }, [restaurant.id]);
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -220,6 +259,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
                   )}
                 </section>
               ))}
+
+              {/* Last Updated Info */}
+              <div className="text-center py-4">
+                <p className="text-sm text-gray-400">
+                  Zuletzt aktualisiert: {formatLastUpdated(restaurant.updated_at)}
+                </p>
+              </div>
 
               {/* Allergen Legend */}
               {hasAnyAllergens && (
