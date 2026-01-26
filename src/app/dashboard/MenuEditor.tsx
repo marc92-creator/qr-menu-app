@@ -6,6 +6,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { formatPrice } from '@/lib/utils';
+import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 
 interface MenuEditorProps {
   restaurant: Restaurant;
@@ -15,8 +16,7 @@ interface MenuEditorProps {
 }
 
 export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: MenuEditorProps) {
-  const [editingPrice, setEditingPrice] = useState<string | null>(null);
-  const [priceValue, setPriceValue] = useState('');
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,30 +26,65 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   const [newItemDescription, setNewItemDescription] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('');
+  const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
+
+  // Edit item form
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+  const [editAllergens, setEditAllergens] = useState<string[]>([]);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
 
-  const handlePriceClick = (item: MenuItem) => {
-    setEditingPrice(item.id);
-    setPriceValue(item.price.toFixed(2).replace('.', ','));
+  const toggleAllergen = (allergenId: string, isNewItem: boolean) => {
+    if (isNewItem) {
+      setNewItemAllergens(prev =>
+        prev.includes(allergenId)
+          ? prev.filter(a => a !== allergenId)
+          : [...prev, allergenId]
+      );
+    } else {
+      setEditAllergens(prev =>
+        prev.includes(allergenId)
+          ? prev.filter(a => a !== allergenId)
+          : [...prev, allergenId]
+      );
+    }
   };
 
-  const handlePriceSave = async (itemId: string) => {
+  const handleEditItem = (item: MenuItem) => {
+    setEditingItem(item);
+    setEditName(item.name);
+    setEditDescription(item.description || '');
+    setEditPrice(item.price.toFixed(2).replace('.', ','));
+    setEditAllergens(item.allergens || []);
+  };
+
+  const handleSaveItem = async () => {
+    if (!editingItem) return;
+
+    setLoading(true);
     const supabase = createClient();
-    const price = parseFloat(priceValue.replace(',', '.'));
+    const price = parseFloat(editPrice.replace(',', '.'));
 
     if (isNaN(price)) {
-      setEditingPrice(null);
+      setLoading(false);
       return;
     }
 
     await supabase
       .from('menu_items')
-      .update({ price })
-      .eq('id', itemId);
+      .update({
+        name: editName.trim(),
+        description: editDescription.trim() || null,
+        price,
+        allergens: editAllergens,
+      })
+      .eq('id', editingItem.id);
 
-    setEditingPrice(null);
+    setEditingItem(null);
+    setLoading(false);
     onUpdate();
   };
 
@@ -59,10 +94,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     setLoading(true);
     const supabase = createClient();
 
-    await supabase.from('categories').insert({
+    await supabase.from('menu_categories').insert({
       restaurant_id: restaurant.id,
       name: newCategoryName.trim(),
-      sort_order: categories.length,
+      position: categories.length,
     });
 
     setNewCategoryName('');
@@ -90,13 +125,15 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       name: newItemName.trim(),
       description: newItemDescription.trim() || null,
       price,
-      sort_order: categoryItems.length,
+      position: categoryItems.length,
+      allergens: newItemAllergens,
     });
 
     setNewItemName('');
     setNewItemDescription('');
     setNewItemPrice('');
     setNewItemCategory('');
+    setNewItemAllergens([]);
     setShowAddItem(false);
     setLoading(false);
     onUpdate();
@@ -115,28 +152,64 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
     const supabase = createClient();
     await supabase.from('menu_items').delete().eq('category_id', categoryId);
-    await supabase.from('categories').delete().eq('id', categoryId);
+    await supabase.from('menu_categories').delete().eq('id', categoryId);
     onUpdate();
   };
 
+  // Allergen Selector Component
+  const AllergenSelector = ({ selected, onToggle }: { selected: string[], onToggle: (id: string) => void }) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">
+        Allergene
+      </label>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto p-1">
+        {ALLERGENS.map((allergen) => (
+          <button
+            key={allergen.id}
+            type="button"
+            onClick={() => onToggle(allergen.id)}
+            className={`
+              flex items-center gap-2 p-2 rounded-lg text-left text-sm
+              transition-colors touch-manipulation min-h-[44px]
+              ${selected.includes(allergen.id)
+                ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
+                : 'bg-gray-100 text-gray-700 active:bg-gray-200'
+              }
+            `}
+          >
+            <span className="text-lg">{allergen.icon}</span>
+            <span className="truncate">{allergen.name}</span>
+          </button>
+        ))}
+      </div>
+      {selected.length > 0 && (
+        <p className="text-xs text-gray-500">
+          {selected.length} Allergen{selected.length !== 1 ? 'e' : ''} ausgewählt
+        </p>
+      )}
+    </div>
+  );
+
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Menü bearbeiten</h1>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">Menü bearbeiten</h1>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowAddCategory(true)}>
-            + Kategorie
+          <Button variant="outline" size="sm" onClick={() => setShowAddCategory(true)} className="text-sm">
+            <span className="hidden sm:inline">+ Kategorie</span>
+            <span className="sm:hidden">+ Kat.</span>
           </Button>
-          <Button size="sm" onClick={() => setShowAddItem(true)} disabled={categories.length === 0}>
-            + Neues Gericht
+          <Button size="sm" onClick={() => setShowAddItem(true)} disabled={categories.length === 0} className="text-sm">
+            <span className="hidden sm:inline">+ Neues Gericht</span>
+            <span className="sm:hidden">+ Neu</span>
           </Button>
         </div>
       </div>
 
       {/* Add Category Modal */}
       {showAddCategory && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md safe-area-bottom">
             <h2 className="text-xl font-bold mb-4">Neue Kategorie</h2>
             <div className="space-y-4">
               <Input
@@ -147,10 +220,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 placeholder="z.B. Vorspeisen"
               />
               <div className="flex gap-3">
-                <Button variant="outline" className="flex-1" onClick={() => setShowAddCategory(false)}>
+                <Button variant="outline" className="flex-1 min-h-[48px]" onClick={() => setShowAddCategory(false)}>
                   Abbrechen
                 </Button>
-                <Button className="flex-1" onClick={handleAddCategory} loading={loading}>
+                <Button className="flex-1 min-h-[48px]" onClick={handleAddCategory} loading={loading}>
                   Hinzufügen
                 </Button>
               </div>
@@ -161,8 +234,8 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
       {/* Add Item Modal */}
       {showAddItem && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md max-h-[90vh] overflow-y-auto safe-area-bottom">
             <h2 className="text-xl font-bold mb-4">Neues Gericht</h2>
             <div className="space-y-4">
               <div>
@@ -172,7 +245,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 <select
                   value={newItemCategory}
                   onChange={(e) => setNewItemCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[48px]"
                 >
                   <option value="">Bitte wählen</option>
                   {categories.map((cat) => (
@@ -203,12 +276,60 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onChange={(e) => setNewItemPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
-              <div className="flex gap-3">
-                <Button variant="outline" className="flex-1" onClick={() => setShowAddItem(false)}>
+              <AllergenSelector
+                selected={newItemAllergens}
+                onToggle={(id) => toggleAllergen(id, true)}
+              />
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 min-h-[48px]" onClick={() => {
+                  setShowAddItem(false);
+                  setNewItemAllergens([]);
+                }}>
                   Abbrechen
                 </Button>
-                <Button className="flex-1" onClick={handleAddItem} loading={loading}>
+                <Button className="flex-1 min-h-[48px]" onClick={handleAddItem} loading={loading}>
                   Hinzufügen
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Item Modal */}
+      {editingItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md max-h-[90vh] overflow-y-auto safe-area-bottom">
+            <h2 className="text-xl font-bold mb-4">Gericht bearbeiten</h2>
+            <div className="space-y-4">
+              <Input
+                id="editName"
+                label="Name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+              <Input
+                id="editDescription"
+                label="Beschreibung (optional)"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+              />
+              <Input
+                id="editPrice"
+                label="Preis (€)"
+                value={editPrice}
+                onChange={(e) => setEditPrice(e.target.value)}
+              />
+              <AllergenSelector
+                selected={editAllergens}
+                onToggle={(id) => toggleAllergen(id, false)}
+              />
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 min-h-[48px]" onClick={() => setEditingItem(null)}>
+                  Abbrechen
+                </Button>
+                <Button className="flex-1 min-h-[48px]" onClick={handleSaveItem} loading={loading}>
+                  Speichern
                 </Button>
               </div>
             </div>
@@ -218,24 +339,24 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
       {/* Categories and Items */}
       {categories.length === 0 ? (
-        <div className="bg-white rounded-2xl p-8 text-center">
+        <div className="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center">
           <p className="text-gray-600 mb-4">Noch keine Kategorien vorhanden.</p>
-          <Button onClick={() => setShowAddCategory(true)}>
+          <Button onClick={() => setShowAddCategory(true)} className="w-full sm:w-auto">
             Erste Kategorie erstellen
           </Button>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {categories.map((category) => {
             const items = menuItems.filter((i) => i.category_id === category.id);
 
             return (
-              <div key={category.id} className="bg-white rounded-2xl overflow-hidden">
-                <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-                  <h2 className="font-semibold text-lg">{category.name}</h2>
+              <div key={category.id} className="bg-white rounded-xl sm:rounded-2xl overflow-hidden">
+                <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                  <h2 className="font-semibold text-base sm:text-lg">{category.name}</h2>
                   <button
                     onClick={() => handleDeleteCategory(category.id)}
-                    className="text-gray-400 hover:text-red-500 transition-colors"
+                    className="text-gray-400 active:text-red-500 transition-colors p-2 -m-2 touch-manipulation"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -244,59 +365,61 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 </div>
 
                 {items.length === 0 ? (
-                  <div className="px-6 py-8 text-center text-gray-500">
+                  <div className="px-4 sm:px-6 py-6 sm:py-8 text-center text-gray-500 text-sm">
                     Keine Gerichte in dieser Kategorie
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {items.map((item) => (
-                      <div key={item.id} className="px-6 py-4 flex items-center gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium">{item.name}</div>
-                          {item.description && (
-                            <div className="text-sm text-gray-500 truncate">
-                              {item.description}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {editingPrice === item.id ? (
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="text"
-                                value={priceValue}
-                                onChange={(e) => setPriceValue(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') handlePriceSave(item.id);
-                                  if (e.key === 'Escape') setEditingPrice(null);
-                                }}
-                                className="w-20 px-2 py-1 border border-gray-300 rounded text-right"
-                                autoFocus
-                              />
-                              <span className="text-gray-500">€</span>
-                              <Button size="sm" onClick={() => handlePriceSave(item.id)}>
-                                ✓
-                              </Button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => handlePriceClick(item)}
-                              className="font-medium text-emerald-500 hover:underline min-w-[60px] text-right"
-                            >
+                    {items.map((item) => {
+                      const itemAllergens = getAllergensByIds(item.allergens || []);
+
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => handleEditItem(item)}
+                          className="px-4 sm:px-6 py-3 sm:py-4 flex items-start gap-3 sm:gap-4 cursor-pointer active:bg-gray-50 touch-manipulation"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm sm:text-base">{item.name}</div>
+                            {item.description && (
+                              <div className="text-xs sm:text-sm text-gray-500 truncate">
+                                {item.description}
+                              </div>
+                            )}
+                            {/* Allergen Icons */}
+                            {itemAllergens.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {itemAllergens.map((allergen) => (
+                                  <span
+                                    key={allergen.id}
+                                    title={allergen.name}
+                                    className="text-sm"
+                                  >
+                                    {allergen.icon}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                            <span className="font-medium text-emerald-600 text-sm sm:text-base">
                               {formatPrice(item.price)}
+                            </span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteItem(item.id);
+                              }}
+                              className="text-gray-400 active:text-red-500 transition-colors p-2 -m-2 touch-manipulation"
+                            >
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
                             </button>
-                          )}
-                          <button
-                            onClick={() => handleDeleteItem(item.id)}
-                            className="text-gray-400 hover:text-red-500 transition-colors"
-                          >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

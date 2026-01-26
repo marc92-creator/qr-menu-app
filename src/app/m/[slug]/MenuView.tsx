@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Restaurant, Category, MenuItem } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
+import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 
 interface MenuViewProps {
   restaurant: Restaurant;
@@ -13,6 +14,8 @@ interface MenuViewProps {
 
 export function MenuView({ restaurant, categories, menuItems, showWatermark }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
+  const [showAllergenLegend, setShowAllergenLegend] = useState(false);
+  const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
@@ -36,17 +39,28 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
     // Scroll to category section
     const categorySection = categoryRefs.current.get(categoryId);
     if (categorySection) {
-      const headerHeight = 140; // Approximate sticky header height
+      const headerHeight = 140;
       const top = categorySection.offsetTop - headerHeight;
       window.scrollTo({ top, behavior: 'smooth' });
     }
   };
+
+  // Check if any menu item has allergens
+  const hasAnyAllergens = menuItems.some(item => item.allergens && item.allergens.length > 0);
+
+  // Get all unique allergens used in the menu
+  const usedAllergenIds = [...new Set(menuItems.flatMap(item => item.allergens || []))];
+  const usedAllergens = getAllergensByIds(usedAllergenIds);
 
   // Group items by category
   const itemsByCategory = categories.map(category => ({
     category,
     items: menuItems.filter(item => item.category_id === category.id)
   }));
+
+  const handleAllergenClick = (allergenId: string) => {
+    setSelectedAllergen(selectedAllergen === allergenId ? null : allergenId);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -140,35 +154,134 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {items.map((item) => (
+                    {items.map((item) => {
+                      const itemAllergens = getAllergensByIds(item.allergens || []);
+
+                      return (
+                        <div
+                          key={item.id}
+                          className="px-4 py-4 active:bg-gray-50 transition-colors touch-manipulation"
+                        >
+                          <div className="flex justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-base font-semibold text-gray-900 leading-tight">
+                                {item.name}
+                              </h3>
+                              {item.description && (
+                                <p className="text-sm text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                                  {item.description}
+                                </p>
+                              )}
+                              {/* Allergen Icons */}
+                              {itemAllergens.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                  {itemAllergens.map((allergen) => (
+                                    <button
+                                      key={allergen.id}
+                                      onClick={() => handleAllergenClick(allergen.id)}
+                                      className={`
+                                        w-6 h-6 flex items-center justify-center rounded-full
+                                        text-sm transition-all touch-manipulation
+                                        ${selectedAllergen === allergen.id
+                                          ? 'bg-amber-100 ring-2 ring-amber-400 scale-110'
+                                          : 'bg-gray-100 active:bg-gray-200'
+                                        }
+                                      `}
+                                      title={allergen.name}
+                                    >
+                                      {allergen.icon}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <div className="text-base font-bold text-emerald-600 flex-shrink-0 pl-2">
+                              {formatPrice(item.price)}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Allergen Legend */}
+            {hasAnyAllergens && (
+              <div className="px-4 py-6 border-t border-gray-100">
+                <button
+                  onClick={() => setShowAllergenLegend(!showAllergenLegend)}
+                  className="w-full flex items-center justify-between py-3 text-left touch-manipulation"
+                >
+                  <span className="font-semibold text-gray-900">
+                    Allergen-Informationen
+                  </span>
+                  <svg
+                    className={`w-5 h-5 text-gray-500 transition-transform ${showAllergenLegend ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showAllergenLegend && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                    {usedAllergens.map((allergen) => (
                       <div
-                        key={item.id}
-                        className="px-4 py-4 active:bg-gray-50 transition-colors touch-manipulation"
+                        key={allergen.id}
+                        className={`
+                          flex items-center gap-3 p-3 rounded-lg transition-colors
+                          ${selectedAllergen === allergen.id ? 'bg-amber-50' : 'bg-gray-50'}
+                        `}
                       >
-                        <div className="flex justify-between gap-3">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-base font-semibold text-gray-900 leading-tight">
-                              {item.name}
-                            </h3>
-                            {item.description && (
-                              <p className="text-sm text-gray-500 mt-1 leading-relaxed line-clamp-2">
-                                {item.description}
-                              </p>
-                            )}
-                          </div>
-                          <div className="text-base font-bold text-emerald-600 flex-shrink-0 pl-2">
-                            {formatPrice(item.price)}
-                          </div>
+                        <span className="text-xl">{allergen.icon}</span>
+                        <div>
+                          <div className="font-medium text-sm text-gray-900">{allergen.name}</div>
+                          <div className="text-xs text-gray-500">{allergen.description}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
+
+                <p className="text-xs text-gray-400 mt-4">
+                  Bei Fragen zu Allergenen wenden Sie sich bitte an unser Personal.
+                </p>
               </div>
-            ))}
+            )}
           </div>
         )}
       </main>
+
+      {/* Selected Allergen Tooltip */}
+      {selectedAllergen && (
+        <div
+          className="fixed bottom-20 left-4 right-4 bg-amber-50 border border-amber-200 rounded-xl p-4 shadow-lg z-40 safe-area-bottom"
+          onClick={() => setSelectedAllergen(null)}
+        >
+          {(() => {
+            const allergen = ALLERGENS.find(a => a.id === selectedAllergen);
+            if (!allergen) return null;
+            return (
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{allergen.icon}</span>
+                <div>
+                  <div className="font-semibold text-amber-900">{allergen.name}</div>
+                  <div className="text-sm text-amber-700">{allergen.description}</div>
+                </div>
+                <button className="ml-auto text-amber-600 p-2 touch-manipulation">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            );
+          })()}
+        </div>
+      )}
 
       {/* Watermark / Beta Badge */}
       {showWatermark && (

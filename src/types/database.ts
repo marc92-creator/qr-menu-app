@@ -34,6 +34,7 @@ export interface MenuItem {
   image_url: string | null;
   is_available: boolean;
   position: number;
+  allergens: string[];
   created_at: string;
 }
 
