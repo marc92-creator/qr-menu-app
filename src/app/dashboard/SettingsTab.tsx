@@ -68,7 +68,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
       </div>
 
       {/* Current Plan Badge */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-5 text-white">
+      <div className={`rounded-2xl p-5 text-white ${isPremium ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -76,15 +76,15 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             </div>
             <div>
               <div className="font-bold text-lg">
-                {isPremium ? 'Basic Plan' : 'Kostenlose Beta'}
+                {isPremium ? 'Basic Plan' : 'Demo-Version'}
               </div>
               <div className="text-white/80 text-sm">
-                {isPremium ? 'Kein Wasserzeichen' : 'Alle Features kostenlos testen'}
+                {isPremium ? 'Kein Wasserzeichen' : 'Testen Sie alle Features'}
               </div>
             </div>
           </div>
           <span className="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-            {isPremium ? 'Aktiv' : 'Beta'}
+            {isPremium ? 'Aktiv' : 'Demo'}
           </span>
         </div>
       </div>
@@ -184,8 +184,8 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
               Jetzt upgraden
             </Button>
 
-            <p className="text-xs text-gray-400 text-center mt-3">
-              Während der Beta: Kostenlos testen!
+            <p className="text-xs text-gray-500 text-center mt-3">
+              Demo-Version aktiv · Upgrade für volle Funktionen ohne Wasserzeichen
             </p>
           </div>
         </div>

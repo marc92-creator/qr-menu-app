@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MenuApp - Digitale Speisekarte für Restaurants",
-  description: "Erstelle kostenlos deine digitale Speisekarte mit QR-Code",
+  description: "Erstelle deine digitale Speisekarte mit QR-Code - Demo verfügbar",
 };
 
 export default function RootLayout({

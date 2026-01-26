@@ -98,7 +98,7 @@ export default function RegisterPage() {
               )}
 
               <Button type="submit" className="w-full" loading={loading}>
-                Kostenlos registrieren
+                Registrieren
               </Button>
             </form>
 

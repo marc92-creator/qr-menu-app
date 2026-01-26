@@ -10,8 +10,8 @@ export default function Home() {
         <nav className="container mx-auto px-5 py-4 flex items-center justify-between max-w-6xl">
           <div className="flex items-center gap-3">
             <Logo />
-            <span className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-              Beta
+            <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Demo
             </span>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
@@ -23,7 +23,7 @@ export default function Home() {
             </Link>
             <Link href="/register">
               <Button size="sm" className="text-sm shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                <span className="hidden sm:inline">Kostenlos starten</span>
+                <span className="hidden sm:inline">Demo starten</span>
                 <span className="sm:hidden">Starten</span>
               </Button>
             </Link>
@@ -42,12 +42,12 @@ export default function Home() {
             <div className="py-16 sm:py-24 md:py-32">
               <div className="max-w-4xl mx-auto text-center">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-2 rounded-full mb-6 sm:mb-8">
+                <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-sm font-medium px-4 py-2 rounded-full mb-6 sm:mb-8">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                   </span>
-                  Jetzt in der Beta-Phase
+                  Demo-Version verfügbar
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-[1.1] tracking-tight">
@@ -59,14 +59,14 @@ export default function Home() {
 
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
                   Erstelle deine digitale Speisekarte mit QR-Code.
-                  <span className="hidden sm:inline"> Kostenlos starten, keine technischen Kenntnisse erforderlich.</span>
+                  <span className="hidden sm:inline"> Demo starten, keine technischen Kenntnisse erforderlich.</span>
                 </p>
 
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
                   <Link href="/register" className="w-full sm:w-auto">
                     <Button size="lg" className="w-full min-h-[56px] text-base sm:text-lg px-8 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                      Jetzt kostenlos testen
+                      Demo starten
                       <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
@@ -172,7 +172,7 @@ export default function Home() {
                 Einfache Preise
               </h2>
               <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-                Starte kostenlos und upgrade wenn du bereit bist
+                Starte mit der Demo und upgrade wenn du bereit bist
               </p>
             </div>
 
@@ -183,13 +183,13 @@ export default function Home() {
                   <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                     <span className="text-xl">🆓</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Free</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Demo</h3>
                 </div>
                 <p className="text-4xl sm:text-5xl font-bold mb-1 tracking-tight">
                   0€
                   <span className="text-lg font-normal text-gray-500">/Monat</span>
                 </p>
-                <p className="text-gray-500 mb-6">Für immer kostenlos</p>
+                <p className="text-gray-500 mb-6">Demo-Version</p>
 
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center gap-3">
@@ -228,7 +228,7 @@ export default function Home() {
 
                 <Link href="/register" className="block">
                   <Button variant="outline" className="w-full min-h-[52px] text-base hover:bg-gray-50 transition-all duration-200">
-                    Kostenlos starten
+                    Demo starten
                   </Button>
                 </Link>
               </div>
@@ -255,7 +255,7 @@ export default function Home() {
                     <span className="text-lg font-normal opacity-75">/Monat</span>
                   </p>
                   <p className="opacity-75 mb-6">
-                    <span className="line-through">9,99€</span> → Während Beta: <span className="font-bold">Kostenlos!</span>
+                    Voller Funktionsumfang
                   </p>
 
                   <ul className="space-y-4 mb-8">
@@ -265,7 +265,7 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span>Alles aus Free</span>
+                      <span>Alles aus Demo</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -295,7 +295,7 @@ export default function Home() {
 
                   <Link href="/register" className="block">
                     <button className="w-full min-h-[52px] text-base font-semibold bg-white text-emerald-600 rounded-xl hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                      Beta-Zugang sichern
+                      Jetzt upgraden
                     </button>
                   </Link>
                 </div>
@@ -317,18 +317,18 @@ export default function Home() {
               <div className="relative">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-6">
                   <span className="text-emerald-400">✨</span>
-                  Limitierte Beta-Plätze verfügbar
+                  Jetzt Demo testen
                 </div>
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight">
                   Bereit für deine<br />digitale Speisekarte?
                 </h2>
                 <p className="text-gray-400 mb-8 sm:mb-10 max-w-xl mx-auto text-lg">
-                  Starte jetzt kostenlos und habe dein digitales Menü in weniger als 5 Minuten online.
+                  Starte jetzt die Demo und habe dein digitales Menü in weniger als 5 Minuten online.
                 </p>
                 <Link href="/register">
                   <Button size="lg" className="min-h-[56px] px-10 text-lg shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                    Jetzt kostenlos starten
+                    Demo starten
                     <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -346,8 +346,8 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <Logo />
-              <span className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-                Beta
+              <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                Demo
               </span>
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">

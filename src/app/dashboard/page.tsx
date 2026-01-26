@@ -226,8 +226,8 @@ export default function DashboardPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo />
-            <span className="hidden sm:inline-block bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-              Beta
+            <span className="hidden sm:inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Demo
             </span>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">

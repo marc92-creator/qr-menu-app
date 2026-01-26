@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-QR Menu App - A digital menu system for restaurants in the Limburg region. Restaurant owners can create and manage their menus, generate QR codes, and customers can scan these to view menus on their phones.
+QR Menu App - A SaaS digital menu system for restaurants in the Limburg region (Germany). Restaurant owners create and manage menus, generate QR codes, and customers scan these to view menus on their phones. All UI text is in German.
 
 ## Commands
 
@@ -18,61 +18,88 @@ npm run start    # Start production server
 ## Architecture
 
 ### Tech Stack
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 14 (App Router, no pages directory)
 - **Database**: Supabase (PostgreSQL with Row Level Security)
-- **Payments**: Stripe
-- **Styling**: Tailwind CSS
-- **Language**: TypeScript
+- **Payments**: Stripe (checkout sessions, webhooks)
+- **Styling**: Tailwind CSS (emerald-500 primary color)
+- **PDF**: jspdf for table tent generation
+- **QR Codes**: qrcode.react
 
-### Key Routes
+### Route Structure
 
 | Route | Purpose |
 |-------|---------|
-| `/` | Landing page |
-| `/login`, `/register` | Auth pages |
-| `/dashboard` | Restaurant owner dashboard (menu editor, QR codes, settings) |
+| `/` | Landing page (public) |
+| `/login`, `/register` | Auth pages (redirect to dashboard if authenticated) |
+| `/dashboard` | Protected owner dashboard (menu editor, QR codes, settings) |
 | `/m/[slug]` | Public menu view for customers |
-| `/api/menu/[slug]` | API to fetch menu data |
-| `/api/checkout` | Stripe checkout session creation |
-| `/api/webhooks/stripe` | Stripe webhook handler |
-| `/api/auth/callback` | Supabase auth callback |
+| `/api/menu/[slug]` | GET menu data |
+| `/api/checkout` | POST creates Stripe checkout session |
+| `/api/webhooks/stripe` | POST handles subscription events |
+| `/api/track-scan` | POST tracks QR code scans |
+| `/api/auth/callback` | Supabase OAuth callback |
 
-### Database Tables (Supabase)
+### Database Schema
 
-- `restaurants` - Restaurant profiles (linked to auth.users via `owner_id`)
-- `menu_categories` - Menu categories with `position` for ordering
-- `menu_items` - Individual dishes with `category_id`, `price`, `is_available`, `position`
-- `subscriptions` - Stripe subscription tracking
+**Tables:**
+- `restaurants` - owner_id, slug (unique), name, address, phone, logo_url, is_active
+- `menu_categories` - restaurant_id, name, position (for ordering)
+- `menu_items` - category_id, name, description, price, is_available, position, allergens (string[])
+- `menu_scans` - restaurant_id, scanned_at, user_agent, referrer
+- `subscriptions` - user_id, plan ('free'/'basic'), stripe_customer_id, status
+
+**RLS Patterns:**
+- Users can only manage their own restaurants/categories/items
+- Public SELECT allowed on restaurants (by slug), categories, and items
+- Stripe webhooks use service role key to bypass RLS
 
 ### Supabase Client Usage
 
 ```typescript
-// Server Components & API Routes
-import { createClient } from '@/lib/supabase/server';
-const supabase = await createClient();
-
-// Client Components
+// Client Components (browser)
 import { createClient } from '@/lib/supabase/client';
 const supabase = createClient();
+
+// Server Components & API Routes (await required)
+import { createClient } from '@/lib/supabase/server';
+const supabase = await createClient();
 ```
 
-### Type Definitions
+The middleware (`src/middleware.ts`) automatically refreshes auth sessions and handles redirects.
 
-All database types are in `src/types/database.ts`. Use these interfaces when working with Supabase queries.
+### Key Patterns
+
+**Allergen System**: 14 EU allergens defined in `/lib/allergens.ts` with German labels and emoji icons. Menu items store allergen IDs as string arrays.
+
+**URL Generation**: Use `getMenuUrl(slug)` from `/lib/utils.ts` for consistent menu URLs. Respects `NEXT_PUBLIC_APP_URL` env var.
+
+**Price Formatting**: Use `formatPrice(price)` for German locale EUR formatting.
+
+**Subscription/Watermark Logic**: Free plans show watermark on public menu; 'basic' plan (9.99€/month) removes it.
+
+**Timestamp Updates**: When modifying menu items/categories, call `updateRestaurantTimestamp()` to keep `updated_at` current.
 
 ## Environment Variables
 
 Required in `.env.local`:
-- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anon/public key
-- `STRIPE_SECRET_KEY` - Stripe secret key (for server-side)
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
-- `STRIPE_WEBHOOK_SECRET` - For verifying Stripe webhooks
-- `NEXT_PUBLIC_APP_URL` - Base URL of the app
+```
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY      # Required for webhooks and scan tracking
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_PRICE_ID                # Stripe price ID for basic plan
+NEXT_PUBLIC_APP_URL            # Production URL for QR codes
+```
 
-## Notes
+## Database Migrations
 
-- Public menu pages (`/m/[slug]`) are accessible without authentication
-- Dashboard requires authentication; redirects to login if not authenticated
-- Middleware handles session refresh for all routes except static assets
-- The app uses German language for UI text (target market: Limburg region)
+SQL migrations are in `supabase/migrations/`. Run them directly in Supabase SQL Editor - no ORM is used.
+
+## Gotchas
+
+1. **German UI**: All user-facing text is German. Maintain this consistency.
+2. **Service Role Key**: The track-scan API and Stripe webhooks require `SUPABASE_SERVICE_ROLE_KEY`.
+3. **TypeScript Set Spreading**: Use `Array.from(new Set(...))` instead of `[...new Set(...)]` due to TypeScript configuration.
+4. **HTMLElement Refs**: Use `HTMLElement` instead of `HTMLDivElement` for generic element refs in Maps.

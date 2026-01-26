@@ -355,7 +355,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
         </div>
       )}
 
-      {/* Watermark / Beta Badge - Glassmorphism */}
+      {/* Watermark / Demo Badge - Glassmorphism */}
       {showWatermark && (
         <div className="fixed bottom-0 left-0 right-0 z-30">
           <div className="bg-gray-900/80 backdrop-blur-xl border-t border-white/10 safe-area-bottom">
@@ -366,9 +366,9 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-white/90 hover:text-white font-medium transition-colors touch-manipulation"
               >
-                <span className="text-emerald-400">✨</span>
+                <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">Demo</span>
+                <span>·</span>
                 <span>Erstellt mit MenuApp</span>
-                <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">Beta</span>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
