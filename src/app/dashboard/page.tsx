@@ -40,109 +40,118 @@ export default function DashboardPage() {
   }, []);
 
   const loadData = async () => {
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        // Set loading false before redirect to prevent infinite spinner on mobile
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
 
-    // Load all restaurants for this user
-    const { data: restaurantsData } = await supabase
-      .from('restaurants')
-      .select('*')
-      .eq('owner_id', user.id)
-      .order('created_at', { ascending: false });
+      // Load all restaurants for this user
+      const { data: restaurantsData } = await supabase
+        .from('restaurants')
+        .select('*')
+        .eq('owner_id', user.id)
+        .order('created_at', { ascending: false });
 
-    if (restaurantsData && restaurantsData.length > 0) {
-      setRestaurants(restaurantsData);
+      if (restaurantsData && restaurantsData.length > 0) {
+        setRestaurants(restaurantsData);
 
-      // Load stats for all restaurants
-      const statsMap: Record<string, RestaurantStats> = {};
-      for (const restaurant of restaurantsData) {
-        const { count: categoryCount } = await supabase
-          .from('menu_categories')
-          .select('*', { count: 'exact', head: true })
-          .eq('restaurant_id', restaurant.id);
-
-        // Get all category IDs for this restaurant
-        const { data: cats } = await supabase
-          .from('menu_categories')
-          .select('id')
-          .eq('restaurant_id', restaurant.id);
-
-        let itemCount = 0;
-        if (cats && cats.length > 0) {
-          const catIds = cats.map(c => c.id);
-          const { count } = await supabase
-            .from('menu_items')
+        // Load stats for all restaurants
+        const statsMap: Record<string, RestaurantStats> = {};
+        for (const restaurant of restaurantsData) {
+          const { count: categoryCount } = await supabase
+            .from('menu_categories')
             .select('*', { count: 'exact', head: true })
-            .in('category_id', catIds);
-          itemCount = count || 0;
-        }
-
-        // Try to get scan stats (may fail if table doesn't exist yet)
-        let scanStats: ScanStats | undefined;
-        try {
-          const { data: scanData } = await supabase
-            .from('menu_scans')
-            .select('scanned_at')
             .eq('restaurant_id', restaurant.id);
 
-          if (scanData) {
-            const now = new Date();
-            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          // Get all category IDs for this restaurant
+          const { data: cats } = await supabase
+            .from('menu_categories')
+            .select('id')
+            .eq('restaurant_id', restaurant.id);
 
-            scanStats = {
-              totalScans: scanData.length,
-              scansToday: scanData.filter(s => new Date(s.scanned_at) > oneDayAgo).length,
-              scansThisWeek: scanData.filter(s => new Date(s.scanned_at) > oneWeekAgo).length,
-              scansThisMonth: scanData.filter(s => new Date(s.scanned_at) > oneMonthAgo).length,
-            };
+          let itemCount = 0;
+          if (cats && cats.length > 0) {
+            const catIds = cats.map(c => c.id);
+            const { count } = await supabase
+              .from('menu_items')
+              .select('*', { count: 'exact', head: true })
+              .in('category_id', catIds);
+            itemCount = count || 0;
           }
-        } catch {
-          // Table might not exist yet
+
+          // Try to get scan stats (may fail if table doesn't exist yet)
+          let scanStats: ScanStats | undefined;
+          try {
+            const { data: scanData } = await supabase
+              .from('menu_scans')
+              .select('scanned_at')
+              .eq('restaurant_id', restaurant.id);
+
+            if (scanData) {
+              const now = new Date();
+              const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+              const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+              const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+              scanStats = {
+                totalScans: scanData.length,
+                scansToday: scanData.filter(s => new Date(s.scanned_at) > oneDayAgo).length,
+                scansThisWeek: scanData.filter(s => new Date(s.scanned_at) > oneWeekAgo).length,
+                scansThisMonth: scanData.filter(s => new Date(s.scanned_at) > oneMonthAgo).length,
+              };
+            }
+          } catch {
+            // Table might not exist yet
+          }
+
+          statsMap[restaurant.id] = {
+            categoryCount: categoryCount || 0,
+            itemCount,
+            scanStats,
+          };
         }
+        setRestaurantStats(statsMap);
 
-        statsMap[restaurant.id] = {
-          categoryCount: categoryCount || 0,
-          itemCount,
-          scanStats,
-        };
-      }
-      setRestaurantStats(statsMap);
-
-      // If no restaurant is selected, select the first one
-      if (!selectedRestaurant) {
-        await selectRestaurant(restaurantsData[0]);
+        // If no restaurant is selected, select the first one
+        if (!selectedRestaurant) {
+          await selectRestaurant(restaurantsData[0]);
+        } else {
+          // Refresh selected restaurant data
+          const updated = restaurantsData.find(r => r.id === selectedRestaurant.id);
+          if (updated) {
+            await selectRestaurant(updated);
+          }
+        }
       } else {
-        // Refresh selected restaurant data
-        const updated = restaurantsData.find(r => r.id === selectedRestaurant.id);
-        if (updated) {
-          await selectRestaurant(updated);
-        }
+        setRestaurants([]);
+        setRestaurantStats({});
       }
-    } else {
-      setRestaurants([]);
-      setRestaurantStats({});
+
+      // Load subscription
+      const { data: subData } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .single();
+
+      if (subData) {
+        setSubscription(subData);
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+      // On error, redirect to login as a safety measure
+      router.push('/login');
+    } finally {
+      // Always stop loading, even if there was an error
+      setLoading(false);
     }
-
-    // Load subscription
-    const { data: subData } = await supabase
-      .from('subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-      .single();
-
-    if (subData) {
-      setSubscription(subData);
-    }
-
-    setLoading(false);
   };
 
   const selectRestaurant = async (restaurant: Restaurant) => {
