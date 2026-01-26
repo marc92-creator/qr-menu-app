@@ -49,7 +49,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
   const hasAnyAllergens = menuItems.some(item => item.allergens && item.allergens.length > 0);
 
   // Get all unique allergens used in the menu
-  const usedAllergenIds = [...new Set(menuItems.flatMap(item => item.allergens || []))];
+  const usedAllergenIds = Array.from(new Set(menuItems.flatMap(item => item.allergens || [])));
   const usedAllergens = getAllergensByIds(usedAllergenIds);
 
   // Group items by category
