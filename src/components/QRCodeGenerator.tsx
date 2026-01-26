@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { Button } from './Button';
+import { getMenuUrl } from '@/lib/utils';
 
 interface QRCodeGeneratorProps {
   slug: string;
@@ -12,9 +13,7 @@ interface QRCodeGeneratorProps {
 
 export function QRCodeGenerator({ slug, restaurantName, size = 256 }: QRCodeGeneratorProps) {
   const qrRef = useRef<HTMLDivElement>(null);
-
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const menuUrl = `${baseUrl}/m/${slug}`;
+  const menuUrl = getMenuUrl(slug);
 
   const handleDownload = () => {
     const canvas = qrRef.current?.querySelector('canvas');

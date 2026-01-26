@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Restaurant } from '@/types/database';
 import { Button } from '@/components/Button';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
+import { getMenuUrl } from '@/lib/utils';
 
 interface QRCodeTabProps {
   restaurant: Restaurant;
@@ -11,7 +12,7 @@ interface QRCodeTabProps {
 
 export function QRCodeTab({ restaurant }: QRCodeTabProps) {
   const [copied, setCopied] = useState(false);
-  const menuUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/m/${restaurant.slug}`;
+  const menuUrl = getMenuUrl(restaurant.slug);
 
   const handleCopyLink = async () => {
     try {
