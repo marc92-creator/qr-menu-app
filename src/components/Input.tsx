@@ -24,6 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             'w-full px-4 py-3 text-base border rounded-lg transition-colors',
             'focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent',
             'min-h-[44px]',
+            'disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed',
             error ? 'border-red-500' : 'border-gray-300',
             className
           )}

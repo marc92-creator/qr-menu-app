@@ -48,6 +48,7 @@ export default async function PublicMenuPage({ params }: PageProps) {
     .single();
 
   const showWatermark = !subscription || subscription.plan !== 'basic';
+  const isDemo = restaurant.is_demo || false;
 
   return (
     <MenuView
@@ -55,6 +56,7 @@ export default async function PublicMenuPage({ params }: PageProps) {
       categories={categories || []}
       menuItems={menuItems || []}
       showWatermark={showWatermark}
+      isDemo={isDemo}
     />
   );
 }

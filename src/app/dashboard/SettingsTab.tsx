@@ -58,9 +58,38 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
   };
 
   const isPremium = subscription?.plan === 'basic' && subscription?.status === 'active';
+  const isDemo = restaurant.is_demo;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      {/* Demo Mode Banner */}
+      {isDemo && (
+        <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-xl">🔒</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-amber-900">Demo-Modus</h3>
+                <p className="text-sm text-amber-700">
+                  Dies ist ein Demo-Restaurant. Änderungen werden nicht gespeichert.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 whitespace-nowrap"
+            >
+              Eigenes Restaurant erstellen
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Einstellungen</h1>
@@ -104,6 +133,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             label="Restaurant-Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            disabled={isDemo}
           />
 
           <Input
@@ -112,9 +142,10 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="z.B. Musterstraße 123, 12345 Berlin"
+            disabled={isDemo}
           />
 
-          {success && (
+          {success && !isDemo && (
             <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-3 rounded-xl">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -126,6 +157,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
           <Button
             onClick={handleSave}
             loading={loading}
+            disabled={isDemo}
             className="rounded-xl shadow-lg shadow-emerald-500/20"
           >
             Änderungen speichern

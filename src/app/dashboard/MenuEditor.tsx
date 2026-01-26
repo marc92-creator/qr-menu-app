@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Restaurant, Category, MenuItem } from '@/types/database';
 import { Button } from '@/components/Button';
@@ -16,6 +17,7 @@ interface MenuEditorProps {
 }
 
 export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: MenuEditorProps) {
+  const isDemo = restaurant.is_demo;
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -208,6 +210,34 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Demo Mode Banner */}
+      {isDemo && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-xl">🔒</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-amber-900">Demo-Modus</h3>
+                <p className="text-sm text-amber-700">
+                  Dies ist ein Demo-Restaurant. Änderungen werden nicht gespeichert.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 whitespace-nowrap"
+            >
+              Eigenes Restaurant erstellen
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <div>
@@ -221,6 +251,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
             variant="outline"
             size="sm"
             onClick={() => setShowAddCategory(true)}
+            disabled={isDemo}
             className="text-sm rounded-xl hover:bg-gray-50 transition-all"
           >
             <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -232,7 +263,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           <Button
             size="sm"
             onClick={() => setShowAddItem(true)}
-            disabled={categories.length === 0}
+            disabled={categories.length === 0 || isDemo}
             className="text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
           >
             <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -538,15 +569,17 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                       <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDeleteCategory(category.id)}
-                    className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
-                    title="Kategorie löschen"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {!isDemo && (
+                    <button
+                      onClick={() => handleDeleteCategory(category.id)}
+                      className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
+                      title="Kategorie löschen"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
 
                 {items.length === 0 ? (
@@ -558,18 +591,20 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                     <p className="text-gray-500 text-sm mb-4 max-w-xs mx-auto">
                       Füge dein erstes Gericht zu &quot;{category.name}&quot; hinzu.
                     </p>
-                    <button
-                      onClick={() => {
-                        setNewItemCategory(category.id);
-                        setShowAddItem(true);
-                      }}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      Erstes Gericht hinzufügen
-                    </button>
+                    {!isDemo && (
+                      <button
+                        onClick={() => {
+                          setNewItemCategory(category.id);
+                          setShowAddItem(true);
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Erstes Gericht hinzufügen
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
@@ -608,26 +643,30 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                             <span className="text-lg font-bold text-emerald-600">
                               {formatPrice(item.price)}
                             </span>
-                            {/* Edit Button */}
-                            <button
-                              onClick={() => handleEditItem(item)}
-                              className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
-                              title="Bearbeiten"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            {/* Delete Button */}
-                            <button
-                              onClick={() => handleDeleteItem(item.id)}
-                              className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
-                              title="Löschen"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
+                            {!isDemo && (
+                              <>
+                                {/* Edit Button */}
+                                <button
+                                  onClick={() => handleEditItem(item)}
+                                  className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
+                                  title="Bearbeiten"
+                                >
+                                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                  </svg>
+                                </button>
+                                {/* Delete Button */}
+                                <button
+                                  onClick={() => handleDeleteItem(item.id)}
+                                  className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
+                                  title="Löschen"
+                                >
+                                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       );
@@ -638,43 +677,45 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
             );
           })}
 
-          {/* Quick Add Section */}
-          <div className="mt-6 p-5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 text-center sm:text-left">
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <span className="text-2xl">✨</span>
+          {/* Quick Add Section - Hide in demo mode */}
+          {!isDemo && (
+            <div className="mt-6 p-5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 text-center sm:text-left">
+                  <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-2xl">✨</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-emerald-900">Menü erweitern</h4>
+                    <p className="text-sm text-emerald-700">
+                      {menuItems.length === 0
+                        ? 'Füge Gerichte hinzu, damit Gäste bestellen können'
+                        : `${menuItems.length} Gericht${menuItems.length !== 1 ? 'e' : ''} online • Weiter so!`
+                      }
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-emerald-900">Menü erweitern</h4>
-                  <p className="text-sm text-emerald-700">
-                    {menuItems.length === 0
-                      ? 'Füge Gerichte hinzu, damit Gäste bestellen können'
-                      : `${menuItems.length} Gericht${menuItems.length !== 1 ? 'e' : ''} online • Weiter so!`
-                    }
-                  </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAddCategory(true)}
+                    className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+                  >
+                    + Kategorie
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => setShowAddItem(true)}
+                    disabled={categories.length === 0}
+                    className="rounded-xl shadow-lg shadow-emerald-500/20"
+                  >
+                    + Gericht
+                  </Button>
                 </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowAddCategory(true)}
-                  className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-100"
-                >
-                  + Kategorie
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => setShowAddItem(true)}
-                  disabled={categories.length === 0}
-                  className="rounded-xl shadow-lg shadow-emerald-500/20"
-                >
-                  + Gericht
-                </Button>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Tip for completed menus */}
           {menuItems.length >= 5 && (

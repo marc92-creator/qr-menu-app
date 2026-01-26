@@ -10,6 +10,7 @@ interface MenuViewProps {
   categories: Category[];
   menuItems: MenuItem[];
   showWatermark: boolean;
+  isDemo?: boolean;
 }
 
 // Format the last updated date in a human-readable way
@@ -34,7 +35,7 @@ const formatLastUpdated = (dateString: string) => {
   });
 };
 
-export function MenuView({ restaurant, categories, menuItems, showWatermark }: MenuViewProps) {
+export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
@@ -126,9 +127,16 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark }: M
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate tracking-tight">
-                {restaurant.name}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate tracking-tight">
+                  {restaurant.name}
+                </h1>
+                {isDemo && (
+                  <span className="flex-shrink-0 bg-amber-100 text-amber-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+                    Demo
+                  </span>
+                )}
+              </div>
               {restaurant.address && (
                 <p className="text-sm md:text-base text-gray-500 truncate mt-0.5">
                   📍 {restaurant.address}

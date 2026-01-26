@@ -13,6 +13,7 @@ export interface Restaurant {
   phone: string | null;
   logo_url: string | null;
   is_active: boolean;
+  is_demo: boolean;
   created_at: string;
   updated_at: string;
 }
