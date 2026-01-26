@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Restaurant, Category, MenuItem, Subscription } from '@/types/database';
+import { Restaurant, Category, MenuItem, Subscription, RestaurantStats } from '@/types/database';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 import { SetupWizard } from './SetupWizard';
@@ -29,6 +29,7 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [restaurantStats, setRestaurantStats] = useState<Record<string, RestaurantStats>>({});
   const [activeTab, setActiveTab] = useState<Tab>('restaurants');
   const [showSetupWizard, setShowSetupWizard] = useState(false);
 
@@ -56,6 +57,37 @@ export default function DashboardPage() {
     if (restaurantsData && restaurantsData.length > 0) {
       setRestaurants(restaurantsData);
 
+      // Load stats for all restaurants
+      const statsMap: Record<string, RestaurantStats> = {};
+      for (const restaurant of restaurantsData) {
+        const { count: categoryCount } = await supabase
+          .from('menu_categories')
+          .select('*', { count: 'exact', head: true })
+          .eq('restaurant_id', restaurant.id);
+
+        // Get all category IDs for this restaurant
+        const { data: cats } = await supabase
+          .from('menu_categories')
+          .select('id')
+          .eq('restaurant_id', restaurant.id);
+
+        let itemCount = 0;
+        if (cats && cats.length > 0) {
+          const catIds = cats.map(c => c.id);
+          const { count } = await supabase
+            .from('menu_items')
+            .select('*', { count: 'exact', head: true })
+            .in('category_id', catIds);
+          itemCount = count || 0;
+        }
+
+        statsMap[restaurant.id] = {
+          categoryCount: categoryCount || 0,
+          itemCount,
+        };
+      }
+      setRestaurantStats(statsMap);
+
       // If no restaurant is selected, select the first one
       if (!selectedRestaurant) {
         await selectRestaurant(restaurantsData[0]);
@@ -68,6 +100,7 @@ export default function DashboardPage() {
       }
     } else {
       setRestaurants([]);
+      setRestaurantStats({});
     }
 
     // Load subscription
@@ -230,6 +263,7 @@ export default function DashboardPage() {
         {activeTab === 'restaurants' && (
           <RestaurantList
             restaurants={restaurants}
+            restaurantStats={restaurantStats}
             selectedRestaurant={selectedRestaurant}
             onSelect={handleSelectRestaurant}
             onAddNew={handleAddRestaurant}

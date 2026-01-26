@@ -59,6 +59,15 @@ export interface RestaurantWithMenu extends Restaurant {
   subscription?: Subscription;
 }
 
+export interface RestaurantStats {
+  categoryCount: number;
+  itemCount: number;
+}
+
+export interface RestaurantWithStats extends Restaurant {
+  stats: RestaurantStats;
+}
+
 export interface Database {
   public: {
     Tables: {
