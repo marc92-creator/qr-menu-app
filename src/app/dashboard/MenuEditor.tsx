@@ -158,50 +158,74 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
   // Allergen Selector Component
   const AllergenSelector = ({ selected, onToggle }: { selected: string[], onToggle: (id: string) => void }) => (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
-        Allergene
-      </label>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto p-1">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-semibold text-gray-700">
+          Allergene
+        </label>
+        {selected.length > 0 && (
+          <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+            {selected.length} ausgewählt
+          </span>
+        )}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto p-1 -m-1">
         {ALLERGENS.map((allergen) => (
           <button
             key={allergen.id}
             type="button"
             onClick={() => onToggle(allergen.id)}
             className={`
-              flex items-center gap-2 p-2 rounded-lg text-left text-sm
-              transition-colors touch-manipulation min-h-[44px]
+              flex items-center gap-2 p-3 rounded-xl text-left text-sm
+              transition-all duration-200 touch-manipulation min-h-[48px]
               ${selected.includes(allergen.id)
-                ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
-                : 'bg-gray-100 text-gray-700 active:bg-gray-200'
+                ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500 shadow-sm'
+                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
               }
             `}
           >
             <span className="text-lg">{allergen.icon}</span>
-            <span className="truncate">{allergen.name}</span>
+            <span className="truncate font-medium">{allergen.name}</span>
           </button>
         ))}
       </div>
-      {selected.length > 0 && (
-        <p className="text-xs text-gray-500">
-          {selected.length} Allergen{selected.length !== 1 ? 'e' : ''} ausgewählt
-        </p>
-      )}
     </div>
   );
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold">Menü bearbeiten</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowAddCategory(true)} className="text-sm">
-            <span className="hidden sm:inline">+ Kategorie</span>
-            <span className="sm:hidden">+ Kat.</span>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Menü bearbeiten</h1>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">
+            {categories.length} Kategorie{categories.length !== 1 ? 'n' : ''} · {menuItems.length} Gericht{menuItems.length !== 1 ? 'e' : ''}
+          </p>
+        </div>
+        <div className="flex gap-2 sm:gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAddCategory(true)}
+            className="text-sm rounded-xl hover:bg-gray-50 transition-all"
+          >
+            <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="hidden sm:inline">Kategorie</span>
+            <span className="sm:hidden">Kat.</span>
           </Button>
-          <Button size="sm" onClick={() => setShowAddItem(true)} disabled={categories.length === 0} className="text-sm">
-            <span className="hidden sm:inline">+ Neues Gericht</span>
-            <span className="sm:hidden">+ Neu</span>
+          <Button
+            size="sm"
+            onClick={() => setShowAddItem(true)}
+            disabled={categories.length === 0}
+            className="text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+          >
+            <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="hidden sm:inline">Neues Gericht</span>
+            <span className="sm:hidden">Gericht</span>
           </Button>
         </div>
       </div>
@@ -209,27 +233,32 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       {/* Add Category Modal */}
       {showAddCategory && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowAddCategory(false);
           }}
         >
           <div
-            className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md safe-area-bottom"
+            className="bg-white rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 w-full sm:max-w-md safe-area-bottom shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Neue Kategorie</h2>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">📂</span>
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Neue Kategorie</h2>
+              </div>
               <button
                 onClick={() => setShowAddCategory(false)}
-                className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation"
+                className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation rounded-xl hover:bg-gray-100 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <Input
                 id="categoryName"
                 label="Kategorie-Name"
@@ -237,11 +266,11 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="z.B. Vorspeisen"
               />
-              <div className="flex gap-3">
-                <Button variant="outline" className="flex-1 min-h-[48px]" onClick={() => setShowAddCategory(false)}>
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => setShowAddCategory(false)}>
                   Abbrechen
                 </Button>
-                <Button className="flex-1 min-h-[48px]" onClick={handleAddCategory} loading={loading}>
+                <Button className="flex-1 min-h-[52px] rounded-xl shadow-lg shadow-emerald-500/20" onClick={handleAddCategory} loading={loading}>
                   Hinzufügen
                 </Button>
               </div>
@@ -253,7 +282,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       {/* Add Item Modal */}
       {showAddItem && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowAddItem(false);
@@ -262,32 +291,37 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           }}
         >
           <div
-            className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md max-h-[90vh] overflow-y-auto safe-area-bottom"
+            className="bg-white rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 w-full sm:max-w-md max-h-[90vh] overflow-y-auto safe-area-bottom shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Neues Gericht</h2>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🍽️</span>
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Neues Gericht</h2>
+              </div>
               <button
                 onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
                 }}
-                className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation"
+                className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation rounded-xl hover:bg-gray-100 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Kategorie
                 </label>
                 <select
                   value={newItemCategory}
                   onChange={(e) => setNewItemCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[48px]"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[52px] bg-gray-50 transition-all"
                 >
                   <option value="">Bitte wählen</option>
                   {categories.map((cat) => (
@@ -323,13 +357,13 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onToggle={(id) => toggleAllergen(id, true)}
               />
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1 min-h-[48px]" onClick={() => {
+                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
                 }}>
                   Abbrechen
                 </Button>
-                <Button className="flex-1 min-h-[48px]" onClick={handleAddItem} loading={loading}>
+                <Button className="flex-1 min-h-[52px] rounded-xl shadow-lg shadow-emerald-500/20" onClick={handleAddItem} loading={loading}>
                   Hinzufügen
                 </Button>
               </div>
@@ -341,27 +375,32 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       {/* Edit Item Modal */}
       {editingItem && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
           onClick={(e) => {
             if (e.target === e.currentTarget) setEditingItem(null);
           }}
         >
           <div
-            className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md max-h-[90vh] overflow-y-auto safe-area-bottom"
+            className="bg-white rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 w-full sm:max-w-md max-h-[90vh] overflow-y-auto safe-area-bottom shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Gericht bearbeiten</h2>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">✏️</span>
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Gericht bearbeiten</h2>
+              </div>
               <button
                 onClick={() => setEditingItem(null)}
-                className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation"
+                className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation rounded-xl hover:bg-gray-100 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <Input
                 id="editName"
                 label="Name"
@@ -388,10 +427,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onToggle={(id) => toggleAllergen(id, false)}
               />
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1 min-h-[48px]" onClick={() => setEditingItem(null)}>
+                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => setEditingItem(null)}>
                   Abbrechen
                 </Button>
-                <Button className="flex-1 min-h-[48px]" onClick={handleSaveItem} loading={loading}>
+                <Button className="flex-1 min-h-[52px] rounded-xl shadow-lg shadow-emerald-500/20" onClick={handleSaveItem} loading={loading}>
                   Speichern
                 </Button>
               </div>
@@ -402,24 +441,43 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
       {/* Categories and Items */}
       {categories.length === 0 ? (
-        <div className="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center">
-          <p className="text-gray-600 mb-4">Noch keine Kategorien vorhanden.</p>
-          <Button onClick={() => setShowAddCategory(true)} className="w-full sm:w-auto">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 text-center shadow-sm ring-1 ring-gray-100">
+          <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">📋</span>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Noch keine Kategorien</h3>
+          <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+            Erstelle deine erste Kategorie, um Gerichte hinzuzufügen.
+          </p>
+          <Button
+            onClick={() => setShowAddCategory(true)}
+            className="shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+          >
             Erste Kategorie erstellen
           </Button>
         </div>
       ) : (
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-6">
           {categories.map((category) => {
             const items = menuItems.filter((i) => i.category_id === category.id);
 
             return (
-              <div key={category.id} className="bg-white rounded-xl sm:rounded-2xl overflow-hidden">
-                <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-                  <h2 className="font-semibold text-base sm:text-lg">{category.name}</h2>
+              <div key={category.id} className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200">
+                {/* Category Header */}
+                <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
+                      <span className="text-white text-lg">📂</span>
+                    </div>
+                    <div>
+                      <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
+                      <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
+                    </div>
+                  </div>
                   <button
                     onClick={() => handleDeleteCategory(category.id)}
-                    className="text-gray-400 active:text-red-500 transition-colors p-2 -m-2 touch-manipulation"
+                    className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
+                    title="Kategorie löschen"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -428,8 +486,17 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 </div>
 
                 {items.length === 0 ? (
-                  <div className="px-4 sm:px-6 py-6 sm:py-8 text-center text-gray-500 text-sm">
-                    Keine Gerichte in dieser Kategorie
+                  <div className="px-5 sm:px-6 py-10 text-center">
+                    <p className="text-gray-400">Keine Gerichte in dieser Kategorie</p>
+                    <button
+                      onClick={() => {
+                        setNewItemCategory(category.id);
+                        setShowAddItem(true);
+                      }}
+                      className="mt-3 text-emerald-600 hover:text-emerald-700 font-medium text-sm"
+                    >
+                      + Gericht hinzufügen
+                    </button>
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
@@ -439,38 +506,39 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                       return (
                         <div
                           key={item.id}
-                          className="px-4 sm:px-6 py-3 sm:py-4 flex items-start gap-3 sm:gap-4 hover:bg-gray-50 transition-colors"
+                          className="px-5 sm:px-6 py-4 flex items-start gap-4 hover:bg-gray-50/50 transition-colors group"
                         >
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm sm:text-base">{item.name}</div>
+                            <div className="font-semibold text-gray-900">{item.name}</div>
                             {item.description && (
-                              <div className="text-xs sm:text-sm text-gray-500 truncate">
+                              <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
                                 {item.description}
                               </div>
                             )}
-                            {/* Allergen Icons */}
+                            {/* Allergen Badges */}
                             {itemAllergens.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-1.5">
+                              <div className="flex flex-wrap gap-1.5 mt-2">
                                 {itemAllergens.map((allergen) => (
                                   <span
                                     key={allergen.id}
                                     title={allergen.name}
-                                    className="text-sm"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
                                   >
-                                    {allergen.icon}
+                                    <span>{allergen.icon}</span>
+                                    <span className="hidden sm:inline">{allergen.name}</span>
                                   </span>
                                 ))}
                               </div>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                            <span className="font-medium text-emerald-600 text-sm sm:text-base">
+                          <div className="flex items-center gap-3 flex-shrink-0">
+                            <span className="text-lg font-bold text-emerald-600">
                               {formatPrice(item.price)}
                             </span>
                             {/* Edit Button */}
                             <button
                               onClick={() => handleEditItem(item)}
-                              className="text-gray-400 hover:text-emerald-600 active:text-emerald-700 transition-colors p-2 -m-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
+                              className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
                               title="Bearbeiten"
                             >
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -480,7 +548,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                             {/* Delete Button */}
                             <button
                               onClick={() => handleDeleteItem(item.id)}
-                              className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-2 -m-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
+                              className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
                               title="Löschen"
                             >
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
