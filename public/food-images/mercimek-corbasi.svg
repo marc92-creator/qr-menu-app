@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Mercimek Corbasi (Linsensuppe) -->
+  <defs>
+    <linearGradient id="lentilSoup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8F00"/>
+      <stop offset="100%" style="stop-color:#E65100"/>
+    </linearGradient>
+    <linearGradient id="soupBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="85" rx="45" ry="18" fill="url(#soupBowl)"/>
+  <path d="M15 75 Q15 95 60 100 Q105 95 105 75" fill="url(#soupBowl)"/>
+  <ellipse cx="60" cy="75" rx="45" ry="18" fill="#FFFFFF"/>
+  <!-- Soup surface -->
+  <ellipse cx="60" cy="72" rx="40" ry="15" fill="url(#lentilSoup)"/>
+  <!-- Soup texture/lentils -->
+  <circle cx="45" cy="70" r="2" fill="#F57C00" opacity="0.7"/>
+  <circle cx="55" cy="68" r="1.5" fill="#F57C00" opacity="0.7"/>
+  <circle cx="70" cy="71" r="2" fill="#F57C00" opacity="0.7"/>
+  <circle cx="62" cy="74" r="1.5" fill="#F57C00" opacity="0.7"/>
+  <circle cx="50" cy="75" r="1.5" fill="#F57C00" opacity="0.7"/>
+  <circle cx="75" cy="68" r="1.5" fill="#F57C00" opacity="0.7"/>
+  <!-- Paprika oil drizzle -->
+  <ellipse cx="55" cy="65" rx="6" ry="3" fill="#D32F2F" opacity="0.4"/>
+  <ellipse cx="68" cy="67" rx="4" ry="2" fill="#D32F2F" opacity="0.4"/>
+  <!-- Paprika sprinkle -->
+  <circle cx="50" cy="66" r="1" fill="#B71C1C"/>
+  <circle cx="58" cy="64" r="0.8" fill="#B71C1C"/>
+  <circle cx="65" cy="66" r="1" fill="#B71C1C"/>
+  <circle cx="72" cy="65" r="0.8" fill="#B71C1C"/>
+  <!-- Mint/parsley garnish -->
+  <ellipse cx="60" cy="62" rx="3" ry="5" fill="#66BB6A" transform="rotate(0 60 62)"/>
+  <ellipse cx="56" cy="64" rx="2" ry="4" fill="#4CAF50" transform="rotate(-25 56 64)"/>
+  <ellipse cx="64" cy="64" rx="2" ry="4" fill="#4CAF50" transform="rotate(25 64 64)"/>
+  <!-- Lemon wedge on side -->
+  <path d="M95 78 L103 73 L103 83 Z" fill="#FFF176"/>
+  <path d="M97 78 L102 75 L102 81 Z" fill="#FFEB3B"/>
+  <!-- Bread on side (pide) -->
+  <path d="M12 82 Q10 75 18 72 L28 72 Q36 75 34 82 Q28 88 18 88 Q12 88 12 82" fill="#E8B86D"/>
+  <path d="M15 80 Q14 76 20 74 L26 74 Q32 76 31 80" stroke="#D4A056" stroke-width="1" fill="none"/>
+  <!-- Steam -->
+  <path d="M45 50 Q43 45 47 40" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M60 48 Q58 43 62 38" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M75 50 Q73 45 77 40" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

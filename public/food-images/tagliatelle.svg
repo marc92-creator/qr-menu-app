@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Tagliatelle -->
+  <defs>
+    <linearGradient id="tagBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="mushroomSauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A1887F"/>
+      <stop offset="100%" style="stop-color:#8D6E63"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#tagBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#tagBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Creamy mushroom sauce base -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="url(#mushroomSauce)"/>
+  <!-- Tagliatelle ribbons (wider than spaghetti) -->
+  <path d="M22 65 Q35 52 50 68 Q65 55 80 65 Q90 58 98 68" stroke="#FFF8E1" stroke-width="5" fill="none"/>
+  <path d="M20 70 Q38 55 55 72 Q72 58 88 70" stroke="#FFFDE7" stroke-width="5" fill="none"/>
+  <path d="M25 75 Q42 60 58 75 Q75 62 92 72" stroke="#FFE082" stroke-width="4" fill="none"/>
+  <path d="M28 68 Q45 55 60 70 Q78 58 95 68" stroke="#FFF8E1" stroke-width="4" fill="none"/>
+  <path d="M24 72 Q40 58 55 70 Q70 60 85 72" stroke="#FFFDE7" stroke-width="4" fill="none"/>
+  <!-- Mushroom slices -->
+  <path d="M40 58 Q45 52 50 58 L48 64 L42 64 Z" fill="#EFEBE9"/>
+  <ellipse cx="45" cy="58" rx="5" ry="3" fill="#D7CCC8"/>
+
+  <path d="M65 55 Q70 49 75 55 L73 61 L67 61 Z" fill="#EFEBE9"/>
+  <ellipse cx="70" cy="55" rx="5" ry="3" fill="#D7CCC8"/>
+
+  <path d="M52 68 Q56 63 60 68 L59 73 L53 73 Z" fill="#EFEBE9"/>
+  <ellipse cx="56" cy="68" rx="4" ry="2.5" fill="#D7CCC8"/>
+
+  <path d="M78 62 Q82 57 86 62 L85 67 L79 67 Z" fill="#EFEBE9"/>
+  <ellipse cx="82" cy="62" rx="4" ry="2.5" fill="#D7CCC8"/>
+  <!-- Cream swirls -->
+  <path d="M35 62 Q40 58 45 62" stroke="#FFF8E1" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M70 60 Q75 56 80 60" stroke="#FFF8E1" stroke-width="2" fill="none" opacity="0.7"/>
+  <!-- Parsley -->
+  <ellipse cx="60" cy="55" rx="3" ry="5" fill="#2E7D32" transform="rotate(-15 60 55)"/>
+  <ellipse cx="55" cy="58" rx="2" ry="4" fill="#388E3C" transform="rotate(20 55 58)"/>
+  <!-- Parmesan -->
+  <circle cx="48" cy="60" r="1.5" fill="#FFF8E1"/>
+  <circle cx="72" cy="58" r="1" fill="#FFF8E1"/>
+  <circle cx="62" cy="65" r="1.5" fill="#FFF8E1"/>
+  <!-- Steam -->
+  <path d="M50 42 Q48 37 52 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 40 Q63 35 67 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

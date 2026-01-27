@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Greek Salad -->
+  <defs>
+    <linearGradient id="greekBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="45" ry="10" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="78" rx="50" ry="22" fill="url(#greekBowl)"/>
+  <ellipse cx="60" cy="76" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Tomato wedges -->
+  <path d="M28 65 Q35 55 45 60 Q42 72 32 75 Z" fill="#E53935"/>
+  <path d="M30 67 L42 62" stroke="#C62828" stroke-width="1"/>
+  <path d="M70 58 Q80 50 90 58 Q85 70 75 72 Z" fill="#EF5350"/>
+  <path d="M73 60 L87 56" stroke="#E53935" stroke-width="1"/>
+  <path d="M48 78 Q55 72 62 78 Q58 85 50 85 Z" fill="#E53935"/>
+  <!-- Cucumber slices -->
+  <circle cx="42" cy="68" r="8" fill="#81C784"/>
+  <circle cx="42" cy="68" r="5" fill="#C8E6C9"/>
+  <circle cx="78" cy="72" r="7" fill="#81C784"/>
+  <circle cx="78" cy="72" r="4" fill="#C8E6C9"/>
+  <circle cx="58" cy="62" r="6" fill="#81C784"/>
+  <circle cx="58" cy="62" r="3.5" fill="#C8E6C9"/>
+  <!-- Red onion rings -->
+  <circle cx="35" cy="75" r="5" fill="none" stroke="#E1BEE7" stroke-width="3"/>
+  <circle cx="85" cy="65" r="4" fill="none" stroke="#CE93D8" stroke-width="2.5"/>
+  <circle cx="65" cy="78" r="4" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <!-- Kalamata olives -->
+  <ellipse cx="48" cy="58" rx="4" ry="5" fill="#4A148C"/>
+  <ellipse cx="72" cy="65" rx="4" ry="5" fill="#311B92"/>
+  <ellipse cx="38" cy="82" rx="3" ry="4" fill="#4A148C"/>
+  <ellipse cx="88" cy="75" rx="3" ry="4" fill="#311B92"/>
+  <!-- Bell pepper strips -->
+  <path d="M52 55 L58 50" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>
+  <path d="M80 60 L86 56" stroke="#F44336" stroke-width="3" stroke-linecap="round"/>
+  <!-- Feta cheese block on top -->
+  <rect x="50" y="48" width="20" height="14" rx="2" fill="#FAFAFA"/>
+  <rect x="52" y="50" width="16" height="10" rx="1" fill="#FFFFFF"/>
+  <path d="M54 52 L66 52 M54 56 L66 56" stroke="#E0E0E0" stroke-width="0.5"/>
+  <!-- Oregano sprinkle -->
+  <circle cx="55" cy="50" r="1" fill="#2E7D32"/>
+  <circle cx="60" cy="52" r="0.8" fill="#388E3C"/>
+  <circle cx="65" cy="50" r="1" fill="#2E7D32"/>
+  <circle cx="58" cy="55" r="0.8" fill="#388E3C"/>
+  <!-- Olive oil drizzle -->
+  <path d="M45 55 Q55 48 68 55" stroke="#FFEB3B" stroke-width="2" fill="none" opacity="0.6"/>
+</svg>

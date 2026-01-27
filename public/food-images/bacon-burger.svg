@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Bacon Burger -->
+  <defs>
+    <linearGradient id="baconBun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="baconPatty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="100%" style="stop-color:#3E2723"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="102" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bottom bun -->
+  <path d="M25 80 Q20 88 35 92 L85 92 Q100 88 95 80 Z" fill="url(#baconBun)"/>
+  <!-- Lettuce -->
+  <path d="M22 78 Q30 72 40 78 Q50 72 60 78 Q70 72 80 78 Q90 72 98 78 L96 82 Q85 75 75 82 Q65 75 55 82 Q45 75 35 82 Q25 75 24 82 Z" fill="#7CB342"/>
+  <!-- Tomato -->
+  <ellipse cx="60" cy="76" rx="28" ry="4" fill="#E53935"/>
+  <!-- Cheese -->
+  <path d="M25 70 L95 70 L98 74 Q90 78 86 72 L83 76 Q76 70 73 75 Q66 69 63 74 Q56 68 53 73 Q46 67 43 72 Q36 66 33 71 Q26 65 25 70 Z" fill="#FFC107"/>
+  <!-- Bacon strips -->
+  <path d="M28 66 Q35 62 42 66 Q49 62 56 66 Q63 62 70 66 Q77 62 84 66 Q91 62 95 66" stroke="#B71C1C" stroke-width="5" fill="none"/>
+  <path d="M28 66 Q35 62 42 66 Q49 62 56 66 Q63 62 70 66 Q77 62 84 66 Q91 62 95 66" stroke="#E91E63" stroke-width="2" fill="none"/>
+  <path d="M30 62 Q38 58 46 62 Q54 58 62 62 Q70 58 78 62 Q86 58 92 62" stroke="#B71C1C" stroke-width="4" fill="none"/>
+  <path d="M30 62 Q38 58 46 62 Q54 58 62 62 Q70 58 78 62 Q86 58 92 62" stroke="#F48FB1" stroke-width="1.5" fill="none"/>
+  <!-- Patty -->
+  <ellipse cx="60" cy="56" rx="38" ry="10" fill="url(#baconPatty)"/>
+  <ellipse cx="60" cy="54" rx="35" ry="8" fill="#6D4C41"/>
+  <!-- Grill marks -->
+  <path d="M35 54 L42 54 M48 52 L55 52 M60 54 L67 54 M72 52 L79 52 M84 54 L88 54" stroke="#4E342E" stroke-width="2" opacity="0.5"/>
+  <!-- Onion rings -->
+  <circle cx="48" cy="72" r="4" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <circle cx="72" cy="73" r="3" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <!-- Top bun -->
+  <path d="M25 54 Q18 32 40 20 Q60 10 80 20 Q102 32 95 54 Z" fill="url(#baconBun)"/>
+  <!-- Bun shine -->
+  <path d="M35 35 Q50 25 70 35" stroke="#FFE082" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="42" cy="30" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-12 42 30)"/>
+  <ellipse cx="58" cy="24" rx="3" ry="2" fill="#FFF8DC" transform="rotate(8 58 24)"/>
+  <ellipse cx="75" cy="28" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-5 75 28)"/>
+  <ellipse cx="50" cy="38" rx="2" ry="1.5" fill="#FFF8DC"/>
+  <ellipse cx="68" cy="34" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(15 68 34)"/>
+</svg>

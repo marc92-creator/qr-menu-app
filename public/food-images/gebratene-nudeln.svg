@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Gebratene Nudeln (Chow Mein) -->
+  <defs>
+    <linearGradient id="chowMeinPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="78" rx="50" ry="22" fill="url(#chowMeinPlate)"/>
+  <ellipse cx="60" cy="76" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Noodle pile -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="#D7CCC8"/>
+  <!-- Noodles (darker fried color) -->
+  <path d="M22 65 Q38 52 55 68 Q72 55 90 68" stroke="#A1887F" stroke-width="3" fill="none"/>
+  <path d="M25 70 Q42 55 60 72 Q78 58 95 72" stroke="#8D6E63" stroke-width="3" fill="none"/>
+  <path d="M28 68 Q45 53 62 68 Q80 55 92 68" stroke="#BCAAA4" stroke-width="2.5" fill="none"/>
+  <path d="M30 74 Q48 60 65 75 Q82 62 90 74" stroke="#A1887F" stroke-width="2.5" fill="none"/>
+  <path d="M35 72 Q50 58 65 72 Q80 60 88 72" stroke="#8D6E63" stroke-width="2" fill="none"/>
+  <!-- Soy sauce glaze -->
+  <ellipse cx="60" cy="65" rx="30" ry="10" fill="#5D4037" opacity="0.2"/>
+  <!-- Vegetables -->
+  <!-- Cabbage -->
+  <path d="M40 60 Q45 55 50 60 Q48 65 42 65 Z" fill="#C5E1A5"/>
+  <path d="M72 62 Q76 58 80 62 Q78 66 74 66 Z" fill="#AED581"/>
+  <!-- Bell pepper -->
+  <ellipse cx="55" cy="55" rx="4" ry="3" fill="#F44336"/>
+  <ellipse cx="75" cy="58" rx="3" ry="2.5" fill="#4CAF50"/>
+  <!-- Carrots -->
+  <path d="M48 62 L52 58" stroke="#FF7043" stroke-width="3" stroke-linecap="round"/>
+  <path d="M68 60 L72 56" stroke="#FF8A65" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Bean sprouts -->
+  <path d="M35 68 L38 64 M37 70 L41 66" stroke="#FFF8E1" stroke-width="2" stroke-linecap="round"/>
+  <path d="M82 68 L85 65" stroke="#FFFDE7" stroke-width="2" stroke-linecap="round"/>
+  <!-- Green onion -->
+  <circle cx="60" cy="58" r="2" fill="#66BB6A"/>
+  <circle cx="45" cy="65" r="1.5" fill="#4CAF50"/>
+  <circle cx="78" cy="70" r="2" fill="#66BB6A"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="52" cy="60" rx="1.5" ry="1" fill="#FFF8E1"/>
+  <ellipse cx="65" cy="62" rx="1.5" ry="1" fill="#FFF8E1"/>
+  <ellipse cx="58" cy="68" rx="1.5" ry="1" fill="#FFF8E1"/>
+  <!-- Steam -->
+  <path d="M50 42 Q48 37 52 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M68 40 Q66 35 70 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

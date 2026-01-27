@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Cheeseburger -->
+  <defs>
+    <linearGradient id="bunTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="patty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="100%" style="stop-color:#3E2723"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="102" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bottom bun -->
+  <path d="M25 80 Q20 88 35 92 L85 92 Q100 88 95 80 Z" fill="url(#bunTop)"/>
+  <!-- Lettuce -->
+  <path d="M22 78 Q30 72 40 78 Q50 72 60 78 Q70 72 80 78 Q90 72 98 78 L96 82 Q85 75 75 82 Q65 75 55 82 Q45 75 35 82 Q25 75 24 82 Z" fill="#7CB342"/>
+  <!-- Tomato slice -->
+  <ellipse cx="60" cy="76" rx="32" ry="5" fill="#E53935"/>
+  <ellipse cx="60" cy="76" rx="28" ry="3" fill="#EF5350"/>
+  <!-- Cheese (melted, hanging over) -->
+  <path d="M25 70 L95 70 L98 75 Q92 80 88 74 L85 78 Q78 72 75 78 Q68 72 65 77 Q58 71 55 76 Q48 70 45 75 Q38 69 35 74 Q28 68 25 73 L22 75 Z" fill="#FFC107"/>
+  <!-- Patty -->
+  <ellipse cx="60" cy="68" rx="38" ry="10" fill="url(#patty)"/>
+  <ellipse cx="60" cy="66" rx="35" ry="8" fill="#6D4C41"/>
+  <!-- Grill marks -->
+  <path d="M35 66 L42 66 M48 64 L55 64 M60 66 L67 66 M72 64 L79 64 M84 66 L88 66" stroke="#4E342E" stroke-width="2" opacity="0.5"/>
+  <!-- Top bun -->
+  <path d="M25 68 Q18 45 40 32 Q60 22 80 32 Q102 45 95 68 Z" fill="url(#bunTop)"/>
+  <!-- Bun shine -->
+  <path d="M35 45 Q50 35 70 45" stroke="#FFE082" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="40" cy="42" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-15 40 42)"/>
+  <ellipse cx="55" cy="35" rx="3" ry="2" fill="#FFF8DC" transform="rotate(10 55 35)"/>
+  <ellipse cx="70" cy="38" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-5 70 38)"/>
+  <ellipse cx="80" cy="45" rx="3" ry="2" fill="#FFF8DC" transform="rotate(20 80 45)"/>
+  <ellipse cx="48" cy="48" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(-20 48 48)"/>
+  <ellipse cx="65" cy="45" rx="2" ry="1.5" fill="#FFF8DC"/>
+</svg>

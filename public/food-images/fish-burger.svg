@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Fish Burger -->
+  <defs>
+    <linearGradient id="fishBun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="fishPatty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCC80"/>
+      <stop offset="100%" style="stop-color:#FFB74D"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="102" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bottom bun -->
+  <path d="M25 80 Q20 88 35 92 L85 92 Q100 88 95 80 Z" fill="url(#fishBun)"/>
+  <!-- Lettuce -->
+  <path d="M24 78 Q32 72 42 78 Q52 72 62 78 Q72 72 82 78 Q92 72 96 78 L95 82 Q85 75 75 82 Q65 75 55 82 Q45 75 35 82 Q25 75 25 82 Z" fill="#7CB342"/>
+  <!-- Tartar sauce -->
+  <path d="M30 76 Q40 72 50 76 Q60 72 70 76 Q80 72 90 76" stroke="#FAFAFA" stroke-width="4" fill="none"/>
+  <circle cx="38" cy="74" r="1.5" fill="#8BC34A"/>
+  <circle cx="52" cy="75" r="1" fill="#8BC34A"/>
+  <circle cx="68" cy="74" r="1.5" fill="#8BC34A"/>
+  <circle cx="82" cy="75" r="1" fill="#8BC34A"/>
+  <!-- Fish fillet (breaded) -->
+  <rect x="25" y="60" width="70" height="18" rx="4" fill="url(#fishPatty)"/>
+  <!-- Breading texture -->
+  <circle cx="35" cy="66" r="3" fill="#E65100" opacity="0.2"/>
+  <circle cx="48" cy="63" r="4" fill="#E65100" opacity="0.2"/>
+  <circle cx="62" cy="68" r="3" fill="#E65100" opacity="0.2"/>
+  <circle cx="75" cy="64" r="4" fill="#E65100" opacity="0.2"/>
+  <circle cx="88" cy="68" r="3" fill="#E65100" opacity="0.2"/>
+  <circle cx="42" cy="72" r="3" fill="#E65100" opacity="0.2"/>
+  <circle cx="58" cy="72" r="3" fill="#E65100" opacity="0.2"/>
+  <circle cx="72" cy="72" r="3" fill="#E65100" opacity="0.2"/>
+  <!-- Cheese -->
+  <path d="M27 60 L93 60 L95 63 Q88 66 84 62 L80 65 Q74 60 70 64 Q64 58 60 62 Q54 56 50 60 Q44 54 40 58 Q34 52 30 56 L27 58 Z" fill="#FFC107"/>
+  <!-- Top bun -->
+  <path d="M25 58 Q18 36 40 24 Q60 14 80 24 Q102 36 95 58 Z" fill="url(#fishBun)"/>
+  <!-- Bun shine -->
+  <path d="M35 40 Q50 30 70 40" stroke="#FFE082" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="42" cy="35" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-10 42 35)"/>
+  <ellipse cx="58" cy="28" rx="3" ry="2" fill="#FFF8DC" transform="rotate(15 58 28)"/>
+  <ellipse cx="75" cy="33" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-5 75 33)"/>
+  <ellipse cx="50" cy="42" rx="2" ry="1.5" fill="#FFF8DC"/>
+  <ellipse cx="68" cy="38" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(12 68 38)"/>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Gnocchi -->
+  <defs>
+    <linearGradient id="gnocchiBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="pestoSauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#558B2F"/>
+      <stop offset="100%" style="stop-color:#33691E"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#gnocchiBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#gnocchiBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Pesto sauce -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="url(#pestoSauce)"/>
+  <!-- Gnocchi dumplings -->
+  <ellipse cx="35" cy="60" rx="8" ry="6" fill="#FFF8E1"/>
+  <path d="M30 58 L32 62 M33 58 L35 62 M36 58 L38 62 M39 58 L41 62" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="52" cy="55" rx="9" ry="7" fill="#FFFDE7"/>
+  <path d="M46 53 L48 57 M49 53 L51 57 M52 53 L54 57 M55 53 L57 57 M58 53 L60 57" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="72" cy="58" rx="8" ry="6" fill="#FFF8E1"/>
+  <path d="M67 56 L69 60 M70 56 L72 60 M73 56 L75 60 M76 56 L78 60" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="88" cy="62" rx="7" ry="5" fill="#FFFDE7"/>
+  <path d="M84 60 L86 64 M87 60 L89 64 M90 60 L92 64" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="42" cy="70" rx="8" ry="6" fill="#FFF8E1"/>
+  <path d="M37 68 L39 72 M40 68 L42 72 M43 68 L45 72 M46 68 L48 72" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="60" cy="68" rx="9" ry="7" fill="#FFFDE7"/>
+  <path d="M54 66 L56 70 M57 66 L59 70 M60 66 L62 70 M63 66 L65 70 M66 66 L68 70" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="78" cy="72" rx="7" ry="5" fill="#FFF8E1"/>
+  <path d="M74 70 L76 74 M77 70 L79 74 M80 70 L82 74" stroke="#FFE082" stroke-width="1"/>
+
+  <ellipse cx="30" cy="68" rx="6" ry="5" fill="#FFFDE7"/>
+  <path d="M27 66 L29 70 M30 66 L32 70 M33 66 L35 70" stroke="#FFE082" stroke-width="1"/>
+  <!-- Pine nuts -->
+  <ellipse cx="45" cy="58" rx="2" ry="3" fill="#D7CCC8" transform="rotate(20 45 58)"/>
+  <ellipse cx="65" cy="62" rx="2" ry="3" fill="#D7CCC8" transform="rotate(-15 65 62)"/>
+  <ellipse cx="55" cy="72" rx="2" ry="3" fill="#D7CCC8" transform="rotate(30 55 72)"/>
+  <ellipse cx="82" cy="68" rx="2" ry="3" fill="#D7CCC8" transform="rotate(-25 82 68)"/>
+  <!-- Parmesan -->
+  <circle cx="50" cy="60" r="2" fill="#FFF8E1"/>
+  <circle cx="68" cy="55" r="1.5" fill="#FFF8E1"/>
+  <circle cx="38" cy="65" r="1.5" fill="#FFF8E1"/>
+  <!-- Fresh basil -->
+  <ellipse cx="58" cy="52" rx="4" ry="6" fill="#2E7D32" transform="rotate(-10 58 52)"/>
+  <ellipse cx="52" cy="54" rx="3" ry="5" fill="#388E3C" transform="rotate(-35 52 54)"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

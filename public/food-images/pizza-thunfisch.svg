@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pizza Thunfisch -->
+  <defs>
+    <linearGradient id="crustT" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="cheeseT" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFD54F"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000020"/>
+  <!-- Pizza base -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" fill="url(#crustT)"/>
+  <!-- Sauce -->
+  <ellipse cx="60" cy="63" rx="38" ry="28" fill="#E53935"/>
+  <!-- Cheese -->
+  <ellipse cx="60" cy="61" rx="36" ry="26" fill="url(#cheeseT)"/>
+  <!-- Tuna chunks -->
+  <ellipse cx="40" cy="58" rx="8" ry="5" fill="#8D6E63"/>
+  <path d="M35 56 L38 58 M42 56 L45 58 M38 60 L41 62" stroke="#6D4C41" stroke-width="1"/>
+
+  <ellipse cx="65" cy="55" rx="9" ry="6" fill="#8D6E63"/>
+  <path d="M60 53 L63 55 M67 53 L70 55 M63 57 L66 59" stroke="#6D4C41" stroke-width="1"/>
+
+  <ellipse cx="55" cy="70" rx="8" ry="5" fill="#8D6E63"/>
+  <path d="M50 68 L53 70 M57 68 L60 70 M53 72 L56 74" stroke="#6D4C41" stroke-width="1"/>
+
+  <ellipse cx="78" cy="65" rx="7" ry="5" fill="#8D6E63"/>
+  <path d="M74 63 L77 65 M80 63 L83 65" stroke="#6D4C41" stroke-width="1"/>
+
+  <ellipse cx="35" cy="72" rx="6" ry="4" fill="#8D6E63"/>
+  <path d="M32 70 L35 72 M37 70 L40 72" stroke="#6D4C41" stroke-width="1"/>
+  <!-- Onion rings -->
+  <circle cx="48" cy="55" r="5" fill="none" stroke="#E1BEE7" stroke-width="3"/>
+  <circle cx="72" cy="58" r="4" fill="none" stroke="#E1BEE7" stroke-width="2.5"/>
+  <circle cx="45" cy="75" r="4" fill="none" stroke="#E1BEE7" stroke-width="2.5"/>
+  <circle cx="68" cy="72" r="4" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <circle cx="82" cy="72" r="3" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <!-- Capers -->
+  <circle cx="42" cy="62" r="2" fill="#558B2F"/>
+  <circle cx="58" cy="58" r="2" fill="#558B2F"/>
+  <circle cx="70" cy="68" r="2" fill="#558B2F"/>
+  <circle cx="50" cy="68" r="1.5" fill="#558B2F"/>
+  <circle cx="75" cy="60" r="1.5" fill="#558B2F"/>
+  <circle cx="38" cy="68" r="1.5" fill="#558B2F"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pad Thai -->
+  <defs>
+    <linearGradient id="padThaiPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="78" rx="50" ry="22" fill="url(#padThaiPlate)"/>
+  <ellipse cx="60" cy="76" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Noodles base -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="#FFE082"/>
+  <!-- Rice noodles (flat) -->
+  <path d="M25 65 Q40 55 55 68 Q70 58 85 68" stroke="#FFF8E1" stroke-width="4" fill="none"/>
+  <path d="M28 70 Q45 58 60 72 Q75 60 92 72" stroke="#FFFDE7" stroke-width="4" fill="none"/>
+  <path d="M30 68 Q45 56 60 68 Q75 56 90 68" stroke="#FFCA28" stroke-width="3" fill="none"/>
+  <path d="M32 74 Q48 62 62 74 Q78 62 88 74" stroke="#FFF8E1" stroke-width="3" fill="none"/>
+  <!-- Tamarind sauce color -->
+  <ellipse cx="60" cy="65" rx="30" ry="10" fill="#E65100" opacity="0.3"/>
+  <!-- Shrimp -->
+  <path d="M72 55 Q78 50 82 55 Q80 60 76 62 Q72 60 72 55" fill="#FF8A65"/>
+  <path d="M74 56 Q78 53 80 56" stroke="#E64A19" stroke-width="1"/>
+  <path d="M45 58 Q50 54 54 58 Q52 62 48 64 Q44 62 45 58" fill="#FFAB91"/>
+  <path d="M47 59 Q50 56 52 59" stroke="#E64A19" stroke-width="1"/>
+  <!-- Egg bits -->
+  <ellipse cx="55" cy="62" rx="5" ry="3" fill="#FFEB3B"/>
+  <ellipse cx="68" cy="65" rx="4" ry="2.5" fill="#FFF176"/>
+  <ellipse cx="48" cy="68" rx="4" ry="2.5" fill="#FFEB3B"/>
+  <!-- Bean sprouts -->
+  <path d="M35 72 L38 68 M37 74 L41 70 M40 75 L44 72" stroke="#FFF8E1" stroke-width="2" stroke-linecap="round"/>
+  <path d="M78 70 L82 66 M80 73 L84 69" stroke="#FFF8E1" stroke-width="2" stroke-linecap="round"/>
+  <!-- Green onion -->
+  <path d="M42 60 L48 55" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>
+  <path d="M65 58 L70 54" stroke="#66BB6A" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Crushed peanuts -->
+  <circle cx="58" cy="58" r="2" fill="#D7CCC8"/>
+  <circle cx="62" cy="60" r="1.5" fill="#BCAAA4"/>
+  <circle cx="52" cy="62" r="1.5" fill="#D7CCC8"/>
+  <circle cx="70" cy="62" r="2" fill="#BCAAA4"/>
+  <!-- Lime wedge -->
+  <path d="M88 75 L96 70 L96 80 Z" fill="#C5E1A5"/>
+  <path d="M90 75 L95 72 L95 78 Z" fill="#AED581"/>
+  <!-- Chili flakes -->
+  <circle cx="55" cy="55" r="1" fill="#F44336"/>
+  <circle cx="65" cy="56" r="1" fill="#E53935"/>
+  <circle cx="60" cy="60" r="0.8" fill="#F44336"/>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pho -->
+  <defs>
+    <linearGradient id="phoBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="phoBroth" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D7CCC8"/>
+      <stop offset="100%" style="stop-color:#BCAAA4"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="85" rx="50" ry="20" fill="url(#phoBowl)"/>
+  <path d="M10 70 Q10 95 60 100 Q110 95 110 70" fill="url(#phoBowl)"/>
+  <ellipse cx="60" cy="70" rx="50" ry="20" fill="#FFFFFF"/>
+  <!-- Clear broth -->
+  <ellipse cx="60" cy="68" rx="46" ry="17" fill="url(#phoBroth)"/>
+  <!-- Rice noodles -->
+  <path d="M20 68 Q35 58 50 70 Q65 60 80 70 Q95 60 100 68" stroke="#FFFDE7" stroke-width="2.5" fill="none"/>
+  <path d="M25 72 Q40 62 55 74 Q70 64 85 74" stroke="#FFF8E1" stroke-width="2.5" fill="none"/>
+  <path d="M22 70 Q38 60 55 70 Q72 60 88 70" stroke="#FFFDE7" stroke-width="2" fill="none"/>
+  <!-- Beef slices -->
+  <ellipse cx="70" cy="58" rx="10" ry="6" fill="#8D6E63"/>
+  <ellipse cx="82" cy="62" rx="8" ry="5" fill="#A1887F"/>
+  <ellipse cx="75" cy="65" rx="9" ry="5" fill="#795548"/>
+  <!-- Bean sprouts -->
+  <path d="M35 65 L38 60 M36 67 L40 62 M38 68 L42 64" stroke="#FFF8E1" stroke-width="2" stroke-linecap="round"/>
+  <path d="M40 70 L44 66 M42 72 L46 68" stroke="#FFFDE7" stroke-width="2" stroke-linecap="round"/>
+  <!-- Thai basil -->
+  <ellipse cx="48" cy="52" rx="4" ry="6" fill="#2E7D32" transform="rotate(-20 48 52)"/>
+  <ellipse cx="54" cy="50" rx="3" ry="5" fill="#388E3C" transform="rotate(10 54 50)"/>
+  <ellipse cx="42" cy="55" rx="3" ry="5" fill="#2E7D32" transform="rotate(-35 42 55)"/>
+  <!-- Cilantro -->
+  <ellipse cx="28" cy="58" rx="3" ry="5" fill="#66BB6A" transform="rotate(-15 28 58)"/>
+  <ellipse cx="32" cy="55" rx="2.5" ry="4" fill="#4CAF50" transform="rotate(20 32 55)"/>
+  <!-- Green onion -->
+  <circle cx="60" cy="55" r="2" fill="#66BB6A"/>
+  <circle cx="65" cy="52" r="1.5" fill="#4CAF50"/>
+  <!-- Lime wedge on side -->
+  <path d="M90" y="70" L98" y="65" L98" y="75" Z" fill="#C5E1A5"/>
+  <path d="M92 70 L97 67 L97 73 Z" fill="#AED581"/>
+  <!-- Hoisin sauce dish -->
+  <ellipse cx="15" cy="82" rx="8" ry="4" fill="#3E2723"/>
+  <ellipse cx="15" cy="81" rx="6" ry="3" fill="#5D4037"/>
+  <!-- Chopsticks -->
+  <line x1="95" y1="40" x2="55" y2="85" stroke="#8D6E63" stroke-width="2"/>
+  <line x1="100" y1="42" x2="60" y2="87" stroke="#A1887F" stroke-width="2"/>
+  <!-- Steam -->
+  <path d="M45 38 Q43 33 47 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M60 35 Q58 30 62 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M75 38 Q73 33 77 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

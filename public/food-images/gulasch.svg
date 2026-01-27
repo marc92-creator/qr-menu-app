@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Gulasch -->
+  <defs>
+    <linearGradient id="gulaschBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="gulaschSauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C62828"/>
+      <stop offset="100%" style="stop-color:#8B0000"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#gulaschBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#gulaschBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Paprika-rich sauce -->
+  <ellipse cx="60" cy="68" rx="42" ry="16" fill="url(#gulaschSauce)"/>
+  <!-- Meat chunks -->
+  <ellipse cx="40" cy="62" rx="8" ry="6" fill="#6D4C41"/>
+  <ellipse cx="58" cy="58" rx="9" ry="7" fill="#5D4037"/>
+  <ellipse cx="78" cy="62" rx="8" ry="6" fill="#6D4C41"/>
+  <ellipse cx="48" cy="72" rx="7" ry="5" fill="#5D4037"/>
+  <ellipse cx="70" cy="70" rx="8" ry="6" fill="#6D4C41"/>
+  <ellipse cx="35" cy="70" rx="6" ry="5" fill="#5D4037"/>
+  <ellipse cx="85" cy="70" rx="6" ry="5" fill="#6D4C41"/>
+  <!-- Onion pieces -->
+  <path d="M45 65 Q48 62 51 65" stroke="#E1BEE7" stroke-width="2" fill="none"/>
+  <path d="M68 60 Q71 57 74 60" stroke="#E1BEE7" stroke-width="2" fill="none"/>
+  <!-- Bell pepper pieces -->
+  <ellipse cx="55" cy="68" rx="4" ry="2" fill="#4CAF50"/>
+  <ellipse cx="75" cy="65" rx="3" ry="2" fill="#F44336"/>
+  <!-- Sour cream dollop -->
+  <ellipse cx="60" cy="55" rx="10" ry="6" fill="#FAFAFA"/>
+  <ellipse cx="60" cy="54" rx="8" ry="4" fill="#FFFFFF"/>
+  <!-- Paprika sprinkle -->
+  <circle cx="55" cy="52" r="1" fill="#E65100"/>
+  <circle cx="62" cy="54" r="0.8" fill="#E65100"/>
+  <circle cx="58" cy="56" r="0.8" fill="#E65100"/>
+  <circle cx="65" cy="53" r="1" fill="#E65100"/>
+  <!-- Parsley -->
+  <ellipse cx="60" cy="50" rx="3" ry="5" fill="#2E7D32" transform="rotate(0 60 50)"/>
+  <ellipse cx="55" cy="52" rx="2.5" ry="4" fill="#388E3C" transform="rotate(-25 55 52)"/>
+  <!-- Steam -->
+  <path d="M48 40 Q46 35 50 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M62 38 Q60 33 64 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M75 40 Q73 35 77 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

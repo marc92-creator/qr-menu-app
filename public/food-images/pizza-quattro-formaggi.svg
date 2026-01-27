@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pizza Quattro Formaggi -->
+  <defs>
+    <linearGradient id="crustQ" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000020"/>
+  <!-- Pizza base -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" fill="url(#crustQ)"/>
+  <!-- Sauce (light, white base) -->
+  <ellipse cx="60" cy="63" rx="38" ry="28" fill="#FFF8E1"/>
+  <!-- Four cheese sections -->
+  <!-- Mozzarella (top left) -->
+  <path d="M60 63 L25 50 Q22 63 25 76 L60 63" fill="#FFFFFF"/>
+  <ellipse cx="38" cy="58" rx="6" ry="4" fill="#FFFDE7"/>
+  <ellipse cx="35" cy="68" rx="5" ry="3" fill="#FFFDE7"/>
+  <!-- Gorgonzola (top right) -->
+  <path d="M60 63 L95 50 Q98 63 95 76 L60 63" fill="#B3E5FC"/>
+  <circle cx="78" cy="58" r="3" fill="#81D4FA"/>
+  <circle cx="85" cy="65" r="2" fill="#81D4FA"/>
+  <circle cx="75" cy="68" r="2" fill="#81D4FA"/>
+  <!-- Parmesan (bottom left) -->
+  <path d="M60 63 L25 76 Q40 88 60 88 L60 63" fill="#FFE082"/>
+  <ellipse cx="42" cy="78" rx="4" ry="3" fill="#FFCA28"/>
+  <ellipse cx="52" cy="82" rx="3" ry="2" fill="#FFCA28"/>
+  <!-- Fontina (bottom right) -->
+  <path d="M60 63 L95 76 Q80 88 60 88 L60 63" fill="#FFECB3"/>
+  <ellipse cx="78" cy="78" rx="4" ry="3" fill="#FFD54F"/>
+  <ellipse cx="68" cy="82" rx="3" ry="2" fill="#FFD54F"/>
+  <!-- Melted cheese strings -->
+  <path d="M45 60 Q43 57 46 55" stroke="#FFFDE7" stroke-width="2" fill="none"/>
+  <path d="M75 62 Q78 59 80 63" stroke="#B3E5FC" stroke-width="2" fill="none"/>
+  <path d="M50 75 Q48 72 51 70" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <path d="M70 75 Q73 72 75 76" stroke="#FFECB3" stroke-width="2" fill="none"/>
+  <!-- Division lines (subtle) -->
+  <line x1="60" y1="45" x2="60" y2="85" stroke="#E0E0E0" stroke-width="1" opacity="0.5"/>
+  <line x1="25" y1="63" x2="95" y2="63" stroke="#E0E0E0" stroke-width="1" opacity="0.5"/>
+  <!-- Basil in center -->
+  <ellipse cx="60" cy="63" rx="4" ry="6" fill="#2E7D32" transform="rotate(0 60 63)"/>
+  <ellipse cx="56" cy="65" rx="3" ry="5" fill="#388E3C" transform="rotate(-30 56 65)"/>
+  <ellipse cx="64" cy="65" rx="3" ry="5" fill="#388E3C" transform="rotate(30 64 65)"/>
+  <!-- Steam -->
+  <path d="M50 38 Q48 33 52 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 36 Q63 31 67 26" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

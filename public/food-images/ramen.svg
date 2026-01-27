@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Ramen -->
+  <defs>
+    <linearGradient id="ramenBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E53935"/>
+      <stop offset="100%" style="stop-color:#C62828"/>
+    </linearGradient>
+    <linearGradient id="ramenBroth" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE082"/>
+      <stop offset="100%" style="stop-color:#FFCA28"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="85" rx="50" ry="20" fill="url(#ramenBowl)"/>
+  <path d="M10 70 Q10 95 60 100 Q110 95 110 70" fill="url(#ramenBowl)"/>
+  <ellipse cx="60" cy="70" rx="50" ry="20" fill="#FFFFFF"/>
+  <!-- Broth -->
+  <ellipse cx="60" cy="68" rx="46" ry="17" fill="url(#ramenBroth)"/>
+  <!-- Noodles -->
+  <path d="M25 65 Q35 55 45 68 Q55 58 65 68 Q75 58 85 68" stroke="#FFF8E1" stroke-width="3" fill="none"/>
+  <path d="M28 70 Q40 60 52 72 Q64 62 76 72 Q88 62 95 72" stroke="#FFFDE7" stroke-width="3" fill="none"/>
+  <path d="M22 68 Q32 58 42 68 Q52 58 62 68 Q72 58 82 68 Q92 58 98 68" stroke="#FFF8E1" stroke-width="2.5" fill="none"/>
+  <!-- Chashu pork -->
+  <ellipse cx="75" cy="58" rx="12" ry="8" fill="#A1887F"/>
+  <ellipse cx="75" cy="57" rx="10" ry="6" fill="#8D6E63"/>
+  <path d="M68 55 Q75 52 82 55" stroke="#6D4C41" stroke-width="1.5"/>
+  <path d="M70 58 Q75 55 80 58" stroke="#6D4C41" stroke-width="1"/>
+  <!-- Soft boiled egg -->
+  <ellipse cx="40" cy="55" rx="10" ry="8" fill="#FFFDE7"/>
+  <ellipse cx="40" cy="55" rx="6" ry="5" fill="#FFB300"/>
+  <ellipse cx="40" cy="54" rx="3" ry="2.5" fill="#FFC107"/>
+  <!-- Nori (seaweed) -->
+  <rect x="85" y="48" width="12" height="20" rx="1" fill="#1B5E20"/>
+  <path d="M87 52 L95 52 M87 56 L95 56 M87 60 L95 60 M87 64 L95 64" stroke="#2E7D32" stroke-width="1" opacity="0.5"/>
+  <!-- Green onions -->
+  <circle cx="52" cy="50" r="2" fill="#66BB6A"/>
+  <circle cx="58" cy="48" r="1.5" fill="#4CAF50"/>
+  <circle cx="48" cy="52" r="1.5" fill="#66BB6A"/>
+  <circle cx="62" cy="52" r="2" fill="#4CAF50"/>
+  <circle cx="55" cy="55" r="1.5" fill="#66BB6A"/>
+  <!-- Narutomaki -->
+  <circle cx="30" cy="60" r="6" fill="#FFFFFF"/>
+  <path d="M28 58 Q30 62 32 58 Q30 60 28 58" fill="#E91E63"/>
+  <!-- Chopsticks -->
+  <line x1="95" y1="35" x2="55" y2="85" stroke="#8D6E63" stroke-width="2.5"/>
+  <line x1="100" y1="38" x2="60" y2="88" stroke="#A1887F" stroke-width="2.5"/>
+  <!-- Steam -->
+  <path d="M40 35 Q38 30 42 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M55 32 Q53 27 57 22" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M70 35 Q68 30 72 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

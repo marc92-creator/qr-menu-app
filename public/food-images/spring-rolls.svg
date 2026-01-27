@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Spring Rolls -->
+  <defs>
+    <linearGradient id="springRollPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="springRoll" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCC80"/>
+      <stop offset="100%" style="stop-color:#FFB74D"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="75" rx="50" ry="22" fill="url(#springRollPlate)"/>
+  <ellipse cx="60" cy="73" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Spring roll 1 -->
+  <rect x="25" y="50" width="40" height="14" rx="7" fill="url(#springRoll)"/>
+  <path d="M30 52 L60 52 M30 60 L60 60" stroke="#E65100" stroke-width="1" opacity="0.3"/>
+  <ellipse cx="25" cy="57" rx="3" ry="7" fill="#E65100" opacity="0.5"/>
+  <!-- Crispy texture -->
+  <circle cx="35" cy="55" r="2" fill="#E65100" opacity="0.2"/>
+  <circle cx="48" cy="58" r="2" fill="#E65100" opacity="0.2"/>
+  <circle cx="58" cy="54" r="2" fill="#E65100" opacity="0.2"/>
+  <!-- Spring roll 2 -->
+  <rect x="55" y="55" width="40" height="14" rx="7" fill="url(#springRoll)"/>
+  <path d="M60 57 L90 57 M60 65 L90 65" stroke="#E65100" stroke-width="1" opacity="0.3"/>
+  <ellipse cx="95" cy="62" rx="3" ry="7" fill="#E65100" opacity="0.5"/>
+  <circle cx="68" cy="60" r="2" fill="#E65100" opacity="0.2"/>
+  <circle cx="82" cy="63" r="2" fill="#E65100" opacity="0.2"/>
+  <!-- Spring roll 3 (front, cut) -->
+  <rect x="35" y="72" width="35" height="13" rx="6.5" fill="url(#springRoll)"/>
+  <ellipse cx="35" cy="78.5" rx="3" ry="6.5" fill="#E65100" opacity="0.5"/>
+  <!-- Visible filling at cut end -->
+  <ellipse cx="70" cy="78.5" rx="4" ry="6" fill="#FFF8E1"/>
+  <path d="M68 76 L72 76" stroke="#4CAF50" stroke-width="2"/>
+  <path d="M67 79 L73 79" stroke="#FFAB91" stroke-width="1.5"/>
+  <circle cx="69" cy="82" r="1.5" fill="#8D6E63"/>
+  <!-- Spring roll 4 -->
+  <rect x="60" y="78" width="32" height="12" rx="6" fill="url(#springRoll)"/>
+  <ellipse cx="92" cy="84" rx="2.5" ry="6" fill="#E65100" opacity="0.5"/>
+  <!-- Dipping sauce -->
+  <ellipse cx="20" cy="85" rx="12" ry="6" fill="#5D4037"/>
+  <ellipse cx="20" cy="84" rx="10" ry="5" fill="#E65100"/>
+  <ellipse cx="20" cy="83" rx="6" ry="3" fill="#FF8F00" opacity="0.5"/>
+  <!-- Garnish - lettuce leaf -->
+  <path d="M85 70 Q92 65 100 72 Q95 80 88 78 Q82 75 85 70" fill="#66BB6A"/>
+  <!-- Mint leaves -->
+  <ellipse cx="95" cy="75" rx="3" ry="5" fill="#2E7D32" transform="rotate(20 95 75)"/>
+  <ellipse cx="90" cy="78" rx="2.5" ry="4" fill="#388E3C" transform="rotate(-15 90 78)"/>
+</svg>

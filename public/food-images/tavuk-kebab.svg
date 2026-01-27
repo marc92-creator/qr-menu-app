@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Tavuk Kebab (Chicken Kebab) -->
+  <defs>
+    <linearGradient id="chickenMeat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB74D"/>
+      <stop offset="100%" style="stop-color:#FB8C00"/>
+    </linearGradient>
+    <linearGradient id="chickenPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="78" rx="50" ry="25" fill="url(#chickenPlate)"/>
+  <ellipse cx="60" cy="76" rx="45" ry="22" fill="#FFFFFF"/>
+  <!-- Rice bed -->
+  <ellipse cx="75" cy="75" rx="20" ry="12" fill="#FFF8E1"/>
+  <ellipse cx="75" cy="73" rx="18" ry="10" fill="#FFFDE7"/>
+  <!-- Rice grain details -->
+  <ellipse cx="70" cy="71" rx="2" ry="1" fill="#FFF9C4"/>
+  <ellipse cx="78" cy="73" rx="2" ry="1" fill="#FFF9C4"/>
+  <ellipse cx="74" cy="75" rx="2" ry="1" fill="#FFF9C4"/>
+  <!-- Chicken pieces on skewer -->
+  <ellipse cx="30" cy="58" rx="10" ry="8" fill="url(#chickenMeat)"/>
+  <ellipse cx="48" cy="55" rx="11" ry="9" fill="url(#chickenMeat)"/>
+  <ellipse cx="68" cy="58" rx="10" ry="8" fill="url(#chickenMeat)"/>
+  <ellipse cx="86" cy="56" rx="9" ry="7" fill="url(#chickenMeat)"/>
+  <!-- Grill marks -->
+  <path d="M24 56 L36 56 M26 60 L34 60" stroke="#E65100" stroke-width="2" opacity="0.4"/>
+  <path d="M42 53 L54 53 M44 57 L52 57" stroke="#E65100" stroke-width="2" opacity="0.4"/>
+  <path d="M62 56 L74 56 M64 60 L72 60" stroke="#E65100" stroke-width="2" opacity="0.4"/>
+  <path d="M80 54 L92 54 M82 58 L90 58" stroke="#E65100" stroke-width="2" opacity="0.4"/>
+  <!-- Skewer -->
+  <line x1="15" y1="57" x2="100" y2="57" stroke="#8D6E63" stroke-width="3"/>
+  <circle cx="100" cy="57" r="4" fill="#6D4C41"/>
+  <!-- Pepper between pieces -->
+  <rect x="38" y="54" width="5" height="8" rx="2" fill="#4CAF50"/>
+  <rect x="58" y="55" width="5" height="7" rx="2" fill="#F44336"/>
+  <rect x="78" y="54" width="4" height="6" rx="2" fill="#4CAF50"/>
+  <!-- Grilled tomato -->
+  <circle cx="25" cy="82" r="6" fill="#E53935"/>
+  <path d="M22 80 L28 80 M21 84 L29 84" stroke="#C62828" stroke-width="1.5"/>
+  <!-- Onion -->
+  <path d="M40 82 Q45 78 50 82 Q45 86 40 82" fill="#E1BEE7" stroke="#CE93D8" stroke-width="1"/>
+  <!-- Lemon -->
+  <path d="M88 80 L96 75 L96 85 Z" fill="#FFF176"/>
+  <path d="M90 80 L95 77 L95 83 Z" fill="#FFEB3B"/>
+  <!-- Parsley -->
+  <ellipse cx="55" cy="78" rx="3" ry="5" fill="#66BB6A" transform="rotate(-20 55 78)"/>
+  <!-- Steam -->
+  <path d="M40 42 Q38 37 42 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M65 40 Q63 35 67 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pizza Hawaii -->
+  <defs>
+    <linearGradient id="crustH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="cheeseH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFD54F"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000020"/>
+  <!-- Pizza base -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" fill="url(#crustH)"/>
+  <!-- Sauce -->
+  <ellipse cx="60" cy="63" rx="38" ry="28" fill="#E53935"/>
+  <!-- Cheese -->
+  <ellipse cx="60" cy="61" rx="36" ry="26" fill="url(#cheeseH)"/>
+  <!-- Ham pieces -->
+  <path d="M35 55 Q40 52 45 55 Q48 60 45 65 Q40 68 35 65 Q32 60 35 55" fill="#F8BBD9"/>
+  <path d="M37 57 Q40 55 43 57 Q45 60 43 63 Q40 65 37 63 Q35 60 37 57" fill="#F48FB1"/>
+
+  <path d="M60 50 Q65 47 70 50 Q73 55 70 60 Q65 63 60 60 Q57 55 60 50" fill="#F8BBD9"/>
+  <path d="M62 52 Q65 50 68 52 Q70 55 68 58 Q65 60 62 58 Q60 55 62 52" fill="#F48FB1"/>
+
+  <path d="M75 62 Q80 59 85 62 Q87 67 84 72 Q79 74 75 71 Q73 66 75 62" fill="#F8BBD9"/>
+  <path d="M77 64 Q80 62 83 64 Q85 67 82 70 Q79 72 77 69 Q75 66 77 64" fill="#F48FB1"/>
+
+  <path d="M45 70 Q50 67 55 70 Q57 75 54 78 Q49 80 45 77 Q43 72 45 70" fill="#F8BBD9"/>
+  <path d="M47 72 Q50 70 53 72 Q55 75 52 77 Q49 79 47 76 Q45 73 47 72" fill="#F48FB1"/>
+  <!-- Pineapple pieces -->
+  <ellipse cx="42" cy="58" rx="5" ry="4" fill="#FFD54F"/>
+  <path d="M40 56 L44 56 M40 60 L44 60" stroke="#FFC107" stroke-width="1"/>
+
+  <ellipse cx="55" cy="55" rx="4" ry="3" fill="#FFD54F"/>
+  <path d="M53 54 L57 54 M53 57 L57 57" stroke="#FFC107" stroke-width="1"/>
+
+  <ellipse cx="72" cy="55" rx="5" ry="4" fill="#FFD54F"/>
+  <path d="M70 53 L74 53 M70 57 L74 57" stroke="#FFC107" stroke-width="1"/>
+
+  <ellipse cx="65" cy="68" rx="5" ry="4" fill="#FFD54F"/>
+  <path d="M63 66 L67 66 M63 70 L67 70" stroke="#FFC107" stroke-width="1"/>
+
+  <ellipse cx="38" cy="72" rx="4" ry="3" fill="#FFD54F"/>
+  <path d="M36 71 L40 71 M36 74 L40 74" stroke="#FFC107" stroke-width="1"/>
+
+  <ellipse cx="80" cy="70" rx="4" ry="3" fill="#FFD54F"/>
+  <path d="M78 69 L82 69 M78 72 L82 72" stroke="#FFC107" stroke-width="1"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

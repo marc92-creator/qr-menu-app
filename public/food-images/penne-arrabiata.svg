@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Penne Arrabiata -->
+  <defs>
+    <linearGradient id="arrabiataSauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E53935"/>
+      <stop offset="100%" style="stop-color:#C62828"/>
+    </linearGradient>
+    <linearGradient id="penneBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#penneBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#penneBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Tomato sauce base -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="url(#arrabiataSauce)"/>
+  <!-- Penne pasta tubes -->
+  <path d="M35 60 L45 55 L47 58 L37 63 Z" fill="#FFF8E1"/>
+  <path d="M36 61 L44 57" stroke="#FFE082" stroke-width="0.5"/>
+
+  <path d="M50 55 L62 50 L64 53 L52 58 Z" fill="#FFFDE7"/>
+  <path d="M51 56 L61 52" stroke="#FFE082" stroke-width="0.5"/>
+
+  <path d="M68 52 L80 48 L82 51 L70 55 Z" fill="#FFF8E1"/>
+  <path d="M69 53 L79 50" stroke="#FFE082" stroke-width="0.5"/>
+
+  <path d="M42 68 L54 63 L56 66 L44 71 Z" fill="#FFFDE7"/>
+  <path d="M43 69 L53 65" stroke="#FFE082" stroke-width="0.5"/>
+
+  <path d="M58 65 L70 60 L72 63 L60 68 Z" fill="#FFF8E1"/>
+  <path d="M59 66 L69 62" stroke="#FFE082" stroke-width="0.5"/>
+
+  <path d="M75 58 L85 54 L87 57 L77 61 Z" fill="#FFFDE7"/>
+  <path d="M76 59 L84 56" stroke="#FFE082" stroke-width="0.5"/>
+
+  <path d="M28 65 L38 62 L40 65 L30 68 Z" fill="#FFF8E1"/>
+  <path d="M55 72 L65 68 L67 71 L57 75 Z" fill="#FFFDE7"/>
+  <path d="M78 65 L88 62 L90 65 L80 68 Z" fill="#FFF8E1"/>
+  <!-- Chili peppers -->
+  <path d="M48 58 Q51 54 54 58 L53 62 L49 62 Z" fill="#D32F2F"/>
+  <line x1="51" y1="54" x2="51" y2="51" stroke="#4CAF50" stroke-width="1.5"/>
+
+  <path d="M72 55 Q74 52 76 55 L75 58 L73 58 Z" fill="#F44336"/>
+  <line x1="74" y1="52" x2="74" y2="49" stroke="#4CAF50" stroke-width="1"/>
+  <!-- Chili flakes -->
+  <circle cx="45" cy="60" r="1" fill="#FF5722"/>
+  <circle cx="62" cy="56" r="1" fill="#FF5722"/>
+  <circle cx="55" cy="68" r="1" fill="#FF5722"/>
+  <circle cx="78" cy="60" r="1" fill="#FF5722"/>
+  <circle cx="38" cy="66" r="1" fill="#FF5722"/>
+  <!-- Parsley -->
+  <ellipse cx="60" cy="58" rx="4" ry="6" fill="#2E7D32" transform="rotate(-15 60 58)"/>
+  <ellipse cx="55" cy="62" rx="3" ry="5" fill="#388E3C" transform="rotate(20 55 62)"/>
+  <!-- Parmesan -->
+  <circle cx="50" cy="55" r="1.5" fill="#FFF8E1"/>
+  <circle cx="68" cy="60" r="1" fill="#FFF8E1"/>
+  <!-- Steam -->
+  <path d="M48 40 Q45 35 50 28 Q47 23 52 18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M68 38 Q65 33 70 26 Q67 21 72 16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

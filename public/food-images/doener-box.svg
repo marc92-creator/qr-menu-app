@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Döner Box mit Pommes -->
+  <defs>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5F5"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="meatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513"/>
+      <stop offset="100%" style="stop-color:#654321"/>
+    </linearGradient>
+    <linearGradient id="friesGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD54F"/>
+      <stop offset="100%" style="stop-color:#FFA726"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="40" ry="8" fill="#00000015"/>
+  <!-- Box base -->
+  <path d="M20 50 L25 95 L95 95 L100 50 Z" fill="url(#boxGrad)" stroke="#BDBDBD" stroke-width="1"/>
+  <!-- Box rim -->
+  <path d="M18 48 L20 50 L100 50 L102 48 L100 45 L20 45 Z" fill="#E8E8E8" stroke="#BDBDBD" stroke-width="1"/>
+  <!-- Döner meat left side -->
+  <path d="M30 55 Q35 50 45 55 L48 75 Q40 80 28 75 Z" fill="url(#meatGrad)"/>
+  <path d="M32 58 Q38 54 46 58 L48 72 Q42 76 30 72 Z" fill="#A0522D"/>
+  <!-- Lettuce -->
+  <path d="M26 72 Q35 65 50 72 Q55 68 60 72" stroke="#7CB342" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Pommes right side -->
+  <rect x="58" y="52" width="6" height="35" rx="2" fill="url(#friesGrad)" transform="rotate(-5 61 70)"/>
+  <rect x="66" y="50" width="6" height="38" rx="2" fill="url(#friesGrad)" transform="rotate(3 69 69)"/>
+  <rect x="74" y="53" width="6" height="34" rx="2" fill="url(#friesGrad)" transform="rotate(-8 77 70)"/>
+  <rect x="82" y="55" width="5" height="32" rx="2" fill="url(#friesGrad)" transform="rotate(5 84 71)"/>
+  <rect x="62" y="58" width="5" height="30" rx="2" fill="#FFCA28" transform="rotate(-12 64 73)"/>
+  <rect x="70" y="56" width="5" height="32" rx="2" fill="#FFCA28"/>
+  <rect x="78" y="60" width="5" height="28" rx="2" fill="#FFCA28" transform="rotate(10 80 74)"/>
+  <!-- Tomato slices -->
+  <circle cx="38" cy="68" r="5" fill="#E53935"/>
+  <circle cx="48" cy="65" r="4" fill="#EF5350"/>
+  <!-- Sauce drizzle -->
+  <path d="M35 60 Q40 58 45 61" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Steam -->
+  <path d="M45 42 Q43 37 47 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M70 40 Q68 35 72 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

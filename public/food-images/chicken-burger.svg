@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Chicken Burger -->
+  <defs>
+    <linearGradient id="chickenBun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="chickenPatty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB74D"/>
+      <stop offset="100%" style="stop-color:#F57C00"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="102" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bottom bun -->
+  <path d="M25 80 Q20 88 35 92 L85 92 Q100 88 95 80 Z" fill="url(#chickenBun)"/>
+  <!-- Lettuce -->
+  <path d="M22 78 Q30 72 40 78 Q50 72 60 78 Q70 72 80 78 Q90 72 98 78 L96 82 Q85 75 75 82 Q65 75 55 82 Q45 75 35 82 Q25 75 24 82 Z" fill="#7CB342"/>
+  <!-- Tomato -->
+  <ellipse cx="55" cy="76" rx="12" ry="4" fill="#E53935"/>
+  <ellipse cx="72" cy="77" rx="10" ry="3" fill="#EF5350"/>
+  <!-- Mayo drizzle -->
+  <path d="M30 72 Q40 68 50 72 Q60 68 70 72 Q80 68 90 72" stroke="#FAFAFA" stroke-width="3" fill="none"/>
+  <!-- Crispy chicken patty -->
+  <ellipse cx="60" cy="65" rx="38" ry="12" fill="url(#chickenPatty)"/>
+  <!-- Crispy texture -->
+  <circle cx="40" cy="63" r="3" fill="#E65100" opacity="0.3"/>
+  <circle cx="52" cy="60" r="4" fill="#E65100" opacity="0.3"/>
+  <circle cx="65" cy="64" r="3" fill="#E65100" opacity="0.3"/>
+  <circle cx="78" cy="62" r="4" fill="#E65100" opacity="0.3"/>
+  <circle cx="45" cy="68" r="3" fill="#E65100" opacity="0.3"/>
+  <circle cx="60" cy="68" r="3" fill="#E65100" opacity="0.3"/>
+  <circle cx="75" cy="67" r="3" fill="#E65100" opacity="0.3"/>
+  <!-- Pickles -->
+  <ellipse cx="42" cy="75" rx="6" ry="3" fill="#8BC34A"/>
+  <ellipse cx="78" cy="74" rx="5" ry="2.5" fill="#7CB342"/>
+  <!-- Top bun -->
+  <path d="M25 62 Q18 40 40 28 Q60 18 80 28 Q102 40 95 62 Z" fill="url(#chickenBun)"/>
+  <!-- Bun shine -->
+  <path d="M35 42 Q50 32 70 42" stroke="#FFE082" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="42" cy="38" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-10 42 38)"/>
+  <ellipse cx="58" cy="32" rx="3" ry="2" fill="#FFF8DC" transform="rotate(15 58 32)"/>
+  <ellipse cx="75" cy="36" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-5 75 36)"/>
+  <ellipse cx="50" cy="45" rx="2" ry="1.5" fill="#FFF8DC"/>
+  <ellipse cx="68" cy="42" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(10 68 42)"/>
+</svg>

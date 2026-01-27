@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Spaghetti Bolognese -->
+  <defs>
+    <linearGradient id="bolognese" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C62828"/>
+      <stop offset="100%" style="stop-color:#8B0000"/>
+    </linearGradient>
+    <linearGradient id="pastaBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#pastaBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#pastaBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Spaghetti pile -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="#FFF8E1"/>
+  <!-- Individual spaghetti strands -->
+  <path d="M25 65 Q40 55 55 70 Q70 60 85 68" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <path d="M28 70 Q45 58 60 72 Q75 62 92 70" stroke="#FFD54F" stroke-width="2" fill="none"/>
+  <path d="M22 68 Q38 60 50 68 Q65 58 78 65 Q88 60 95 68" stroke="#FFCA28" stroke-width="2" fill="none"/>
+  <path d="M30 72 Q42 65 55 75 Q68 65 82 72" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <path d="M35 68 Q48 60 60 70 Q72 62 85 70" stroke="#FFD54F" stroke-width="2" fill="none"/>
+  <!-- Bolognese sauce on top -->
+  <ellipse cx="60" cy="62" rx="25" ry="12" fill="url(#bolognese)"/>
+  <!-- Meat texture in sauce -->
+  <circle cx="52" cy="60" r="3" fill="#8B4513"/>
+  <circle cx="60" cy="58" r="2.5" fill="#6D4C41"/>
+  <circle cx="68" cy="61" r="3" fill="#8B4513"/>
+  <circle cx="55" cy="65" r="2" fill="#6D4C41"/>
+  <circle cx="65" cy="64" r="2.5" fill="#8B4513"/>
+  <!-- Parmesan -->
+  <circle cx="58" cy="55" r="1.5" fill="#FFF8E1"/>
+  <circle cx="64" cy="57" r="1" fill="#FFF8E1"/>
+  <circle cx="55" cy="58" r="1" fill="#FFF8E1"/>
+  <circle cx="62" cy="60" r="1" fill="#FFF8E1"/>
+  <!-- Basil -->
+  <ellipse cx="60" cy="52" rx="4" ry="6" fill="#2E7D32" transform="rotate(-10 60 52)"/>
+  <ellipse cx="55" cy="54" rx="3" ry="5" fill="#388E3C" transform="rotate(-30 55 54)"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M58 42 Q56 37 60 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

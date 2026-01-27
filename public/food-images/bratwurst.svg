@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Bratwurst -->
+  <defs>
+    <linearGradient id="bratwurstPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="bratwurst" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4A056"/>
+      <stop offset="100%" style="stop-color:#A67C3D"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="75" rx="50" ry="22" fill="url(#bratwurstPlate)"/>
+  <ellipse cx="60" cy="73" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Sauerkraut -->
+  <ellipse cx="75" cy="72" rx="22" ry="14" fill="#FFF9C4"/>
+  <path d="M58 68 Q65 62 72 68 Q78 62 85 68 Q92 62 95 68" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <path d="M60 72 Q68 66 75 72 Q82 66 90 72" stroke="#FFCA28" stroke-width="2" fill="none"/>
+  <path d="M62 76 Q70 70 78 76 Q85 70 92 76" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <!-- Bratwurst 1 -->
+  <ellipse cx="40" cy="60" rx="32" ry="8" fill="url(#bratwurst)" transform="rotate(-15 40 60)"/>
+  <!-- Grill marks -->
+  <path d="M18 58 L22 62 M28 54 L32 58 M38 52 L42 56 M48 54 L52 58 M58 58 L62 62" stroke="#8B4513" stroke-width="2" opacity="0.4"/>
+  <!-- Bratwurst 2 -->
+  <ellipse cx="50" cy="75" rx="30" ry="7" fill="url(#bratwurst)" transform="rotate(10 50 75)"/>
+  <!-- Grill marks -->
+  <path d="M25 78 L29 82 M35 76 L39 80 M45 74 L49 78 M55 76 L59 80 M65 78 L69 82" stroke="#8B4513" stroke-width="2" opacity="0.4"/>
+  <!-- Mustard -->
+  <path d="M30 55 Q40 50 50 55 Q45 52 35 57" fill="#FFEB3B"/>
+  <path d="M35 72 Q45 68 55 72" stroke="#FFCA28" stroke-width="3" fill="none"/>
+  <!-- Bun/Bread -->
+  <path d="M88 82 Q92 75 100 72 L108 75 Q112 82 108 88 Q100 92 92 88 Q86 85 88 82" fill="#E8B86D"/>
+  <path d="M90 82 Q94 77 100 75 L105 77 Q108 82 105 86" stroke="#D4A056" stroke-width="1" fill="none"/>
+  <!-- Parsley -->
+  <ellipse cx="95" cy="68" rx="3" ry="5" fill="#2E7D32" transform="rotate(-15 95 68)"/>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pizza Vegetarisch -->
+  <defs>
+    <linearGradient id="crustV" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="cheeseV" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFD54F"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000020"/>
+  <!-- Pizza base -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" fill="url(#crustV)"/>
+  <!-- Sauce -->
+  <ellipse cx="60" cy="63" rx="38" ry="28" fill="#E53935"/>
+  <!-- Cheese -->
+  <ellipse cx="60" cy="61" rx="36" ry="26" fill="url(#cheeseV)"/>
+  <!-- Bell pepper rings (green) -->
+  <circle cx="40" cy="55" r="6" fill="none" stroke="#4CAF50" stroke-width="4"/>
+  <circle cx="75" cy="58" r="5" fill="none" stroke="#4CAF50" stroke-width="3"/>
+  <!-- Bell pepper rings (red) -->
+  <circle cx="55" cy="72" r="5" fill="none" stroke="#F44336" stroke-width="3"/>
+  <circle cx="82" cy="72" r="4" fill="none" stroke="#F44336" stroke-width="3"/>
+  <!-- Bell pepper rings (yellow) -->
+  <circle cx="65" cy="52" r="5" fill="none" stroke="#FFEB3B" stroke-width="3"/>
+  <circle cx="35" cy="70" r="4" fill="none" stroke="#FFEB3B" stroke-width="3"/>
+  <!-- Mushroom slices -->
+  <path d="M48 58 Q52 52 56 58 L54 62 L50 62 Z" fill="#E0E0E0"/>
+  <ellipse cx="52" cy="58" rx="4" ry="2" fill="#BDBDBD"/>
+
+  <path d="M70 65 Q74 59 78 65 L76 69 L72 69 Z" fill="#E0E0E0"/>
+  <ellipse cx="74" cy="65" rx="4" ry="2" fill="#BDBDBD"/>
+
+  <path d="M42 75 Q45 70 48 75 L47 78 L43 78 Z" fill="#E0E0E0"/>
+  <ellipse cx="45" cy="75" rx="3" ry="1.5" fill="#BDBDBD"/>
+  <!-- Olives -->
+  <ellipse cx="60" cy="60" rx="4" ry="5" fill="#1B5E20"/>
+  <ellipse cx="60" cy="60" rx="1.5" ry="2" fill="#B71C1C"/>
+
+  <ellipse cx="45" cy="65" rx="3" ry="4" fill="#1B5E20"/>
+  <ellipse cx="45" cy="65" rx="1" ry="1.5" fill="#B71C1C"/>
+
+  <ellipse cx="72" cy="78" rx="3" ry="4" fill="#1B5E20"/>
+  <ellipse cx="72" cy="78" rx="1" ry="1.5" fill="#B71C1C"/>
+  <!-- Tomato slices -->
+  <circle cx="50" cy="50" r="4" fill="#E53935"/>
+  <circle cx="80" cy="65" r="3" fill="#EF5350"/>
+  <!-- Onion rings -->
+  <circle cx="62" cy="75" r="4" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <circle cx="38" cy="62" r="3" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <!-- Basil -->
+  <ellipse cx="58" cy="55" rx="3" ry="5" fill="#2E7D32" transform="rotate(-15 58 55)"/>
+  <ellipse cx="68" cy="70" rx="3" ry="5" fill="#388E3C" transform="rotate(20 68 70)"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

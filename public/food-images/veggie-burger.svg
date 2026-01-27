@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Veggie Burger -->
+  <defs>
+    <linearGradient id="veggieBun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4A056"/>
+      <stop offset="100%" style="stop-color:#A67C3D"/>
+    </linearGradient>
+    <linearGradient id="veggiePatty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6D4C41"/>
+      <stop offset="100%" style="stop-color:#4E342E"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="102" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bottom bun (whole wheat) -->
+  <path d="M25 80 Q20 88 35 92 L85 92 Q100 88 95 80 Z" fill="url(#veggieBun)"/>
+  <!-- Grain specks -->
+  <circle cx="40" cy="85" r="1" fill="#8D6E63"/>
+  <circle cx="55" cy="87" r="1" fill="#8D6E63"/>
+  <circle cx="70" cy="84" r="1" fill="#8D6E63"/>
+  <circle cx="82" cy="86" r="1" fill="#8D6E63"/>
+  <!-- Lots of lettuce -->
+  <path d="M20 76 Q28 68 38 76 Q48 68 58 76 Q68 68 78 76 Q88 68 100 76 L98 82 Q88 73 78 82 Q68 73 58 82 Q48 73 38 82 Q28 73 22 82 Z" fill="#66BB6A"/>
+  <path d="M22 78 Q32 72 42 78 Q52 72 62 78 Q72 72 82 78 Q92 72 98 78" stroke="#4CAF50" stroke-width="2" fill="none"/>
+  <!-- Tomato slices -->
+  <circle cx="45" cy="74" r="8" fill="#E53935"/>
+  <circle cx="45" cy="74" r="5" fill="#EF5350"/>
+  <circle cx="75" cy="75" r="7" fill="#E53935"/>
+  <circle cx="75" cy="75" r="4" fill="#EF5350"/>
+  <!-- Veggie patty -->
+  <ellipse cx="60" cy="66" rx="36" ry="10" fill="url(#veggiePatty)"/>
+  <!-- Visible veggie bits in patty -->
+  <circle cx="42" cy="65" r="2" fill="#FF8A65"/>
+  <circle cx="55" cy="63" r="2" fill="#81C784"/>
+  <circle cx="68" cy="66" r="2" fill="#FFCC80"/>
+  <circle cx="78" cy="64" r="2" fill="#A5D6A7"/>
+  <circle cx="48" cy="68" r="1.5" fill="#FFE082"/>
+  <circle cx="72" cy="68" r="1.5" fill="#81C784"/>
+  <!-- Avocado slices -->
+  <path d="M35 70 Q40 65 45 70 Q42 72 35 70" fill="#8BC34A"/>
+  <path d="M75 69 Q80 64 85 69 Q82 71 75 69" fill="#7CB342"/>
+  <!-- Red onion rings -->
+  <circle cx="55" cy="72" r="5" fill="none" stroke="#E1BEE7" stroke-width="2"/>
+  <circle cx="68" cy="71" r="4" fill="none" stroke="#CE93D8" stroke-width="2"/>
+  <!-- Top bun (whole wheat) -->
+  <path d="M25 64 Q18 42 40 30 Q60 20 80 30 Q102 42 95 64 Z" fill="url(#veggieBun)"/>
+  <!-- Grain specks on top -->
+  <circle cx="38" cy="42" r="1.5" fill="#8D6E63"/>
+  <circle cx="52" cy="35" r="1.5" fill="#8D6E63"/>
+  <circle cx="68" cy="38" r="1.5" fill="#8D6E63"/>
+  <circle cx="80" cy="45" r="1.5" fill="#8D6E63"/>
+  <circle cx="45" cy="48" r="1" fill="#8D6E63"/>
+  <circle cx="62" cy="45" r="1" fill="#8D6E63"/>
+  <!-- Bun shine -->
+  <path d="M38 45 Q52 35 68 45" stroke="#C4A056" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

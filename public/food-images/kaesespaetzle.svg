@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Käsespätzle -->
+  <defs>
+    <linearGradient id="spaetzleBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl/Pan -->
+  <ellipse cx="60" cy="80" rx="50" ry="22" fill="url(#spaetzleBowl)"/>
+  <ellipse cx="60" cy="78" rx="45" ry="19" fill="#333333"/>
+  <ellipse cx="60" cy="76" rx="43" ry="17" fill="#1A1A1A"/>
+  <!-- Spätzle base -->
+  <ellipse cx="60" cy="68" rx="38" ry="14" fill="#FFE082"/>
+  <!-- Spätzle noodles -->
+  <ellipse cx="35" cy="65" rx="6" ry="3" fill="#FFCA28"/>
+  <ellipse cx="48" cy="62" rx="7" ry="3" fill="#FFD54F"/>
+  <ellipse cx="62" cy="60" rx="6" ry="3" fill="#FFCA28"/>
+  <ellipse cx="78" cy="63" rx="7" ry="3" fill="#FFD54F"/>
+  <ellipse cx="42" cy="70" rx="6" ry="3" fill="#FFD54F"/>
+  <ellipse cx="58" cy="68" rx="7" ry="3" fill="#FFCA28"/>
+  <ellipse cx="75" cy="70" rx="6" ry="3" fill="#FFD54F"/>
+  <ellipse cx="88" cy="68" rx="5" ry="2.5" fill="#FFCA28"/>
+  <ellipse cx="28" cy="68" rx="5" ry="2.5" fill="#FFD54F"/>
+  <!-- Melted cheese -->
+  <ellipse cx="50" cy="58" rx="12" ry="5" fill="#FFE082" opacity="0.8"/>
+  <ellipse cx="70" cy="60" rx="10" ry="4" fill="#FFCA28" opacity="0.8"/>
+  <!-- Cheese strings -->
+  <path d="M45 55 Q42 52 45 50" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <path d="M68 56 Q72 53 70 50" stroke="#FFCA28" stroke-width="2" fill="none"/>
+  <path d="M55 58 Q52 55 55 52" stroke="#FFD54F" stroke-width="2" fill="none"/>
+  <!-- Crispy fried onions on top -->
+  <ellipse cx="45" cy="55" rx="6" ry="3" fill="#8B4513"/>
+  <ellipse cx="60" cy="52" rx="8" ry="4" fill="#A0522D"/>
+  <ellipse cx="75" cy="55" rx="6" ry="3" fill="#8B4513"/>
+  <!-- Onion ring details -->
+  <circle cx="43" cy="54" r="2" fill="none" stroke="#6D4C41" stroke-width="1"/>
+  <circle cx="58" cy="51" r="2.5" fill="none" stroke="#6D4C41" stroke-width="1"/>
+  <circle cx="62" cy="53" r="2" fill="none" stroke="#6D4C41" stroke-width="1"/>
+  <circle cx="74" cy="54" r="2" fill="none" stroke="#6D4C41" stroke-width="1"/>
+  <!-- Parsley -->
+  <ellipse cx="55" cy="48" rx="3" ry="5" fill="#2E7D32" transform="rotate(-15 55 48)"/>
+  <ellipse cx="65" cy="48" rx="3" ry="5" fill="#388E3C" transform="rotate(15 65 48)"/>
+  <!-- Steam -->
+  <path d="M50 35 Q48 30 52 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M68 33 Q66 28 70 23" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

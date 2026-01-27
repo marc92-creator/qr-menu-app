@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Double Burger -->
+  <defs>
+    <linearGradient id="doubleBun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="doublePatty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="100%" style="stop-color:#3E2723"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bottom bun -->
+  <path d="M25 88 Q20 95 35 98 L85 98 Q100 95 95 88 Z" fill="url(#doubleBun)"/>
+  <!-- Bottom lettuce -->
+  <path d="M24 86 Q32 80 42 86 Q52 80 62 86 Q72 80 82 86 Q92 80 96 86" stroke="#7CB342" stroke-width="4" fill="none"/>
+  <!-- First cheese -->
+  <path d="M25 80 L95 80 L98 84 Q90 88 85 82 L82 86 Q75 80 72 85 Q65 79 62 84 Q55 78 52 83 Q45 77 42 82 Q35 76 32 81 Q25 75 22 82 L22 84 Z" fill="#FFC107"/>
+  <!-- First patty -->
+  <ellipse cx="60" cy="77" rx="36" ry="9" fill="url(#doublePatty)"/>
+  <path d="M35 76 L40 76 M50 74 L55 74 M65 76 L70 76 M80 74 L85 74" stroke="#4E342E" stroke-width="2" opacity="0.5"/>
+  <!-- Second cheese -->
+  <path d="M27 68 L93 68 L96 72 Q88 76 84 70 L81 74 Q74 68 71 73 Q64 67 61 72 Q54 66 51 71 Q44 65 41 70 Q34 64 31 69 Q24 63 24 70 L24 72 Z" fill="#FFC107"/>
+  <!-- Second patty -->
+  <ellipse cx="60" cy="65" rx="36" ry="9" fill="url(#doublePatty)"/>
+  <path d="M35 64 L40 64 M50 62 L55 62 M65 64 L70 64 M80 62 L85 62" stroke="#4E342E" stroke-width="2" opacity="0.5"/>
+  <!-- Pickles -->
+  <ellipse cx="45" cy="60" rx="6" ry="3" fill="#8BC34A"/>
+  <ellipse cx="75" cy="61" rx="5" ry="2.5" fill="#7CB342"/>
+  <!-- Top bun -->
+  <path d="M25 58 Q18 38 40 26 Q60 16 80 26 Q102 38 95 58 Z" fill="url(#doubleBun)"/>
+  <!-- Bun shine -->
+  <path d="M35 40 Q50 30 70 40" stroke="#FFE082" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="42" cy="36" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-10 42 36)"/>
+  <ellipse cx="58" cy="30" rx="3" ry="2" fill="#FFF8DC" transform="rotate(12 58 30)"/>
+  <ellipse cx="75" cy="34" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-5 75 34)"/>
+  <ellipse cx="50" cy="42" rx="2" ry="1.5" fill="#FFF8DC"/>
+  <ellipse cx="68" cy="38" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(15 68 38)"/>
+</svg>

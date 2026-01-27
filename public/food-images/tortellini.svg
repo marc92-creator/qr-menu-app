@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Tortellini -->
+  <defs>
+    <linearGradient id="tortBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="creamSauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFDE7"/>
+      <stop offset="100%" style="stop-color:#FFF8E1"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#tortBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#tortBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Cream sauce base -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="url(#creamSauce)"/>
+  <!-- Tortellini shapes -->
+  <path d="M35 60 Q40 52 50 55 Q48 62 40 65 Q32 62 35 60" fill="#FFE082" stroke="#FFD54F" stroke-width="1"/>
+  <ellipse cx="42" cy="58" rx="3" ry="2" fill="#FFF8E1"/>
+
+  <path d="M55 52 Q62 45 72 48 Q70 55 62 58 Q52 55 55 52" fill="#FFCA28" stroke="#FFB300" stroke-width="1"/>
+  <ellipse cx="63" cy="51" rx="3" ry="2" fill="#FFF8E1"/>
+
+  <path d="M78 55 Q84 48 92 52 Q90 58 82 62 Q74 58 78 55" fill="#FFE082" stroke="#FFD54F" stroke-width="1"/>
+  <ellipse cx="85" cy="55" rx="3" ry="2" fill="#FFF8E1"/>
+
+  <path d="M28 68 Q34 62 44 65 Q42 72 34 75 Q24 72 28 68" fill="#FFCA28" stroke="#FFB300" stroke-width="1"/>
+  <ellipse cx="36" cy="67" rx="3" ry="2" fill="#FFF8E1"/>
+
+  <path d="M48 65 Q55 58 65 62 Q62 68 54 72 Q45 68 48 65" fill="#FFE082" stroke="#FFD54F" stroke-width="1"/>
+  <ellipse cx="56" cy="64" rx="3" ry="2" fill="#FFF8E1"/>
+
+  <path d="M68 62 Q75 55 85 58 Q83 65 75 68 Q65 65 68 62" fill="#FFCA28" stroke="#FFB300" stroke-width="1"/>
+  <ellipse cx="76" cy="60" rx="3" ry="2" fill="#FFF8E1"/>
+
+  <path d="M55 72 Q62 66 72 70 Q70 76 62 80 Q52 76 55 72" fill="#FFE082" stroke="#FFD54F" stroke-width="1"/>
+  <ellipse cx="63" cy="72" rx="3" ry="2" fill="#FFF8E1"/>
+  <!-- Parmesan -->
+  <circle cx="45" cy="55" r="1.5" fill="#FFF8E1"/>
+  <circle cx="70" cy="52" r="1" fill="#FFF8E1"/>
+  <circle cx="58" cy="68" r="1.5" fill="#FFF8E1"/>
+  <circle cx="80" cy="65" r="1" fill="#FFF8E1"/>
+  <!-- Parsley -->
+  <ellipse cx="60" cy="58" rx="3" ry="5" fill="#2E7D32" transform="rotate(-20 60 58)"/>
+  <ellipse cx="50" cy="62" rx="2" ry="4" fill="#388E3C" transform="rotate(15 50 62)"/>
+  <ellipse cx="72" cy="68" rx="2" ry="4" fill="#2E7D32" transform="rotate(-10 72 68)"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Fried Rice -->
+  <defs>
+    <linearGradient id="friedRicePlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="78" rx="50" ry="22" fill="url(#friedRicePlate)"/>
+  <ellipse cx="60" cy="76" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Fried rice mound -->
+  <ellipse cx="60" cy="68" rx="38" ry="16" fill="#FFE082"/>
+  <path d="M25 70 Q40 50 60 48 Q80 50 95 70" fill="#FFCA28"/>
+  <!-- Rice grains with fried color -->
+  <ellipse cx="40" cy="58" rx="3" ry="1.5" fill="#FFF8E1" transform="rotate(-10 40 58)"/>
+  <ellipse cx="52" cy="55" rx="3" ry="1.5" fill="#FFFDE7" transform="rotate(15 52 55)"/>
+  <ellipse cx="65" cy="56" rx="3" ry="1.5" fill="#FFF8E1" transform="rotate(-5 65 56)"/>
+  <ellipse cx="78" cy="60" rx="3" ry="1.5" fill="#FFFDE7" transform="rotate(20 78 60)"/>
+  <ellipse cx="45" cy="65" rx="3" ry="1.5" fill="#FFF9C4" transform="rotate(-15 45 65)"/>
+  <ellipse cx="58" cy="62" rx="3" ry="1.5" fill="#FFF8E1" transform="rotate(5 58 62)"/>
+  <ellipse cx="72" cy="65" rx="3" ry="1.5" fill="#FFFDE7" transform="rotate(-8 72 65)"/>
+  <!-- Egg bits -->
+  <ellipse cx="48" cy="60" rx="5" ry="3" fill="#FFEB3B"/>
+  <ellipse cx="68" cy="58" rx="4" ry="2.5" fill="#FFF176"/>
+  <ellipse cx="55" cy="68" rx="4" ry="2.5" fill="#FFEB3B"/>
+  <ellipse cx="75" cy="68" rx="3" ry="2" fill="#FFF176"/>
+  <!-- Peas -->
+  <circle cx="42" cy="62" r="3" fill="#66BB6A"/>
+  <circle cx="62" cy="55" r="2.5" fill="#4CAF50"/>
+  <circle cx="80" cy="62" r="3" fill="#66BB6A"/>
+  <circle cx="50" cy="70" r="2.5" fill="#4CAF50"/>
+  <circle cx="70" cy="72" r="2.5" fill="#66BB6A"/>
+  <!-- Carrots -->
+  <rect x="55" y="58" width="4" height="4" rx="1" fill="#FF7043"/>
+  <rect x="38" y="66" width="3" height="3" rx="1" fill="#FF8A65"/>
+  <rect x="75" y="65" width="4" height="4" rx="1" fill="#FF7043"/>
+  <!-- Green onion -->
+  <path d="M45 55 L50 52" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M65" y1="62 L70 58" stroke="#66BB6A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M82 68 L86 65" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+  <!-- Shrimp (optional garnish) -->
+  <path d="M35 52 Q40 48 44 52 Q42 56 38 58 Q34 56 35 52" fill="#FF8A65"/>
+  <!-- Steam -->
+  <path d="M50 38 Q48 33 52 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 35 Q63 30 67 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

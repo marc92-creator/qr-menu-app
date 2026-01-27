@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pizza Diavola (Spicy) -->
+  <defs>
+    <linearGradient id="crustD" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="cheeseD" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFD54F"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000020"/>
+  <!-- Pizza base -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" fill="url(#crustD)"/>
+  <!-- Sauce (extra red for spicy) -->
+  <ellipse cx="60" cy="63" rx="38" ry="28" fill="#C62828"/>
+  <!-- Cheese -->
+  <ellipse cx="60" cy="61" rx="36" ry="26" fill="url(#cheeseD)"/>
+  <!-- Spicy salami -->
+  <circle cx="38" cy="55" r="7" fill="#D32F2F"/>
+  <circle cx="38" cy="55" r="4" fill="#B71C1C"/>
+  <circle cx="36" cy="53" r="1" fill="#FFCDD2"/>
+
+  <circle cx="62" cy="52" r="8" fill="#D32F2F"/>
+  <circle cx="62" cy="52" r="5" fill="#B71C1C"/>
+  <circle cx="60" cy="50" r="1" fill="#FFCDD2"/>
+  <circle cx="64" cy="54" r="1" fill="#FFCDD2"/>
+
+  <circle cx="82" cy="62" r="6" fill="#D32F2F"/>
+  <circle cx="82" cy="62" r="4" fill="#B71C1C"/>
+
+  <circle cx="50" cy="70" r="7" fill="#D32F2F"/>
+  <circle cx="50" cy="70" r="4.5" fill="#B71C1C"/>
+  <circle cx="48" cy="68" r="1" fill="#FFCDD2"/>
+
+  <circle cx="72" cy="74" r="6" fill="#D32F2F"/>
+  <circle cx="72" cy="74" r="4" fill="#B71C1C"/>
+
+  <circle cx="35" cy="70" r="5" fill="#D32F2F"/>
+  <circle cx="35" cy="70" r="3" fill="#B71C1C"/>
+  <!-- Chili peppers -->
+  <path d="M45 58 Q48 55 51 58 L50 62 L46 62 Z" fill="#F44336"/>
+  <line x1="48" y1="55" x2="48" y2="52" stroke="#4CAF50" stroke-width="1.5"/>
+
+  <path d="M70 60 Q73 57 76 60 L75 64 L71 64 Z" fill="#F44336"/>
+  <line x1="73" y1="57" x2="73" y2="54" stroke="#4CAF50" stroke-width="1.5"/>
+
+  <path d="M55 78 Q58 75 61 78 L60 82 L56 82 Z" fill="#F44336"/>
+  <line x1="58" y1="75" x2="58" y2="72" stroke="#4CAF50" stroke-width="1.5"/>
+
+  <path d="M78 70 Q80 68 82 70 L81 73 L79 73 Z" fill="#FF5722"/>
+  <line x1="80" y1="68" x2="80" y2="66" stroke="#4CAF50" stroke-width="1"/>
+  <!-- Chili flakes -->
+  <circle cx="42" cy="62" r="1" fill="#FF5722"/>
+  <circle cx="58" cy="58" r="1" fill="#FF5722"/>
+  <circle cx="65" cy="68" r="1" fill="#FF5722"/>
+  <circle cx="45" cy="75" r="1" fill="#FF5722"/>
+  <circle cx="80" cy="58" r="1" fill="#FF5722"/>
+  <!-- Steam (extra wiggly for spicy) -->
+  <path d="M48 38 Q45 33 50 28 Q47 23 52 20" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M68 36 Q65 31 70 26 Q67 21 72 18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

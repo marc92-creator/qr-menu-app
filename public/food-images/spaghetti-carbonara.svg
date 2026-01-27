@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Spaghetti Carbonara -->
+  <defs>
+    <linearGradient id="carbonaraBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="creamySauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFE082"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="48" ry="20" fill="url(#carbonaraBowl)"/>
+  <path d="M12 72 Q12 92 60 97 Q108 92 108 72" fill="url(#carbonaraBowl)"/>
+  <ellipse cx="60" cy="72" rx="48" ry="20" fill="#FFFFFF"/>
+  <!-- Creamy pasta base -->
+  <ellipse cx="60" cy="68" rx="40" ry="16" fill="url(#creamySauce)"/>
+  <!-- Spaghetti strands with cream -->
+  <path d="M25 65 Q40 55 55 70 Q70 60 85 68" stroke="#FFFDE7" stroke-width="3" fill="none"/>
+  <path d="M28 70 Q45 58 60 72 Q75 62 92 70" stroke="#FFF8E1" stroke-width="3" fill="none"/>
+  <path d="M22 68 Q38 60 50 68 Q65 58 78 65 Q88 60 95 68" stroke="#FFFDE7" stroke-width="2.5" fill="none"/>
+  <path d="M30 72 Q42 65 55 75 Q68 65 82 72" stroke="#FFF8E1" stroke-width="2.5" fill="none"/>
+  <!-- Guanciale/Pancetta pieces -->
+  <rect x="45" y="58" width="8" height="4" rx="1" fill="#F8BBD9"/>
+  <rect x="46" y="59" width="6" height="2" rx="0.5" fill="#E91E63" opacity="0.5"/>
+  <rect x="62" y="55" width="9" height="5" rx="1" fill="#F8BBD9"/>
+  <rect x="63" y="56" width="7" height="3" rx="0.5" fill="#E91E63" opacity="0.5"/>
+  <rect x="52" y="65" width="7" height="4" rx="1" fill="#F8BBD9"/>
+  <rect x="53" y="66" width="5" height="2" rx="0.5" fill="#E91E63" opacity="0.5"/>
+  <rect x="70" y="62" width="8" height="4" rx="1" fill="#F8BBD9"/>
+  <rect x="38" y="62" width="6" height="3" rx="1" fill="#F8BBD9"/>
+  <!-- Egg yolk in center -->
+  <ellipse cx="60" cy="58" rx="8" ry="6" fill="#FFC107"/>
+  <ellipse cx="60" cy="57" rx="5" ry="4" fill="#FFB300"/>
+  <!-- Black pepper -->
+  <circle cx="55" cy="52" r="1" fill="#212121"/>
+  <circle cx="62" cy="54" r="0.8" fill="#212121"/>
+  <circle cx="58" cy="56" r="0.8" fill="#212121"/>
+  <circle cx="65" cy="58" r="1" fill="#212121"/>
+  <circle cx="52" cy="60" r="0.8" fill="#212121"/>
+  <circle cx="68" cy="62" r="0.8" fill="#212121"/>
+  <!-- Pecorino cheese -->
+  <circle cx="50" cy="55" r="1.5" fill="#FFF8E1"/>
+  <circle cx="70" cy="56" r="1" fill="#FFF8E1"/>
+  <circle cx="56" cy="62" r="1" fill="#FFF8E1"/>
+  <!-- Steam -->
+  <path d="M50 40 Q48 35 52 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M65 38 Q63 33 67 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>
