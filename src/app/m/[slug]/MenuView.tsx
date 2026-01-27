@@ -13,11 +13,8 @@ interface MenuViewProps {
   isDemo?: boolean;
 }
 
-// Day keys for opening hours
+// Day keys for opening hours (Sunday = 0)
 const DAY_KEYS = ['so', 'mo', 'di', 'mi', 'do', 'fr', 'sa'] as const;
-const DAY_NAMES: Record<string, string> = {
-  mo: 'Mo', di: 'Di', mi: 'Mi', do: 'Do', fr: 'Fr', sa: 'Sa', so: 'So'
-};
 
 // Check if restaurant is currently open
 const getOpenStatus = (openingHours: OpeningHours | null): { isOpen: boolean; todayHours: string | null } => {
