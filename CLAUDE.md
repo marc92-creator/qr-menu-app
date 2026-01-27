@@ -26,14 +26,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Dashboard Preview tab** - Live phone mockup showing how customers see the menu
 - Restaurant management (CRUD, multiple restaurants per user)
 - Menu Editor with 14 EU allergens
-- **Drag & Drop sorting** for categories and menu items (@dnd-kit)
+- **Drag & Drop sorting** for categories AND menu items (@dnd-kit)
 - **Image upload for menu items** (Supabase Storage, auto-compression)
+- **100+ Ghibli-style food illustrations** organized in 15 categories with auto-matching
 - **Menu badges** - Vegetarian, Vegan, Popular, Special/Tagesangebot
 - **5 Menu themes** - Classic, Dark, Rustic, Modern, Oriental
 - **WhatsApp contact button** on public menu (configurable per restaurant)
 - **Opening hours editor** in Settings with live open/closed status
-- QR Code Generator + PNG download
+- **Restaurant logo upload** with display in menu header
+- QR Code Generator + PNG download + **Link teilen** (native share API)
 - Table tent PDF for printing (jsPDF) - A4 and **A6 compact format**
+- **Complete menu PDF export** with all dishes, prices, allergens, and QR code
+- **TV Mode** (`/m/[slug]/tv`) - Auto-scrolling display for restaurant TVs
 - **Redesigned public menu view** (pill navigation, image placeholders, subtle footer, theme support)
 - Trust signals (GDPR, servers in Germany)
 - Impressum & Datenschutz pages
@@ -72,6 +76,7 @@ npm run start    # Start production server
 | `/dashboard` | Dashboard (sandbox mode for non-logged-in, full features for logged-in) |
 | `/demo` | Fallback demo page (redirects to /dashboard if logged in) |
 | `/m/[slug]` | Public menu view for customers |
+| `/m/[slug]/tv` | **TV Mode** - Auto-scrolling display for restaurant TVs |
 | `/m/demo-doener-palace` | Fixed demo menu (not affected by sandbox changes) |
 | `/impressum`, `/datenschutz` | Legal pages |
 | `/api/menu/[slug]` | GET menu data |
@@ -203,3 +208,28 @@ Recent migrations:
 5. **Demo vs Pro naming**: UI shows "Demo" and "Pro", but database stores 'free' and 'basic' for plan values.
 6. **Loading states**: Always use try/catch/finally in async functions to ensure `setLoading(false)` is called (prevents infinite spinners on mobile).
 7. **Sandbox vs Demo**: Sandbox = localStorage mode at `/demo`. Demo = is_demo flag in database for read-only restaurants.
+
+## Admin/Test Account Setup
+
+To test Pro features during development:
+
+1. **Create a test account**: Register via `/register` with a test email (e.g., `test@menuapp.de`)
+2. **Get the user ID**: In Supabase Dashboard → Authentication → Users, find and copy the user's UUID
+3. **Grant Pro access**: In Supabase SQL Editor, run:
+   ```sql
+   INSERT INTO subscriptions (user_id, plan, status, created_at)
+   VALUES ('USER_UUID_HERE', 'basic', 'active', NOW())
+   ON CONFLICT (user_id) DO UPDATE SET plan = 'basic', status = 'active';
+   ```
+4. **Verify**: The user should now see "Pro" badge in Settings and have no watermark on menus
+
+Note: UI shows "Pro" but database stores `plan='basic'` (legacy naming).
+
+## TV Mode
+
+The TV Mode (`/m/[slug]/tv`) is designed for Dönerläden with display screens:
+- Auto-scrolls through categories every 8 seconds
+- Keyboard navigation: ← → arrows, P to pause, Space to advance
+- Full-screen optimized layout with large fonts
+- Respects restaurant theme styles
+- Shows progress dots and category navigation
