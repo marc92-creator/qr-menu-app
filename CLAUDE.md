@@ -114,7 +114,7 @@ npm run start    # Start production server
 | `src/lib/demoData.ts` | Fixed demo restaurant/menu data |
 | `src/lib/sandboxStorage.ts` | LocalStorage utilities for sandbox mode |
 | `src/lib/allergens.ts` | 14 EU allergens with German labels |
-| `src/lib/themes.ts` | 5 menu themes (Classic, Dark, Rustic, Modern, Oriental) |
+| `src/lib/themes.ts` | 5 menu themes with full ThemeStyles (colors, patterns, badges, hover effects) |
 | `src/lib/imageUpload.ts` | Image compression and Supabase Storage upload |
 | `src/types/database.ts` | TypeScript interfaces |
 | `src/hooks/useSandboxMode.ts` | Hook to check if user is in sandbox mode |
@@ -143,7 +143,14 @@ The middleware (`src/middleware.ts`) automatically refreshes auth sessions and h
 
 **Demo Mode (is_demo)**: Restaurants with `is_demo=true` are read-only. Users see a banner prompting registration. Public menus for demo restaurants show fixed demo data.
 
-**Theme System**: 5 themes available (classic, dark, rustic, modern, oriental). Themes apply to public menu view via inline styles from `getTheme()` in `/lib/themes.ts`. Sandbox users save theme to localStorage, real users save to database.
+**Theme System**: 5 distinct visual themes, each with comprehensive styling:
+- **Classic**: Clean white, minimalist, professional
+- **Dark**: Dark background (#0a0a0f) with neon cyan accents - elegant night mode
+- **Rustic**: Warm earth tones (beige/amber) with subtle paper texture
+- **Modern**: Bold violet gradients, geometric shapes, vibrant look
+- **Oriental**: Gold accents with ornamental patterns, luxurious döner shop feel
+
+Each theme defines: background patterns (CSS gradients), card styles with hover effects, category pill styles, badge colors (vegan/popular/special), allergen badge styles, status badges (open/closed), price colors, footer styling, and decorative overlays. All styles use inline CSS from `ThemeStyles` interface in `/lib/themes.ts`. Theme selector shows mini menu previews. Sandbox users save to localStorage, real users save to database.
 
 **Allergen System**: 14 EU allergens defined in `/lib/allergens.ts` with German labels and emoji icons. Menu items store allergen IDs as string arrays.
 

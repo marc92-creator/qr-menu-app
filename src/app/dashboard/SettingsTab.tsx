@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Restaurant, Subscription, OpeningHours, MenuTheme } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
-import { THEME_LIST } from '@/lib/themes';
+import { THEME_LIST, isGradient } from '@/lib/themes';
 
 interface SettingsTabProps {
   restaurant: Restaurant;
@@ -263,27 +263,123 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             <label className="block text-sm font-semibold text-gray-700 mb-3">
               Menü-Design
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {THEME_LIST.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => !isDemo && setTheme(t.id)}
-                  disabled={isDemo}
-                  className={`
-                    p-4 rounded-xl border-2 transition-all text-left
-                    ${theme === t.id
-                      ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500/20'
-                      : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }
-                    ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                  `}
-                >
-                  <div className="text-2xl mb-2">{t.preview}</div>
-                  <div className="font-medium text-gray-900 text-sm">{t.name}</div>
-                  <div className="text-xs text-gray-500 mt-0.5">{t.description}</div>
-                </button>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {THEME_LIST.map((t) => {
+                const isActive = theme === t.id;
+                const s = t.styles;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => !isDemo && setTheme(t.id)}
+                    disabled={isDemo}
+                    className={`
+                      relative rounded-xl border-2 text-left transition-all overflow-hidden
+                      ${isActive
+                        ? 'border-emerald-500 ring-2 ring-emerald-500/20 scale-[1.02]'
+                        : 'border-gray-200 hover:border-gray-300'
+                      }
+                      ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                    `}
+                  >
+                    {/* Active indicator */}
+                    {isActive && (
+                      <div className="absolute top-2 right-2 z-10 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+
+                    {/* Mini Preview */}
+                    <div
+                      className="p-3 h-32"
+                      style={{
+                        backgroundColor: s.background,
+                        backgroundImage: s.backgroundPattern || 'none',
+                      }}
+                    >
+                      {/* Mini Header */}
+                      <div
+                        className="rounded-lg px-2 py-1 mb-2 flex items-center gap-2"
+                        style={{
+                          background: s.headerBg,
+                          borderBottom: `1px solid ${s.headerBorder}`,
+                        }}
+                      >
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: s.primary }}
+                        />
+                        <div
+                          className="h-2 w-12 rounded"
+                          style={{ backgroundColor: s.text, opacity: 0.3 }}
+                        />
+                      </div>
+
+                      {/* Mini Pills */}
+                      <div className="flex gap-1 mb-2">
+                        <div
+                          className="h-4 w-10 rounded-full"
+                          style={{ background: s.pillActiveBg }}
+                        />
+                        <div
+                          className="h-4 w-8 rounded-full"
+                          style={{
+                            backgroundColor: isGradient(s.pillBg) ? undefined : s.pillBg,
+                            backgroundImage: isGradient(s.pillBg) ? s.pillBg : undefined,
+                            border: `1px solid ${s.border}`,
+                          }}
+                        />
+                      </div>
+
+                      {/* Mini Card */}
+                      <div
+                        className="rounded-lg p-2"
+                        style={{
+                          backgroundColor: s.cardBg,
+                          border: `1px solid ${s.cardBorder}`,
+                          boxShadow: s.cardShadow,
+                        }}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-1 flex-1">
+                            <div
+                              className="h-2 w-16 rounded"
+                              style={{ backgroundColor: s.text, opacity: 0.5 }}
+                            />
+                            <div
+                              className="h-1.5 w-12 rounded"
+                              style={{ backgroundColor: s.textMuted, opacity: 0.4 }}
+                            />
+                          </div>
+                          <div
+                            className="h-2 w-6 rounded"
+                            style={{ backgroundColor: s.priceColor }}
+                          />
+                        </div>
+                        {/* Mini badges */}
+                        <div className="flex gap-1 mt-1">
+                          <div
+                            className="h-3 w-3 rounded"
+                            style={{ backgroundColor: s.badgeVeganBg }}
+                          />
+                          <div
+                            className="h-3 w-6 rounded"
+                            style={{ backgroundColor: s.allergenBg, border: `1px solid ${s.allergenBorder}` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Theme Info */}
+                    <div className="p-3 bg-white border-t border-gray-100">
+                      <div className="font-semibold text-gray-900">{t.name}</div>
+                      <div className="text-xs text-gray-500 mt-0.5 line-clamp-2">{t.description}</div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
             <p className="text-xs text-gray-500 mt-2">
               Wähle ein Design für deine öffentliche Speisekarte

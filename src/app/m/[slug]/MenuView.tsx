@@ -4,21 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Restaurant, Category, MenuItem, OpeningHours } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
-import { getTheme, ThemeConfig } from '@/lib/themes';
-
-// Theme-specific style mappings for inline styles (for non-Tailwind dynamic values)
-const getThemeStyles = (theme: ThemeConfig) => ({
-  background: theme.id === 'dark' ? '#0a0a0f' : theme.id === 'rustic' ? '#fef3c7' : theme.id === 'oriental' ? '#f5f5f4' : '#f9fafb',
-  surface: theme.id === 'dark' ? '#1a1a2e' : '#ffffff',
-  text: theme.id === 'dark' ? '#f3f4f6' : '#111827',
-  textMuted: theme.id === 'dark' ? '#9ca3af' : '#6b7280',
-  primary: theme.id === 'dark' ? '#34d399' : theme.id === 'rustic' ? '#d97706' : theme.id === 'modern' ? '#8b5cf6' : theme.id === 'oriental' ? '#f59e0b' : '#10b981',
-  border: theme.id === 'dark' ? '#374151' : '#e5e7eb',
-  headerBg: theme.id === 'dark' ? 'rgba(26, 26, 46, 0.95)' : theme.id === 'oriental' ? 'linear-gradient(to right, #fef3c7, #ffedd5)' : 'rgba(255, 255, 255, 0.9)',
-  cardBg: theme.id === 'dark' ? '#1f1f3a' : '#ffffff',
-  badgeBg: theme.id === 'dark' ? '#064e3b' : theme.id === 'rustic' ? '#fef3c7' : theme.id === 'modern' ? '#ede9fe' : theme.id === 'oriental' ? '#fef3c7' : '#d1fae5',
-  badgeText: theme.id === 'dark' ? '#6ee7b7' : theme.id === 'rustic' ? '#92400e' : theme.id === 'modern' ? '#6d28d9' : theme.id === 'oriental' ? '#92400e' : '#047857',
-});
+import { getTheme, isGradient } from '@/lib/themes';
 
 interface MenuViewProps {
   restaurant: Restaurant;
@@ -78,12 +64,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   // Get theme configuration
   const theme = getTheme(restaurant.theme || 'classic');
-  const themeStyles = getThemeStyles(theme);
+  const styles = theme.styles;
 
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
@@ -152,13 +139,27 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: themeStyles.background }}>
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: styles.background,
+        backgroundImage: styles.backgroundPattern || 'none',
+      }}
+    >
+      {/* Decorative gradient overlay */}
+      {styles.decorativeGradient && (
+        <div
+          className="fixed inset-0 pointer-events-none z-0"
+          style={{ backgroundImage: styles.decorativeGradient }}
+        />
+      )}
+
       {/* Header - Sticky with Glassmorphism */}
       <header
         className="sticky top-0 z-20 backdrop-blur-md border-b"
         style={{
-          background: themeStyles.headerBg,
-          borderColor: themeStyles.border,
+          background: styles.headerBg,
+          borderColor: styles.headerBorder,
         }}
       >
         {/* Restaurant Info */}
@@ -170,12 +171,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                 src={restaurant.logo_url}
                 alt={restaurant.name}
                 className="w-12 h-12 rounded-xl object-cover flex-shrink-0 ring-1"
-                style={{ borderColor: themeStyles.border }}
+                style={{ borderColor: styles.border }}
               />
             ) : (
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: themeStyles.primary }}
+                style={{ backgroundColor: styles.primary }}
               >
                 <span className="text-xl text-white font-bold">
                   {restaurant.name.charAt(0)}
@@ -184,7 +185,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
             )}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold truncate" style={{ color: themeStyles.text }}>
+                <h1 className="text-lg font-bold truncate" style={{ color: styles.text }}>
                   {restaurant.name}
                 </h1>
                 {isDemo && (
@@ -193,18 +194,36 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-500">
+              <div className="flex items-center gap-3 text-sm" style={{ color: styles.textMuted }}>
                 {restaurant.address && (
                   <span className="truncate">{restaurant.address}</span>
                 )}
                 {restaurant.opening_hours && (() => {
                   const { isOpen, todayHours } = getOpenStatus(restaurant.opening_hours);
                   return (
-                    <span className={`flex items-center gap-1 flex-shrink-0 ${isOpen ? 'text-emerald-600' : 'text-gray-400'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                      <span className="text-xs font-medium">{isOpen ? 'Geöffnet' : 'Geschlossen'}</span>
+                    <span
+                      className="flex items-center gap-1 flex-shrink-0"
+                      style={{
+                        color: isOpen ? styles.statusOpenText : styles.statusClosedText,
+                      }}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{
+                          backgroundColor: isOpen ? styles.statusOpenText : styles.statusClosedText,
+                        }}
+                      />
+                      <span
+                        className="text-xs font-medium px-1.5 py-0.5 rounded"
+                        style={{
+                          backgroundColor: isOpen ? styles.statusOpenBg : styles.statusClosedBg,
+                          color: isOpen ? styles.statusOpenText : styles.statusClosedText,
+                        }}
+                      >
+                        {isOpen ? 'Geöffnet' : 'Geschlossen'}
+                      </span>
                       {todayHours && todayHours !== 'Geschlossen' && (
-                        <span className="text-xs text-gray-400 hidden sm:inline">· {todayHours}</span>
+                        <span className="text-xs hidden sm:inline" style={{ color: styles.textMuted }}>· {todayHours}</span>
                       )}
                     </span>
                   );
@@ -225,24 +244,29 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               WebkitOverflowScrolling: 'touch'
             }}
           >
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                data-category={category.id}
-                onClick={() => scrollToCategory(category.id)}
-                className={`
-                  px-4 py-2 rounded-full whitespace-nowrap
-                  text-sm font-medium transition-all duration-200 flex-shrink-0
-                  active:scale-95 touch-manipulation
-                  ${activeCategory === category.id
-                    ? 'bg-emerald-500 text-white shadow-sm'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 ring-1 ring-gray-200'
-                  }
-                `}
-              >
-                {category.name}
-              </button>
-            ))}
+            {categories.map((category) => {
+              const isActive = activeCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  data-category={category.id}
+                  onClick={() => scrollToCategory(category.id)}
+                  className="px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all duration-200 flex-shrink-0 active:scale-95 touch-manipulation"
+                  style={isActive ? {
+                    background: styles.pillActiveBg,
+                    color: styles.pillActiveText,
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                  } : {
+                    backgroundColor: isGradient(styles.pillBg) ? undefined : styles.pillBg,
+                    backgroundImage: isGradient(styles.pillBg) ? styles.pillBg : undefined,
+                    color: styles.pillText,
+                    boxShadow: `inset 0 0 0 1px ${styles.border}`,
+                  }}
+                >
+                  {category.name}
+                </button>
+              );
+            })}
           </div>
         )}
       </header>
@@ -253,7 +277,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
           {categories.length === 0 ? (
             <div className="text-center py-16 px-4">
               <div className="text-5xl mb-4">🍽️</div>
-              <p className="text-gray-500">Keine Speisekarte verfügbar.</p>
+              <p style={{ color: styles.textMuted }}>Keine Speisekarte verfügbar.</p>
             </div>
           ) : (
             <div className="space-y-6 pt-4">
@@ -266,26 +290,46 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   className="scroll-mt-36"
                 >
                   {/* Category Header */}
-                  <div className="sticky top-[120px] z-10 py-2 -mx-4 px-4 md:-mx-6 md:px-6 bg-gray-50/95 backdrop-blur-sm">
-                    <h2 className="text-base font-semibold text-gray-900">
+                  <div
+                    className="sticky top-[120px] z-10 py-2 -mx-4 px-4 md:-mx-6 md:px-6 backdrop-blur-sm"
+                    style={{
+                      backgroundColor: `${styles.background}ee`,
+                    }}
+                  >
+                    <h2
+                      className="text-base font-semibold"
+                      style={{ color: styles.text }}
+                    >
                       {category.name}
                     </h2>
                   </div>
 
                   {/* Items */}
                   {items.length === 0 ? (
-                    <div className="py-8 text-center text-gray-400 text-sm">
+                    <div
+                      className="py-8 text-center text-sm"
+                      style={{ color: styles.textMuted }}
+                    >
                       Keine Gerichte in dieser Kategorie
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {items.map((item) => {
                         const itemAllergens = getAllergensByIds(item.allergens || []);
+                        const isHovered = hoveredCard === item.id;
 
                         return (
                           <article
                             key={item.id}
-                            className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-gray-100"
+                            className="rounded-xl p-4 transition-all duration-200"
+                            style={{
+                              backgroundColor: styles.cardBg,
+                              border: `1px solid ${styles.cardBorder}`,
+                              boxShadow: isHovered ? styles.cardHoverShadow : styles.cardShadow,
+                              transform: isHovered ? styles.cardHoverTransform : 'none',
+                            }}
+                            onMouseEnter={() => setHoveredCard(item.id)}
+                            onMouseLeave={() => setHoveredCard(null)}
                           >
                             <div className="flex gap-4">
                               {/* Image or Placeholder */}
@@ -298,8 +342,11 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                     className="w-20 h-20 rounded-lg object-cover"
                                   />
                                 ) : (
-                                  <div className="w-20 h-20 rounded-lg bg-gray-100 flex items-center justify-center">
-                                    <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <div
+                                    className="w-20 h-20 rounded-lg flex items-center justify-center"
+                                    style={{ backgroundColor: styles.surfaceHover }}
+                                  >
+                                    <svg className="w-8 h-8" style={{ color: styles.textMuted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                   </div>
@@ -311,61 +358,101 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                 <div className="flex items-start justify-between gap-2">
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                      <h3 className="text-base font-semibold text-gray-900 leading-tight">
+                                      <h3
+                                        className="text-base font-semibold leading-tight"
+                                        style={{ color: styles.text }}
+                                      >
                                         {item.name}
                                       </h3>
                                       {/* Badges */}
                                       {item.is_special && (
-                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-semibold rounded">
+                                        <span
+                                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded"
+                                          style={{
+                                            background: styles.badgeSpecialBg,
+                                            color: styles.badgeSpecialText,
+                                          }}
+                                        >
                                           ⭐ Tagesangebot
                                         </span>
                                       )}
                                       {item.is_popular && !item.is_special && (
-                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-semibold rounded">
+                                        <span
+                                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded"
+                                          style={{
+                                            backgroundColor: styles.badgePopularBg,
+                                            color: styles.badgePopularText,
+                                          }}
+                                        >
                                           ❤️ Beliebt
                                         </span>
                                       )}
                                       {item.is_vegan && (
-                                        <span className="inline-flex items-center px-1.5 py-0.5 bg-green-100 text-green-700 text-[10px] font-semibold rounded" title="Vegan">
+                                        <span
+                                          className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold rounded"
+                                          title="Vegan"
+                                          style={{
+                                            backgroundColor: styles.badgeVeganBg,
+                                            color: styles.badgeVeganText,
+                                          }}
+                                        >
                                           🌱
                                         </span>
                                       )}
                                       {item.is_vegetarian && !item.is_vegan && (
-                                        <span className="inline-flex items-center px-1.5 py-0.5 bg-green-50 text-green-600 text-[10px] font-semibold rounded" title="Vegetarisch">
+                                        <span
+                                          className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold rounded"
+                                          title="Vegetarisch"
+                                          style={{
+                                            backgroundColor: styles.badgeVeganBg,
+                                            color: styles.badgeVeganText,
+                                            opacity: 0.8,
+                                          }}
+                                        >
                                           🥬
                                         </span>
                                       )}
                                     </div>
                                   </div>
-                                  <span className="flex-shrink-0 text-base font-bold text-emerald-600">
+                                  <span
+                                    className="flex-shrink-0 text-base font-bold"
+                                    style={{ color: styles.priceColor }}
+                                  >
                                     {formatPrice(item.price)}
                                   </span>
                                 </div>
                                 {item.description && (
-                                  <p className="text-sm text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                                  <p
+                                    className="text-sm mt-1 line-clamp-2 leading-relaxed"
+                                    style={{ color: styles.textMuted }}
+                                  >
                                     {item.description}
                                   </p>
                                 )}
                                 {/* Allergen Badges */}
                                 {itemAllergens.length > 0 && (
                                   <div className="flex flex-wrap gap-1.5 mt-2">
-                                    {itemAllergens.map((allergen) => (
-                                      <button
-                                        key={allergen.id}
-                                        onClick={() => handleAllergenClick(allergen.id)}
-                                        className={`
-                                          inline-flex items-center gap-1 px-2 py-0.5 rounded-full
-                                          text-xs font-medium transition-all duration-200 touch-manipulation
-                                          ${selectedAllergen === allergen.id
-                                            ? 'bg-amber-100 text-amber-800 ring-1 ring-amber-300'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200 active:scale-95'
-                                          }
-                                        `}
-                                      >
-                                        <span className="text-sm">{allergen.icon}</span>
-                                        <span className="hidden sm:inline">{allergen.name}</span>
-                                      </button>
-                                    ))}
+                                    {itemAllergens.map((allergen) => {
+                                      const isSelected = selectedAllergen === allergen.id;
+                                      return (
+                                        <button
+                                          key={allergen.id}
+                                          onClick={() => handleAllergenClick(allergen.id)}
+                                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-all duration-200 touch-manipulation active:scale-95"
+                                          style={isSelected ? {
+                                            background: styles.allergenSelectedBg,
+                                            color: styles.allergenSelectedText,
+                                          } : {
+                                            backgroundColor: styles.allergenBg,
+                                            color: styles.allergenText,
+                                            border: `1px solid ${styles.allergenBorder}`,
+                                          }}
+                                        >
+                                          <span className="text-sm">{allergen.icon}</span>
+                                          <span className="hidden sm:inline">{allergen.name}</span>
+                                        </button>
+                                      );
+                                    })}
                                   </div>
                                 )}
                               </div>
@@ -380,26 +467,35 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
               {/* Last Updated Info */}
               <div className="text-center py-4">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs" style={{ color: styles.textMuted }}>
                   Aktualisiert {formatLastUpdated(restaurant.updated_at)}
                 </p>
               </div>
 
               {/* Allergen Legend */}
               {hasAnyAllergens && (
-                <section className="bg-white rounded-xl shadow-sm ring-1 ring-gray-100 overflow-hidden">
+                <section
+                  className="rounded-xl overflow-hidden"
+                  style={{
+                    backgroundColor: styles.cardBg,
+                    border: `1px solid ${styles.cardBorder}`,
+                    boxShadow: styles.cardShadow,
+                  }}
+                >
                   <button
                     onClick={() => setShowAllergenLegend(!showAllergenLegend)}
-                    className="w-full flex items-center justify-between p-4 text-left touch-manipulation hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between p-4 text-left touch-manipulation transition-colors"
+                    style={{ color: styles.text }}
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-lg">ℹ️</span>
-                      <span className="font-medium text-gray-900 text-sm">
+                      <span className="font-medium text-sm">
                         Allergen-Informationen
                       </span>
                     </div>
                     <svg
-                      className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${showAllergenLegend ? 'rotate-180' : ''}`}
+                      className={`w-5 h-5 transition-transform duration-200 ${showAllergenLegend ? 'rotate-180' : ''}`}
+                      style={{ color: styles.textMuted }}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -411,26 +507,42 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   {showAllergenLegend && (
                     <div className="px-4 pb-4 pt-0">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {usedAllergens.map((allergen) => (
-                          <div
-                            key={allergen.id}
-                            className={`
-                              flex items-center gap-3 p-3 rounded-lg transition-all duration-200
-                              ${selectedAllergen === allergen.id
-                                ? 'bg-amber-50 ring-1 ring-amber-200'
-                                : 'bg-gray-50 hover:bg-gray-100'
-                              }
-                            `}
-                          >
-                            <span className="text-xl">{allergen.icon}</span>
-                            <div>
-                              <div className="font-medium text-gray-900 text-sm">{allergen.name}</div>
-                              <div className="text-xs text-gray-500">{allergen.description}</div>
+                        {usedAllergens.map((allergen) => {
+                          const isSelected = selectedAllergen === allergen.id;
+                          return (
+                            <div
+                              key={allergen.id}
+                              className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200"
+                              style={isSelected ? {
+                                background: styles.allergenSelectedBg,
+                                color: styles.allergenSelectedText,
+                              } : {
+                                backgroundColor: styles.surfaceHover,
+                              }}
+                            >
+                              <span className="text-xl">{allergen.icon}</span>
+                              <div>
+                                <div
+                                  className="font-medium text-sm"
+                                  style={{ color: isSelected ? styles.allergenSelectedText : styles.text }}
+                                >
+                                  {allergen.name}
+                                </div>
+                                <div
+                                  className="text-xs"
+                                  style={{ color: isSelected ? styles.allergenSelectedText : styles.textMuted, opacity: isSelected ? 0.8 : 1 }}
+                                >
+                                  {allergen.description}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
-                      <p className="text-xs text-gray-400 mt-3 text-center">
+                      <p
+                        className="text-xs mt-3 text-center"
+                        style={{ color: styles.textMuted }}
+                      >
                         Bei Fragen zu Allergenen wenden Sie sich bitte an unser Personal.
                       </p>
                     </div>
@@ -448,20 +560,33 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
           className="fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-40 animate-in slide-in-from-bottom-4 duration-200"
           onClick={() => setSelectedAllergen(null)}
         >
-          <div className="bg-white rounded-xl p-3 shadow-lg ring-1 ring-gray-200 cursor-pointer">
+          <div
+            className="rounded-xl p-3 cursor-pointer"
+            style={{
+              backgroundColor: styles.surface,
+              border: `1px solid ${styles.border}`,
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+            }}
+          >
             {(() => {
               const allergen = ALLERGENS.find(a => a.id === selectedAllergen);
               if (!allergen) return null;
               return (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: styles.allergenBg }}
+                  >
                     <span className="text-xl">{allergen.icon}</span>
                   </div>
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900 text-sm">{allergen.name}</div>
-                    <div className="text-xs text-gray-500">{allergen.description}</div>
+                    <div className="font-medium text-sm" style={{ color: styles.text }}>{allergen.name}</div>
+                    <div className="text-xs" style={{ color: styles.textMuted }}>{allergen.description}</div>
                   </div>
-                  <button className="text-gray-400 hover:text-gray-600 p-1 touch-manipulation transition-colors">
+                  <button
+                    className="p-1 touch-manipulation transition-colors"
+                    style={{ color: styles.textMuted }}
+                  >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -496,15 +621,30 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       {/* Watermark / Footer - Subtle */}
       {showWatermark && (
         <div className="fixed bottom-0 left-0 right-0 z-30">
-          <div className="bg-white/95 backdrop-blur-sm border-t border-gray-200/60 safe-area-bottom">
+          <div
+            className="backdrop-blur-sm safe-area-bottom"
+            style={{
+              background: styles.footerBg,
+              borderTop: `1px solid ${styles.footerBorder}`,
+            }}
+          >
             <div className="py-3 px-4 text-center">
               <a
                 href="/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors touch-manipulation"
+                className="inline-flex items-center gap-1.5 text-sm font-medium transition-colors touch-manipulation hover:opacity-80"
+                style={{ color: styles.footerText }}
               >
-                <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-semibold">Gratis</span>
+                <span
+                  className="text-[10px] px-1.5 py-0.5 rounded font-semibold"
+                  style={{
+                    backgroundColor: styles.primaryLight,
+                    color: styles.primary,
+                  }}
+                >
+                  Gratis
+                </span>
                 <span>Erstellt mit MenuApp</span>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
