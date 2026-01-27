@@ -7,7 +7,8 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
-import { getItemImageUrl, getCategoryImage, FOOD_IMAGE_LIBRARY, ImageMode } from '@/lib/foodImages';
+import { getItemImageUrl, getCategoryImage, ImageMode } from '@/lib/foodImages';
+import { ImageGalleryModal } from '@/components/ImageGalleryModal';
 import {
   DndContext,
   closestCenter,
@@ -212,6 +213,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const [editAllergens, setEditAllergens] = useState<string[]>([]);
   const [editImageMode, setEditImageMode] = useState<ImageMode>('auto');
   const [editImageLibraryKey, setEditImageLibraryKey] = useState<string | null>(null);
+  const [showImageGallery, setShowImageGallery] = useState(false);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -640,51 +642,16 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 placeholder="z.B. 5,50"
               />
 
-              {/* Image Mode Selector */}
+              {/* Image Mode Selector - Improved UI */}
               <div className="space-y-3">
                 <label className="block text-sm font-semibold text-gray-700">
                   Gericht-Bild
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setEditImageMode('auto')}
-                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                      editImageMode === 'auto'
-                        ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    🪄 Automatisch
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditImageMode('library')}
-                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                      editImageMode === 'library'
-                        ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    📚 Aus Bibliothek
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditImageMode('none')}
-                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                      editImageMode === 'none'
-                        ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    ❌ Kein Bild
-                  </button>
-                </div>
 
-                {/* Preview current image */}
-                {editImageMode !== 'none' && (
-                  <div className="mt-3">
-                    <p className="text-xs text-gray-500 mb-2">Vorschau:</p>
+                {/* Current Image Preview + Mode Buttons */}
+                <div className="flex items-start gap-4">
+                  {/* Preview Box */}
+                  <div className="w-20 h-20 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
                     {(() => {
                       const previewUrl = editImageMode === 'auto'
                         ? getItemImageUrl({ name: editName, image_mode: 'auto' }, true)
@@ -693,41 +660,76 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                           : null;
                       return previewUrl ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={previewUrl} alt="Vorschau" className="w-20 h-20 rounded-lg object-cover bg-gray-50" />
+                        <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-20 h-20 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
-                          Kein Bild
-                        </div>
+                        <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       );
                     })()}
                   </div>
-                )}
 
-                {/* Library Grid */}
-                {editImageMode === 'library' && (
-                  <div className="mt-3">
-                    <p className="text-xs text-gray-500 mb-2">Bild auswählen:</p>
-                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-40 overflow-y-auto p-1 -m-1">
-                      {FOOD_IMAGE_LIBRARY.filter(item => item.id !== 'default').map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setEditImageLibraryKey(item.id)}
-                          className={`p-1.5 rounded-lg transition-all ${
-                            editImageLibraryKey === item.id
-                              ? 'ring-2 ring-emerald-500 bg-emerald-50'
-                              : 'bg-gray-50 hover:bg-gray-100'
-                          }`}
-                          title={item.label}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={item.image} alt={item.label} className="w-full h-10 object-contain" />
-                        </button>
-                      ))}
+                  {/* Mode Buttons */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditImageMode('auto')}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          editImageMode === 'auto'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        🪄 Automatisch
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowImageGallery(true)}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          editImageMode === 'library'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        📚 Auswählen
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditImageMode('none');
+                          setEditImageLibraryKey(null);
+                        }}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          editImageMode === 'none'
+                            ? 'bg-gray-800 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Kein Bild
+                      </button>
                     </div>
+                    <p className="text-xs text-gray-500">
+                      {editImageMode === 'auto' && 'Bild wird automatisch basierend auf dem Namen gewählt'}
+                      {editImageMode === 'library' && (editImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Auswählen" um ein Bild zu wählen')}
+                      {editImageMode === 'none' && 'Kein Bild wird angezeigt'}
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
+
+              {/* Image Gallery Modal */}
+              {showImageGallery && (
+                <ImageGalleryModal
+                  selectedImage={editImageLibraryKey}
+                  onSelect={(imageKey) => {
+                    setEditImageMode('library');
+                    setEditImageLibraryKey(imageKey);
+                    setShowImageGallery(false);
+                  }}
+                  onClose={() => setShowImageGallery(false)}
+                />
+              )}
 
               <AllergenSelector
                 selected={editAllergens}
