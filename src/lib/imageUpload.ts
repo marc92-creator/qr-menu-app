@@ -131,6 +131,65 @@ export async function deleteMenuItemImage(imageUrl: string): Promise<void> {
 }
 
 /**
+ * Upload a restaurant logo to Supabase storage
+ */
+export async function uploadRestaurantLogo(
+  file: File,
+  restaurantId: string
+): Promise<string> {
+  // Validate file size
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error('Datei ist zu groß. Maximum: 5MB');
+  }
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Nur Bilder sind erlaubt');
+  }
+
+  // Compress the image
+  const compressedBlob = await compressImage(file);
+
+  // Generate unique filename
+  const timestamp = Date.now();
+  const filename = `logos/${restaurantId}_${timestamp}.jpg`;
+
+  const supabase = createClient();
+
+  // Upload to Supabase storage
+  const { error: uploadError } = await supabase.storage
+    .from('menu-images')
+    .upload(filename, compressedBlob, {
+      contentType: 'image/jpeg',
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.error('Upload error:', uploadError);
+    throw new Error('Logo konnte nicht hochgeladen werden');
+  }
+
+  // Get public URL
+  const { data } = supabase.storage.from('menu-images').getPublicUrl(filename);
+
+  return data.publicUrl;
+}
+
+/**
+ * Delete a restaurant logo from Supabase storage
+ */
+export async function deleteRestaurantLogo(logoUrl: string): Promise<void> {
+  // Extract path from URL
+  const match = logoUrl.match(/menu-images\/(.+)/);
+  if (!match) return;
+
+  const path = match[1];
+  const supabase = createClient();
+
+  await supabase.storage.from('menu-images').remove([path]);
+}
+
+/**
  * Validate an image file before upload
  */
 export function validateImageFile(file: File): string | null {

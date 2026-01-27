@@ -290,6 +290,34 @@ export function QRCodeTab({ restaurant }: QRCodeTabProps) {
             </li>
           </ul>
         </div>
+
+        {/* TV Mode Box */}
+        <div className="mt-4 p-4 bg-purple-50 rounded-xl border border-purple-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="text-xl">📺</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-purple-900 text-sm sm:text-base">
+                TV-Modus für Fernseher
+              </h3>
+              <p className="text-purple-700 text-xs sm:text-sm mt-1">
+                Perfekt für Dönerläden mit Bildschirm-Anzeige. Auto-Scroll durch alle Kategorien.
+              </p>
+              <a
+                href={`${menuUrl}/tv`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-700 text-sm font-medium mt-2"
+              >
+                TV-Modus öffnen
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
