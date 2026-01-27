@@ -4,6 +4,10 @@ export interface User {
   created_at: string;
 }
 
+export interface OpeningHours {
+  [key: string]: { open: string; close: string; closed?: boolean };
+}
+
 export interface Restaurant {
   id: string;
   owner_id: string | null;
@@ -11,6 +15,8 @@ export interface Restaurant {
   name: string;
   address: string | null;
   phone: string | null;
+  whatsapp_number: string | null;
+  opening_hours: OpeningHours | null;
   logo_url: string | null;
   is_active: boolean;
   is_demo: boolean;

@@ -16,6 +16,7 @@ interface SettingsTabProps {
 export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabProps) {
   const [name, setName] = useState(restaurant.name);
   const [address, setAddress] = useState(restaurant.address || '');
+  const [whatsappNumber, setWhatsappNumber] = useState(restaurant.whatsapp_number || '');
   const [loading, setLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -27,7 +28,11 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
     const supabase = createClient();
     await supabase
       .from('restaurants')
-      .update({ name, address: address || null })
+      .update({
+        name,
+        address: address || null,
+        whatsapp_number: whatsappNumber || null,
+      })
       .eq('id', restaurant.id);
 
     setLoading(false);
@@ -144,6 +149,20 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             placeholder="z.B. Musterstraße 123, 12345 Berlin"
             disabled={isDemo}
           />
+
+          <div>
+            <Input
+              id="whatsapp"
+              label="WhatsApp-Nummer (optional)"
+              value={whatsappNumber}
+              onChange={(e) => setWhatsappNumber(e.target.value)}
+              placeholder="z.B. +49 151 12345678"
+              disabled={isDemo}
+            />
+            <p className="text-xs text-gray-500 mt-1.5">
+              Wird auf der Speisekarte als Kontaktbutton angezeigt
+            </p>
+          </div>
 
           {success && !isDemo && (
             <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-3 rounded-xl">

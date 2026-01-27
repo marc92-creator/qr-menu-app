@@ -6,8 +6,10 @@ import { createClient } from '@/lib/supabase/client';
 import { Restaurant, Category, MenuItem } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { ImageUpload } from '@/components/ImageUpload';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
+import { uploadMenuItemImage, deleteMenuItemImage } from '@/lib/imageUpload';
 
 interface MenuEditorProps {
   restaurant: Restaurant;
@@ -29,12 +31,17 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('');
   const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
+  const [newItemImagePreview, setNewItemImagePreview] = useState<string | null>(null);
+  const [newItemImageFile, setNewItemImageFile] = useState<File | null>(null);
 
   // Edit item form
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editAllergens, setEditAllergens] = useState<string[]>([]);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editImageRemoved, setEditImageRemoved] = useState(false);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -70,6 +77,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     setEditDescription(item.description || '');
     setEditPrice(item.price.toFixed(2).replace('.', ','));
     setEditAllergens(item.allergens || []);
+    setEditImagePreview(item.image_url);
+    setEditImageFile(null);
+    setEditImageRemoved(false);
   };
 
   const handleSaveItem = async () => {
@@ -84,20 +94,47 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       return;
     }
 
-    await supabase
-      .from('menu_items')
-      .update({
-        name: editName.trim(),
-        description: editDescription.trim() || null,
-        price,
-        allergens: editAllergens,
-      })
-      .eq('id', editingItem.id);
+    try {
+      let imageUrl = editingItem.image_url;
 
-    await updateRestaurantTimestamp();
-    setEditingItem(null);
-    setLoading(false);
-    onUpdate();
+      // Handle image removal
+      if (editImageRemoved && editingItem.image_url) {
+        await deleteMenuItemImage(editingItem.image_url);
+        imageUrl = null;
+      }
+
+      // Handle new image upload
+      if (editImageFile) {
+        // Delete old image if exists
+        if (editingItem.image_url) {
+          await deleteMenuItemImage(editingItem.image_url);
+        }
+        imageUrl = await uploadMenuItemImage(editImageFile, restaurant.id, editingItem.id);
+      }
+
+      await supabase
+        .from('menu_items')
+        .update({
+          name: editName.trim(),
+          description: editDescription.trim() || null,
+          price,
+          allergens: editAllergens,
+          image_url: imageUrl,
+        })
+        .eq('id', editingItem.id);
+
+      await updateRestaurantTimestamp();
+      setEditingItem(null);
+      setEditImageFile(null);
+      setEditImagePreview(null);
+      setEditImageRemoved(false);
+      onUpdate();
+    } catch (error) {
+      console.error('Error saving item:', error);
+      alert('Fehler beim Speichern. Bitte versuche es erneut.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAddCategory = async () => {
@@ -131,26 +168,52 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       return;
     }
 
-    const categoryItems = menuItems.filter(i => i.category_id === newItemCategory);
+    try {
+      const categoryItems = menuItems.filter(i => i.category_id === newItemCategory);
 
-    await supabase.from('menu_items').insert({
-      category_id: newItemCategory,
-      name: newItemName.trim(),
-      description: newItemDescription.trim() || null,
-      price,
-      position: categoryItems.length,
-      allergens: newItemAllergens,
-    });
+      // Create the item first to get its ID
+      const { data: newItem, error: insertError } = await supabase
+        .from('menu_items')
+        .insert({
+          category_id: newItemCategory,
+          name: newItemName.trim(),
+          description: newItemDescription.trim() || null,
+          price,
+          position: categoryItems.length,
+          allergens: newItemAllergens,
+        })
+        .select()
+        .single();
 
-    await updateRestaurantTimestamp();
-    setNewItemName('');
-    setNewItemDescription('');
-    setNewItemPrice('');
-    setNewItemCategory('');
-    setNewItemAllergens([]);
-    setShowAddItem(false);
-    setLoading(false);
-    onUpdate();
+      if (insertError || !newItem) {
+        throw insertError || new Error('Failed to create item');
+      }
+
+      // Upload image if provided
+      if (newItemImageFile) {
+        const imageUrl = await uploadMenuItemImage(newItemImageFile, restaurant.id, newItem.id);
+        await supabase
+          .from('menu_items')
+          .update({ image_url: imageUrl })
+          .eq('id', newItem.id);
+      }
+
+      await updateRestaurantTimestamp();
+      setNewItemName('');
+      setNewItemDescription('');
+      setNewItemPrice('');
+      setNewItemCategory('');
+      setNewItemAllergens([]);
+      setNewItemImagePreview(null);
+      setNewItemImageFile(null);
+      setShowAddItem(false);
+      onUpdate();
+    } catch (error) {
+      console.error('Error adding item:', error);
+      alert('Fehler beim Hinzufügen. Bitte versuche es erneut.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteItem = async (itemId: string) => {
@@ -332,6 +395,8 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
             if (e.target === e.currentTarget) {
               setShowAddItem(false);
               setNewItemAllergens([]);
+              setNewItemImagePreview(null);
+              setNewItemImageFile(null);
             }
           }}
         >
@@ -350,6 +415,8 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+                  setNewItemImagePreview(null);
+                  setNewItemImageFile(null);
                 }}
                 className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation rounded-xl hover:bg-gray-100 transition-colors"
               >
@@ -397,6 +464,13 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onChange={(e) => setNewItemPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
+              <ImageUpload
+                value={newItemImagePreview}
+                onChange={(url, file) => {
+                  setNewItemImagePreview(url);
+                  setNewItemImageFile(file || null);
+                }}
+              />
               <AllergenSelector
                 selected={newItemAllergens}
                 onToggle={(id) => toggleAllergen(id, true)}
@@ -405,6 +479,8 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+                  setNewItemImagePreview(null);
+                  setNewItemImageFile(null);
                 }}>
                   Abbrechen
                 </Button>
@@ -422,7 +498,12 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setEditingItem(null);
+            if (e.target === e.currentTarget) {
+              setEditingItem(null);
+              setEditImagePreview(null);
+              setEditImageFile(null);
+              setEditImageRemoved(false);
+            }
           }}
         >
           <div
@@ -437,7 +518,12 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 <h2 className="text-xl font-bold text-gray-900">Gericht bearbeiten</h2>
               </div>
               <button
-                onClick={() => setEditingItem(null)}
+                onClick={() => {
+                  setEditingItem(null);
+                  setEditImagePreview(null);
+                  setEditImageFile(null);
+                  setEditImageRemoved(false);
+                }}
                 className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation rounded-xl hover:bg-gray-100 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -467,12 +553,30 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onChange={(e) => setEditPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
+              <ImageUpload
+                value={editImagePreview}
+                onChange={(url, file) => {
+                  setEditImagePreview(url);
+                  if (file) {
+                    setEditImageFile(file);
+                    setEditImageRemoved(false);
+                  } else if (url === null) {
+                    setEditImageFile(null);
+                    setEditImageRemoved(true);
+                  }
+                }}
+              />
               <AllergenSelector
                 selected={editAllergens}
                 onToggle={(id) => toggleAllergen(id, false)}
               />
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => setEditingItem(null)}>
+                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
+                  setEditingItem(null);
+                  setEditImagePreview(null);
+                  setEditImageFile(null);
+                  setEditImageRemoved(false);
+                }}>
                   Abbrechen
                 </Button>
                 <Button className="flex-1 min-h-[52px] rounded-xl shadow-lg shadow-emerald-500/20" onClick={handleSaveItem} loading={loading}>

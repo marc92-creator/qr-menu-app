@@ -251,3 +251,105 @@ export function generateSimpleTableTent({ restaurantName, slug, qrCanvas }: Tabl
 
   pdf.save(`tischaufsteller-simple-${slug}.pdf`);
 }
+
+/**
+ * Generate a compact A6 table tent (ideal for small tables)
+ * A6 format: 105mm x 148mm
+ */
+export function generateA6TableTent({ restaurantName, slug, qrCanvas }: TableTentOptions) {
+  const menuUrl = getMenuUrl(slug);
+
+  // Create PDF - A6 portrait format
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a6',
+  });
+
+  const pageWidth = pdf.internal.pageSize.getWidth(); // 105mm
+  const pageHeight = pdf.internal.pageSize.getHeight(); // 148mm
+  const centerX = pageWidth / 2;
+
+  // ===== FRONT SIDE =====
+
+  // White background
+  pdf.setFillColor(255, 255, 255);
+  pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+  // Top accent bar
+  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.rect(0, 0, pageWidth, 4, 'F');
+
+  // Restaurant name
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(14);
+  pdf.setTextColor(DARK_GRAY_R, DARK_GRAY_G, DARK_GRAY_B);
+
+  // Handle long restaurant names
+  const maxNameWidth = pageWidth - 16;
+  const nameLines = pdf.splitTextToSize(restaurantName, maxNameWidth);
+  pdf.text(nameLines, centerX, 16, { align: 'center' });
+
+  // QR Code - prominent
+  const qrSize = 65; // mm
+  const qrY = 28 + (nameLines.length - 1) * 5;
+
+  // White background with subtle shadow effect
+  pdf.setFillColor(250, 250, 250);
+  pdf.roundedRect(centerX - qrSize/2 - 5, qrY - 3, qrSize + 10, qrSize + 10, 3, 3, 'F');
+
+  // Add QR code from canvas
+  const qrDataUrl = qrCanvas.toDataURL('image/png');
+  pdf.addImage(qrDataUrl, 'PNG', centerX - qrSize/2, qrY, qrSize, qrSize);
+
+  // "Scan for menu" text
+  const scanTextY = qrY + qrSize + 12;
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(12);
+  pdf.setTextColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.text('Speisekarte', centerX, scanTextY, { align: 'center' });
+  pdf.text('scannen', centerX, scanTextY + 6, { align: 'center' });
+
+  // Phone icon hint
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(8);
+  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.text('Mit Handy-Kamera scannen', centerX, scanTextY + 16, { align: 'center' });
+
+  // URL display (small)
+  pdf.setFontSize(6);
+  pdf.text(menuUrl, centerX, pageHeight - 8, { align: 'center' });
+
+  // Bottom accent bar
+  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.rect(0, pageHeight - 4, pageWidth, 4, 'F');
+
+  // ===== BACK SIDE (optional - for double-sided printing) =====
+  pdf.addPage();
+
+  // Simple back with fold line
+  pdf.setFillColor(255, 255, 255);
+  pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+  // Top accent bar
+  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.rect(0, 0, pageWidth, 4, 'F');
+
+  // Fold line in middle (dashed)
+  pdf.setDrawColor(200, 200, 200);
+  pdf.setLineDashPattern([2, 2], 0);
+  pdf.line(0, pageHeight / 2, pageWidth, pageHeight / 2);
+  pdf.setLineDashPattern([], 0);
+
+  // Fold instruction
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(8);
+  pdf.setTextColor(180, 180, 180);
+  pdf.text('Hier falten', centerX, pageHeight / 2 - 3, { align: 'center' });
+
+  // Bottom accent bar
+  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.rect(0, pageHeight - 4, pageWidth, 4, 'F');
+
+  pdf.save(`tischaufsteller-a6-${slug}.pdf`);
+}

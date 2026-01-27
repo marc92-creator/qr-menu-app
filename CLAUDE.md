@@ -20,14 +20,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Completed Features
 
-- Landing Page with Demo/Pro pricing
+- Landing Page with Demo/Pro pricing, **"How it works" steps, testimonials, FAQ**
 - User Registration & Login (Supabase Auth)
 - Dashboard with onboarding checklist (4 steps with progress tracking)
 - Restaurant management (CRUD, multiple restaurants per user)
 - Menu Editor with 14 EU allergens
+- **Image upload for menu items** (Supabase Storage, auto-compression)
+- **WhatsApp contact button** on public menu (configurable per restaurant)
+- **Opening hours** display with live open/closed status
 - QR Code Generator + PNG download
-- Table tent PDF for printing (jsPDF)
-- Public menu view (Mobile-First design)
+- Table tent PDF for printing (jsPDF) - A4 and **A6 compact format**
+- **Redesigned public menu view** (pill navigation, image placeholders, subtle footer)
 - Trust signals (GDPR, servers in Germany)
 - Impressum & Datenschutz pages
 - Demo/Pro branding (consistent naming)
@@ -35,6 +38,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Sandbox mode** for non-logged-in users (localStorage-based)
 - Scan analytics tracking (menu_scans table)
 - Last updated timestamp on public menus
+- **Skeleton loading components** for better UX
 
 ## Commands
 
@@ -75,11 +79,14 @@ npm run start    # Start production server
 ### Database Schema
 
 **Tables:**
-- `restaurants` - owner_id, slug (unique), name, address, phone, logo_url, is_active, **is_demo**, updated_at
+- `restaurants` - owner_id, slug (unique), name, address, phone, **whatsapp_number**, **opening_hours** (JSONB), logo_url, is_active, **is_demo**, updated_at
 - `menu_categories` - restaurant_id, name, position (for ordering)
-- `menu_items` - category_id, name, description, price, is_available, position, allergens (string[])
+- `menu_items` - category_id, name, description, price, **image_url**, is_available, position, allergens (string[])
 - `menu_scans` - restaurant_id, scanned_at, user_agent, referrer
 - `subscriptions` - user_id, plan ('free'/'basic'), stripe_customer_id, status
+
+**Storage Buckets:**
+- `menu-images` - Public bucket for menu item images (JPEG, max 1024px, auto-compressed)
 
 **RLS Patterns:**
 - Users can only manage their own restaurants/categories/items
@@ -101,8 +108,12 @@ npm run start    # Start production server
 | `src/lib/demoData.ts` | Fixed demo restaurant/menu data |
 | `src/lib/sandboxStorage.ts` | LocalStorage utilities for sandbox mode |
 | `src/lib/allergens.ts` | 14 EU allergens with German labels |
+| `src/lib/imageUpload.ts` | Image compression and Supabase Storage upload |
 | `src/types/database.ts` | TypeScript interfaces |
 | `src/components/OnboardingChecklist.tsx` | 4-step onboarding with localStorage tracking |
+| `src/components/ImageUpload.tsx` | Image upload component with preview |
+| `src/components/TableTentPDF.tsx` | PDF generation for table tents (A4 + A6) |
+| `src/components/Skeleton.tsx` | Skeleton loading components for better UX |
 
 ### Supabase Client Usage
 
@@ -136,6 +147,8 @@ The middleware (`src/middleware.ts`) automatically refreshes auth sessions and h
 
 **Onboarding Tracking**: QR step completion tracked via `localStorage.getItem('onboarding_qr_printed')`.
 
+**Image Upload**: Menu item images are compressed client-side (max 1024px, JPEG 80% quality) before uploading to Supabase Storage. Uses `uploadMenuItemImage()` from `/lib/imageUpload.ts`.
+
 ## Environment Variables
 
 Required in `.env.local`:
@@ -158,6 +171,9 @@ Recent migrations:
 - `001_add_allergens.sql` - Allergens array column
 - `20240126_add_menu_scans.sql` - Scan tracking table
 - `20240127_add_is_demo.sql` - Demo mode flag for restaurants
+- `20240127_menu_images_storage.sql` - Storage bucket setup docs for menu images
+- `20240127_add_whatsapp.sql` - WhatsApp number field
+- `20240127_add_opening_hours.sql` - Opening hours JSONB field
 
 ## Gotchas
 
