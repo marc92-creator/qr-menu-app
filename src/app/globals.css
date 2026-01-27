@@ -103,6 +103,7 @@ html {
 }
 
 /* Drag handle styles - prevent text selection on mobile */
+/* IMPORTANT: touch-action: none ONLY on drag-handle, not on items! */
 .drag-handle {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -122,9 +123,10 @@ html {
   -webkit-touch-callout: none !important;
 }
 
-/* Sortable item styles */
-.sortable-item {
-  -webkit-user-select: none;
-  user-select: none;
-  touch-action: none;
+/* Line clamp for single line */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

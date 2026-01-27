@@ -67,9 +67,7 @@ function SortableMenuItem({
     transform: CSS.Transform.toString(transform),
     transition,
     zIndex: isDragging ? 50 : undefined,
-    touchAction: 'none',
-    WebkitUserSelect: 'none',
-    userSelect: 'none',
+    // NOTE: Do NOT add touchAction: 'none' here - it blocks scrolling!
   };
 
   const itemAllergens = getAllergensByIds(item.allergens || []);
@@ -78,20 +76,17 @@ function SortableMenuItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`px-5 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 transition-colors group select-none sortable-item ${
-        isDragging ? 'bg-emerald-50 shadow-lg rounded-xl ring-2 ring-emerald-500 dragging' : ''
+      className={`px-3 sm:px-5 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${
+        isDragging ? 'bg-emerald-50 shadow-lg rounded-xl ring-2 ring-emerald-500' : ''
       }`}
     >
-      {/* Drag Handle */}
+      {/* Drag Handle - ONLY element with touch-action: none */}
       <button
         {...attributes}
         {...listeners}
-        className="mt-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-gray-100 transition-colors drag-handle"
+        className="mt-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-gray-100 transition-colors drag-handle touch-none"
+        style={{ touchAction: 'none' }}
         title="Zum Sortieren ziehen"
-        onTouchStart={(e) => {
-          // Prevent text selection on touch
-          e.currentTarget.focus();
-        }}
       >
         <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
           <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
@@ -103,7 +98,7 @@ function SortableMenuItem({
         const imageUrl = getItemImageUrl(item, true);
         if (!imageUrl) return null;
         return (
-          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageUrl}
@@ -115,46 +110,49 @@ function SortableMenuItem({
       })()}
 
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-gray-900">{item.name}</div>
-        {item.description && (
-          <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
-            {item.description}
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{item.name}</div>
+            {item.description && (
+              <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
+                {item.description}
+              </div>
+            )}
           </div>
-        )}
+          <span className="text-sm sm:text-lg font-bold text-emerald-600 whitespace-nowrap flex-shrink-0">
+            {formatPrice(item.price)}
+          </span>
+        </div>
         {itemAllergens.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-2">
+          <div className="flex flex-wrap gap-1 mt-1.5">
             {itemAllergens.map((allergen) => (
               <span
                 key={allergen.id}
                 title={allergen.name}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
+                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
               >
                 <span>{allergen.icon}</span>
-                <span className="hidden sm:inline">{allergen.name}</span>
               </span>
             ))}
           </div>
         )}
       </div>
-      <div className="flex items-center gap-3 flex-shrink-0">
-        <span className="text-lg font-bold text-emerald-600">
-          {formatPrice(item.price)}
-        </span>
+      <div className="flex flex-col sm:flex-row items-center gap-1 flex-shrink-0">
         <button
           onClick={() => onEdit(item)}
-          className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
+          className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg hover:bg-emerald-50"
           title="Bearbeiten"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
         </button>
         <button
           onClick={() => onDelete(item.id)}
-          className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
+          className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg hover:bg-red-50"
           title="Löschen"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
         </button>
@@ -212,6 +210,9 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('');
   const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
+  const [newItemImageMode, setNewItemImageMode] = useState<ImageMode>('auto');
+  const [newItemImageLibraryKey, setNewItemImageLibraryKey] = useState<string | null>(null);
+  const [showNewItemImageGallery, setShowNewItemImageGallery] = useState(false);
 
   // Edit item form
   const [editName, setEditName] = useState('');
@@ -308,8 +309,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       description: newItemDescription.trim() || null,
       price,
       image_url: null,
-      image_mode: 'auto',
-      image_library_key: null,
+      image_mode: newItemImageMode,
+      image_library_key: newItemImageMode === 'library' ? newItemImageLibraryKey : null,
       is_available: true,
       position: categoryItems.length,
       allergens: newItemAllergens,
@@ -324,6 +325,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     setNewItemPrice('');
     setNewItemCategory('');
     setNewItemAllergens([]);
+    setNewItemImageMode('auto');
+    setNewItemImageLibraryKey(null);
     setShowAddItem(false);
     loadData();
   };
@@ -513,6 +516,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
             if (e.target === e.currentTarget) {
               setShowAddItem(false);
               setNewItemAllergens([]);
+              setNewItemImageMode('auto');
+              setNewItemImageLibraryKey(null);
             }
           }}
         >
@@ -531,6 +536,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+                  setNewItemImageMode('auto');
+                  setNewItemImageLibraryKey(null);
                 }}
                 className="text-gray-400 hover:text-gray-600 p-2 -m-2 touch-manipulation rounded-xl hover:bg-gray-100 transition-colors"
               >
@@ -578,6 +585,95 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 onChange={(e) => setNewItemPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
+
+              {/* Image Mode Selector for New Item */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Gericht-Bild
+                </label>
+
+                <div className="flex items-start gap-4">
+                  {/* Preview Box */}
+                  <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
+                    {(() => {
+                      const previewUrl = newItemImageMode === 'auto'
+                        ? getItemImageUrl({ name: newItemName, image_mode: 'auto' }, true)
+                        : newItemImageMode === 'library' && newItemImageLibraryKey
+                          ? getItemImageUrl({ name: newItemName, image_mode: 'library', image_library_key: newItemImageLibraryKey }, true)
+                          : null;
+                      return previewUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Mode Buttons */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setNewItemImageMode('auto')}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          newItemImageMode === 'auto'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        🪄 Auto
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowNewItemImageGallery(true)}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          newItemImageMode === 'library'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        📚 Wählen
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewItemImageMode('none');
+                          setNewItemImageLibraryKey(null);
+                        }}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          newItemImageMode === 'none'
+                            ? 'bg-gray-800 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Keins
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {newItemImageMode === 'auto' && 'Bild wird automatisch basierend auf dem Namen gewählt'}
+                      {newItemImageMode === 'library' && (newItemImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Wählen"')}
+                      {newItemImageMode === 'none' && 'Kein Bild wird angezeigt'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Gallery Modal for New Item */}
+              {showNewItemImageGallery && (
+                <ImageGalleryModal
+                  selectedImage={newItemImageLibraryKey}
+                  onSelect={(imageKey) => {
+                    setNewItemImageMode('library');
+                    setNewItemImageLibraryKey(imageKey);
+                    setShowNewItemImageGallery(false);
+                  }}
+                  onClose={() => setShowNewItemImageGallery(false)}
+                />
+              )}
+
               <AllergenSelector
                 selected={newItemAllergens}
                 onToggle={(id) => toggleAllergen(id, true)}
@@ -586,6 +682,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+                  setNewItemImageMode('auto');
+                  setNewItemImageLibraryKey(null);
                 }}>
                   Abbrechen
                 </Button>
