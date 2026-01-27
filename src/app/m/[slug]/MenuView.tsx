@@ -116,11 +116,17 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const usedAllergenIds = Array.from(new Set(menuItems.flatMap(item => item.allergens || [])));
   const usedAllergens = getAllergensByIds(usedAllergenIds);
 
-  // Group items by category
-  const itemsByCategory = categories.map(category => ({
-    category,
-    items: menuItems.filter(item => item.category_id === category.id)
-  }));
+  // Group items by category, with specials first
+  const itemsByCategory = categories.map(category => {
+    const categoryItems = menuItems.filter(item => item.category_id === category.id);
+    // Sort: specials first, then by position
+    const sortedItems = [...categoryItems].sort((a, b) => {
+      if (a.is_special && !b.is_special) return -1;
+      if (!a.is_special && b.is_special) return 1;
+      return a.position - b.position;
+    });
+    return { category, items: sortedItems };
+  });
 
   const handleAllergenClick = (allergenId: string) => {
     setSelectedAllergen(selectedAllergen === allergenId ? null : allergenId);
@@ -274,9 +280,34 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                               {/* Content */}
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between gap-2">
-                                  <h3 className="text-base font-semibold text-gray-900 leading-tight">
-                                    {item.name}
-                                  </h3>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <h3 className="text-base font-semibold text-gray-900 leading-tight">
+                                        {item.name}
+                                      </h3>
+                                      {/* Badges */}
+                                      {item.is_special && (
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-semibold rounded">
+                                          ⭐ Tagesangebot
+                                        </span>
+                                      )}
+                                      {item.is_popular && !item.is_special && (
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-semibold rounded">
+                                          ❤️ Beliebt
+                                        </span>
+                                      )}
+                                      {item.is_vegan && (
+                                        <span className="inline-flex items-center px-1.5 py-0.5 bg-green-100 text-green-700 text-[10px] font-semibold rounded" title="Vegan">
+                                          🌱
+                                        </span>
+                                      )}
+                                      {item.is_vegetarian && !item.is_vegan && (
+                                        <span className="inline-flex items-center px-1.5 py-0.5 bg-green-50 text-green-600 text-[10px] font-semibold rounded" title="Vegetarisch">
+                                          🥬
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
                                   <span className="flex-shrink-0 text-base font-bold text-emerald-600">
                                     {formatPrice(item.price)}
                                   </span>

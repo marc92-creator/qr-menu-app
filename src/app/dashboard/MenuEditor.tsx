@@ -10,6 +10,113 @@ import { ImageUpload } from '@/components/ImageUpload';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { uploadMenuItemImage, deleteMenuItemImage } from '@/lib/imageUpload';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+// Sortable Category Wrapper
+function SortableCategory({
+  category,
+  children,
+  isDragDisabled
+}: {
+  category: Category;
+  children: React.ReactNode;
+  isDragDisabled: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id, disabled: isDragDisabled });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <div className="relative">
+        {!isDragDisabled && (
+          <div
+            {...listeners}
+            className="absolute left-2 top-4 cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 z-10"
+            title="Kategorie verschieben"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+            </svg>
+          </div>
+        )}
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// Sortable Menu Item Wrapper
+function SortableMenuItem({
+  item,
+  children,
+  isDragDisabled
+}: {
+  item: MenuItem;
+  children: React.ReactNode;
+  isDragDisabled: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id, disabled: isDragDisabled });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    backgroundColor: isDragging ? '#f9fafb' : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} className="relative">
+      {!isDragDisabled && (
+        <div
+          {...listeners}
+          className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-2 text-gray-300 hover:text-gray-500 z-10"
+          title="Gericht verschieben"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+          </svg>
+        </div>
+      )}
+      {children}
+    </div>
+  );
+}
 
 interface MenuEditorProps {
   restaurant: Restaurant;
@@ -33,6 +140,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
   const [newItemImagePreview, setNewItemImagePreview] = useState<string | null>(null);
   const [newItemImageFile, setNewItemImageFile] = useState<File | null>(null);
+  const [newItemVegetarian, setNewItemVegetarian] = useState(false);
+  const [newItemVegan, setNewItemVegan] = useState(false);
+  const [newItemPopular, setNewItemPopular] = useState(false);
+  const [newItemSpecial, setNewItemSpecial] = useState(false);
 
   // Edit item form
   const [editName, setEditName] = useState('');
@@ -42,9 +153,25 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
   const [editImageRemoved, setEditImageRemoved] = useState(false);
+  const [editVegetarian, setEditVegetarian] = useState(false);
+  const [editVegan, setEditVegan] = useState(false);
+  const [editPopular, setEditPopular] = useState(false);
+  const [editSpecial, setEditSpecial] = useState(false);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
+
+  // Drag & Drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Update the restaurant's updated_at timestamp when menu changes
   const updateRestaurantTimestamp = async () => {
@@ -53,6 +180,63 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       .from('restaurants')
       .update({ updated_at: new Date().toISOString() })
       .eq('id', restaurant.id);
+  };
+
+  // Handle category reordering
+  const handleCategoryDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
+    const oldIndex = sortedCategories.findIndex(c => c.id === active.id);
+    const newIndex = sortedCategories.findIndex(c => c.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const reordered = arrayMove(sortedCategories, oldIndex, newIndex);
+
+    const supabase = createClient();
+    // Update positions in database
+    const updates = reordered.map((cat, index) =>
+      supabase
+        .from('menu_categories')
+        .update({ position: index })
+        .eq('id', cat.id)
+    );
+
+    await Promise.all(updates);
+    await updateRestaurantTimestamp();
+    onUpdate();
+  };
+
+  // Handle menu item reordering within a category
+  const handleItemDragEnd = async (event: DragEndEvent, categoryId: string) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const categoryItems = menuItems
+      .filter(i => i.category_id === categoryId)
+      .sort((a, b) => a.position - b.position);
+
+    const oldIndex = categoryItems.findIndex(i => i.id === active.id);
+    const newIndex = categoryItems.findIndex(i => i.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const reordered = arrayMove(categoryItems, oldIndex, newIndex);
+
+    const supabase = createClient();
+    // Update positions in database
+    const updates = reordered.map((item, index) =>
+      supabase
+        .from('menu_items')
+        .update({ position: index })
+        .eq('id', item.id)
+    );
+
+    await Promise.all(updates);
+    await updateRestaurantTimestamp();
+    onUpdate();
   };
 
   const toggleAllergen = (allergenId: string, isNewItem: boolean) => {
@@ -80,6 +264,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     setEditImagePreview(item.image_url);
     setEditImageFile(null);
     setEditImageRemoved(false);
+    setEditVegetarian(item.is_vegetarian || false);
+    setEditVegan(item.is_vegan || false);
+    setEditPopular(item.is_popular || false);
+    setEditSpecial(item.is_special || false);
   };
 
   const handleSaveItem = async () => {
@@ -120,6 +308,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           price,
           allergens: editAllergens,
           image_url: imageUrl,
+          is_vegetarian: editVegetarian,
+          is_vegan: editVegan,
+          is_popular: editPopular,
+          is_special: editSpecial,
         })
         .eq('id', editingItem.id);
 
@@ -181,6 +373,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           price,
           position: categoryItems.length,
           allergens: newItemAllergens,
+          is_vegetarian: newItemVegetarian,
+          is_vegan: newItemVegan,
+          is_popular: newItemPopular,
+          is_special: newItemSpecial,
         })
         .select()
         .single();
@@ -206,6 +402,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
       setNewItemAllergens([]);
       setNewItemImagePreview(null);
       setNewItemImageFile(null);
+      setNewItemVegetarian(false);
+      setNewItemVegan(false);
+      setNewItemPopular(false);
+      setNewItemSpecial(false);
       setShowAddItem(false);
       onUpdate();
     } catch (error) {
@@ -234,6 +434,95 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     await updateRestaurantTimestamp();
     onUpdate();
   };
+
+  // Badge Selector Component
+  const BadgeSelector = ({
+    vegetarian,
+    vegan,
+    popular,
+    special,
+    onVegetarianChange,
+    onVeganChange,
+    onPopularChange,
+    onSpecialChange,
+  }: {
+    vegetarian: boolean;
+    vegan: boolean;
+    popular: boolean;
+    special: boolean;
+    onVegetarianChange: (v: boolean) => void;
+    onVeganChange: (v: boolean) => void;
+    onPopularChange: (v: boolean) => void;
+    onSpecialChange: (v: boolean) => void;
+  }) => (
+    <div className="space-y-3">
+      <label className="block text-sm font-semibold text-gray-700">
+        Badges & Kennzeichnungen
+      </label>
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => onVeganChange(!vegan)}
+          className={`
+            flex items-center gap-2 p-3 rounded-xl text-left text-sm
+            transition-all duration-200 touch-manipulation min-h-[48px]
+            ${vegan
+              ? 'bg-green-100 text-green-800 ring-2 ring-green-500 shadow-sm'
+              : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+            }
+          `}
+        >
+          <span className="text-lg">🌱</span>
+          <span className="font-medium">Vegan</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onVegetarianChange(!vegetarian)}
+          className={`
+            flex items-center gap-2 p-3 rounded-xl text-left text-sm
+            transition-all duration-200 touch-manipulation min-h-[48px]
+            ${vegetarian
+              ? 'bg-green-100 text-green-800 ring-2 ring-green-500 shadow-sm'
+              : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+            }
+          `}
+        >
+          <span className="text-lg">🥬</span>
+          <span className="font-medium">Vegetarisch</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onPopularChange(!popular)}
+          className={`
+            flex items-center gap-2 p-3 rounded-xl text-left text-sm
+            transition-all duration-200 touch-manipulation min-h-[48px]
+            ${popular
+              ? 'bg-red-100 text-red-800 ring-2 ring-red-500 shadow-sm'
+              : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+            }
+          `}
+        >
+          <span className="text-lg">❤️</span>
+          <span className="font-medium">Beliebt</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onSpecialChange(!special)}
+          className={`
+            flex items-center gap-2 p-3 rounded-xl text-left text-sm
+            transition-all duration-200 touch-manipulation min-h-[48px]
+            ${special
+              ? 'bg-amber-100 text-amber-800 ring-2 ring-amber-500 shadow-sm'
+              : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+            }
+          `}
+        >
+          <span className="text-lg">⭐</span>
+          <span className="font-medium">Tagesangebot</span>
+        </button>
+      </div>
+    </div>
+  );
 
   // Allergen Selector Component
   const AllergenSelector = ({ selected, onToggle }: { selected: string[], onToggle: (id: string) => void }) => (
@@ -475,12 +764,26 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 selected={newItemAllergens}
                 onToggle={(id) => toggleAllergen(id, true)}
               />
+              <BadgeSelector
+                vegetarian={newItemVegetarian}
+                vegan={newItemVegan}
+                popular={newItemPopular}
+                special={newItemSpecial}
+                onVegetarianChange={setNewItemVegetarian}
+                onVeganChange={setNewItemVegan}
+                onPopularChange={setNewItemPopular}
+                onSpecialChange={setNewItemSpecial}
+              />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
                   setNewItemImagePreview(null);
                   setNewItemImageFile(null);
+                  setNewItemVegetarian(false);
+                  setNewItemVegan(false);
+                  setNewItemPopular(false);
+                  setNewItemSpecial(false);
                 }}>
                   Abbrechen
                 </Button>
@@ -570,6 +873,16 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 selected={editAllergens}
                 onToggle={(id) => toggleAllergen(id, false)}
               />
+              <BadgeSelector
+                vegetarian={editVegetarian}
+                vegan={editVegan}
+                popular={editPopular}
+                special={editSpecial}
+                onVegetarianChange={setEditVegetarian}
+                onVeganChange={setEditVegan}
+                onPopularChange={setEditPopular}
+                onSpecialChange={setEditSpecial}
+              />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setEditingItem(null);
@@ -656,37 +969,50 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           </div>
         </div>
       ) : (
-        <div className="space-y-6">
-          {categories.map((category) => {
-            const items = menuItems.filter((i) => i.category_id === category.id);
+        <>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleCategoryDragEnd}
+          >
+            <SortableContext
+              items={[...categories].sort((a, b) => a.position - b.position).map(c => c.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-6">
+              {[...categories].sort((a, b) => a.position - b.position).map((category) => {
+                const items = menuItems
+                  .filter((i) => i.category_id === category.id)
+                  .sort((a, b) => a.position - b.position);
 
-            return (
-              <div key={category.id} className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200">
-                {/* Category Header */}
-                <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
-                      <span className="text-white text-lg">📂</span>
-                    </div>
-                    <div>
-                      <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
-                      <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
-                    </div>
-                  </div>
-                  {!isDemo && (
-                    <button
-                      onClick={() => handleDeleteCategory(category.id)}
-                      className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
-                      title="Kategorie löschen"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
+                return (
+                  <SortableCategory key={category.id} category={category} isDragDisabled={isDemo}>
+                    <div className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200">
+                      {/* Category Header */}
+                      <div className={`px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between ${!isDemo ? 'pl-12' : ''}`}>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <span className="text-white text-lg">📂</span>
+                          </div>
+                          <div>
+                            <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
+                            <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
+                          </div>
+                        </div>
+                        {!isDemo && (
+                          <button
+                            onClick={() => handleDeleteCategory(category.id)}
+                            className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
+                            title="Kategorie löschen"
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
 
-                {items.length === 0 ? (
+                      {items.length === 0 ? (
                   <div className="px-5 sm:px-6 py-8 text-center">
                     <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl mb-4">
                       <span className="text-2xl">🍽️</span>
@@ -710,18 +1036,54 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                       </button>
                     )}
                   </div>
-                ) : (
-                  <div className="divide-y divide-gray-100">
-                    {items.map((item) => {
-                      const itemAllergens = getAllergensByIds(item.allergens || []);
-
-                      return (
-                        <div
-                          key={item.id}
-                          className="px-5 sm:px-6 py-4 flex items-start gap-4 hover:bg-gray-50/50 transition-colors group"
+                      ) : (
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={(event) => handleItemDragEnd(event, category.id)}
                         >
+                          <SortableContext
+                            items={items.map(i => i.id)}
+                            strategy={verticalListSortingStrategy}
+                          >
+                            <div className="divide-y divide-gray-100">
+                              {items.map((item) => {
+                                const itemAllergens = getAllergensByIds(item.allergens || []);
+
+                                return (
+                                  <SortableMenuItem key={item.id} item={item} isDragDisabled={isDemo}>
+                                    <div
+                                      className={`px-5 sm:px-6 py-4 flex items-start gap-4 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-12' : ''}`}
+                                    >
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-gray-900">{item.name}</div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-semibold text-gray-900">{item.name}</span>
+                              {/* Item Badges */}
+                              {item.is_special && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
+                                  <span>⭐</span>
+                                  <span className="hidden sm:inline">Tagesangebot</span>
+                                </span>
+                              )}
+                              {item.is_popular && !item.is_special && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                                  <span>❤️</span>
+                                  <span className="hidden sm:inline">Beliebt</span>
+                                </span>
+                              )}
+                              {item.is_vegan && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+                                  <span>🌱</span>
+                                  <span className="hidden sm:inline">Vegan</span>
+                                </span>
+                              )}
+                              {item.is_vegetarian && !item.is_vegan && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+                                  <span>🥬</span>
+                                  <span className="hidden sm:inline">Vegetarisch</span>
+                                </span>
+                              )}
+                            </div>
                             {item.description && (
                               <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
                                 {item.description}
@@ -769,17 +1131,24 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                 </button>
-                              </>
-                            )}
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </SortableMenuItem>
+                              );
+                            })}
                           </div>
-                        </div>
-                      );
-                    })}
+                        </SortableContext>
+                      </DndContext>
+                    )}
                   </div>
-                )}
+                </SortableCategory>
+              );
+              })}
               </div>
-            );
-          })}
+            </SortableContext>
+          </DndContext>
 
           {/* Quick Add Section - Hide in demo mode */}
           {!isDemo && (
@@ -837,7 +1206,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

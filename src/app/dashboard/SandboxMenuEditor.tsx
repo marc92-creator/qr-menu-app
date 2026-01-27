@@ -127,6 +127,10 @@ export function SandboxMenuEditor({ onDataChange }: SandboxMenuEditorProps) {
       is_available: true,
       position: categoryItems.length,
       allergens: newItemAllergens,
+      is_vegetarian: false,
+      is_vegan: false,
+      is_popular: false,
+      is_special: false,
     });
 
     setNewItemName('');

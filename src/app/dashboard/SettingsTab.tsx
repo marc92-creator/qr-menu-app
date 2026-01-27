@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { Restaurant, Subscription } from '@/types/database';
+import { Restaurant, Subscription, OpeningHours, MenuTheme } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { THEME_LIST } from '@/lib/themes';
 
 interface SettingsTabProps {
   restaurant: Restaurant;
@@ -13,13 +14,47 @@ interface SettingsTabProps {
   onUpdate: () => void;
 }
 
+const DAYS = [
+  { key: 'mo', label: 'Montag' },
+  { key: 'di', label: 'Dienstag' },
+  { key: 'mi', label: 'Mittwoch' },
+  { key: 'do', label: 'Donnerstag' },
+  { key: 'fr', label: 'Freitag' },
+  { key: 'sa', label: 'Samstag' },
+  { key: 'so', label: 'Sonntag' },
+] as const;
+
+const DEFAULT_HOURS: OpeningHours = {
+  mo: { open: '11:00', close: '22:00' },
+  di: { open: '11:00', close: '22:00' },
+  mi: { open: '11:00', close: '22:00' },
+  do: { open: '11:00', close: '22:00' },
+  fr: { open: '11:00', close: '23:00' },
+  sa: { open: '12:00', close: '23:00' },
+  so: { open: '12:00', close: '21:00' },
+};
+
 export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabProps) {
   const [name, setName] = useState(restaurant.name);
   const [address, setAddress] = useState(restaurant.address || '');
   const [whatsappNumber, setWhatsappNumber] = useState(restaurant.whatsapp_number || '');
+  const [openingHours, setOpeningHours] = useState<OpeningHours>(
+    restaurant.opening_hours || DEFAULT_HOURS
+  );
+  const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
   const [loading, setLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
+    setOpeningHours(prev => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value,
+      },
+    }));
+  };
 
   const handleSave = async () => {
     setLoading(true);
@@ -32,6 +67,8 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         name,
         address: address || null,
         whatsapp_number: whatsappNumber || null,
+        opening_hours: openingHours,
+        theme,
       })
       .eq('id', restaurant.id);
 
@@ -161,6 +198,95 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             />
             <p className="text-xs text-gray-500 mt-1.5">
               Wird auf der Speisekarte als Kontaktbutton angezeigt
+            </p>
+          </div>
+
+          {/* Opening Hours */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Öffnungszeiten
+            </label>
+            <div className="space-y-2">
+              {DAYS.map(({ key, label }) => {
+                const dayHours = openingHours[key] || { open: '11:00', close: '22:00' };
+                const isClosed = dayHours.closed;
+
+                return (
+                  <div key={key} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                    <span className="w-24 text-sm font-medium text-gray-700">{label}</span>
+
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isClosed || false}
+                        onChange={(e) => updateDayHours(key, 'closed', e.target.checked)}
+                        disabled={isDemo}
+                        className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <span className="text-sm text-gray-500">Ruhetag</span>
+                    </label>
+
+                    {!isClosed && (
+                      <>
+                        <input
+                          type="time"
+                          value={dayHours.open}
+                          onChange={(e) => updateDayHours(key, 'open', e.target.value)}
+                          disabled={isDemo}
+                          className="px-2 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-100 disabled:text-gray-400"
+                        />
+                        <span className="text-gray-400">-</span>
+                        <input
+                          type="time"
+                          value={dayHours.close}
+                          onChange={(e) => updateDayHours(key, 'close', e.target.value)}
+                          disabled={isDemo}
+                          className="px-2 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-100 disabled:text-gray-400"
+                        />
+                      </>
+                    )}
+
+                    {isClosed && (
+                      <span className="text-sm text-gray-400 italic">Geschlossen</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Wird auf der Speisekarte mit &quot;Geöffnet/Geschlossen&quot; Status angezeigt
+            </p>
+          </div>
+
+          {/* Theme Selection */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Menü-Design
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {THEME_LIST.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => !isDemo && setTheme(t.id)}
+                  disabled={isDemo}
+                  className={`
+                    p-4 rounded-xl border-2 transition-all text-left
+                    ${theme === t.id
+                      ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500/20'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                    }
+                    ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                  `}
+                >
+                  <div className="text-2xl mb-2">{t.preview}</div>
+                  <div className="font-medium text-gray-900 text-sm">{t.name}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{t.description}</div>
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Wähle ein Design für deine öffentliche Speisekarte
             </p>
           </div>
 

@@ -8,6 +8,8 @@ export interface OpeningHours {
   [key: string]: { open: string; close: string; closed?: boolean };
 }
 
+export type MenuTheme = 'classic' | 'dark' | 'rustic' | 'modern' | 'oriental';
+
 export interface Restaurant {
   id: string;
   owner_id: string | null;
@@ -17,6 +19,7 @@ export interface Restaurant {
   phone: string | null;
   whatsapp_number: string | null;
   opening_hours: OpeningHours | null;
+  theme: MenuTheme;
   logo_url: string | null;
   is_active: boolean;
   is_demo: boolean;
@@ -40,6 +43,10 @@ export interface MenuItem {
   price: number;
   image_url: string | null;
   is_available: boolean;
+  is_vegetarian: boolean;
+  is_vegan: boolean;
+  is_popular: boolean;
+  is_special: boolean;
   position: number;
   allergens: string[];
   created_at: string;
