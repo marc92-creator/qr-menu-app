@@ -105,6 +105,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Get theme configuration
   const theme = getTheme(restaurant.theme || 'classic');
@@ -118,9 +119,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
   // Intersection Observer to update active category while scrolling
   useEffect(() => {
-    if (isEmbedded || categories.length === 0) return;
+    if (categories.length === 0) return;
 
-    const observerOptions = {
+    // For embedded mode, use the parent scroll container as the root
+    const scrollRoot = isEmbedded ? scrollContainerRef.current?.parentElement : null;
+
+    const observerOptions: IntersectionObserverInit = {
+      root: scrollRoot,
       rootMargin: '-20% 0px -70% 0px', // Trigger when section is in upper third
       threshold: 0,
     };
@@ -183,15 +188,32 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     // Scroll to category section
     const categorySection = categoryRefs.current.get(categoryId);
     if (categorySection) {
-      // Calculate header height dynamically
-      const headerHeight = isEmbedded ? 20 : 160; // More space for sticky header
-      const elementPosition = categorySection.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+      const headerHeight = 160; // Height of sticky header
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      if (isEmbedded) {
+        // For embedded mode, find the scrollable parent container
+        const scrollParent = scrollContainerRef.current?.parentElement;
+        if (scrollParent) {
+          const containerTop = scrollParent.getBoundingClientRect().top;
+          const elementTop = categorySection.getBoundingClientRect().top;
+          const currentScroll = scrollParent.scrollTop;
+          const offsetPosition = currentScroll + (elementTop - containerTop) - headerHeight;
+
+          scrollParent.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      } else {
+        // For standalone page, scroll the window
+        const elementPosition = categorySection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     }
   };
 
@@ -220,7 +242,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
   return (
     <div
-      className="min-h-screen"
+      ref={scrollContainerRef}
+      className="min-h-screen relative"
       style={{
         backgroundColor: styles.background,
         backgroundImage: styles.backgroundPattern || 'none',
@@ -229,14 +252,14 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       {/* Decorative gradient overlay */}
       {styles.decorativeGradient && (
         <div
-          className="fixed inset-0 pointer-events-none z-0"
+          className={`${isEmbedded ? 'absolute' : 'fixed'} inset-0 pointer-events-none z-0`}
           style={{ backgroundImage: styles.decorativeGradient }}
         />
       )}
 
-      {/* Header - Modern Card Design - Sticky with both restaurant info and pills */}
+      {/* Header - Modern Card Design - Always Sticky */}
       <header
-        className={`${isEmbedded ? '' : 'sticky top-0'} z-20 backdrop-blur-md shadow-sm`}
+        className="sticky top-0 z-20 backdrop-blur-md shadow-sm"
         style={{
           background: styles.headerBg,
           borderBottom: `1px solid ${styles.headerBorder}`,
@@ -372,10 +395,11 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               {itemsByCategory.map(({ category, items }) => (
                 <section
                   key={category.id}
+                  id={`category-${category.id}`}
                   ref={(el) => {
                     if (el) categoryRefs.current.set(category.id, el);
                   }}
-                  className={isEmbedded ? 'scroll-mt-4' : 'scroll-mt-44'}
+                  className="scroll-mt-44"
                 >
                   {/* Category Header */}
                   <div
@@ -423,10 +447,10 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                             onMouseLeave={() => setHoveredCard(null)}
                           >
                             <div className="flex gap-4">
-                              {/* Image or Placeholder */}
-                              <div className="flex-shrink-0">
-                                {imageUrl ? (
-                                  isSvgImage ? (
+                              {/* Image - only show if there's an image URL */}
+                              {imageUrl && (
+                                <div className="flex-shrink-0">
+                                  {isSvgImage ? (
                                     /* eslint-disable-next-line @next/next/no-img-element */
                                     <img
                                       src={imageUrl}
@@ -440,18 +464,9 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                       alt={item.name}
                                       className="w-20 h-20 rounded-lg"
                                     />
-                                  )
-                                ) : (
-                                  <div
-                                    className="w-20 h-20 rounded-lg flex items-center justify-center"
-                                    style={{ backgroundColor: styles.surfaceHover }}
-                                  >
-                                    <svg className="w-8 h-8" style={{ color: styles.textMuted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                  </div>
-                                )}
-                              </div>
+                                  )}
+                                </div>
+                              )}
 
                               {/* Content */}
                               <div className="flex-1 min-w-0">

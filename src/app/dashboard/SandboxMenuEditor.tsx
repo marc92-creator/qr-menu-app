@@ -7,12 +7,13 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
-import { getItemImageUrl } from '@/lib/foodImages';
+import { getItemImageUrl, getCategoryImage, FOOD_IMAGE_LIBRARY, ImageMode } from '@/lib/foodImages';
 import {
   DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -162,11 +163,17 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [hasModifications, setHasModifications] = useState(false);
 
-  // Drag and drop sensors
+  // Drag and drop sensors with touch support
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -203,6 +210,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const [editDescription, setEditDescription] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editAllergens, setEditAllergens] = useState<string[]>([]);
+  const [editImageMode, setEditImageMode] = useState<ImageMode>('auto');
+  const [editImageLibraryKey, setEditImageLibraryKey] = useState<string | null>(null);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -244,6 +253,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     setEditDescription(item.description || '');
     setEditPrice(item.price.toFixed(2).replace('.', ','));
     setEditAllergens(item.allergens || []);
+    setEditImageMode(item.image_mode || 'auto');
+    setEditImageLibraryKey(item.image_library_key || null);
   };
 
   const handleSaveItem = () => {
@@ -257,6 +268,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       description: editDescription.trim() || null,
       price,
       allergens: editAllergens,
+      image_mode: editImageMode,
+      image_library_key: editImageMode === 'library' ? editImageLibraryKey : null,
     });
 
     setEditingItem(null);
@@ -626,6 +639,96 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 onChange={(e) => setEditPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
+
+              {/* Image Mode Selector */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Gericht-Bild
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditImageMode('auto')}
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                      editImageMode === 'auto'
+                        ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🪄 Automatisch
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditImageMode('library')}
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                      editImageMode === 'library'
+                        ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    📚 Aus Bibliothek
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditImageMode('none')}
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                      editImageMode === 'none'
+                        ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    ❌ Kein Bild
+                  </button>
+                </div>
+
+                {/* Preview current image */}
+                {editImageMode !== 'none' && (
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500 mb-2">Vorschau:</p>
+                    {(() => {
+                      const previewUrl = editImageMode === 'auto'
+                        ? getItemImageUrl({ name: editName, image_mode: 'auto' }, true)
+                        : editImageMode === 'library' && editImageLibraryKey
+                          ? getItemImageUrl({ name: editName, image_mode: 'library', image_library_key: editImageLibraryKey }, true)
+                          : null;
+                      return previewUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={previewUrl} alt="Vorschau" className="w-20 h-20 rounded-lg object-cover bg-gray-50" />
+                      ) : (
+                        <div className="w-20 h-20 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                          Kein Bild
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* Library Grid */}
+                {editImageMode === 'library' && (
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500 mb-2">Bild auswählen:</p>
+                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-40 overflow-y-auto p-1 -m-1">
+                      {FOOD_IMAGE_LIBRARY.filter(item => item.id !== 'default').map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setEditImageLibraryKey(item.id)}
+                          className={`p-1.5 rounded-lg transition-all ${
+                            editImageLibraryKey === item.id
+                              ? 'ring-2 ring-emerald-500 bg-emerald-50'
+                              : 'bg-gray-50 hover:bg-gray-100'
+                          }`}
+                          title={item.label}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={item.image} alt={item.label} className="w-full h-10 object-contain" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <AllergenSelector
                 selected={editAllergens}
                 onToggle={(id) => toggleAllergen(id, false)}
@@ -678,9 +781,15 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 {/* Category Header */}
                 <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
-                      <span className="text-white text-lg">📂</span>
-                    </div>
+                    {(() => {
+                      const catImage = getCategoryImage(category.name);
+                      return (
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={catImage.image} alt={category.name} className="w-8 h-8 object-contain" />
+                        </div>
+                      );
+                    })()}
                     <div>
                       <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
                       <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>

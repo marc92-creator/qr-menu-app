@@ -332,6 +332,49 @@ export function searchImages(query: string): FoodImageEntry[] {
 export type ImageMode = 'auto' | 'library' | 'custom' | 'none';
 
 /**
+ * Category Image Mapping
+ * Maps category names to icons and images
+ */
+export interface CategoryImageEntry {
+  keywords: string[];
+  icon: string;
+  image: string;
+}
+
+export const CATEGORY_IMAGES: Record<string, CategoryImageEntry> = {
+  doener: { keywords: ['döner', 'doner', 'kebab', 'kebap', 'türkisch', 'wraps'], icon: '🥙', image: '/food-images/doener.svg' },
+  beilagen: { keywords: ['beilagen', 'sides', 'extras'], icon: '🍟', image: '/food-images/pommes.svg' },
+  getraenke: { keywords: ['getränke', 'drinks', 'trinken'], icon: '🥤', image: '/food-images/cola.svg' },
+  pizza: { keywords: ['pizza'], icon: '🍕', image: '/food-images/pizza.svg' },
+  burger: { keywords: ['burger'], icon: '🍔', image: '/food-images/burger.svg' },
+  pasta: { keywords: ['pasta', 'nudeln', 'spaghetti'], icon: '🍝', image: '/food-images/pasta.svg' },
+  salate: { keywords: ['salat', 'salads', 'salate'], icon: '🥗', image: '/food-images/salat.svg' },
+  desserts: { keywords: ['dessert', 'süß', 'nachspeise', 'nachtisch', 'süßes'], icon: '🍰', image: '/food-images/baklava.svg' },
+  fruehstueck: { keywords: ['frühstück', 'breakfast', 'morgen'], icon: '🥐', image: '/food-images/croissant.svg' },
+  suppen: { keywords: ['suppe', 'soup', 'suppen'], icon: '🍜', image: '/food-images/suppe.svg' },
+  hauptgerichte: { keywords: ['hauptgericht', 'main', 'gericht'], icon: '🍽️', image: '/food-images/schnitzel.svg' },
+  vorspeisen: { keywords: ['vorspeise', 'starter', 'appetizer'], icon: '🥗', image: '/food-images/hummus.svg' },
+  default: { keywords: [], icon: '🍽️', image: '/food-images/default-food.svg' },
+};
+
+/**
+ * Get category icon and image based on category name
+ */
+export function getCategoryImage(categoryName: string): { icon: string; image: string } {
+  const nameLower = categoryName.toLowerCase();
+
+  for (const [, entry] of Object.entries(CATEGORY_IMAGES)) {
+    for (const keyword of entry.keywords) {
+      if (nameLower.includes(keyword.toLowerCase())) {
+        return { icon: entry.icon, image: entry.image };
+      }
+    }
+  }
+
+  return { icon: CATEGORY_IMAGES.default.icon, image: CATEGORY_IMAGES.default.image };
+}
+
+/**
  * Get the actual image URL for a menu item
  */
 export function getItemImageUrl(
