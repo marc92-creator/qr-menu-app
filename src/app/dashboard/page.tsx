@@ -2,22 +2,40 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Restaurant, Category, MenuItem, Subscription, RestaurantStats, ScanStats } from '@/types/database';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 import { SetupWizard } from './SetupWizard';
 import { MenuEditor } from './MenuEditor';
+import { SandboxMenuEditor } from './SandboxMenuEditor';
 import { QRCodeTab } from './QRCodeTab';
 import { SettingsTab } from './SettingsTab';
+import { SandboxSettingsTab } from './SandboxSettingsTab';
 import { RestaurantList } from './RestaurantList';
 import { OnboardingChecklist } from '@/components/OnboardingChecklist';
+import { MenuView } from '@/app/m/[slug]/MenuView';
+import {
+  getSandboxData,
+  resetSandboxData,
+  SandboxData,
+} from '@/lib/sandboxStorage';
 
-type Tab = 'restaurants' | 'menu' | 'qr' | 'settings';
+type Tab = 'restaurants' | 'menu' | 'preview' | 'qr' | 'settings';
 
 const tabConfig: { id: Tab; label: string; shortLabel: string; icon: string }[] = [
   { id: 'restaurants', label: 'Restaurants', shortLabel: 'Home', icon: '🏠' },
   { id: 'menu', label: 'Menü bearbeiten', shortLabel: 'Menü', icon: '📋' },
+  { id: 'preview', label: 'Vorschau', shortLabel: 'Vorschau', icon: '👁️' },
+  { id: 'qr', label: 'QR-Code', shortLabel: 'QR', icon: '📱' },
+  { id: 'settings', label: 'Einstellungen', shortLabel: 'Settings', icon: '⚙️' },
+];
+
+// Sandbox mode only shows these tabs
+const sandboxTabConfig: { id: Tab; label: string; shortLabel: string; icon: string }[] = [
+  { id: 'menu', label: 'Menü bearbeiten', shortLabel: 'Menü', icon: '📋' },
+  { id: 'preview', label: 'Vorschau', shortLabel: 'Vorschau', icon: '👁️' },
   { id: 'qr', label: 'QR-Code', shortLabel: 'QR', icon: '📱' },
   { id: 'settings', label: 'Einstellungen', shortLabel: 'Settings', icon: '⚙️' },
 ];
@@ -25,14 +43,18 @@ const tabConfig: { id: Tab; label: string; shortLabel: string; icon: string }[] 
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isSandbox, setIsSandbox] = useState(false);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [restaurantStats, setRestaurantStats] = useState<Record<string, RestaurantStats>>({});
-  const [activeTab, setActiveTab] = useState<Tab>('restaurants');
+  const [activeTab, setActiveTab] = useState<Tab>('menu');
   const [showSetupWizard, setShowSetupWizard] = useState(false);
+
+  // Sandbox data state
+  const [sandboxData, setSandboxData] = useState<SandboxData | null>(null);
 
   useEffect(() => {
     loadData();
@@ -45,11 +67,15 @@ export default function DashboardPage() {
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        // Set loading false before redirect to prevent infinite spinner on mobile
+        // No user - enter sandbox mode
+        setIsSandbox(true);
+        loadSandboxData();
         setLoading(false);
-        router.push('/login');
         return;
       }
+
+      // User is logged in - normal dashboard mode
+      setIsSandbox(false);
 
       // Load all restaurants for this user
       const { data: restaurantsData } = await supabase
@@ -128,6 +154,7 @@ export default function DashboardPage() {
             await selectRestaurant(updated);
           }
         }
+        setActiveTab('restaurants');
       } else {
         setRestaurants([]);
         setRestaurantStats({});
@@ -146,12 +173,30 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error);
-      // On error, redirect to login as a safety measure
-      router.push('/login');
+      // On error, show sandbox mode
+      setIsSandbox(true);
+      loadSandboxData();
     } finally {
-      // Always stop loading, even if there was an error
       setLoading(false);
     }
+  };
+
+  const loadSandboxData = () => {
+    const data = getSandboxData();
+    setSandboxData(data);
+    setSelectedRestaurant(data.restaurant);
+    setCategories(data.categories);
+    setMenuItems(data.menuItems);
+  };
+
+  const handleSandboxUpdate = () => {
+    loadSandboxData();
+  };
+
+  const handleResetSandbox = () => {
+    if (!confirm('Alle Änderungen zurücksetzen? Die Demo-Daten werden wiederhergestellt.')) return;
+    resetSandboxData();
+    loadSandboxData();
   };
 
   const selectRestaurant = async (restaurant: Restaurant) => {
@@ -223,10 +268,198 @@ export default function DashboardPage() {
     );
   }
 
-  // Show setup wizard
+  // Sandbox Mode UI
+  if (isSandbox && sandboxData) {
+    const currentTabs = sandboxTabConfig;
+
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] pb-24 sm:pb-0">
+        {/* Header - Sandbox Mode */}
+        <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100/50 sticky top-0 z-20 shadow-sm">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Logo />
+              <span className="bg-gradient-to-r from-purple-500 to-violet-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                Sandbox
+              </span>
+            </div>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetSandbox}
+                className="text-sm px-3 py-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-500"
+              >
+                <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span className="hidden sm:inline">Zurücksetzen</span>
+              </Button>
+              <Link href="/register">
+                <Button
+                  size="sm"
+                  className="text-sm px-4 py-2 rounded-xl shadow-lg shadow-emerald-500/20"
+                >
+                  <span className="hidden sm:inline">Kostenlos registrieren</span>
+                  <span className="sm:hidden">Registrieren</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Sandbox Info Banner */}
+          <div className="bg-gradient-to-r from-purple-50 to-violet-50 border-y border-purple-100 px-4 py-2">
+            <div className="max-w-6xl mx-auto flex items-center justify-center gap-2 text-sm text-purple-700">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>
+                <strong>Sandbox-Modus:</strong> Alle Änderungen werden lokal gespeichert.
+                <Link href="/register" className="underline ml-1 font-medium hover:text-purple-900">
+                  Jetzt kostenlos registrieren
+                </Link>
+              </span>
+            </div>
+          </div>
+
+          {/* Desktop Tabs */}
+          <div className="hidden sm:block border-t border-gray-100/50">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <nav className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
+                {currentTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`
+                      relative px-5 py-4 font-medium text-sm whitespace-nowrap transition-all duration-200
+                      ${activeTab === tab.id
+                        ? 'text-emerald-600'
+                        : 'text-gray-500 hover:text-gray-900'
+                      }
+                    `}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-lg">{tab.icon}</span>
+                      {tab.label}
+                    </span>
+                    {activeTab === tab.id && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full" />
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+        </header>
+
+        {/* Content */}
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          {activeTab === 'menu' && (
+            <SandboxMenuEditor onUpdate={handleSandboxUpdate} />
+          )}
+
+          {activeTab === 'preview' && sandboxData && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white text-lg">👁️</span>
+                    </div>
+                    <div>
+                      <h2 className="font-bold text-gray-900">Live-Vorschau</h2>
+                      <p className="text-sm text-gray-500">So sehen deine Gäste die Speisekarte</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Phone mockup with menu preview */}
+              <div className="flex justify-center">
+                <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                  <div className="bg-white rounded-[2.5rem] overflow-hidden h-[700px] overflow-y-auto">
+                    <MenuView
+                      restaurant={sandboxData.restaurant}
+                      categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
+                      menuItems={sandboxData.menuItems}
+                      showWatermark={true}
+                      isDemo={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'qr' && (
+            <div className="bg-white rounded-2xl p-8 shadow-sm ring-1 ring-gray-100 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <span className="text-4xl">🔒</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">QR-Code nur mit Account</h3>
+              <p className="text-gray-500 max-w-md mx-auto mb-6">
+                Um einen QR-Code für deine Speisekarte zu generieren, erstelle einen kostenlosen Account.
+                Deine Sandbox-Daten werden automatisch übernommen.
+              </p>
+              <Link href="/register">
+                <Button size="lg" className="shadow-lg shadow-emerald-500/20">
+                  Kostenlos registrieren
+                  <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {activeTab === 'settings' && sandboxData && (
+            <SandboxSettingsTab
+              restaurant={sandboxData.restaurant}
+              onUpdate={handleSandboxUpdate}
+            />
+          )}
+        </main>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-200/50 safe-area-bottom z-30">
+          <div className="flex justify-around py-1">
+            {currentTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`
+                  flex-1 flex flex-col items-center py-2 px-1 min-h-[60px]
+                  transition-all duration-200 touch-manipulation
+                  ${activeTab === tab.id
+                    ? 'text-emerald-600'
+                    : 'text-gray-400 active:text-gray-600'
+                  }
+                `}
+              >
+                <span className={`text-2xl mb-1 transition-transform duration-200 ${activeTab === tab.id ? 'scale-110' : ''}`}>
+                  {tab.icon}
+                </span>
+                <span className={`text-[11px] font-medium ${activeTab === tab.id ? 'font-semibold' : ''}`}>
+                  {tab.shortLabel}
+                </span>
+                {activeTab === tab.id && (
+                  <span className="absolute bottom-1 w-1 h-1 bg-emerald-500 rounded-full" />
+                )}
+              </button>
+            ))}
+          </div>
+        </nav>
+      </div>
+    );
+  }
+
+  // Show setup wizard for logged in users with no restaurants
   if (showSetupWizard || restaurants.length === 0) {
     return <SetupWizard onComplete={handleSetupComplete} />;
   }
+
+  // Normal logged-in dashboard
+  const currentTabs = tabConfig;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-24 sm:pb-0">
@@ -235,9 +468,11 @@ export default function DashboardPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo />
-            <span className="hidden sm:inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-              Demo
-            </span>
+            {subscription && (
+              <span className="hidden sm:inline-block bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                Pro
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
             {selectedRestaurant && (
@@ -268,7 +503,7 @@ export default function DashboardPage() {
         <div className="hidden sm:block border-t border-gray-100/50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <nav className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
-              {tabConfig.map((tab) => (
+              {currentTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
@@ -324,6 +559,48 @@ export default function DashboardPage() {
             onUpdate={loadData}
           />
         )}
+        {activeTab === 'preview' && selectedRestaurant && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                    <span className="text-white text-lg">👁️</span>
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-gray-900">Live-Vorschau</h2>
+                    <p className="text-sm text-gray-500">So sehen deine Gäste die Speisekarte</p>
+                  </div>
+                </div>
+                <Link
+                  href={`/m/${selectedRestaurant.slug}`}
+                  target="_blank"
+                  className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+                >
+                  In neuem Tab öffnen
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+
+            {/* Phone mockup with menu preview */}
+            <div className="flex justify-center">
+              <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                <div className="bg-white rounded-[2.5rem] overflow-hidden h-[700px] overflow-y-auto">
+                  <MenuView
+                    restaurant={selectedRestaurant}
+                    categories={categories}
+                    menuItems={menuItems}
+                    showWatermark={!subscription}
+                    isDemo={false}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {activeTab === 'qr' && selectedRestaurant && (
           <QRCodeTab restaurant={selectedRestaurant} />
         )}
@@ -339,7 +616,7 @@ export default function DashboardPage() {
       {/* Mobile Bottom Navigation - Modern iOS Style */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-200/50 safe-area-bottom z-30">
         <div className="flex justify-around py-1">
-          {tabConfig.map((tab) => (
+          {currentTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}

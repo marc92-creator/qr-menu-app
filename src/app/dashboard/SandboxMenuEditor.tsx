@@ -20,9 +20,10 @@ import {
 
 interface SandboxMenuEditorProps {
   onDataChange?: () => void;
+  onUpdate?: () => void;
 }
 
-export function SandboxMenuEditor({ onDataChange }: SandboxMenuEditorProps) {
+export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
@@ -58,6 +59,7 @@ export function SandboxMenuEditor({ onDataChange }: SandboxMenuEditorProps) {
     setMenuItems(data.menuItems);
     setHasModifications(hasSandboxModifications());
     onDataChange?.();
+    onUpdate?.();
   };
 
   const toggleAllergen = (allergenId: string, isNewItem: boolean) => {

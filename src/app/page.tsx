@@ -64,21 +64,12 @@ export default function Home() {
 
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
-                  <Link href="/demo" className="w-full sm:w-auto">
+                  <Link href="/dashboard" className="w-full sm:w-auto">
                     <Button size="lg" className="w-full min-h-[56px] text-base sm:text-lg px-8 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                       Demo starten
                       <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
-                    </Button>
-                  </Link>
-                  <Link href="/m/demo-doener-palace" className="w-full sm:w-auto">
-                    <Button variant="outline" size="lg" className="w-full min-h-[56px] text-base sm:text-lg px-8 hover:bg-gray-50 transition-all duration-200">
-                      <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Demo ansehen
                     </Button>
                   </Link>
                 </div>
@@ -577,7 +568,7 @@ export default function Home() {
                 <p className="text-gray-400 mb-8 sm:mb-10 max-w-xl mx-auto text-lg">
                   Starte jetzt die Demo und habe dein digitales Menü in weniger als 5 Minuten online.
                 </p>
-                <Link href="/demo">
+                <Link href="/dashboard">
                   <Button size="lg" className="min-h-[56px] px-10 text-lg shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                     Demo starten
                     <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

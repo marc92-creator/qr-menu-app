@@ -23,19 +23,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Landing Page with Demo/Pro pricing, **"How it works" steps, testimonials, FAQ**
 - User Registration & Login (Supabase Auth)
 - Dashboard with onboarding checklist (4 steps with progress tracking)
+- **Dashboard Preview tab** - Live phone mockup showing how customers see the menu
 - Restaurant management (CRUD, multiple restaurants per user)
 - Menu Editor with 14 EU allergens
+- **Drag & Drop sorting** for categories and menu items (@dnd-kit)
 - **Image upload for menu items** (Supabase Storage, auto-compression)
+- **Menu badges** - Vegetarian, Vegan, Popular, Special/Tagesangebot
+- **5 Menu themes** - Classic, Dark, Rustic, Modern, Oriental
 - **WhatsApp contact button** on public menu (configurable per restaurant)
-- **Opening hours** display with live open/closed status
+- **Opening hours editor** in Settings with live open/closed status
 - QR Code Generator + PNG download
 - Table tent PDF for printing (jsPDF) - A4 and **A6 compact format**
-- **Redesigned public menu view** (pill navigation, image placeholders, subtle footer)
+- **Redesigned public menu view** (pill navigation, image placeholders, subtle footer, theme support)
 - Trust signals (GDPR, servers in Germany)
 - Impressum & Datenschutz pages
 - Demo/Pro branding (consistent naming)
 - Read-only demo mode for is_demo=true restaurants
-- **Sandbox mode** for non-logged-in users (localStorage-based)
+- **Sandbox mode** - Non-logged-in users access dashboard directly, all features work via localStorage
 - Scan analytics tracking (menu_scans table)
 - Last updated timestamp on public menus
 - **Skeleton loading components** for better UX
@@ -65,8 +69,8 @@ npm run start    # Start production server
 |-------|---------|
 | `/` | Landing page (public) |
 | `/login`, `/register` | Auth pages (redirect to dashboard if authenticated) |
-| `/dashboard` | Protected owner dashboard (menu editor, QR codes, settings) |
-| `/demo` | Sandbox mode for non-logged-in users |
+| `/dashboard` | Dashboard (sandbox mode for non-logged-in, full features for logged-in) |
+| `/demo` | Fallback demo page (redirects to /dashboard if logged in) |
 | `/m/[slug]` | Public menu view for customers |
 | `/m/demo-doener-palace` | Fixed demo menu (not affected by sandbox changes) |
 | `/impressum`, `/datenschutz` | Legal pages |
@@ -79,9 +83,9 @@ npm run start    # Start production server
 ### Database Schema
 
 **Tables:**
-- `restaurants` - owner_id, slug (unique), name, address, phone, **whatsapp_number**, **opening_hours** (JSONB), logo_url, is_active, **is_demo**, updated_at
+- `restaurants` - owner_id, slug (unique), name, address, phone, **whatsapp_number**, **opening_hours** (JSONB), **theme** (MenuTheme), logo_url, is_active, **is_demo**, updated_at
 - `menu_categories` - restaurant_id, name, position (for ordering)
-- `menu_items` - category_id, name, description, price, **image_url**, is_available, position, allergens (string[])
+- `menu_items` - category_id, name, description, price, **image_url**, is_available, position, allergens (string[]), **is_vegetarian**, **is_vegan**, **is_popular**, **is_special**
 - `menu_scans` - restaurant_id, scanned_at, user_agent, referrer
 - `subscriptions` - user_id, plan ('free'/'basic'), stripe_customer_id, status
 
@@ -97,19 +101,23 @@ npm run start    # Start production server
 
 | File | Purpose |
 |------|---------|
-| `src/app/dashboard/page.tsx` | Dashboard main page with tabs |
-| `src/app/dashboard/MenuEditor.tsx` | Menu editing (Supabase-based) |
+| `src/app/dashboard/page.tsx` | Dashboard main page with tabs (includes sandbox mode) |
+| `src/app/dashboard/MenuEditor.tsx` | Menu editing (Supabase-based) with drag & drop |
 | `src/app/dashboard/SandboxMenuEditor.tsx` | Menu editing (localStorage-based) |
-| `src/app/demo/page.tsx` | Sandbox demo page for non-logged-in users |
+| `src/app/dashboard/SettingsTab.tsx` | Settings (real accounts) |
+| `src/app/dashboard/SandboxSettingsTab.tsx` | Settings (sandbox mode) |
+| `src/app/demo/page.tsx` | Fallback demo page (redirects to /dashboard if logged in) |
 | `src/app/m/[slug]/page.tsx` | Public menu route |
-| `src/app/m/[slug]/MenuView.tsx` | Public menu view component |
+| `src/app/m/[slug]/MenuView.tsx` | Public menu view component with theme support |
 | `src/lib/supabase/client.ts` | Browser Supabase client |
 | `src/lib/supabase/server.ts` | Server Supabase client |
 | `src/lib/demoData.ts` | Fixed demo restaurant/menu data |
 | `src/lib/sandboxStorage.ts` | LocalStorage utilities for sandbox mode |
 | `src/lib/allergens.ts` | 14 EU allergens with German labels |
+| `src/lib/themes.ts` | 5 menu themes (Classic, Dark, Rustic, Modern, Oriental) |
 | `src/lib/imageUpload.ts` | Image compression and Supabase Storage upload |
 | `src/types/database.ts` | TypeScript interfaces |
+| `src/hooks/useSandboxMode.ts` | Hook to check if user is in sandbox mode |
 | `src/components/OnboardingChecklist.tsx` | 4-step onboarding with localStorage tracking |
 | `src/components/ImageUpload.tsx` | Image upload component with preview |
 | `src/components/TableTentPDF.tsx` | PDF generation for table tents (A4 + A6) |
@@ -131,9 +139,11 @@ The middleware (`src/middleware.ts`) automatically refreshes auth sessions and h
 
 ### Key Patterns
 
-**Sandbox Mode**: Non-logged-in users can try the app at `/demo`. Changes are stored in localStorage. Public demo menu (`/m/demo-doener-palace`) always shows fixed data from `demoData.ts`.
+**Sandbox Mode**: Non-logged-in users access `/dashboard` directly and enter sandbox mode. All features work via localStorage (menu editing, themes, opening hours, badges, drag & drop). QR code and image upload are locked with registration prompts. Preview tab shows live changes. Data persists in browser but resets on "Zurücksetzen" click. Public demo menu (`/m/demo-doener-palace`) always shows fixed data from `demoData.ts`.
 
 **Demo Mode (is_demo)**: Restaurants with `is_demo=true` are read-only. Users see a banner prompting registration. Public menus for demo restaurants show fixed demo data.
+
+**Theme System**: 5 themes available (classic, dark, rustic, modern, oriental). Themes apply to public menu view via inline styles from `getTheme()` in `/lib/themes.ts`. Sandbox users save theme to localStorage, real users save to database.
 
 **Allergen System**: 14 EU allergens defined in `/lib/allergens.ts` with German labels and emoji icons. Menu items store allergen IDs as string arrays.
 
@@ -174,6 +184,8 @@ Recent migrations:
 - `20240127_menu_images_storage.sql` - Storage bucket setup docs for menu images
 - `20240127_add_whatsapp.sql` - WhatsApp number field
 - `20240127_add_opening_hours.sql` - Opening hours JSONB field
+- `20240128_add_menu_badges.sql` - Menu item badges (is_vegetarian, is_vegan, is_popular, is_special)
+- `20240128_add_theme.sql` - Restaurant theme column
 
 ## Gotchas
 

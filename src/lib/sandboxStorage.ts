@@ -174,6 +174,45 @@ export function updateSandboxRestaurant(updates: Partial<Restaurant>): void {
 }
 
 /**
+ * Update a category in sandbox mode
+ */
+export function updateSandboxCategory(categoryId: string, updates: Partial<Category>): void {
+  const data = getSandboxData();
+  saveSandboxData({
+    categories: data.categories.map(cat =>
+      cat.id === categoryId ? { ...cat, ...updates } : cat
+    ),
+  });
+}
+
+/**
+ * Reorder categories in sandbox mode
+ */
+export function reorderSandboxCategories(orderedIds: string[]): void {
+  const data = getSandboxData();
+  const reordered = orderedIds.map((id, index) => {
+    const cat = data.categories.find(c => c.id === id);
+    return cat ? { ...cat, position: index } : null;
+  }).filter((c): c is Category => c !== null);
+
+  saveSandboxData({ categories: reordered });
+}
+
+/**
+ * Reorder menu items within a category in sandbox mode
+ */
+export function reorderSandboxMenuItems(categoryId: string, orderedIds: string[]): void {
+  const data = getSandboxData();
+  const otherItems = data.menuItems.filter(i => i.category_id !== categoryId);
+  const reorderedItems = orderedIds.map((id, index) => {
+    const item = data.menuItems.find(i => i.id === id);
+    return item ? { ...item, position: index } : null;
+  }).filter((i): i is MenuItem => i !== null);
+
+  saveSandboxData({ menuItems: [...otherItems, ...reorderedItems] });
+}
+
+/**
  * Get the fixed demo data (for public menu view)
  * This always returns the original demo data, not user modifications
  */

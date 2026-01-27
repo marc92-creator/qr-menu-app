@@ -4,6 +4,21 @@ import { useState, useRef, useEffect } from 'react';
 import { Restaurant, Category, MenuItem, OpeningHours } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
+import { getTheme, ThemeConfig } from '@/lib/themes';
+
+// Theme-specific style mappings for inline styles (for non-Tailwind dynamic values)
+const getThemeStyles = (theme: ThemeConfig) => ({
+  background: theme.id === 'dark' ? '#0a0a0f' : theme.id === 'rustic' ? '#fef3c7' : theme.id === 'oriental' ? '#f5f5f4' : '#f9fafb',
+  surface: theme.id === 'dark' ? '#1a1a2e' : '#ffffff',
+  text: theme.id === 'dark' ? '#f3f4f6' : '#111827',
+  textMuted: theme.id === 'dark' ? '#9ca3af' : '#6b7280',
+  primary: theme.id === 'dark' ? '#34d399' : theme.id === 'rustic' ? '#d97706' : theme.id === 'modern' ? '#8b5cf6' : theme.id === 'oriental' ? '#f59e0b' : '#10b981',
+  border: theme.id === 'dark' ? '#374151' : '#e5e7eb',
+  headerBg: theme.id === 'dark' ? 'rgba(26, 26, 46, 0.95)' : theme.id === 'oriental' ? 'linear-gradient(to right, #fef3c7, #ffedd5)' : 'rgba(255, 255, 255, 0.9)',
+  cardBg: theme.id === 'dark' ? '#1f1f3a' : '#ffffff',
+  badgeBg: theme.id === 'dark' ? '#064e3b' : theme.id === 'rustic' ? '#fef3c7' : theme.id === 'modern' ? '#ede9fe' : theme.id === 'oriental' ? '#fef3c7' : '#d1fae5',
+  badgeText: theme.id === 'dark' ? '#6ee7b7' : theme.id === 'rustic' ? '#92400e' : theme.id === 'modern' ? '#6d28d9' : theme.id === 'oriental' ? '#92400e' : '#047857',
+});
 
 interface MenuViewProps {
   restaurant: Restaurant;
@@ -65,6 +80,10 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
+
+  // Get theme configuration
+  const theme = getTheme(restaurant.theme || 'classic');
+  const themeStyles = getThemeStyles(theme);
 
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
@@ -133,9 +152,15 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: themeStyles.background }}>
       {/* Header - Sticky with Glassmorphism */}
-      <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-200/60">
+      <header
+        className="sticky top-0 z-20 backdrop-blur-md border-b"
+        style={{
+          background: themeStyles.headerBg,
+          borderColor: themeStyles.border,
+        }}
+      >
         {/* Restaurant Info */}
         <div className="px-4 pt-4 pb-3 md:px-6">
           <div className="flex items-center gap-3 max-w-2xl mx-auto">
@@ -144,10 +169,14 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               <img
                 src={restaurant.logo_url}
                 alt={restaurant.name}
-                className="w-12 h-12 rounded-xl object-cover flex-shrink-0 ring-1 ring-gray-200"
+                className="w-12 h-12 rounded-xl object-cover flex-shrink-0 ring-1"
+                style={{ borderColor: themeStyles.border }}
               />
             ) : (
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: themeStyles.primary }}
+              >
                 <span className="text-xl text-white font-bold">
                   {restaurant.name.charAt(0)}
                 </span>
@@ -155,7 +184,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
             )}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-gray-900 truncate">
+                <h1 className="text-lg font-bold truncate" style={{ color: themeStyles.text }}>
                   {restaurant.name}
                 </h1>
                 {isDemo && (
