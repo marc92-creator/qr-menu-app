@@ -6,6 +6,42 @@ import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
 
+// Premium Image Component with loading state and blur effect
+function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div className={`bg-gray-100 flex items-center justify-center ${className}`}>
+        <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      {/* Blur placeholder */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-all duration-500 ${
+          isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+        }`}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
 interface MenuViewProps {
   restaurant: Restaurant;
   categories: Category[];
@@ -79,6 +115,42 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     }
   }, [categories, activeCategory]);
 
+  // Intersection Observer to update active category while scrolling
+  useEffect(() => {
+    if (isEmbedded || categories.length === 0) return;
+
+    const observerOptions = {
+      rootMargin: '-20% 0px -70% 0px', // Trigger when section is in upper third
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const categoryId = entry.target.getAttribute('data-category-id');
+          if (categoryId) {
+            setActiveCategory(categoryId);
+            // Update pill scroll position
+            if (tabsRef.current) {
+              const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
+              if (tab) {
+                tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+              }
+            }
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe all category sections
+    categoryRefs.current.forEach((element, categoryId) => {
+      element.setAttribute('data-category-id', categoryId);
+      observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, [categories, isEmbedded]);
+
   // Track page view / scan
   useEffect(() => {
     const trackScan = async () => {
@@ -110,9 +182,15 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     // Scroll to category section
     const categorySection = categoryRefs.current.get(categoryId);
     if (categorySection) {
-      const headerHeight = 140;
-      const top = categorySection.offsetTop - headerHeight;
-      window.scrollTo({ top, behavior: 'smooth' });
+      // Calculate header height dynamically
+      const headerHeight = isEmbedded ? 20 : 160; // More space for sticky header
+      const elementPosition = categorySection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -155,11 +233,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         />
       )}
 
-      {/* Header - Modern Card Design */}
+      {/* Header - Modern Card Design - Sticky with both restaurant info and pills */}
       <header
-        className={`${isEmbedded ? '' : 'sticky top-0'} z-20 backdrop-blur-md`}
+        className={`${isEmbedded ? '' : 'sticky top-0'} z-20 backdrop-blur-md shadow-sm`}
         style={{
           background: styles.headerBg,
+          borderBottom: `1px solid ${styles.headerBorder}`,
         }}
       >
         {/* Restaurant Info Card */}
@@ -295,19 +374,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   ref={(el) => {
                     if (el) categoryRefs.current.set(category.id, el);
                   }}
-                  className="scroll-mt-36"
+                  className={isEmbedded ? 'scroll-mt-4' : 'scroll-mt-44'}
                 >
                   {/* Category Header */}
                   <div
-                    className={`${isEmbedded ? '' : 'sticky top-[140px]'} z-10 py-2 -mx-4 px-4 md:-mx-6 md:px-6 backdrop-blur-sm`}
-                    style={{
-                      backgroundColor: `${styles.background}ee`,
-                    }}
+                    className="py-3 -mx-4 px-4 md:-mx-6 md:px-6"
                   >
                     <h2
-                      className="text-base font-semibold"
+                      className="text-lg font-bold flex items-center gap-2"
                       style={{ color: styles.text }}
                     >
+                      <span
+                        className="w-1 h-5 rounded-full"
+                        style={{ backgroundColor: styles.primary }}
+                      />
                       {category.name}
                     </h2>
                   </div>
@@ -343,11 +423,10 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                               {/* Image or Placeholder */}
                               <div className="flex-shrink-0">
                                 {item.image_url ? (
-                                  /* eslint-disable-next-line @next/next/no-img-element */
-                                  <img
+                                  <MenuImage
                                     src={item.image_url}
                                     alt={item.name}
-                                    className="w-20 h-20 rounded-lg object-cover"
+                                    className="w-20 h-20 rounded-lg"
                                   />
                                 ) : (
                                   <div

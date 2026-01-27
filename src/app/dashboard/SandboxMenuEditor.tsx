@@ -8,6 +8,23 @@ import { Input } from '@/components/Input';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
   getSandboxData,
   addSandboxCategory,
   deleteSandboxCategory,
@@ -16,11 +33,120 @@ import {
   deleteSandboxMenuItem,
   resetSandboxData,
   hasSandboxModifications,
+  reorderSandboxMenuItems,
 } from '@/lib/sandboxStorage';
 
 interface SandboxMenuEditorProps {
   onDataChange?: () => void;
   onUpdate?: () => void;
+}
+
+// Sortable Menu Item Component
+function SortableMenuItem({
+  item,
+  onEdit,
+  onDelete,
+}: {
+  item: MenuItem;
+  onEdit: (item: MenuItem) => void;
+  onDelete: (itemId: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
+  const itemAllergens = getAllergensByIds(item.allergens || []);
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`px-5 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 transition-colors group ${
+        isDragging ? 'bg-emerald-50 shadow-lg rounded-xl ring-2 ring-emerald-500' : ''
+      }`}
+    >
+      {/* Drag Handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="mt-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing touch-manipulation p-1 -ml-1 rounded hover:bg-gray-100 transition-colors"
+        title="Zum Sortieren ziehen"
+      >
+        <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
+        </svg>
+      </button>
+
+      {/* Thumbnail */}
+      {item.image_url && (
+        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={item.image_url}
+            alt={item.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      <div className="flex-1 min-w-0">
+        <div className="font-semibold text-gray-900">{item.name}</div>
+        {item.description && (
+          <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
+            {item.description}
+          </div>
+        )}
+        {itemAllergens.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {itemAllergens.map((allergen) => (
+              <span
+                key={allergen.id}
+                title={allergen.name}
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
+              >
+                <span>{allergen.icon}</span>
+                <span className="hidden sm:inline">{allergen.name}</span>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-3 flex-shrink-0">
+        <span className="text-lg font-bold text-emerald-600">
+          {formatPrice(item.price)}
+        </span>
+        <button
+          onClick={() => onEdit(item)}
+          className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
+          title="Bearbeiten"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </button>
+        <button
+          onClick={() => onDelete(item.id)}
+          className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
+          title="Löschen"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorProps) {
@@ -30,6 +156,35 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [hasModifications, setHasModifications] = useState(false);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle drag end for reordering items
+  const handleDragEnd = (event: DragEndEvent, categoryId: string) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const categoryItems = menuItems.filter(i => i.category_id === categoryId);
+      const oldIndex = categoryItems.findIndex(i => i.id === active.id);
+      const newIndex = categoryItems.findIndex(i => i.id === over.id);
+
+      const reorderedItems = arrayMove(categoryItems, oldIndex, newIndex);
+      const orderedIds = reorderedItems.map(i => i.id);
+
+      reorderSandboxMenuItems(categoryId, orderedIds);
+      loadData();
+    }
+  };
 
   // New item form
   const [newItemName, setNewItemName] = useState('');
@@ -558,64 +713,27 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                     </button>
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
-                    {items.map((item) => {
-                      const itemAllergens = getAllergensByIds(item.allergens || []);
-
-                      return (
-                        <div
-                          key={item.id}
-                          className="px-5 sm:px-6 py-4 flex items-start gap-4 hover:bg-gray-50/50 transition-colors group"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-gray-900">{item.name}</div>
-                            {item.description && (
-                              <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
-                                {item.description}
-                              </div>
-                            )}
-                            {itemAllergens.length > 0 && (
-                              <div className="flex flex-wrap gap-1.5 mt-2">
-                                {itemAllergens.map((allergen) => (
-                                  <span
-                                    key={allergen.id}
-                                    title={allergen.name}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
-                                  >
-                                    <span>{allergen.icon}</span>
-                                    <span className="hidden sm:inline">{allergen.name}</span>
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <span className="text-lg font-bold text-emerald-600">
-                              {formatPrice(item.price)}
-                            </span>
-                            <button
-                              onClick={() => handleEditItem(item)}
-                              className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
-                              title="Bearbeiten"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteItem(item.id)}
-                              className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
-                              title="Löschen"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={(event) => handleDragEnd(event, category.id)}
+                  >
+                    <SortableContext
+                      items={items.map(i => i.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="divide-y divide-gray-100">
+                        {items.map((item) => (
+                          <SortableMenuItem
+                            key={item.id}
+                            item={item}
+                            onEdit={handleEditItem}
+                            onDelete={handleDeleteItem}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 )}
               </div>
             );

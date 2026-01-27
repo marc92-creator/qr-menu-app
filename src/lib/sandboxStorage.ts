@@ -2,12 +2,14 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from './demoData';
 
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
+const SANDBOX_DATA_VERSION = 2; // Increment when demo data structure changes
 
 export interface SandboxData {
   restaurant: Restaurant;
   categories: Category[];
   menuItems: MenuItem[];
   lastModified: string;
+  version?: number;
 }
 
 /**
@@ -18,6 +20,34 @@ function isBrowser(): boolean {
 }
 
 /**
+ * Migrate old sandbox data to include new features (like images)
+ */
+function migrateSandboxData(data: SandboxData): SandboxData {
+  const currentVersion = data.version || 1;
+
+  if (currentVersion < 2) {
+    // Migration: Add images to demo items that don't have them
+    const demoData = getDemoData();
+    const migratedItems = data.menuItems.map(item => {
+      // Only update items that are from the original demo and don't have images
+      const demoItem = demoData.menuItems.find(d => d.id === item.id);
+      if (demoItem && !item.image_url && demoItem.image_url) {
+        return { ...item, image_url: demoItem.image_url };
+      }
+      return item;
+    });
+
+    data = {
+      ...data,
+      menuItems: migratedItems,
+      version: 2,
+    };
+  }
+
+  return data;
+}
+
+/**
  * Get sandbox data from localStorage, or return default demo data
  */
 export function getSandboxData(): SandboxData {
@@ -25,13 +55,22 @@ export function getSandboxData(): SandboxData {
     return {
       ...getDemoData(),
       lastModified: new Date().toISOString(),
+      version: SANDBOX_DATA_VERSION,
     };
   }
 
   try {
     const stored = localStorage.getItem(SANDBOX_STORAGE_KEY);
     if (stored) {
-      const data = JSON.parse(stored) as SandboxData;
+      let data = JSON.parse(stored) as SandboxData;
+
+      // Check if data needs migration
+      if (!data.version || data.version < SANDBOX_DATA_VERSION) {
+        data = migrateSandboxData(data);
+        // Save migrated data
+        localStorage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(data));
+      }
+
       return data;
     }
   } catch (error) {
@@ -42,6 +81,7 @@ export function getSandboxData(): SandboxData {
   return {
     ...getDemoData(),
     lastModified: new Date().toISOString(),
+    version: SANDBOX_DATA_VERSION,
   };
 }
 
