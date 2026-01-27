@@ -63,10 +63,13 @@ function SortableMenuItem({
     isDragging,
   } = useSortable({ id: item.id });
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     zIndex: isDragging ? 50 : undefined,
+    touchAction: 'none',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
   };
 
   const itemAllergens = getAllergensByIds(item.allergens || []);
@@ -75,16 +78,20 @@ function SortableMenuItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`px-5 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 transition-colors group ${
-        isDragging ? 'bg-emerald-50 shadow-lg rounded-xl ring-2 ring-emerald-500' : ''
+      className={`px-5 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 transition-colors group select-none sortable-item ${
+        isDragging ? 'bg-emerald-50 shadow-lg rounded-xl ring-2 ring-emerald-500 dragging' : ''
       }`}
     >
       {/* Drag Handle */}
       <button
         {...attributes}
         {...listeners}
-        className="mt-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing touch-manipulation p-1 -ml-1 rounded hover:bg-gray-100 transition-colors"
+        className="mt-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-gray-100 transition-colors drag-handle"
         title="Zum Sortieren ziehen"
+        onTouchStart={(e) => {
+          // Prevent text selection on touch
+          e.currentTarget.focus();
+        }}
       >
         <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
           <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
@@ -168,13 +175,13 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10, // Slightly more distance to prevent accidental drags
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 200,
-        tolerance: 5,
+        delay: 250,      // Hold for 250ms before drag activates
+        tolerance: 8,    // Allow slight movement during delay
       },
     }),
     useSensor(KeyboardSensor, {

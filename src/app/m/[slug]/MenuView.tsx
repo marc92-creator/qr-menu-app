@@ -720,7 +720,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
           target="_blank"
           rel="noopener noreferrer"
           className={`
-            fixed z-40 w-14 h-14 bg-[#25D366] hover:bg-[#20BA5C] rounded-full
+            ${isEmbedded ? 'absolute' : 'fixed'} z-40 w-14 h-14 bg-[#25D366] hover:bg-[#20BA5C] rounded-full
             flex items-center justify-center shadow-lg shadow-green-500/30
             transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation
             ${showWatermark ? 'bottom-20 right-4' : 'bottom-6 right-4'}
@@ -735,7 +735,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
       {/* Watermark / Footer - Subtle */}
       {showWatermark && (
-        <div className="fixed bottom-0 left-0 right-0 z-30">
+        <div className={`${isEmbedded ? 'absolute' : 'fixed'} bottom-0 left-0 right-0 z-30`}>
           <div
             className="backdrop-blur-sm safe-area-bottom"
             style={{
