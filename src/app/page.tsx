@@ -21,10 +21,10 @@ export default function Home() {
             >
               Anmelden
             </Link>
-            <Link href="/dashboard">
+            <Link href="/register">
               <Button size="sm" className="text-sm shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                <span className="hidden sm:inline">Demo starten</span>
-                <span className="sm:hidden">Starten</span>
+                <span className="hidden sm:inline">Kostenlos registrieren</span>
+                <span className="sm:hidden">Registrieren</span>
               </Button>
             </Link>
           </div>
@@ -200,9 +200,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">Bilder für Gerichte</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">100+ Profi-Illustrationen</h3>
                 <p className="text-gray-600 text-sm">
-                  Lade Fotos hoch und zeige deinen Gästen, wie lecker dein Essen aussieht.
+                  Wähle aus über 100 professionellen Ghibli-Stil Illustrationen oder lade eigene Fotos hoch.
                 </p>
               </div>
 

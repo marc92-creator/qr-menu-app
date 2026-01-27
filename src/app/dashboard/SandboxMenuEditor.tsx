@@ -27,6 +27,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import {
   getSandboxData,
   addSandboxCategory,
@@ -37,7 +38,87 @@ import {
   resetSandboxData,
   hasSandboxModifications,
   reorderSandboxMenuItems,
+  reorderSandboxCategories,
 } from '@/lib/sandboxStorage';
+
+// Sortable Category Header Component
+function SortableCategoryHeader({
+  category,
+  itemCount,
+  onDelete,
+  children,
+}: {
+  category: Category;
+  itemCount: number;
+  onDelete: (categoryId: string) => void;
+  children: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200 ${
+        isDragging ? 'shadow-xl ring-2 ring-emerald-500' : ''
+      }`}
+    >
+      {/* Category Header */}
+      <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {/* Drag Handle for Category */}
+          <button
+            {...attributes}
+            {...listeners}
+            className="text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-gray-100 transition-colors touch-none"
+            style={{ touchAction: 'none' }}
+            title="Kategorie verschieben"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
+            </svg>
+          </button>
+          {(() => {
+            const catImage = getCategoryImage(category.name);
+            return (
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={catImage.image} alt={category.name} className="w-8 h-8 object-contain" />
+              </div>
+            );
+          })()}
+          <div>
+            <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
+            <p className="text-xs text-gray-500">{itemCount} Gericht{itemCount !== 1 ? 'e' : ''}</p>
+          </div>
+        </div>
+        <button
+          onClick={() => onDelete(category.id)}
+          className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
+          title="Kategorie löschen"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 interface SandboxMenuEditorProps {
   onDataChange?: () => void;
@@ -187,12 +268,15 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     })
   );
 
-  // Handle drag end for reordering items
-  const handleDragEnd = (event: DragEndEvent, categoryId: string) => {
+  // Handle drag end for reordering items within a category
+  const handleItemDragEnd = (event: DragEndEvent, categoryId: string) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const categoryItems = menuItems.filter(i => i.category_id === categoryId);
+      // Important: sort by position to match the visual order
+      const categoryItems = menuItems
+        .filter(i => i.category_id === categoryId)
+        .sort((a, b) => a.position - b.position);
       const oldIndex = categoryItems.findIndex(i => i.id === active.id);
       const newIndex = categoryItems.findIndex(i => i.id === over.id);
 
@@ -200,6 +284,23 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       const orderedIds = reorderedItems.map(i => i.id);
 
       reorderSandboxMenuItems(categoryId, orderedIds);
+      loadData();
+    }
+  };
+
+  // Handle drag end for reordering categories
+  const handleCategoryDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
+      const oldIndex = sortedCategories.findIndex(c => c.id === active.id);
+      const newIndex = sortedCategories.findIndex(c => c.id === over.id);
+
+      const reorderedCategories = arrayMove(sortedCategories, oldIndex, newIndex);
+      const orderedIds = reorderedCategories.map(c => c.id);
+
+      reorderSandboxCategories(orderedIds);
       loadData();
     }
   };
@@ -879,89 +980,80 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
           </div>
         </div>
       ) : (
-        <div className="space-y-6">
-          {categories.map((category) => {
-            const items = menuItems.filter((i) => i.category_id === category.id);
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleCategoryDragEnd}
+          modifiers={[restrictToVerticalAxis]}
+        >
+          <SortableContext
+            items={categories.sort((a, b) => a.position - b.position).map(c => c.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-6">
+              {categories.sort((a, b) => a.position - b.position).map((category) => {
+                const items = menuItems
+                  .filter((i) => i.category_id === category.id)
+                  .sort((a, b) => a.position - b.position);
 
-            return (
-              <div key={category.id} className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200">
-                {/* Category Header */}
-                <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {(() => {
-                      const catImage = getCategoryImage(category.name);
-                      return (
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={catImage.image} alt={category.name} className="w-8 h-8 object-contain" />
+                return (
+                  <SortableCategoryHeader
+                    key={category.id}
+                    category={category}
+                    itemCount={items.length}
+                    onDelete={handleDeleteCategory}
+                  >
+                    {items.length === 0 ? (
+                      <div className="px-5 sm:px-6 py-8 text-center">
+                        <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl mb-4">
+                          <span className="text-2xl">🍽️</span>
                         </div>
-                      );
-                    })()}
-                    <div>
-                      <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
-                      <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteCategory(category.id)}
-                    className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
-                    title="Kategorie löschen"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-
-                {items.length === 0 ? (
-                  <div className="px-5 sm:px-6 py-8 text-center">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl mb-4">
-                      <span className="text-2xl">🍽️</span>
-                    </div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Kategorie ist leer</h4>
-                    <p className="text-gray-500 text-sm mb-4 max-w-xs mx-auto">
-                      Füge dein erstes Gericht zu &quot;{category.name}&quot; hinzu.
-                    </p>
-                    <button
-                      onClick={() => {
-                        setNewItemCategory(category.id);
-                        setShowAddItem(true);
-                      }}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      Erstes Gericht hinzufügen
-                    </button>
-                  </div>
-                ) : (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={(event) => handleDragEnd(event, category.id)}
-                  >
-                    <SortableContext
-                      items={items.map(i => i.id)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="divide-y divide-gray-100">
-                        {items.map((item) => (
-                          <SortableMenuItem
-                            key={item.id}
-                            item={item}
-                            onEdit={handleEditItem}
-                            onDelete={handleDeleteItem}
-                          />
-                        ))}
+                        <h4 className="font-semibold text-gray-900 mb-1">Kategorie ist leer</h4>
+                        <p className="text-gray-500 text-sm mb-4 max-w-xs mx-auto">
+                          Füge dein erstes Gericht zu &quot;{category.name}&quot; hinzu.
+                        </p>
+                        <button
+                          onClick={() => {
+                            setNewItemCategory(category.id);
+                            setShowAddItem(true);
+                          }}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                          Erstes Gericht hinzufügen
+                        </button>
                       </div>
-                    </SortableContext>
-                  </DndContext>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                    ) : (
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={(event) => handleItemDragEnd(event, category.id)}
+                      >
+                        <SortableContext
+                          items={items.map(i => i.id)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="divide-y divide-gray-100">
+                            {items.map((item) => (
+                              <SortableMenuItem
+                                key={item.id}
+                                item={item}
+                                onEdit={handleEditItem}
+                                onDelete={handleDeleteItem}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                    )}
+                  </SortableCategoryHeader>
+                );
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );

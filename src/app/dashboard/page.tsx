@@ -359,8 +359,9 @@ export default function DashboardPage() {
           )}
 
           {activeTab === 'preview' && sandboxData && (
-            <div className="space-y-4">
-              <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100">
+            <div className="flex flex-col h-[calc(100vh-200px)] sm:h-[calc(100vh-180px)]">
+              {/* Header Card */}
+              <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100 flex-shrink-0 mb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
@@ -374,14 +375,14 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Phone mockup with menu preview */}
-              <div className="flex justify-center">
-                <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
-                  <div className="bg-white rounded-[2.5rem] overflow-hidden h-[700px] overflow-y-auto">
+              {/* Phone mockup with menu preview - centered in remaining space */}
+              <div className="flex-1 flex items-start justify-center overflow-hidden">
+                <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl h-full max-h-[700px]">
+                  <div className="bg-white rounded-[2.5rem] overflow-hidden h-full overflow-y-auto">
                     <MenuView
                       restaurant={sandboxData.restaurant}
                       categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
-                      menuItems={sandboxData.menuItems}
+                      menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
                       showWatermark={true}
                       isDemo={true}
                       isEmbedded={true}
@@ -684,8 +685,9 @@ export default function DashboardPage() {
           />
         )}
         {activeTab === 'preview' && selectedRestaurant && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100">
+          <div className="flex flex-col h-[calc(100vh-200px)] sm:h-[calc(100vh-180px)]">
+            {/* Header Card */}
+            <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100 flex-shrink-0 mb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
@@ -709,14 +711,14 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Phone mockup with menu preview */}
-            <div className="flex justify-center">
-              <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
-                <div className="bg-white rounded-[2.5rem] overflow-hidden h-[700px] overflow-y-auto">
+            {/* Phone mockup with menu preview - centered in remaining space */}
+            <div className="flex-1 flex items-start justify-center overflow-hidden">
+              <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl h-full max-h-[700px]">
+                <div className="bg-white rounded-[2.5rem] overflow-hidden h-full overflow-y-auto">
                   <MenuView
                     restaurant={selectedRestaurant}
-                    categories={categories}
-                    menuItems={menuItems}
+                    categories={categories.sort((a, b) => a.position - b.position)}
+                    menuItems={menuItems.sort((a, b) => a.position - b.position)}
                     showWatermark={!subscription}
                     isDemo={false}
                     isEmbedded={true}

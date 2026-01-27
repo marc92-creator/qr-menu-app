@@ -126,26 +126,28 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
     const observerOptions: IntersectionObserverInit = {
       root: scrollRoot,
-      rootMargin: '-20% 0px -70% 0px', // Trigger when section is in upper third
-      threshold: 0,
+      rootMargin: '-25% 0px -65% 0px', // Adjusted for better detection
+      threshold: [0, 0.1], // Multiple thresholds for better accuracy
     };
 
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const categoryId = entry.target.getAttribute('data-category-id');
-          if (categoryId) {
-            setActiveCategory(categoryId);
-            // Update pill scroll position
-            if (tabsRef.current) {
-              const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
-              if (tab) {
-                tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-              }
+      // Find the most visible category
+      const visibleEntries = entries.filter(entry => entry.isIntersecting);
+      if (visibleEntries.length > 0) {
+        // Sort by intersection ratio and take the most visible one
+        const mostVisible = visibleEntries.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        const categoryId = mostVisible.target.getAttribute('data-category-id');
+        if (categoryId && categoryId !== activeCategory) {
+          setActiveCategory(categoryId);
+          // Update pill scroll position
+          if (tabsRef.current) {
+            const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
+            if (tab) {
+              tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             }
           }
         }
-      });
+      }
     }, observerOptions);
 
     // Observe all category sections
@@ -155,7 +157,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     });
 
     return () => observer.disconnect();
-  }, [categories, isEmbedded]);
+  }, [categories, isEmbedded, activeCategory]);
 
   // Track page view / scan
   useEffect(() => {
@@ -177,18 +179,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
 
-    // Scroll tab into view
-    if (tabsRef.current) {
-      const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
-      if (tab) {
-        tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    // Scroll tab into view with a small delay to ensure state is updated
+    requestAnimationFrame(() => {
+      if (tabsRef.current) {
+        const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
+        if (tab) {
+          tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
       }
-    }
+    });
 
     // Scroll to category section
     const categorySection = categoryRefs.current.get(categoryId);
     if (categorySection) {
-      const headerHeight = 160; // Height of sticky header
+      const headerHeight = 180; // Increased height to account for header + pills
 
       if (isEmbedded) {
         // For embedded mode, find the scrollable parent container
@@ -199,19 +203,24 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
           const currentScroll = scrollParent.scrollTop;
           const offsetPosition = currentScroll + (elementTop - containerTop) - headerHeight;
 
-          scrollParent.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
+          // Use requestAnimationFrame for smoother scrolling
+          requestAnimationFrame(() => {
+            scrollParent.scrollTo({
+              top: Math.max(0, offsetPosition),
+              behavior: 'smooth'
+            });
           });
         }
       } else {
         // For standalone page, scroll the window
         const elementPosition = categorySection.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+        const offsetPosition = elementPosition + window.scrollY - headerHeight;
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+        requestAnimationFrame(() => {
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          });
         });
       }
     }

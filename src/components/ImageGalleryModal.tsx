@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FOOD_IMAGE_LIBRARY, FOOD_CATEGORIES, FoodCategory } from '@/lib/foodImages';
 
 interface ImageGalleryModalProps {
@@ -12,6 +12,15 @@ interface ImageGalleryModalProps {
 export function ImageGalleryModal({ onSelect, onClose, selectedImage }: ImageGalleryModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<FoodCategory | null>(null);
+  const [showLeftGradient, setShowLeftGradient] = useState(false);
+  const [showRightGradient, setShowRightGradient] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Count images per category
+  const categoryCounts = FOOD_CATEGORIES.reduce((acc, cat) => {
+    acc[cat.id] = FOOD_IMAGE_LIBRARY.filter(item => item.category === cat.id && item.id !== 'default').length;
+    return acc;
+  }, {} as Record<string, number>);
 
   // Filter images based on search and category
   const filteredImages = FOOD_IMAGE_LIBRARY.filter((item) => {
@@ -26,6 +35,33 @@ export function ImageGalleryModal({ onSelect, onClose, selectedImage }: ImageGal
     return matchesSearch && matchesCategory;
   });
 
+  // Handle scroll to update gradients
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    setShowLeftGradient(scrollLeft > 10);
+    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 10);
+  };
+
+  // Scroll active category into view on mount
+  useEffect(() => {
+    handleScroll();
+  }, []);
+
+  // Scroll to selected category when it changes
+  const scrollToCategoryPill = (categoryId: string | null) => {
+    if (!scrollContainerRef.current) return;
+    const pill = scrollContainerRef.current.querySelector(`[data-category="${categoryId || 'all'}"]`);
+    if (pill) {
+      pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  };
+
+  const handleCategorySelect = (categoryId: FoodCategory | null) => {
+    setActiveCategory(categoryId);
+    scrollToCategoryPill(categoryId);
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]"
@@ -34,7 +70,7 @@ export function ImageGalleryModal({ onSelect, onClose, selectedImage }: ImageGal
       }}
     >
       <div
-        className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[85vh] flex flex-col safe-area-bottom shadow-2xl"
+        className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-2xl max-h-[90vh] flex flex-col safe-area-bottom shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -73,37 +109,70 @@ export function ImageGalleryModal({ onSelect, onClose, selectedImage }: ImageGal
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Suchen... (z.B. Döner, Pizza)"
+              placeholder="Suchen... (z.B. Döner, Pizza, Ramen)"
               className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
             />
           </div>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex overflow-x-auto gap-2 p-4 border-b border-gray-100 scrollbar-hide">
-          <button
-            onClick={() => setActiveCategory(null)}
-            className={`px-3 py-1.5 text-sm rounded-full whitespace-nowrap transition-all flex-shrink-0 ${
-              activeCategory === null
-                ? 'bg-emerald-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+        {/* Category Pills with scroll indicators */}
+        <div className="relative border-b border-gray-100">
+          {/* Left gradient indicator */}
+          {showLeftGradient && (
+            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white via-white/90 to-transparent z-10 pointer-events-none" />
+          )}
+          {/* Right gradient indicator */}
+          {showRightGradient && (
+            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/90 to-transparent z-10 pointer-events-none" />
+          )}
+
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="flex overflow-x-auto gap-2 p-4 scrollbar-hide"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
-            Alle
-          </button>
-          {FOOD_CATEGORIES.map((cat) => (
+            {/* All button */}
             <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-3 py-1.5 text-sm rounded-full whitespace-nowrap transition-all flex-shrink-0 ${
-                activeCategory === cat.id
-                  ? 'bg-emerald-500 text-white'
+              data-category="all"
+              onClick={() => handleCategorySelect(null)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all flex-shrink-0 min-h-[48px] ${
+                activeCategory === null
+                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              {cat.icon} {cat.label}
+              <span className="text-lg">🍽️</span>
+              <span className="font-medium">Alle</span>
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                activeCategory === null ? 'bg-white/20' : 'bg-gray-200'
+              }`}>
+                {FOOD_IMAGE_LIBRARY.filter(i => i.id !== 'default').length}
+              </span>
             </button>
-          ))}
+
+            {/* Category buttons */}
+            {FOOD_CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                data-category={cat.id}
+                onClick={() => handleCategorySelect(cat.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all flex-shrink-0 min-h-[48px] ${
+                  activeCategory === cat.id
+                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span className="text-lg">{cat.icon}</span>
+                <span className="font-medium">{cat.label}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  activeCategory === cat.id ? 'bg-white/20' : 'bg-gray-200'
+                }`}>
+                  {categoryCounts[cat.id] || 0}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Image Grid */}
@@ -115,7 +184,7 @@ export function ImageGalleryModal({ onSelect, onClose, selectedImage }: ImageGal
               <p className="text-sm text-gray-400 mt-1">Versuche einen anderen Suchbegriff</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
               {filteredImages.map((item) => (
                 <button
                   key={item.id}
