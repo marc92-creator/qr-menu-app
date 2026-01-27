@@ -1,25 +1,40 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Restaurant } from '@/types/database';
+import { Restaurant, Category, MenuItem } from '@/types/database';
 import { Button } from '@/components/Button';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { getMenuUrl } from '@/lib/utils';
 import { generateTableTentPDF, generateA6TableTent } from '@/components/TableTentPDF';
 import { markQrStepCompleted } from '@/components/OnboardingChecklist';
+import { generateMenuPDF } from '@/components/MenuPDFExport';
 
 interface QRCodeTabProps {
   restaurant: Restaurant;
+  categories?: Category[];
+  menuItems?: MenuItem[];
 }
 
 type PDFFormat = 'a4' | 'a6';
 
-export function QRCodeTab({ restaurant }: QRCodeTabProps) {
+export function QRCodeTab({ restaurant, categories = [], menuItems = [] }: QRCodeTabProps) {
   const [copied, setCopied] = useState(false);
   const [showFormatModal, setShowFormatModal] = useState(false);
   const [canShare, setCanShare] = useState(false);
   const qrContainerRef = useRef<HTMLDivElement>(null);
   const menuUrl = getMenuUrl(restaurant.slug);
+
+  const handleDownloadMenuPDF = () => {
+    const canvas = qrContainerRef.current?.querySelector('canvas');
+    generateMenuPDF({
+      restaurant,
+      categories,
+      menuItems,
+      includeAllergens: true,
+      includeQRCode: true,
+      qrCanvas: canvas,
+    });
+  };
 
   // Check if Web Share API is available
   useEffect(() => {
@@ -192,6 +207,21 @@ export function QRCodeTab({ restaurant }: QRCodeTabProps) {
               <span className="text-sm font-medium text-gray-700">Nur QR-Code</span>
               <span className="text-xs text-gray-500">PNG zum Aufkleben</span>
             </button>
+
+            {categories.length > 0 && (
+              <button
+                onClick={handleDownloadMenuPDF}
+                className="flex flex-col items-center gap-2 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 transition-all group col-span-2"
+              >
+                <div className="w-10 h-14 bg-white rounded-lg border border-gray-300 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+                  <svg className="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">Komplette Speisekarte</span>
+                <span className="text-xs text-gray-500">PDF mit allen Gerichten, Preisen & Allergenen</span>
+              </button>
+            )}
           </div>
         </div>
 

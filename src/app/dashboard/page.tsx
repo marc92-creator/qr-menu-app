@@ -729,7 +729,11 @@ export default function DashboardPage() {
           </div>
         )}
         {activeTab === 'qr' && selectedRestaurant && (
-          <QRCodeTab restaurant={selectedRestaurant} />
+          <QRCodeTab
+            restaurant={selectedRestaurant}
+            categories={categories}
+            menuItems={menuItems}
+          />
         )}
         {activeTab === 'settings' && selectedRestaurant && (
           <SettingsTab
