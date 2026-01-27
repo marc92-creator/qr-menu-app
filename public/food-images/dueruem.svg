@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Dürüm/Wrap -->
+  <defs>
+    <linearGradient id="wrap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <linearGradient id="filling" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8D6E63"/>
+      <stop offset="100%" style="stop-color:#5D4037"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="6" fill="#00000020"/>
+  <!-- Wrap body (rolled tortilla) -->
+  <path d="M15 60 Q20 40 60 35 Q100 40 105 60 Q100 85 60 90 Q20 85 15 60 Z" fill="url(#wrap)"/>
+  <!-- Tortilla texture lines -->
+  <path d="M25 55 Q50 48 85 55" stroke="#FFE082" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M25 65 Q50 58 85 65" stroke="#FFE082" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M25 75 Q50 68 85 75" stroke="#FFE082" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Open end showing filling -->
+  <ellipse cx="105" cy="60" rx="8" ry="25" fill="#D7CCC8"/>
+  <!-- Meat filling visible -->
+  <path d="M100 42 Q108 50 108 60 Q108 70 100 78" fill="url(#filling)"/>
+  <!-- Lettuce peeking out -->
+  <path d="M102 48 Q110 52 106 58" fill="#7CB342"/>
+  <path d="M102 62 Q110 66 106 72" fill="#8BC34A"/>
+  <!-- Tomato visible -->
+  <circle cx="104" cy="55" r="3" fill="#E53935"/>
+  <circle cx="106" cy="65" r="2.5" fill="#EF5350"/>
+  <!-- Wrap fold detail -->
+  <path d="M18 55 Q25 50 35 52" stroke="#E6D5A8" stroke-width="2" fill="none"/>
+  <!-- Sauce drip -->
+  <path d="M106 70 Q108 75 105 80" stroke="#FFF8E1" stroke-width="2" stroke-linecap="round" fill="none"/>
+</svg>

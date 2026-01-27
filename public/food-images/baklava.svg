@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Baklava -->
+  <defs>
+    <linearGradient id="baklavaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD54F"/>
+      <stop offset="100%" style="stop-color:#F9A825"/>
+    </linearGradient>
+    <linearGradient id="phyllo" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFE082"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="38" ry="7" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="90" rx="45" ry="12" fill="#FFFFFF"/>
+  <ellipse cx="60" cy="88" rx="40" ry="10" fill="#F5F5F5"/>
+  <!-- Baklava pieces arrangement -->
+  <!-- Piece 1 (diamond) -->
+  <path d="M35 70 L50 55 L65 70 L50 85 Z" fill="url(#baklavaGold)"/>
+  <path d="M38 70 L50 58 L62 70 L50 82 Z" fill="url(#phyllo)"/>
+  <path d="M42 70 L50 62 L58 70" stroke="#C4963C" stroke-width="0.5" fill="none"/>
+  <!-- Piece 2 (diamond) -->
+  <path d="M55 70 L70 55 L85 70 L70 85 Z" fill="url(#baklavaGold)"/>
+  <path d="M58 70 L70 58 L82 70 L70 82 Z" fill="url(#phyllo)"/>
+  <path d="M62 70 L70 62 L78 70" stroke="#C4963C" stroke-width="0.5" fill="none"/>
+  <!-- Piece 3 (top) -->
+  <path d="M45 55 L60 40 L75 55 L60 70 Z" fill="url(#baklavaGold)"/>
+  <path d="M48 55 L60 43 L72 55 L60 67 Z" fill="url(#phyllo)"/>
+  <path d="M52 55 L60 47 L68 55" stroke="#C4963C" stroke-width="0.5" fill="none"/>
+  <!-- Honey drizzle -->
+  <path d="M48 60 Q52 65 48 72" stroke="#F9A825" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M68 58 Q72 63 68 70" stroke="#F9A825" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M58 50 Q62 55 58 62" stroke="#F9A825" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <!-- Pistachio pieces -->
+  <ellipse cx="50" cy="68" rx="3" ry="1.5" fill="#7CB342" transform="rotate(20 50 68)"/>
+  <ellipse cx="70" cy="66" rx="2.5" ry="1.2" fill="#8BC34A" transform="rotate(-15 70 66)"/>
+  <ellipse cx="60" cy="52" rx="2" ry="1" fill="#689F38" transform="rotate(30 60 52)"/>
+  <ellipse cx="55" cy="75" rx="2" ry="1" fill="#7CB342"/>
+  <ellipse cx="65" cy="78" rx="2" ry="1" fill="#8BC34A" transform="rotate(-20 65 78)"/>
+  <!-- Honey pool on plate -->
+  <ellipse cx="60" cy="88" rx="25" ry="5" fill="#F9A825" opacity="0.3"/>
+</svg>

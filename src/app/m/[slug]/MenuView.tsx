@@ -5,6 +5,7 @@ import { Restaurant, Category, MenuItem, OpeningHours } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
+import { getItemImageUrl } from '@/lib/foodImages';
 
 // Premium Image Component with loading state and blur effect
 function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
@@ -405,6 +406,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                       {items.map((item) => {
                         const itemAllergens = getAllergensByIds(item.allergens || []);
                         const isHovered = hoveredCard === item.id;
+                        const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                        const isSvgImage = imageUrl?.endsWith('.svg');
 
                         return (
                           <article
@@ -422,12 +425,22 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                             <div className="flex gap-4">
                               {/* Image or Placeholder */}
                               <div className="flex-shrink-0">
-                                {item.image_url ? (
-                                  <MenuImage
-                                    src={item.image_url}
-                                    alt={item.name}
-                                    className="w-20 h-20 rounded-lg"
-                                  />
+                                {imageUrl ? (
+                                  isSvgImage ? (
+                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                    <img
+                                      src={imageUrl}
+                                      alt={item.name}
+                                      className="w-20 h-20 rounded-lg object-cover"
+                                      style={{ backgroundColor: styles.surfaceHover }}
+                                    />
+                                  ) : (
+                                    <MenuImage
+                                      src={imageUrl}
+                                      alt={item.name}
+                                      className="w-20 h-20 rounded-lg"
+                                    />
+                                  )
                                 ) : (
                                   <div
                                     className="w-20 h-20 rounded-lg flex items-center justify-center"

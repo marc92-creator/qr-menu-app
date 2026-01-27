@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Chicken Leg -->
+  <defs>
+    <linearGradient id="chickenSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCC80"/>
+      <stop offset="100%" style="stop-color:#E8A850"/>
+    </linearGradient>
+    <linearGradient id="chickenGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB74D"/>
+      <stop offset="100%" style="stop-color:#F57C00"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="7" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="90" rx="45" ry="12" fill="#FFFFFF"/>
+  <ellipse cx="60" cy="88" rx="40" ry="10" fill="#F5F5F5"/>
+  <!-- Chicken drumstick -->
+  <ellipse cx="55" cy="60" rx="28" ry="20" fill="url(#chickenSkin)" transform="rotate(-15 55 60)"/>
+  <!-- Golden crispy highlights -->
+  <ellipse cx="45" cy="52" rx="10" ry="6" fill="url(#chickenGold)" opacity="0.7" transform="rotate(-20 45 52)"/>
+  <ellipse cx="65" cy="65" rx="12" ry="7" fill="url(#chickenGold)" opacity="0.6" transform="rotate(-10 65 65)"/>
+  <!-- Crispy texture -->
+  <ellipse cx="40" cy="58" rx="4" ry="2" fill="#E8A040" opacity="0.5"/>
+  <ellipse cx="55" cy="50" rx="5" ry="2.5" fill="#E8A040" opacity="0.4"/>
+  <ellipse cx="70" cy="60" rx="4" ry="2" fill="#E8A040" opacity="0.5"/>
+  <ellipse cx="50" cy="70" rx="5" ry="2" fill="#E8A040" opacity="0.4"/>
+  <!-- Bone sticking out -->
+  <ellipse cx="85" cy="55" rx="6" ry="4" fill="#FFF8E1"/>
+  <rect x="75" y="52" width="12" height="6" rx="2" fill="#FFFDE7"/>
+  <ellipse cx="75" cy="55" rx="4" ry="3" fill="#E8A850"/>
+  <!-- Second drumstick behind -->
+  <ellipse cx="60" cy="70" rx="22" ry="15" fill="#E8A040" transform="rotate(10 60 70)" opacity="0.8"/>
+  <ellipse cx="50" cy="75" rx="8" ry="5" fill="#F5B041" opacity="0.5"/>
+  <!-- Herbs garnish -->
+  <ellipse cx="30" cy="82" rx="6" ry="3" fill="#4CAF50" transform="rotate(-20 30 82)"/>
+  <ellipse cx="85" cy="78" rx="5" ry="2.5" fill="#66BB6A" transform="rotate(15 85 78)"/>
+  <!-- Lemon wedge -->
+  <path d="M90 82 Q98 78 102 85 Q98 92 90 88 Z" fill="#FFF59D"/>
+  <path d="M93 83 L98 85" stroke="#FFEB3B" stroke-width="0.5"/>
+  <path d="M92 87 L98 87" stroke="#FFEB3B" stroke-width="0.5"/>
+</svg>

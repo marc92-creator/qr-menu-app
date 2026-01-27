@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Burger -->
+  <defs>
+    <linearGradient id="bun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFAB40"/>
+      <stop offset="100%" style="stop-color:#E65100"/>
+    </linearGradient>
+    <linearGradient id="patty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="100%" style="stop-color:#3E2723"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="35" ry="7" fill="#00000020"/>
+  <!-- Bottom bun -->
+  <ellipse cx="60" cy="95" rx="38" ry="10" fill="url(#bun)"/>
+  <path d="M22 92 Q25 100 60 102 Q95 100 98 92" fill="#E65100"/>
+  <!-- Lettuce -->
+  <path d="M20 88 Q30 78 45 86 Q55 78 70 86 Q85 78 100 88 L98 92 Q85 84 70 90 Q55 84 45 90 Q30 84 22 92 Z" fill="#7CB342"/>
+  <!-- Tomato -->
+  <ellipse cx="40" cy="82" rx="10" ry="4" fill="#E53935"/>
+  <ellipse cx="70" cy="83" rx="12" ry="5" fill="#E53935"/>
+  <!-- Cheese (melting) -->
+  <path d="M25 76 L28 82 L35 78 L42 84 L50 76 L58 82 L65 76 L72 82 L80 76 L88 82 L95 76 L95 72 L25 72 Z" fill="#FFC107"/>
+  <!-- Patty -->
+  <ellipse cx="60" cy="70" rx="40" ry="10" fill="url(#patty)"/>
+  <ellipse cx="60" cy="68" rx="38" ry="8" fill="#6D4C41"/>
+  <!-- Top bun -->
+  <path d="M22 65 Q15 40 40 28 Q60 20 80 28 Q105 40 98 65 Z" fill="url(#bun)"/>
+  <!-- Bun shine -->
+  <path d="M40 45 Q55 35 70 45" stroke="#FFE0B2" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="45" cy="40" rx="3" ry="2" fill="#FFF8E1" transform="rotate(-15 45 40)"/>
+  <ellipse cx="60" cy="35" rx="3" ry="2" fill="#FFF8E1" transform="rotate(10 60 35)"/>
+  <ellipse cx="75" cy="40" rx="3" ry="2" fill="#FFF8E1" transform="rotate(20 75 40)"/>
+  <ellipse cx="52" cy="48" rx="2" ry="1.5" fill="#FFF8E1"/>
+  <ellipse cx="68" cy="50" rx="2" ry="1.5" fill="#FFF8E1" transform="rotate(-10 68 50)"/>
+</svg>

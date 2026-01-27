@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pide -->
+  <defs>
+    <linearGradient id="pideBread" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="pideFilling" x1="0%" y1="0%" x2="0%"y2="100%">
+      <stop offset="0%" style="stop-color:#FFEB3B"/>
+      <stop offset="100%" style="stop-color:#FBC02D"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="45" ry="8" fill="#00000015"/>
+  <!-- Pide boat shape -->
+  <path d="M10 60 Q60 30 110 60 Q60 90 10 60" fill="url(#pideBread)"/>
+  <!-- Bread edge detail -->
+  <path d="M15 60 Q60 35 105 60" stroke="#D4913A" stroke-width="3" fill="none"/>
+  <path d="M15 60 Q60 85 105 60" stroke="#D4913A" stroke-width="3" fill="none"/>
+  <!-- Filling area -->
+  <path d="M20 60 Q60 40 100 60 Q60 80 20 60" fill="url(#pideFilling)" opacity="0.9"/>
+  <!-- Cheese/egg filling -->
+  <ellipse cx="60" cy="60" rx="30" ry="12" fill="#FFF8E1" opacity="0.8"/>
+  <!-- Meat pieces -->
+  <ellipse cx="45" cy="58" rx="6" ry="3" fill="#8D6E63" transform="rotate(-10 45 58)"/>
+  <ellipse cx="75" cy="62" rx="6" ry="3" fill="#795548" transform="rotate(10 75 62)"/>
+  <ellipse cx="60" cy="55" rx="5" ry="2.5" fill="#6D4C41"/>
+  <!-- Egg yolk in center -->
+  <circle cx="60" cy="60" r="8" fill="#FFC107"/>
+  <circle cx="60" cy="60" r="5" fill="#FF8F00"/>
+  <!-- Parsley -->
+  <ellipse cx="50" cy="65" rx="3" ry="1.5" fill="#4CAF50" transform="rotate(-15 50 65)"/>
+  <ellipse cx="70" cy="55" rx="2" ry="1" fill="#66BB6A" transform="rotate(20 70 55)"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="25" cy="58" rx="1.5" ry="0.8" fill="#FFF8E1" transform="rotate(-30 25 58)"/>
+  <ellipse cx="95" cy="62" rx="1.5" ry="0.8" fill="#FFF8E1" transform="rotate(30 95 62)"/>
+  <ellipse cx="30" cy="65" rx="1" ry="0.5" fill="#FFF8E1"/>
+</svg>

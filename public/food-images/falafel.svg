@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Falafel -->
+  <defs>
+    <linearGradient id="falafel1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8D6E63"/>
+      <stop offset="100%" style="stop-color:#5D4037"/>
+    </linearGradient>
+    <linearGradient id="falafel2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A1887F"/>
+      <stop offset="100%" style="stop-color:#6D4C41"/>
+    </linearGradient>
+    <radialGradient id="inside" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#7CB342"/>
+      <stop offset="100%" style="stop-color:#558B2F"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="35" ry="8" fill="#00000020"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="90" rx="42" ry="12" fill="#EFEBE9"/>
+  <ellipse cx="60" cy="88" rx="38" ry="10" fill="#D7CCC8"/>
+  <!-- Back falafels -->
+  <circle cx="45" cy="70" r="14" fill="url(#falafel1)"/>
+  <circle cx="75" cy="70" r="14" fill="url(#falafel2)"/>
+  <!-- Front falafel (cut open) -->
+  <circle cx="60" cy="78" r="16" fill="url(#falafel1)"/>
+  <!-- Cut section showing inside -->
+  <path d="M52 70 Q60 65 68 70 L68 85 Q60 88 52 85 Z" fill="url(#inside)"/>
+  <!-- Herbs specks -->
+  <circle cx="56" cy="75" r="1" fill="#33691E"/>
+  <circle cx="62" cy="78" r="1" fill="#33691E"/>
+  <circle cx="58" cy="82" r="0.8" fill="#33691E"/>
+  <circle cx="64" cy="74" r="0.8" fill="#33691E"/>
+  <!-- Crispy texture dots -->
+  <circle cx="40" cy="68" r="1" fill="#4E342E"/>
+  <circle cx="48" cy="65" r="0.8" fill="#4E342E"/>
+  <circle cx="70" cy="66" r="1" fill="#4E342E"/>
+  <circle cx="78" cy="72" r="0.8" fill="#4E342E"/>
+  <!-- Tahini drizzle -->
+  <path d="M35 85 Q50 78 60 85 Q70 78 85 85" stroke="#FFF8E1" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Parsley garnish -->
+  <path d="M85 80 Q88 75 92 78 Q90 82 85 80" fill="#4CAF50"/>
+  <path d="M30 82 Q33 77 37 80 Q35 84 30 82" fill="#4CAF50"/>
+</svg>

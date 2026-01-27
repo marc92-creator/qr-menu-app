@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Döner im Brot -->
+  <defs>
+    <linearGradient id="bread" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="meat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513"/>
+      <stop offset="100%" style="stop-color:#654321"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="35" ry="8" fill="#00000020"/>
+  <!-- Bread bottom -->
+  <path d="M25 70 Q20 85 35 95 L85 95 Q100 85 95 70 Z" fill="url(#bread)"/>
+  <!-- Filling: Lettuce -->
+  <path d="M30 72 Q40 65 50 72 Q60 65 70 72 Q80 65 90 72 L88 78 Q75 70 60 78 Q45 70 32 78 Z" fill="#7CB342"/>
+  <!-- Filling: Tomatoes -->
+  <circle cx="40" cy="75" r="6" fill="#E53935"/>
+  <circle cx="60" cy="73" r="5" fill="#EF5350"/>
+  <circle cx="80" cy="75" r="6" fill="#E53935"/>
+  <!-- Filling: Meat -->
+  <path d="M32 68 Q45 58 60 68 Q75 58 88 68 L86 74 Q70 62 60 72 Q50 62 34 74 Z" fill="url(#meat)"/>
+  <path d="M35 62 Q50 52 60 62 Q70 52 85 62 L83 68 Q68 56 60 66 Q52 56 37 68 Z" fill="#A0522D"/>
+  <!-- Bread top -->
+  <path d="M25 70 Q20 45 40 35 Q60 25 80 35 Q100 45 95 70 Z" fill="url(#bread)"/>
+  <!-- Bread shine -->
+  <path d="M35 50 Q50 40 65 50" stroke="#F5DEB3" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="45" cy="45" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-20 45 45)"/>
+  <ellipse cx="60" cy="38" rx="3" ry="2" fill="#FFF8DC" transform="rotate(10 60 38)"/>
+  <ellipse cx="75" cy="45" rx="3" ry="2" fill="#FFF8DC" transform="rotate(25 75 45)"/>
+  <ellipse cx="55" cy="52" rx="2" ry="1.5" fill="#FFF8DC"/>
+  <ellipse cx="70" cy="55" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(-15 70 55)"/>
+</svg>

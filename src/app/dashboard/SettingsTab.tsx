@@ -42,6 +42,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
     restaurant.opening_hours || DEFAULT_HOURS
   );
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
+  const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
   const [loading, setLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -69,6 +70,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         whatsapp_number: whatsappNumber || null,
         opening_hours: openingHours,
         theme,
+        auto_images: autoImages,
       })
       .eq('id', restaurant.id);
 
@@ -384,6 +386,43 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             <p className="text-xs text-gray-500 mt-2">
               Wähle ein Design für deine öffentliche Speisekarte
             </p>
+          </div>
+
+          {/* Auto Images Toggle */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Bilder-Einstellungen
+            </label>
+            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+              <div className="flex-1">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={autoImages}
+                      onChange={(e) => !isDemo && setAutoImages(e.target.checked)}
+                      disabled={isDemo}
+                      className="sr-only peer"
+                    />
+                    <div className={`w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:bg-emerald-500 transition-colors ${isDemo ? 'opacity-50' : ''}`}></div>
+                    <div className={`absolute left-[2px] top-[2px] w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5 ${isDemo ? 'opacity-50' : ''}`}></div>
+                  </div>
+                  <div>
+                    <div className={`font-semibold text-gray-900 ${isDemo ? 'opacity-50' : ''}`}>Automatische Gericht-Bilder</div>
+                    <p className={`text-sm text-gray-500 mt-0.5 ${isDemo ? 'opacity-50' : ''}`}>
+                      Zeigt automatisch passende Illustrationen basierend auf dem Gericht-Namen an.
+                    </p>
+                  </div>
+                </label>
+              </div>
+              <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <img
+                  src="/food-images/doener.svg"
+                  alt="Beispiel"
+                  className="w-10 h-10"
+                />
+              </div>
+            </div>
           </div>
 
           {success && !isDemo && (

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Coffee -->
+  <defs>
+    <linearGradient id="coffeeCup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="coffee" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="100%" style="stop-color:#3E2723"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="32" ry="6" fill="#00000015"/>
+  <!-- Saucer -->
+  <ellipse cx="60" cy="100" rx="35" ry="10" fill="url(#coffeeCup)"/>
+  <ellipse cx="60" cy="98" rx="30" ry="8" fill="#F5F5F5"/>
+  <!-- Cup body -->
+  <path d="M35 50 L38 92 L82 92 L85 50 Z" fill="url(#coffeeCup)"/>
+  <!-- Cup rim -->
+  <ellipse cx="60" cy="50" rx="25" ry="10" fill="url(#coffeeCup)"/>
+  <!-- Coffee surface -->
+  <ellipse cx="60" cy="52" rx="22" ry="8" fill="url(#coffee)"/>
+  <!-- Crema -->
+  <ellipse cx="60" cy="52" rx="18" ry="6" fill="#8D6E63" opacity="0.6"/>
+  <!-- Latte art heart -->
+  <path d="M55 50 Q52 47 55 45 Q58 47 60 50 Q62 47 65 45 Q68 47 65 50 L60 56 Z" fill="#E8D5C4" opacity="0.7"/>
+  <!-- Cup handle -->
+  <path d="M85 55 Q100 55 100 72 Q100 88 85 88" stroke="url(#coffeeCup)" stroke-width="8" fill="none"/>
+  <path d="M85 60 Q95 60 95 72 Q95 84 85 84" stroke="#F5F5F5" stroke-width="4" fill="none"/>
+  <!-- Steam -->
+  <path d="M50 40 Q47 32 52 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M60 38 Q57 30 62 23" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M70 40 Q67 32 72 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <!-- Cookie on saucer -->
+  <ellipse cx="35" cy="98" rx="8" ry="4" fill="#D4A574"/>
+  <circle cx="33" cy="97" r="1" fill="#5D4037"/>
+  <circle cx="37" cy="99" r="1" fill="#5D4037"/>
+</svg>

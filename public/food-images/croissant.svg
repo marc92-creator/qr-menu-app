@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Croissant -->
+  <defs>
+    <linearGradient id="croissantGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCC80"/>
+      <stop offset="100%" style="stop-color:#E8A040"/>
+    </linearGradient>
+    <linearGradient id="croissantDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8A040"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="95" rx="40" ry="8" fill="#00000015"/>
+  <!-- Croissant crescent shape -->
+  <path d="M15 65
+           Q25 45 45 50
+           Q55 52 60 60
+           Q65 52 75 50
+           Q95 45 105 65
+           Q95 80 75 75
+           Q65 73 60 70
+           Q55 73 45 75
+           Q25 80 15 65 Z"
+        fill="url(#croissantGold)"/>
+  <!-- Layer lines (flaky texture) -->
+  <path d="M20 62 Q35 52 45 55" stroke="url(#croissantDark)" stroke-width="2" fill="none"/>
+  <path d="M25 70 Q40 62 50 65" stroke="url(#croissantDark)" stroke-width="1.5" fill="none"/>
+  <path d="M75 55 Q85 52 100 62" stroke="url(#croissantDark)" stroke-width="2" fill="none"/>
+  <path d="M70 65 Q80 62 95 70" stroke="url(#croissantDark)" stroke-width="1.5" fill="none"/>
+  <!-- Center swirl -->
+  <ellipse cx="60" cy="62" rx="12" ry="8" fill="url(#croissantDark)" opacity="0.4"/>
+  <path d="M52 60 Q60 55 68 60" stroke="#C4863C" stroke-width="1.5" fill="none"/>
+  <path d="M54 65 Q60 62 66 65" stroke="#C4863C" stroke-width="1" fill="none"/>
+  <!-- Golden highlights -->
+  <ellipse cx="35" cy="55" rx="8" ry="4" fill="#FFE0B2" opacity="0.5"/>
+  <ellipse cx="85" cy="55" rx="8" ry="4" fill="#FFE0B2" opacity="0.5"/>
+  <ellipse cx="60" cy="58" rx="6" ry="3" fill="#FFE0B2" opacity="0.4"/>
+  <!-- Butter glaze shine -->
+  <path d="M30 58 Q35 54 40 58" stroke="#FFFFFF" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M80 58 Q85 54 90 58" stroke="#FFFFFF" stroke-width="1" fill="none" opacity="0.4"/>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Soup -->
+  <defs>
+    <linearGradient id="soupBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <radialGradient id="soup" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#FF8A65"/>
+      <stop offset="100%" style="stop-color:#E64A19"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000020"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="80" rx="45" ry="18" fill="url(#soupBowl)"/>
+  <path d="M15 80 Q25 108 60 110 Q95 108 105 80" fill="url(#soupBowl)"/>
+  <!-- Bowl inner rim -->
+  <ellipse cx="60" cy="78" rx="40" ry="15" fill="#F5F5F5"/>
+  <!-- Soup surface -->
+  <ellipse cx="60" cy="68" rx="36" ry="16" fill="url(#soup)"/>
+  <!-- Soup shine -->
+  <ellipse cx="50" cy="62" rx="10" ry="4" fill="#FFAB91" opacity="0.5"/>
+  <!-- Vegetables floating -->
+  <ellipse cx="45" cy="65" rx="5" ry="3" fill="#FF7043"/>
+  <ellipse cx="70" cy="68" rx="4" ry="2.5" fill="#FF8A65"/>
+  <!-- Carrot pieces -->
+  <circle cx="55" cy="70" r="3" fill="#FF9800"/>
+  <circle cx="75" cy="62" r="2" fill="#FFA726"/>
+  <!-- Parsley garnish -->
+  <ellipse cx="60" cy="60" rx="5" ry="2.5" fill="#4CAF50" transform="rotate(-10 60 60)"/>
+  <ellipse cx="52" cy="64" rx="3" ry="1.5" fill="#66BB6A" transform="rotate(15 52 64)"/>
+  <!-- Bread on side -->
+  <ellipse cx="100" cy="85" rx="12" ry="8" fill="#E8B86D" transform="rotate(-20 100 85)"/>
+  <path d="M92 80 Q100 78 108 82" stroke="#D4913A" stroke-width="1" fill="none"/>
+  <!-- Steam -->
+  <path d="M45 50 Q42 42 47 35" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M60 48 Q57 40 62 33" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M75 50 Q72 42 77 35" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

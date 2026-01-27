@@ -41,6 +41,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
     restaurant.opening_hours || DEFAULT_HOURS
   );
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
+  const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
   const [success, setSuccess] = useState(false);
 
   const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
@@ -63,6 +64,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
       whatsapp_number: whatsappNumber || null,
       opening_hours: openingHours,
       theme,
+      auto_images: autoImages,
     });
 
     setSuccess(true);
@@ -283,6 +285,40 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* Auto Images Toggle */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-gray-100">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">Bilder-Einstellungen</h2>
+        <div className="flex items-start gap-4">
+          <div className="flex-1">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={autoImages}
+                  onChange={(e) => setAutoImages(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:bg-emerald-500 transition-colors"></div>
+                <div className="absolute left-[2px] top-[2px] w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+              </div>
+              <div>
+                <div className="font-semibold text-gray-900">Automatische Gericht-Bilder</div>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  Zeigt automatisch passende Illustrationen basierend auf dem Gericht-Namen an.
+                </p>
+              </div>
+            </label>
+          </div>
+          <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center">
+            <img
+              src="/food-images/doener.svg"
+              alt="Beispiel"
+              className="w-12 h-12"
+            />
+          </div>
         </div>
       </div>
 

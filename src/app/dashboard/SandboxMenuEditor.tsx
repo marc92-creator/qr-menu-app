@@ -7,6 +7,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
+import { getItemImageUrl } from '@/lib/foodImages';
 import {
   DndContext,
   closestCenter,
@@ -89,16 +90,20 @@ function SortableMenuItem({
       </button>
 
       {/* Thumbnail */}
-      {item.image_url && (
-        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={item.image_url}
-            alt={item.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
+      {(() => {
+        const imageUrl = getItemImageUrl(item, true);
+        if (!imageUrl) return null;
+        return (
+          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt={item.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        );
+      })()}
 
       <div className="flex-1 min-w-0">
         <div className="font-semibold text-gray-900">{item.name}</div>
@@ -281,6 +286,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       description: newItemDescription.trim() || null,
       price,
       image_url: null,
+      image_mode: 'auto',
+      image_library_key: null,
       is_available: true,
       position: categoryItems.length,
       allergens: newItemAllergens,

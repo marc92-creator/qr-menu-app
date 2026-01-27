@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Ayran -->
+  <defs>
+    <linearGradient id="ayranGlass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E3F2FD"/>
+    </linearGradient>
+    <linearGradient id="ayranLiquid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#ECEFF1"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="22" ry="5" fill="#00000015"/>
+  <!-- Glass -->
+  <path d="M38 25 L42 100 L78 100 L82 25 Z" fill="url(#ayranGlass)" opacity="0.7"/>
+  <!-- Ayran liquid -->
+  <path d="M40 30 L44 95 L76 95 L80 30 Z" fill="url(#ayranLiquid)"/>
+  <!-- Foam on top -->
+  <ellipse cx="60" cy="32" rx="20" ry="6" fill="#FFFFFF"/>
+  <ellipse cx="60" cy="30" rx="18" ry="5" fill="#FAFAFA"/>
+  <!-- Foam bubbles -->
+  <circle cx="50" cy="30" r="2" fill="#FFFFFF"/>
+  <circle cx="65" cy="28" r="2.5" fill="#FFFFFF"/>
+  <circle cx="55" cy="32" r="1.5" fill="#FFFFFF"/>
+  <circle cx="70" cy="31" r="2" fill="#FFFFFF"/>
+  <!-- Glass shine -->
+  <path d="M42 35 L44 90" stroke="#FFFFFF" stroke-width="2" opacity="0.6"/>
+  <!-- Condensation drops -->
+  <ellipse cx="45" cy="50" rx="2" ry="3" fill="#E3F2FD" opacity="0.5"/>
+  <ellipse cx="75" cy="65" rx="1.5" ry="2.5" fill="#E3F2FD" opacity="0.5"/>
+  <ellipse cx="43" cy="75" rx="1.5" ry="2" fill="#E3F2FD" opacity="0.4"/>
+  <!-- Mint leaf garnish -->
+  <ellipse cx="68" cy="26" rx="5" ry="3" fill="#4CAF50" transform="rotate(-30 68 26)"/>
+  <path d="M68 26 L65 28" stroke="#2E7D32" stroke-width="0.5"/>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Lahmacun -->
+  <defs>
+    <radialGradient id="lahmacunBase" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFCC80"/>
+      <stop offset="100%" style="stop-color:#E8A850"/>
+    </radialGradient>
+    <radialGradient id="meatTopping" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C62828"/>
+      <stop offset="100%" style="stop-color:#8D4637"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="42" ry="8" fill="#00000015"/>
+  <!-- Lahmacun base (thin flatbread) -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" fill="url(#lahmacunBase)"/>
+  <!-- Crispy edge -->
+  <ellipse cx="60" cy="65" rx="45" ry="35" stroke="#D4913A" stroke-width="2" fill="none"/>
+  <!-- Meat topping -->
+  <ellipse cx="60" cy="63" rx="38" ry="28" fill="url(#meatTopping)" opacity="0.9"/>
+  <!-- Meat texture -->
+  <circle cx="45" cy="55" r="3" fill="#A1524A" opacity="0.6"/>
+  <circle cx="70" cy="60" r="4" fill="#A1524A" opacity="0.5"/>
+  <circle cx="55" cy="70" r="3" fill="#A1524A" opacity="0.6"/>
+  <circle cx="65" cy="52" r="2" fill="#A1524A" opacity="0.5"/>
+  <!-- Parsley garnish -->
+  <ellipse cx="50" cy="58" rx="4" ry="2" fill="#4CAF50" transform="rotate(-20 50 58)"/>
+  <ellipse cx="72" cy="65" rx="3" ry="1.5" fill="#66BB6A" transform="rotate(15 72 65)"/>
+  <ellipse cx="58" cy="72" rx="3" ry="1.5" fill="#4CAF50" transform="rotate(-10 58 72)"/>
+  <!-- Lemon wedge on side -->
+  <path d="M95 75 Q100 70 105 75 Q100 80 95 75" fill="#FFF59D"/>
+  <path d="M97 75 L103 75" stroke="#FFEB3B" stroke-width="0.5"/>
+  <path d="M100 72 L100 78" stroke="#FFEB3B" stroke-width="0.5"/>
+  <!-- Onion pieces -->
+  <circle cx="48" cy="65" r="2" fill="#E1BEE7" opacity="0.7"/>
+  <circle cx="68" cy="56" r="1.5" fill="#E1BEE7" opacity="0.7"/>
+</svg>

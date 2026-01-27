@@ -2,7 +2,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from './demoData';
 
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
-const SANDBOX_DATA_VERSION = 2; // Increment when demo data structure changes
+const SANDBOX_DATA_VERSION = 3; // Increment when demo data structure changes
 
 export interface SandboxData {
   restaurant: Restaurant;
@@ -26,7 +26,7 @@ function migrateSandboxData(data: SandboxData): SandboxData {
   const currentVersion = data.version || 1;
 
   if (currentVersion < 2) {
-    // Migration: Add images to demo items that don't have them
+    // Migration v2: Add images to demo items that don't have them
     const demoData = getDemoData();
     const migratedItems = data.menuItems.map(item => {
       // Only update items that are from the original demo and don't have images
@@ -41,6 +41,25 @@ function migrateSandboxData(data: SandboxData): SandboxData {
       ...data,
       menuItems: migratedItems,
       version: 2,
+    };
+  }
+
+  if (currentVersion < 3) {
+    // Migration v3: Add auto_images to restaurant and image_mode to menu items
+    const migratedItems = data.menuItems.map(item => ({
+      ...item,
+      image_mode: item.image_mode || 'auto',
+      image_library_key: item.image_library_key || null,
+    }));
+
+    data = {
+      ...data,
+      restaurant: {
+        ...data.restaurant,
+        auto_images: data.restaurant.auto_images !== false,
+      },
+      menuItems: migratedItems,
+      version: 3,
     };
   }
 

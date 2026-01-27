@@ -23,6 +23,7 @@ export interface Restaurant {
   logo_url: string | null;
   is_active: boolean;
   is_demo: boolean;
+  auto_images: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -35,6 +36,8 @@ export interface Category {
   created_at: string;
 }
 
+export type ImageMode = 'auto' | 'library' | 'custom' | 'none';
+
 export interface MenuItem {
   id: string;
   category_id: string;
@@ -42,6 +45,8 @@ export interface MenuItem {
   description: string | null;
   price: number;
   image_url: string | null;
+  image_mode: ImageMode;
+  image_library_key: string | null;
   is_available: boolean;
   is_vegetarian: boolean;
   is_vegan: boolean;

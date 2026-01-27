@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Schnitzel -->
+  <defs>
+    <linearGradient id="schnitzelGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="100%" style="stop-color:#C4863C"/>
+    </linearGradient>
+    <linearGradient id="plate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="8" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="80" rx="50" ry="20" fill="url(#plate)"/>
+  <ellipse cx="60" cy="78" rx="45" ry="17" fill="#F5F5F5"/>
+  <!-- Schnitzel -->
+  <ellipse cx="55" cy="68" rx="35" ry="18" fill="url(#schnitzelGold)" transform="rotate(-10 55 68)"/>
+  <!-- Breading texture -->
+  <ellipse cx="40" cy="62" rx="4" ry="2" fill="#D4913A" opacity="0.5"/>
+  <ellipse cx="55" cy="58" rx="5" ry="2.5" fill="#D4913A" opacity="0.4"/>
+  <ellipse cx="70" cy="65" rx="4" ry="2" fill="#D4913A" opacity="0.5"/>
+  <ellipse cx="50" cy="72" rx="5" ry="2" fill="#D4913A" opacity="0.4"/>
+  <ellipse cx="65" cy="75" rx="4" ry="2" fill="#D4913A" opacity="0.5"/>
+  <ellipse cx="35" cy="70" rx="3" ry="1.5" fill="#D4913A" opacity="0.4"/>
+  <!-- Crispy edge -->
+  <path d="M25 60 Q35 50 55 48 Q75 50 85 65" stroke="#B8860B" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Lemon wedge -->
+  <path d="M90 65 Q100 55 105 65 Q100 75 90 65" fill="#FFF59D"/>
+  <path d="M93 65 L102 65" stroke="#FFEB3B" stroke-width="0.5"/>
+  <path d="M97 61 L97 69" stroke="#FFEB3B" stroke-width="0.5"/>
+  <path d="M95 62 L99 68" stroke="#FFEB3B" stroke-width="0.5"/>
+  <!-- Parsley garnish -->
+  <ellipse cx="85" cy="72" rx="5" ry="3" fill="#4CAF50" transform="rotate(15 85 72)"/>
+  <ellipse cx="88" cy="68" rx="4" ry="2" fill="#66BB6A" transform="rotate(-10 88 68)"/>
+  <!-- Fries on side -->
+  <rect x="15" y="72" width="18" height="5" rx="1" fill="#FFD54F" transform="rotate(-20 15 72)"/>
+  <rect x="18" y="78" width="16" height="4" rx="1" fill="#FFCA28" transform="rotate(-25 18 78)"/>
+  <rect x="12" y="76" width="15" height="4" rx="1" fill="#FFD54F" transform="rotate(-15 12 76)"/>
+</svg>

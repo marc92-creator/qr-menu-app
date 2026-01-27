@@ -377,6 +377,8 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           is_vegan: newItemVegan,
           is_popular: newItemPopular,
           is_special: newItemSpecial,
+          image_mode: 'auto',
+          image_library_key: null,
         })
         .select()
         .single();
