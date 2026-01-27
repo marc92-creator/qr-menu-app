@@ -21,7 +21,7 @@ export default function Home() {
             >
               Anmelden
             </Link>
-            <Link href="/demo">
+            <Link href="/dashboard">
               <Button size="sm" className="text-sm shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                 <span className="hidden sm:inline">Demo starten</span>
                 <span className="sm:hidden">Starten</span>
@@ -310,7 +310,7 @@ export default function Home() {
                   </li>
                 </ul>
 
-                <Link href="/register" className="block">
+                <Link href="/dashboard" className="block">
                   <Button variant="outline" className="w-full min-h-[52px] text-base hover:bg-gray-50 transition-all duration-200">
                     Demo starten
                   </Button>

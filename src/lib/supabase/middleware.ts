@@ -35,13 +35,9 @@ export async function updateSession(request: NextRequest) {
 
   // Protected routes
   const isAuthPage = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register';
-  const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
 
-  if (!user && isDashboard) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
-  }
+  // Note: /dashboard is NOT protected - it handles sandbox mode for unauthenticated users
+  // The dashboard page itself checks auth and shows sandbox mode if not logged in
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone();

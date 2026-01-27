@@ -12,6 +12,7 @@ interface MenuViewProps {
   menuItems: MenuItem[];
   showWatermark: boolean;
   isDemo?: boolean;
+  isEmbedded?: boolean; // When true, header scrolls with content (for preview mockup)
 }
 
 // Day keys for opening hours (Sunday = 0)
@@ -60,7 +61,7 @@ const formatLastUpdated = (dateString: string) => {
   });
 };
 
-export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false }: MenuViewProps) {
+export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
@@ -154,78 +155,85 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         />
       )}
 
-      {/* Header - Sticky with Glassmorphism */}
+      {/* Header - Modern Card Design */}
       <header
-        className="sticky top-0 z-20 backdrop-blur-md border-b"
+        className={`${isEmbedded ? '' : 'sticky top-0'} z-20 backdrop-blur-md`}
         style={{
           background: styles.headerBg,
-          borderColor: styles.headerBorder,
         }}
       >
-        {/* Restaurant Info */}
+        {/* Restaurant Info Card */}
         <div className="px-4 pt-4 pb-3 md:px-6">
-          <div className="flex items-center gap-3 max-w-2xl mx-auto">
-            {restaurant.logo_url ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={restaurant.logo_url}
-                alt={restaurant.name}
-                className="w-12 h-12 rounded-xl object-cover flex-shrink-0 ring-1"
-                style={{ borderColor: styles.border }}
-              />
-            ) : (
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: styles.primary }}
-              >
-                <span className="text-xl text-white font-bold">
-                  {restaurant.name.charAt(0)}
-                </span>
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold truncate" style={{ color: styles.text }}>
-                  {restaurant.name}
-                </h1>
-                {isDemo && (
-                  <span className="flex-shrink-0 bg-amber-100 text-amber-700 text-[10px] font-semibold px-1.5 py-0.5 rounded">
-                    Demo
+          <div
+            className="max-w-2xl mx-auto rounded-2xl p-4 shadow-sm"
+            style={{
+              background: styles.cardBg,
+              border: `1px solid ${styles.cardBorder}`,
+              boxShadow: styles.cardShadow,
+            }}
+          >
+            <div className="flex items-center gap-4">
+              {restaurant.logo_url ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={restaurant.logo_url}
+                  alt={restaurant.name}
+                  className="w-14 h-14 rounded-xl object-cover flex-shrink-0 ring-2"
+                  style={{ borderColor: styles.primary + '40' }}
+                />
+              ) : (
+                <div
+                  className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
+                  style={{
+                    background: `linear-gradient(135deg, ${styles.primary}, ${styles.accent || styles.primary})`,
+                  }}
+                >
+                  <span className="text-2xl text-white font-bold">
+                    {restaurant.name.charAt(0)}
                   </span>
-                )}
-              </div>
-              <div className="flex items-center gap-3 text-sm" style={{ color: styles.textMuted }}>
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-xl font-bold truncate" style={{ color: styles.text }}>
+                    {restaurant.name}
+                  </h1>
+                  {isDemo && (
+                    <span className="flex-shrink-0 bg-amber-100 text-amber-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      Demo
+                    </span>
+                  )}
+                </div>
                 {restaurant.address && (
-                  <span className="truncate">{restaurant.address}</span>
+                  <p className="text-sm truncate mt-0.5" style={{ color: styles.textMuted }}>
+                    📍 {restaurant.address}
+                  </p>
                 )}
                 {restaurant.opening_hours && (() => {
                   const { isOpen, todayHours } = getOpenStatus(restaurant.opening_hours);
                   return (
-                    <span
-                      className="flex items-center gap-1 flex-shrink-0"
-                      style={{
-                        color: isOpen ? styles.statusOpenText : styles.statusClosedText,
-                      }}
-                    >
+                    <div className="flex items-center gap-2 mt-2">
                       <span
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{
-                          backgroundColor: isOpen ? styles.statusOpenText : styles.statusClosedText,
-                        }}
-                      />
-                      <span
-                        className="text-xs font-medium px-1.5 py-0.5 rounded"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
                         style={{
                           backgroundColor: isOpen ? styles.statusOpenBg : styles.statusClosedBg,
                           color: isOpen ? styles.statusOpenText : styles.statusClosedText,
                         }}
                       >
+                        <span
+                          className="w-2 h-2 rounded-full animate-pulse"
+                          style={{
+                            backgroundColor: isOpen ? styles.statusOpenText : styles.statusClosedText,
+                          }}
+                        />
                         {isOpen ? 'Geöffnet' : 'Geschlossen'}
                       </span>
                       {todayHours && todayHours !== 'Geschlossen' && (
-                        <span className="text-xs hidden sm:inline" style={{ color: styles.textMuted }}>· {todayHours}</span>
+                        <span className="text-xs" style={{ color: styles.textMuted }}>
+                          {todayHours}
+                        </span>
                       )}
-                    </span>
+                    </div>
                   );
                 })()}
               </div>
@@ -255,7 +263,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   style={isActive ? {
                     background: styles.pillActiveBg,
                     color: styles.pillActiveText,
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
                   } : {
                     backgroundColor: isGradient(styles.pillBg) ? undefined : styles.pillBg,
                     backgroundImage: isGradient(styles.pillBg) ? styles.pillBg : undefined,
@@ -291,7 +299,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                 >
                   {/* Category Header */}
                   <div
-                    className="sticky top-[120px] z-10 py-2 -mx-4 px-4 md:-mx-6 md:px-6 backdrop-blur-sm"
+                    className={`${isEmbedded ? '' : 'sticky top-[140px]'} z-10 py-2 -mx-4 px-4 md:-mx-6 md:px-6 backdrop-blur-sm`}
                     style={{
                       backgroundColor: `${styles.background}ee`,
                     }}
