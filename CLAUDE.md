@@ -127,6 +127,11 @@ npm run start    # Start production server
 | `src/components/ImageUpload.tsx` | Image upload component with preview |
 | `src/components/TableTentPDF.tsx` | PDF generation for table tents (A4 + A6) |
 | `src/components/Skeleton.tsx` | Skeleton loading components for better UX |
+| `src/lib/translations.ts` | DE/EN translation system for public menu |
+| `src/lib/foodImages.ts` | Food image matching and library (98 Ghibli images) |
+| `src/app/m/[slug]/tv/TVMenuView.tsx` | TV mode component with auto-scroll |
+| `src/components/MenuPDFExport.tsx` | PDF export for full menu |
+| `src/components/ImageGalleryModal.tsx` | Image picker for menu items |
 
 ### Supabase Client Usage
 
@@ -198,6 +203,7 @@ Recent migrations:
 - `20240127_add_opening_hours.sql` - Opening hours JSONB field
 - `20240128_add_menu_badges.sql` - Menu item badges (is_vegetarian, is_vegan, is_popular, is_special)
 - `20240128_add_theme.sql` - Restaurant theme column
+- `20240129_add_menu_language.sql` - Menu language (de/en) for public menu UI
 
 ## Gotchas
 
@@ -233,3 +239,73 @@ The TV Mode (`/m/[slug]/tv`) is designed for Dönerläden with display screens:
 - Full-screen optimized layout with large fonts
 - Respects restaurant theme styles
 - Shows progress dots and category navigation
+
+## Translation System (DE/EN)
+
+The app now supports German and English for public menu UI:
+- **File**: `src/lib/translations.ts` - Contains all UI strings
+- **Restaurant Setting**: `menu_language: 'de' | 'en'` - Stored in database
+- **What's translated**: Opening status, badges (Vegan, Vegetarian, Popular, Daily Special), allergens, footer, empty states, relative time
+- **What's NOT translated**: Dish names and descriptions (these are entered by restaurant owner)
+
+Usage:
+```typescript
+import { getTranslation, formatRelativeTime, Language } from '@/lib/translations';
+
+const lang = (restaurant.menu_language || 'de') as Language;
+const t = getTranslation(lang);
+
+// Use t.openNow, t.dailySpecial, t.allergens, etc.
+```
+
+## Current Development Status (January 2025)
+
+### Recently Completed (this session):
+- ✅ DE/EN language toggle for public menu UI
+- ✅ Translation system with all UI strings
+- ✅ Language selector in Settings (both real and sandbox)
+- ✅ TV Mode translations
+- ✅ PDF Export translations
+
+### Next Up (TODO - based on competitor analysis):
+
+**High Priority:**
+1. **Auto-Spracherkennung** - Detect browser language and auto-switch menu language
+2. **Sprachauswahl-Button** - Add 🇩🇪/🇬🇧 toggle on public menu for visitors
+3. **Mehrsprachige Gerichtnamen** - Add `name_en`, `description_en` fields to MenuItems
+
+**Medium Priority:**
+4. **QR-Code mit Logo** - Restaurant logo in center of QR code
+5. **Social Media Links** - Instagram, TikTok links in menu
+6. **Event-Themes** - Christmas, Ramadan, Silvester special themes
+
+**Lower Priority:**
+7. **Erweiterte Filter** - glutenfrei, alkoholfrei badges
+8. **Widget/iFrame** - Embed menu on restaurant's own website
+
+### Competitor Analysis Summary:
+
+**Main Competitors:**
+- Menury.com - Free, 7 languages, ads-supported
+- Zenchef.com - Enterprise, payment integration
+- Resmio.com - 69-129€/month, comprehensive but expensive
+- Yumzi.app - TV mode, social media focus
+
+**Our USP (Unique Selling Points):**
+1. **100+ Ghibli-Stil Illustrationen KOSTENLOS** - Kein anderer Anbieter hat das!
+2. **Einfachster Onboarding-Flow** - Demo ohne Registrierung
+3. **TV-Modus für Dönerläden** - Kaum ein Anbieter bietet das
+4. **Professionelles Design out-of-the-box** - 5+ Themes
+5. **Günstigster Preis** - 9,99€/Monat vs. 69-129€ bei Konkurrenz
+
+### Files Changed in Recent Session:
+- `src/lib/translations.ts` (NEW) - Translation system
+- `src/types/database.ts` - Added MenuLanguage type
+- `src/app/dashboard/SettingsTab.tsx` - Language selector
+- `src/app/dashboard/SandboxSettingsTab.tsx` - Language selector
+- `src/app/m/[slug]/MenuView.tsx` - Uses translations
+- `src/app/m/[slug]/tv/TVMenuView.tsx` - Uses translations
+- `src/components/MenuPDFExport.tsx` - Uses translations
+- `src/lib/demoData.ts` - Added menu_language
+- `src/lib/sandboxStorage.ts` - Migration v4 for menu_language
+- `supabase/migrations/20240129_add_menu_language.sql` (NEW)
