@@ -2,7 +2,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from './demoData';
 
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
-const SANDBOX_DATA_VERSION = 5; // Increment when demo data structure changes
+const SANDBOX_DATA_VERSION = 6; // Increment when demo data structure changes
 
 export interface SandboxData {
   restaurant: Restaurant;
@@ -103,6 +103,32 @@ function migrateSandboxData(data: SandboxData): SandboxData {
     };
   }
 
+  if (currentVersion < 6) {
+    // Migration v6: Add English translations for categories
+    const demoData = getDemoData();
+    const migratedCategories = data.categories.map(cat => {
+      // Copy English translations from demo data for demo categories
+      const demoCat = demoData.categories.find(d => d.id === cat.id);
+      if (demoCat) {
+        return {
+          ...cat,
+          name_en: cat.name_en || demoCat.name_en || null,
+        };
+      }
+      // For user-created categories, keep existing or set null
+      return {
+        ...cat,
+        name_en: cat.name_en || null,
+      };
+    });
+
+    data = {
+      ...data,
+      categories: migratedCategories,
+      version: 6,
+    };
+  }
+
   return data;
 }
 
@@ -194,12 +220,13 @@ export function hasSandboxModifications(): boolean {
 /**
  * Add a category in sandbox mode
  */
-export function addSandboxCategory(name: string): Category {
+export function addSandboxCategory(name: string, nameEn?: string): Category {
   const data = getSandboxData();
   const newCategory: Category = {
     id: `sandbox-cat-${Date.now()}`,
     restaurant_id: data.restaurant.id,
     name,
+    name_en: nameEn || null,
     position: data.categories.length,
     created_at: new Date().toISOString(),
   };

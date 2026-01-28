@@ -34,6 +34,7 @@ export interface Category {
   id: string;
   restaurant_id: string;
   name: string;
+  name_en?: string | null;
   position: number;
   created_at: string;
 }

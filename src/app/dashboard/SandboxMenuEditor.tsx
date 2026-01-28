@@ -328,6 +328,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryNameEn, setNewCategoryNameEn] = useState('');
 
   // Load sandbox data on mount
   useEffect(() => {
@@ -396,8 +397,9 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
 
-    addSandboxCategory(newCategoryName.trim());
+    addSandboxCategory(newCategoryName.trim(), newCategoryNameEn.trim() || undefined);
     setNewCategoryName('');
+    setNewCategoryNameEn('');
     setShowAddCategory(false);
     loadData();
   };
@@ -602,8 +604,15 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="z.B. Vorspeisen"
               />
+              <Input
+                id="categoryNameEn"
+                label="Name auf Englisch (optional)"
+                value={newCategoryNameEn}
+                onChange={(e) => setNewCategoryNameEn(e.target.value)}
+                placeholder="e.g. Starters"
+              />
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => setShowAddCategory(false)}>
+                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => { setShowAddCategory(false); setNewCategoryNameEn(''); }}>
                   Abbrechen
                 </Button>
                 <Button className="flex-1 min-h-[52px] rounded-xl shadow-lg shadow-emerald-500/20" onClick={handleAddCategory}>

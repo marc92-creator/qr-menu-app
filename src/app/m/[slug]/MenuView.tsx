@@ -114,6 +114,14 @@ const getLocalizedDescription = (item: MenuItem, lang: Language): string | null 
   return item.description;
 };
 
+// Get localized category name (English if available and selected, otherwise German)
+const getLocalizedCategoryName = (category: Category, lang: Language): string => {
+  if (lang === 'en' && category.name_en && category.name_en.trim() !== '') {
+    return category.name_en;
+  }
+  return category.name;
+};
+
 export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
@@ -228,7 +236,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       return;
     }
 
-    const headerHeight = 150; // Height of sticky header + category pills
+    const headerHeight = 160; // Height of sticky header + category pills (matches scroll-mt-40)
 
     if (isEmbedded) {
       // For embedded mode, find the scrollable parent by traversing up
@@ -459,7 +467,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                     boxShadow: `inset 0 0 0 1.5px ${styles.border}`,
                   }}
                 >
-                  {category.name}
+                  {getLocalizedCategoryName(category, currentLang)}
                 </button>
               );
             })}
@@ -484,7 +492,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   ref={(el) => {
                     if (el) categoryRefs.current.set(category.id, el);
                   }}
-                  className="scroll-mt-44"
+                  className="scroll-mt-40"
                 >
                   {/* Category Header */}
                   <div
@@ -498,7 +506,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                         className="w-1 h-5 rounded-full"
                         style={{ backgroundColor: styles.primary }}
                       />
-                      {category.name}
+                      {getLocalizedCategoryName(category, currentLang)}
                     </h2>
                   </div>
 

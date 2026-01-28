@@ -176,6 +176,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryNameEn, setNewCategoryNameEn] = useState('');
 
   // Drag & Drop sensors with touch support
   const sensors = useSensors(
@@ -401,11 +402,13 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     await supabase.from('menu_categories').insert({
       restaurant_id: restaurant.id,
       name: newCategoryName.trim(),
+      name_en: newCategoryNameEn.trim() || null,
       position: categories.length,
     });
 
     await updateRestaurantTimestamp();
     setNewCategoryName('');
+    setNewCategoryNameEn('');
     setShowAddCategory(false);
     setLoading(false);
     onUpdate();
@@ -728,8 +731,15 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="z.B. Vorspeisen"
               />
+              <Input
+                id="categoryNameEn"
+                label="Name auf Englisch (optional)"
+                value={newCategoryNameEn}
+                onChange={(e) => setNewCategoryNameEn(e.target.value)}
+                placeholder="e.g. Starters"
+              />
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => setShowAddCategory(false)}>
+                <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => { setShowAddCategory(false); setNewCategoryNameEn(''); }}>
                   Abbrechen
                 </Button>
                 <Button className="flex-1 min-h-[52px] rounded-xl shadow-lg shadow-emerald-500/20" onClick={handleAddCategory} loading={loading}>
