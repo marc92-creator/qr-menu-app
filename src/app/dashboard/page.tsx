@@ -673,7 +673,9 @@ export default function DashboardPage() {
             restaurant={selectedRestaurant}
             categories={categories}
             menuItems={menuItems}
+            subscription={subscription}
             onUpdate={loadData}
+            onItemsChange={setMenuItems}
           />
         )}
         {activeTab === 'preview' && selectedRestaurant && (

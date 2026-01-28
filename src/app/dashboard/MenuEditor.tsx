@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { Restaurant, Category, MenuItem } from '@/types/database';
+import { Restaurant, Category, MenuItem, Subscription } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { ImageUpload } from '@/components/ImageUpload';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { uploadMenuItemImage, deleteMenuItemImage } from '@/lib/imageUpload';
+import { canAddCategory, canAddItem, getPlanLimits } from '@/hooks/useSubscription';
+import { UpgradeModal } from '@/components/UpgradeModal';
 import {
   DndContext,
   closestCenter,
@@ -127,10 +129,12 @@ interface MenuEditorProps {
   restaurant: Restaurant;
   categories: Category[];
   menuItems: MenuItem[];
+  subscription: Subscription | null;
   onUpdate: () => void;
+  onItemsChange?: (items: MenuItem[]) => void;
 }
 
-export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: MenuEditorProps) {
+export function MenuEditor({ restaurant, categories, menuItems, subscription, onUpdate, onItemsChange }: MenuEditorProps) {
   const isDemo = restaurant.is_demo;
 
   // Local state for optimistic UI updates
@@ -145,10 +149,37 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState('');
+
+  const limits = getPlanLimits(subscription);
+
+  const showUpgrade = (feature: string) => {
+    setUpgradeFeature(feature);
+    setShowUpgradeModal(true);
+  };
+
+  const handleAddCategoryClick = () => {
+    if (!canAddCategory(categories.length, subscription)) {
+      showUpgrade(`Kategorien-Limit erreicht`);
+      return;
+    }
+    setShowAddCategory(true);
+  };
+
+  const handleAddItemClick = () => {
+    if (!canAddItem(localMenuItems.length, subscription)) {
+      showUpgrade(`Gerichte-Limit erreicht`);
+      return;
+    }
+    setShowAddItem(true);
+  };
 
   // New item form
   const [newItemName, setNewItemName] = useState('');
+  const [newItemNameEn, setNewItemNameEn] = useState('');
   const [newItemDescription, setNewItemDescription] = useState('');
+  const [newItemDescriptionEn, setNewItemDescriptionEn] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('');
   const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
@@ -290,7 +321,10 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
       await updateRestaurantTimestamp();
       console.log('Sort order saved successfully');
-      // Don't call onUpdate() - we already updated local state
+
+      // Notify parent of the change so preview updates
+      const newItems = [...localMenuItems.filter(i => i.category_id !== categoryId), ...updatedCategoryItems];
+      onItemsChange?.(newItems);
     } catch (error) {
       console.error('Error reordering items:', error);
       // Revert to previous order on error
@@ -435,7 +469,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
         .insert({
           category_id: newItemCategory,
           name: newItemName.trim(),
+          name_en: newItemNameEn.trim() || null,
           description: newItemDescription.trim() || null,
+          description_en: newItemDescriptionEn.trim() || null,
           price,
           position: categoryItems.length,
           allergens: newItemAllergens,
@@ -464,7 +500,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
       await updateRestaurantTimestamp();
       setNewItemName('');
+      setNewItemNameEn('');
       setNewItemDescription('');
+      setNewItemDescriptionEn('');
       setNewItemPrice('');
       setNewItemCategory('');
       setNewItemAllergens([]);
@@ -670,7 +708,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setShowAddCategory(true)}
+            onClick={handleAddCategoryClick}
             disabled={isDemo}
             className="text-sm rounded-xl hover:bg-gray-50 transition-all"
           >
@@ -682,7 +720,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           </Button>
           <Button
             size="sm"
-            onClick={() => setShowAddItem(true)}
+            onClick={handleAddItemClick}
             disabled={categories.length === 0 || isDemo}
             className="text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
           >
@@ -815,11 +853,25 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 placeholder="z.B. Döner im Brot"
               />
               <Input
+                id="itemNameEn"
+                label="Name auf Englisch (optional)"
+                value={newItemNameEn}
+                onChange={(e) => setNewItemNameEn(e.target.value)}
+                placeholder="e.g. Döner in Bread"
+              />
+              <Input
                 id="itemDescription"
                 label="Beschreibung (optional)"
                 value={newItemDescription}
                 onChange={(e) => setNewItemDescription(e.target.value)}
                 placeholder="z.B. Mit frischem Salat und Soße"
+              />
+              <Input
+                id="itemDescriptionEn"
+                label="Beschreibung auf Englisch (optional)"
+                value={newItemDescriptionEn}
+                onChange={(e) => setNewItemDescriptionEn(e.target.value)}
+                placeholder="e.g. With fresh salad and sauce"
               />
               <Input
                 id="itemPrice"
@@ -1053,7 +1105,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           {/* CTA */}
           <div className="text-center">
             <Button
-              onClick={() => setShowAddCategory(true)}
+              onClick={handleAddCategoryClick}
               size="lg"
               className="shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all px-8"
             >
@@ -1293,14 +1345,14 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowAddCategory(true)}
+                    onClick={handleAddCategoryClick}
                     className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-100"
                   >
                     + Kategorie
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => setShowAddItem(true)}
+                    onClick={handleAddItemClick}
                     disabled={categories.length === 0}
                     className="rounded-xl shadow-lg shadow-emerald-500/20"
                   >
@@ -1329,6 +1381,20 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           )}
         </>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        feature={upgradeFeature}
+        description={
+          upgradeFeature.includes('Kategorien')
+            ? `Du hast das Maximum von ${limits.maxCategories} Kategorien erreicht. Upgrade auf Pro für unbegrenzte Kategorien.`
+            : upgradeFeature.includes('Gerichte')
+              ? `Du hast das Maximum von ${limits.maxItems} Gerichten erreicht. Upgrade auf Pro für unbegrenzte Gerichte.`
+              : undefined
+        }
+      />
     </div>
   );
 }

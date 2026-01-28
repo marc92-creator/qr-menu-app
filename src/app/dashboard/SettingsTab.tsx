@@ -9,6 +9,8 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
 import { uploadRestaurantLogo, validateImageFile } from '@/lib/imageUpload';
+import { isThemeAllowed } from '@/hooks/useSubscription';
+import { UpgradeModal, ProBadge } from '@/components/UpgradeModal';
 
 interface SettingsTabProps {
   restaurant: Restaurant;
@@ -51,7 +53,14 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
   const [logoLoading, setLogoLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState('');
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const showUpgrade = (feature: string) => {
+    setUpgradeFeature(feature);
+    setShowUpgradeModal(true);
+  };
 
   const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
     setOpeningHours(prev => ({
@@ -395,23 +404,39 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
               {THEME_LIST.map((t) => {
                 const isActive = theme === t.id;
                 const s = t.styles;
+                const isLocked = !isThemeAllowed(t.id, subscription);
                 return (
                   <button
                     key={t.id}
                     type="button"
-                    onClick={() => !isDemo && setTheme(t.id)}
+                    onClick={() => {
+                      if (isDemo) return;
+                      if (isLocked) {
+                        showUpgrade('Premium Theme: ' + t.name);
+                        return;
+                      }
+                      setTheme(t.id);
+                    }}
                     disabled={isDemo}
                     className={`
                       relative rounded-xl border-2 text-left transition-all overflow-hidden
                       ${isActive
                         ? 'border-emerald-500 ring-2 ring-emerald-500/20 scale-[1.02]'
-                        : 'border-gray-200 hover:border-gray-300'
+                        : isLocked
+                          ? 'border-gray-200 opacity-75'
+                          : 'border-gray-200 hover:border-gray-300'
                       }
                       ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                     `}
                   >
+                    {/* Pro Badge for locked themes */}
+                    {isLocked && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <ProBadge />
+                      </div>
+                    )}
                     {/* Active indicator */}
-                    {isActive && (
+                    {isActive && !isLocked && (
                       <div className="absolute top-2 right-2 z-10 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -748,6 +773,13 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
           Restaurant löschen
         </Button>
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        feature={upgradeFeature}
+      />
     </div>
   );
 }
