@@ -78,11 +78,32 @@ const getOpenStatus = (openingHours: OpeningHours | null): { isOpen: boolean; to
   };
 };
 
+// Detect browser language
+const detectBrowserLanguage = (): Language => {
+  if (typeof window === 'undefined') return 'de';
+  const browserLang = navigator.language || (navigator as { userLanguage?: string }).userLanguage || 'de';
+  return browserLang.startsWith('en') ? 'en' : 'de';
+};
+
+// Get saved language preference from localStorage
+const getSavedLanguage = (restaurantId: string): Language | null => {
+  if (typeof window === 'undefined') return null;
+  const saved = localStorage.getItem(`menu_lang_${restaurantId}`);
+  return saved === 'en' || saved === 'de' ? saved : null;
+};
+
+// Save language preference to localStorage
+const saveLanguage = (restaurantId: string, lang: Language) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(`menu_lang_${restaurantId}`, lang);
+};
+
 export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [currentLang, setCurrentLang] = useState<Language>('de');
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -91,9 +112,27 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const theme = getTheme(restaurant.theme || 'classic');
   const styles = theme.styles;
 
-  // Get translations based on restaurant language setting
-  const lang = (restaurant.menu_language || 'de') as Language;
-  const t = getTranslation(lang);
+  // Auto-detect language on mount
+  useEffect(() => {
+    // Priority: 1. Saved preference, 2. Browser language, 3. Restaurant default
+    const saved = getSavedLanguage(restaurant.id);
+    if (saved) {
+      setCurrentLang(saved);
+    } else {
+      const browserLang = detectBrowserLanguage();
+      setCurrentLang(browserLang);
+    }
+  }, [restaurant.id]);
+
+  // Toggle language
+  const toggleLanguage = () => {
+    const newLang = currentLang === 'de' ? 'en' : 'de';
+    setCurrentLang(newLang);
+    saveLanguage(restaurant.id, newLang);
+  };
+
+  // Get translations based on current language
+  const t = getTranslation(currentLang);
 
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
@@ -289,6 +328,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   </span>
                 </div>
               )}
+              {/* Language Toggle Button */}
+              <button
+                onClick={toggleLanguage}
+                className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{
+                  backgroundColor: styles.surfaceHover || styles.cardBg,
+                  color: styles.textMuted,
+                  border: `1px solid ${styles.border}`,
+                }}
+                title={currentLang === 'de' ? 'Switch to English' : 'Auf Deutsch wechseln'}
+              >
+                <span className="text-sm">{currentLang === 'de' ? '🇩🇪' : '🇬🇧'}</span>
+                <span className="hidden sm:inline">{currentLang === 'de' ? 'DE' : 'EN'}</span>
+              </button>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="text-xl font-bold truncate" style={{ color: styles.text }}>
@@ -578,7 +631,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               {/* Last Updated Info */}
               <div className="text-center py-4">
                 <p className="text-xs" style={{ color: styles.textMuted }}>
-                  {t.lastUpdated} {formatRelativeTime(restaurant.updated_at, lang)}
+                  {t.lastUpdated} {formatRelativeTime(restaurant.updated_at, currentLang)}
                 </p>
               </div>
 

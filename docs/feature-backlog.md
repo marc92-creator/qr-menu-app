@@ -1,22 +1,21 @@
 # Feature Backlog
 
-Letzte Aktualisierung: 28. Januar 2025
+Letzte Aktualisierung: 28. Januar 2025 (Daily Run)
 
 ---
 
 ## High Priority 🔴
 
+### NEU: AI-Features
+
+- [ ] **AI Menu Import** (Quelle: Yumzi - Daily Scout 28.01.)
+  - PDF oder Foto der Speisekarte hochladen
+  - AI digitalisiert automatisch alle Gerichte
+  - Extrahiert: Name, Beschreibung, Preis, Kategorie
+  - **UNIQUE FEATURE** - Könnte großer USP werden!
+  - Aufwand: 8-12 Stunden (OpenAI Vision API)
+
 ### Mehrsprachigkeit
-
-- [ ] **Auto-Spracherkennung** (Quelle: NordQR)
-  - Browser-Sprache erkennen
-  - Menü automatisch in passender Sprache anzeigen
-  - Aufwand: 2-3 Stunden
-
-- [ ] **Sprachauswahl-Button auf öffentlicher Seite** (Quelle: Menury)
-  - 🇩🇪/🇬🇧 Toggle im Menü-Header
-  - Speichert Präferenz im localStorage
-  - Aufwand: 1-2 Stunden
 
 - [ ] **Mehrsprachige Gerichtnamen** (Quelle: Menury)
   - `name_en`, `description_en` Felder für MenuItems
@@ -104,6 +103,12 @@ Letzte Aktualisierung: 28. Januar 2025
 
 ### Januar 2025
 
+- [x] **Auto-Spracherkennung + Sprachauswahl** (28.01.2025 - Daily Build)
+  - Browser-Sprache automatisch erkennen
+  - 🇩🇪/🇬🇧 Toggle Button im Menü-Header
+  - Speichert Präferenz im localStorage
+  - Quelle: NordQR, Menury
+
 - [x] **DE/EN UI-Übersetzung** (28.01.2025)
   - Alle UI-Texte übersetzbar
   - Sprache in Einstellungen wählbar
@@ -178,9 +183,8 @@ Letzte Aktualisierung: 28. Januar 2025
               └─────────┴─────────┘
 
 Quick Wins (Low Effort, High Impact):
-- Auto-Spracherkennung
-- Sprachauswahl-Button
 - Social Media Links
+- WhatsApp-Vorschau optimieren
 
 Major Projects (High Effort, High Impact):
 - Mehrsprachige Gerichtnamen
@@ -192,6 +196,6 @@ Major Projects (High Effort, High Impact):
 
 ## Nächste Schritte
 
-1. **Sofort:** Auto-Spracherkennung + Sprachauswahl-Button
-2. **Diese Woche:** Mehrsprachige Gerichtnamen
-3. **Nächste Woche:** QR-Code mit Logo, Social Links
+1. **Sofort:** ✅ Auto-Spracherkennung + Sprachauswahl-Button (DONE)
+2. **Diese Woche:** Mehrsprachige Gerichtnamen (name_en, description_en)
+3. **Nächste Woche:** AI Menu Import, QR-Code mit Logo, Social Links

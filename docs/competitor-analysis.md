@@ -1,6 +1,6 @@
 # Konkurrenz-Analyse
 
-Letzte Aktualisierung: 28. Januar 2025
+Letzte Aktualisierung: 28. Januar 2025 (Daily Run Update)
 
 ## Executive Summary
 
@@ -93,23 +93,31 @@ Letzte Aktualisierung: 28. Januar 2025
 
 ### 4. Yumzi (yumzi.app)
 
-**Kategorie:** QR-Code Menüs
+**Kategorie:** QR-Code Menüs (AI-powered)
+
+**Update 28.01.2025:** Yumzi ist ein Wiener Startup (gegründet 2023) mit starkem AI-Fokus!
 
 **Stärken:**
-- Standortbasierte Entdeckung (Kunden finden Menü bevor sie ankommen)
-- QR-Code auf Mitarbeiter-Shirts vorgeschlagen
-- Social Media Integration (Instagram, TikTok direkt verlinkt)
-- Digitale Menüboards für TV-Displays
-- Anpassbare Vorlagen
+- **AI Menu Import** - PDF/Foto hochladen → automatisch digitalisieren! ⚠️
+- **Auto-Spracherkennung** - Erkennt Browser-Sprache automatisch
+- Videos in Menü-Items einbetten
+- Nährwert-Berechnung
+- 1000+ Templates
+- Google, Instagram, Facebook Sync
+- Standortbasierte Entdeckung
+- Social Media Integration
 
 **Schwächen:**
 - Weniger bekannt in Deutschland
 - Begrenzte kostenlose Features
+- Kein Fokus auf deutsche Restaurants
 
 **Ideen für uns:**
 - [x] TV-Modus für Displays (haben wir!)
+- [ ] **AI Menu Import** - HIGH PRIORITY! Unique Feature!
+- [ ] Auto-Spracherkennung (bereits geplant)
 - [ ] Social Media Links im Menü
-- [ ] Standort-Feature (später)
+- [ ] Videos in Menü (später)
 
 ---
 
