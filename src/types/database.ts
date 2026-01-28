@@ -9,6 +9,7 @@ export interface OpeningHours {
 }
 
 export type MenuTheme = 'classic' | 'dark' | 'rustic' | 'modern' | 'oriental';
+export type MenuLanguage = 'de' | 'en';
 
 export interface Restaurant {
   id: string;
@@ -20,6 +21,7 @@ export interface Restaurant {
   whatsapp_number: string | null;
   opening_hours: OpeningHours | null;
   theme: MenuTheme;
+  menu_language: MenuLanguage;
   logo_url: string | null;
   is_active: boolean;
   is_demo: boolean;

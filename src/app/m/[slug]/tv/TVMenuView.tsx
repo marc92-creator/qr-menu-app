@@ -5,6 +5,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getTheme } from '@/lib/themes';
 import { formatPrice } from '@/lib/utils';
 import { getItemImageUrl } from '@/lib/foodImages';
+import { getTranslation, Language } from '@/lib/translations';
 
 interface TVMenuViewProps {
   restaurant: Restaurant;
@@ -17,6 +18,10 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const theme = getTheme(restaurant.theme || 'classic');
   const styles = theme.styles;
+
+  // Get translations
+  const lang = (restaurant.menu_language || 'de') as Language;
+  const t = getTranslation(lang);
 
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
 
@@ -83,7 +88,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
         style={{ background: styles.background }}
       >
         <p className="text-2xl" style={{ color: styles.textMuted }}>
-          Keine Kategorien vorhanden
+          {t.noMenuAvailable}
         </p>
       </div>
     );
@@ -143,7 +148,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
           {/* Current Category */}
           <div className="text-right">
             <div className="text-lg" style={{ color: styles.textMuted }}>
-              Kategorie {currentCategoryIndex + 1} von {sortedCategories.length}
+              {t.category} {currentCategoryIndex + 1} {t.of} {sortedCategories.length}
             </div>
             <h2 className="text-3xl font-bold" style={{ color: styles.primary }}>
               {currentCategory?.name}
@@ -211,7 +216,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                             color: styles.badgeSpecialText,
                           }}
                         >
-                          ⭐ Tagesangebot
+                          ⭐ {t.dailySpecial}
                         </span>
                       )}
                       {item.is_popular && (
@@ -222,7 +227,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                             color: styles.badgePopularText,
                           }}
                         >
-                          🔥 Beliebt
+                          🔥 {t.popular}
                         </span>
                       )}
                     </div>
@@ -261,7 +266,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                             color: styles.badgeVeganText,
                           }}
                         >
-                          🌱 Vegan
+                          🌱 {t.vegan}
                         </span>
                       )}
                       {item.is_vegetarian && !item.is_vegan && (
@@ -272,7 +277,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                             color: styles.badgeVeganText,
                           }}
                         >
-                          🥬 Vegetarisch
+                          🥬 {t.vegetarian}
                         </span>
                       )}
                     </div>
@@ -305,12 +310,12 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
               }}
             >
               <span className={`w-2 h-2 rounded-full ${isAutoScrolling ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-              {isAutoScrolling ? 'Auto-Scroll aktiv' : 'Auto-Scroll pausiert'}
+              {isAutoScrolling ? t.autoScrollActive : t.autoScrollPaused}
             </div>
           </div>
 
           <div className="text-sm" style={{ color: styles.textMuted }}>
-            Tastatur: ← → Navigation | P = Pause | Leertaste = Weiter
+            {t.keyboardHint}
           </div>
 
           {/* Progress dots */}

@@ -4,6 +4,7 @@ import { jsPDF } from 'jspdf';
 import { Restaurant, Category, MenuItem } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { getAllergenById } from '@/lib/allergens';
+import { getTranslation, getAllergenName, Language } from '@/lib/translations';
 
 interface MenuPDFOptions {
   restaurant: Restaurant;
@@ -27,6 +28,10 @@ export function generateMenuPDF({
     unit: 'mm',
     format: 'a4',
   });
+
+  // Get translations
+  const lang = (restaurant.menu_language || 'de') as Language;
+  const t = getTranslation(lang);
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -137,7 +142,7 @@ export function generateMenuPDF({
         doc.setFillColor(251, 191, 36); // amber-400
         doc.setTextColor(120, 53, 15); // amber-900
         doc.setFontSize(7);
-        const badgeText = 'TAGESANGEBOT';
+        const badgeText = t.dailySpecial.toUpperCase();
         const badgeWidth = doc.getTextWidth(badgeText) + 4;
         doc.roundedRect(nameX, currentY - 4, badgeWidth, 5, 1, 1, 'F');
         doc.text(badgeText, nameX + 2, currentY - 0.5);
@@ -147,7 +152,7 @@ export function generateMenuPDF({
         doc.setFillColor(254, 202, 202); // red-200
         doc.setTextColor(153, 27, 27); // red-800
         doc.setFontSize(7);
-        const badgeText = 'BELIEBT';
+        const badgeText = t.popular.toUpperCase();
         const badgeWidth = doc.getTextWidth(badgeText) + 4;
         doc.roundedRect(nameX, currentY - 4, badgeWidth, 5, 1, 1, 'F');
         doc.text(badgeText, nameX + 2, currentY - 0.5);
@@ -172,14 +177,14 @@ export function generateMenuPDF({
         if (item.is_vegan) {
           doc.setFillColor(209, 250, 229); // emerald-100
           doc.setTextColor(4, 120, 87); // emerald-700
-          const badge = 'Vegan';
+          const badge = t.vegan;
           const badgeWidth = doc.getTextWidth(badge) + 4;
           doc.roundedRect(margin, currentY - 3, badgeWidth, 4.5, 1, 1, 'F');
           doc.text(badge, margin + 2, currentY);
         } else if (item.is_vegetarian) {
           doc.setFillColor(220, 252, 231); // green-100
           doc.setTextColor(21, 128, 61); // green-700
-          const badge = 'Vegetarisch';
+          const badge = t.vegetarian;
           const badgeWidth = doc.getTextWidth(badge) + 4;
           doc.roundedRect(margin, currentY - 3, badgeWidth, 4.5, 1, 1, 'F');
           doc.text(badge, margin + 2, currentY);
@@ -206,10 +211,10 @@ export function generateMenuPDF({
         const allergenText = item.allergens
           .map((a) => {
             const allergen = getAllergenById(a);
-            return allergen ? `${allergen.icon} ${allergen.name}` : a;
+            return allergen ? `${allergen.icon} ${getAllergenName(a, lang)}` : a;
           })
           .join('  ');
-        const allergenLines = doc.splitTextToSize(`Allergene: ${allergenText}`, contentWidth - 10);
+        const allergenLines = doc.splitTextToSize(`${t.allergens}: ${allergenText}`, contentWidth - 10);
         allergenLines.forEach((line: string) => {
           doc.text(line, margin, currentY);
           currentY += 3;
@@ -234,7 +239,7 @@ export function generateMenuPDF({
     doc.setTextColor(...mutedColor);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
-    doc.text('Allergene: Fragen Sie unser Personal bei Allergien oder Unverträglichkeiten.', margin, currentY);
+    doc.text(`${t.allergens}: ${t.allergenInfo}`, margin, currentY);
   }
 
   // Save PDF

@@ -19,6 +19,7 @@ export const DEMO_RESTAURANT: Restaurant = {
     so: { open: '12:00', close: '21:00' },
   },
   theme: 'classic',
+  menu_language: 'de',
   logo_url: null,
   is_active: true,
   is_demo: true,

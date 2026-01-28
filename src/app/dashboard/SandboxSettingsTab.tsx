@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Restaurant, OpeningHours, MenuTheme } from '@/types/database';
+import { Restaurant, OpeningHours, MenuTheme, MenuLanguage } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
 import { updateSandboxRestaurant } from '@/lib/sandboxStorage';
+import { LANGUAGE_OPTIONS } from '@/lib/translations';
 
 interface SandboxSettingsTabProps {
   restaurant: Restaurant;
@@ -41,6 +42,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
     restaurant.opening_hours || DEFAULT_HOURS
   );
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
+  const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
   const [success, setSuccess] = useState(false);
 
@@ -64,6 +66,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
       whatsapp_number: whatsappNumber || null,
       opening_hours: openingHours,
       theme,
+      menu_language: menuLanguage,
       auto_images: autoImages,
     });
 
@@ -122,6 +125,39 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
           <p className="text-sm text-gray-500">
             Wenn angegeben, wird ein WhatsApp-Button auf deiner Speisekarte angezeigt.
           </p>
+        </div>
+      </div>
+
+      {/* Language Selection */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-gray-100">
+        <h2 className="text-lg font-bold text-gray-900 mb-2">Sprache der Speisekarte</h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Wähle die Sprache für die öffentliche Speisekarte. Betrifft nur die UI-Texte (Geöffnet/Geschlossen, Badges, etc.).
+        </p>
+        <div className="flex gap-3">
+          {LANGUAGE_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              onClick={() => setMenuLanguage(option.id)}
+              className={`
+                flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all
+                ${menuLanguage === option.id
+                  ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500/20'
+                  : 'border-gray-200 hover:border-gray-300 bg-white'
+                }
+              `}
+            >
+              <span className="text-2xl">{option.flag}</span>
+              <span className={`font-medium ${menuLanguage === option.id ? 'text-emerald-700' : 'text-gray-700'}`}>
+                {option.label}
+              </span>
+              {menuLanguage === option.id && (
+                <svg className="w-5 h-5 text-emerald-500 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </button>
+          ))}
         </div>
       </div>
 

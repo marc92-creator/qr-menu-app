@@ -3,7 +3,8 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { Restaurant, Subscription, OpeningHours, MenuTheme } from '@/types/database';
+import { Restaurant, Subscription, OpeningHours, MenuTheme, MenuLanguage } from '@/types/database';
+import { LANGUAGE_OPTIONS } from '@/lib/translations';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
@@ -44,6 +45,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
     restaurant.opening_hours || DEFAULT_HOURS
   );
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
+  const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
   const [loading, setLoading] = useState(false);
   const [logoLoading, setLogoLoading] = useState(false);
@@ -126,6 +128,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         logo_url: logoUrl || null,
         opening_hours: openingHours,
         theme,
+        menu_language: menuLanguage,
         auto_images: autoImages,
       })
       .eq('id', restaurant.id);
@@ -508,6 +511,46 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             </div>
             <p className="text-xs text-gray-500 mt-2">
               Wähle ein Design für deine öffentliche Speisekarte
+            </p>
+          </div>
+
+          {/* Menu Language Selection */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Menü-Sprache
+            </label>
+            <div className="flex gap-3">
+              {LANGUAGE_OPTIONS.map((lang) => (
+                <button
+                  key={lang.id}
+                  type="button"
+                  onClick={() => !isDemo && setMenuLanguage(lang.id)}
+                  disabled={isDemo}
+                  className={`
+                    flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all flex-1
+                    ${menuLanguage === lang.id
+                      ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500/20'
+                      : 'border-gray-200 hover:border-gray-300'
+                    }
+                    ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                  `}
+                >
+                  <span className="text-2xl">{lang.flag}</span>
+                  <div className="text-left">
+                    <div className={`font-semibold ${menuLanguage === lang.id ? 'text-emerald-700' : 'text-gray-900'}`}>
+                      {lang.label}
+                    </div>
+                  </div>
+                  {menuLanguage === lang.id && (
+                    <svg className="w-5 h-5 text-emerald-500 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Die Sprache für Badges, Allergene und UI-Texte auf der öffentlichen Speisekarte
             </p>
           </div>
 

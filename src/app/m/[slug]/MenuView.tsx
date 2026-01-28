@@ -6,6 +6,7 @@ import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
 import { getItemImageUrl } from '@/lib/foodImages';
+import { getTranslation, formatRelativeTime, Language } from '@/lib/translations';
 
 // Premium Image Component with loading state and blur effect
 function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
@@ -56,15 +57,15 @@ interface MenuViewProps {
 const DAY_KEYS = ['so', 'mo', 'di', 'mi', 'do', 'fr', 'sa'] as const;
 
 // Check if restaurant is currently open
-const getOpenStatus = (openingHours: OpeningHours | null): { isOpen: boolean; todayHours: string | null } => {
-  if (!openingHours) return { isOpen: false, todayHours: null };
+const getOpenStatus = (openingHours: OpeningHours | null): { isOpen: boolean; todayHours: string | null; isClosed: boolean } => {
+  if (!openingHours) return { isOpen: false, todayHours: null, isClosed: false };
 
   const now = new Date();
   const dayKey = DAY_KEYS[now.getDay()];
   const todaySchedule = openingHours[dayKey];
 
   if (!todaySchedule || todaySchedule.closed) {
-    return { isOpen: false, todayHours: 'Geschlossen' };
+    return { isOpen: false, todayHours: null, isClosed: true };
   }
 
   const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
@@ -72,30 +73,9 @@ const getOpenStatus = (openingHours: OpeningHours | null): { isOpen: boolean; to
 
   return {
     isOpen,
-    todayHours: `${todaySchedule.open} - ${todaySchedule.close}`
+    todayHours: `${todaySchedule.open} - ${todaySchedule.close}`,
+    isClosed: false
   };
-};
-
-// Format the last updated date in a human-readable way
-const formatLastUpdated = (dateString: string) => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffMins < 1) return 'Gerade eben';
-  if (diffMins < 60) return `Vor ${diffMins} Minute${diffMins !== 1 ? 'n' : ''}`;
-  if (diffHours < 24) return `Vor ${diffHours} Stunde${diffHours !== 1 ? 'n' : ''}`;
-  if (diffDays === 1) return 'Gestern';
-  if (diffDays < 7) return `Vor ${diffDays} Tagen`;
-
-  return date.toLocaleDateString('de-DE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
 };
 
 export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {
@@ -110,6 +90,10 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   // Get theme configuration
   const theme = getTheme(restaurant.theme || 'classic');
   const styles = theme.styles;
+
+  // Get translations based on restaurant language setting
+  const lang = (restaurant.menu_language || 'de') as Language;
+  const t = getTranslation(lang);
 
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
@@ -322,7 +306,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   </p>
                 )}
                 {restaurant.opening_hours && (() => {
-                  const { isOpen, todayHours } = getOpenStatus(restaurant.opening_hours);
+                  const { isOpen, todayHours, isClosed } = getOpenStatus(restaurant.opening_hours);
                   return (
                     <div className="flex items-center gap-2 mt-2">
                       <span
@@ -338,9 +322,9 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                             backgroundColor: isOpen ? styles.statusOpenText : styles.statusClosedText,
                           }}
                         />
-                        {isOpen ? 'Geöffnet' : 'Geschlossen'}
+                        {isOpen ? t.openNow : (isClosed ? t.closedToday : t.closedNow)}
                       </span>
-                      {todayHours && todayHours !== 'Geschlossen' && (
+                      {todayHours && (
                         <span className="text-xs" style={{ color: styles.textMuted }}>
                           {todayHours}
                         </span>
@@ -397,7 +381,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
           {categories.length === 0 ? (
             <div className="text-center py-16 px-4">
               <div className="text-5xl mb-4">🍽️</div>
-              <p style={{ color: styles.textMuted }}>Keine Speisekarte verfügbar.</p>
+              <p style={{ color: styles.textMuted }}>{t.noMenuAvailable}</p>
             </div>
           ) : (
             <div className="space-y-6 pt-4">
@@ -432,7 +416,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                       className="py-8 text-center text-sm"
                       style={{ color: styles.textMuted }}
                     >
-                      Keine Gerichte in dieser Kategorie
+                      {t.noItemsInCategory}
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -497,7 +481,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                             color: styles.badgeSpecialText,
                                           }}
                                         >
-                                          ⭐ Tagesangebot
+                                          ⭐ {t.dailySpecial}
                                         </span>
                                       )}
                                       {item.is_popular && !item.is_special && (
@@ -508,13 +492,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                             color: styles.badgePopularText,
                                           }}
                                         >
-                                          ❤️ Beliebt
+                                          ❤️ {t.popular}
                                         </span>
                                       )}
                                       {item.is_vegan && (
                                         <span
                                           className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold rounded"
-                                          title="Vegan"
+                                          title={t.vegan}
                                           style={{
                                             backgroundColor: styles.badgeVeganBg,
                                             color: styles.badgeVeganText,
@@ -526,7 +510,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                       {item.is_vegetarian && !item.is_vegan && (
                                         <span
                                           className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold rounded"
-                                          title="Vegetarisch"
+                                          title={t.vegetarian}
                                           style={{
                                             backgroundColor: styles.badgeVeganBg,
                                             color: styles.badgeVeganText,
@@ -592,7 +576,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               {/* Last Updated Info */}
               <div className="text-center py-4">
                 <p className="text-xs" style={{ color: styles.textMuted }}>
-                  Aktualisiert {formatLastUpdated(restaurant.updated_at)}
+                  {t.lastUpdated} {formatRelativeTime(restaurant.updated_at, lang)}
                 </p>
               </div>
 
@@ -614,7 +598,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                     <div className="flex items-center gap-2">
                       <span className="text-lg">ℹ️</span>
                       <span className="font-medium text-sm">
-                        Allergen-Informationen
+                        {t.allergens}
                       </span>
                     </div>
                     <svg
@@ -667,7 +651,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                         className="text-xs mt-3 text-center"
                         style={{ color: styles.textMuted }}
                       >
-                        Bei Fragen zu Allergenen wenden Sie sich bitte an unser Personal.
+                        {t.allergenInfo}
                       </p>
                     </div>
                   )}
@@ -767,9 +751,9 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                     color: styles.primary,
                   }}
                 >
-                  Gratis
+                  {t.free}
                 </span>
-                <span>Erstellt mit MenuApp</span>
+                <span>{t.createdWith}</span>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
