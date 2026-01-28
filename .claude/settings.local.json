@@ -19,7 +19,10 @@
       "Bash(ls:*)",
       "Bash(npx tsc:*)",
       "Bash(tree:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "WebSearch",
+      "Bash(git diff:*)",
+      "Bash(lsof:*)"
     ]
   }
 }

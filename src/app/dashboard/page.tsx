@@ -375,18 +375,30 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Phone mockup with menu preview - centered in remaining space */}
-              <div className="flex-1 flex items-start justify-center overflow-hidden">
-                <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl h-full max-h-[700px]">
-                  <div className="bg-white rounded-[2.5rem] overflow-hidden h-full overflow-y-auto">
-                    <MenuView
-                      restaurant={sandboxData.restaurant}
-                      categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
-                      menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
-                      showWatermark={true}
-                      isDemo={true}
-                      isEmbedded={true}
-                    />
+              {/* Besserer iPhone Mockup */}
+              <div className="flex-1 flex items-start justify-center overflow-hidden py-4">
+                <div className="relative mx-auto" style={{ width: '375px', maxWidth: '100%' }}>
+                  {/* iPhone Frame */}
+                  <div className="relative bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                    {/* Notch */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-gray-900 rounded-b-2xl z-10" />
+
+                    {/* Screen */}
+                    <div className="bg-white rounded-[2.5rem] overflow-hidden h-[700px] max-h-[calc(100vh-300px)]">
+                      <div className="h-full overflow-y-auto">
+                        <MenuView
+                          restaurant={sandboxData.restaurant}
+                          categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
+                          menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
+                          showWatermark={true}
+                          isDemo={true}
+                          isEmbedded={true}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Home Indicator */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-600 rounded-full" />
                   </div>
                 </div>
               </div>
@@ -677,12 +689,54 @@ export default function DashboardPage() {
           />
         )}
         {activeTab === 'menu' && selectedRestaurant && (
-          <MenuEditor
-            restaurant={selectedRestaurant}
-            categories={categories}
-            menuItems={menuItems}
-            onUpdate={loadData}
-          />
+          <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-180px)]">
+            {/* Editor - Full width on mobile, 60% on desktop */}
+            <div className="flex-1 lg:flex-[3] lg:overflow-y-auto lg:pr-2">
+              <MenuEditor
+                restaurant={selectedRestaurant}
+                categories={categories}
+                menuItems={menuItems}
+                onUpdate={loadData}
+              />
+            </div>
+
+            {/* Preview - Hidden on mobile (separate tab), 40% on desktop */}
+            <div className="hidden lg:block lg:flex-[2] lg:sticky lg:top-0">
+              <div className="bg-gray-100 rounded-2xl p-4 h-full">
+                <div className="text-sm text-gray-500 mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Live-Vorschau
+                  </div>
+                  <Link
+                    href={`/m/${selectedRestaurant.slug}`}
+                    target="_blank"
+                    className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+                  >
+                    Öffnen
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </Link>
+                </div>
+
+                {/* Echte Vorschau ohne Smartphone-Rahmen */}
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden h-[calc(100%-40px)] overflow-y-auto">
+                  <MenuView
+                    restaurant={selectedRestaurant}
+                    categories={categories.sort((a, b) => a.position - b.position)}
+                    menuItems={menuItems.sort((a, b) => a.position - b.position)}
+                    showWatermark={!subscription}
+                    isDemo={false}
+                    isEmbedded={true}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         )}
         {activeTab === 'preview' && selectedRestaurant && (
           <div className="flex flex-col h-[calc(100vh-200px)] sm:h-[calc(100vh-180px)]">
@@ -711,18 +765,30 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Phone mockup with menu preview - centered in remaining space */}
-            <div className="flex-1 flex items-start justify-center overflow-hidden">
-              <div className="w-full max-w-[400px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl h-full max-h-[700px]">
-                <div className="bg-white rounded-[2.5rem] overflow-hidden h-full overflow-y-auto">
-                  <MenuView
-                    restaurant={selectedRestaurant}
-                    categories={categories.sort((a, b) => a.position - b.position)}
-                    menuItems={menuItems.sort((a, b) => a.position - b.position)}
-                    showWatermark={!subscription}
-                    isDemo={false}
-                    isEmbedded={true}
-                  />
+            {/* Besserer iPhone Mockup */}
+            <div className="flex-1 flex items-start justify-center overflow-hidden py-4">
+              <div className="relative mx-auto" style={{ width: '375px', maxWidth: '100%' }}>
+                {/* iPhone Frame */}
+                <div className="relative bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                  {/* Notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-gray-900 rounded-b-2xl z-10" />
+
+                  {/* Screen */}
+                  <div className="bg-white rounded-[2.5rem] overflow-hidden h-[700px] max-h-[calc(100vh-300px)]">
+                    <div className="h-full overflow-y-auto">
+                      <MenuView
+                        restaurant={selectedRestaurant}
+                        categories={categories.sort((a, b) => a.position - b.position)}
+                        menuItems={menuItems.sort((a, b) => a.position - b.position)}
+                        showWatermark={!subscription}
+                        isDemo={false}
+                        isEmbedded={true}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Home Indicator */}
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-600 rounded-full" />
                 </div>
               </div>
             </div>

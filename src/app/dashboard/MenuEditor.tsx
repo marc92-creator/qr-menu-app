@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Restaurant, Category, MenuItem } from '@/types/database';
@@ -132,6 +132,15 @@ interface MenuEditorProps {
 
 export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: MenuEditorProps) {
   const isDemo = restaurant.is_demo;
+
+  // Local state for optimistic UI updates
+  const [localMenuItems, setLocalMenuItems] = useState<MenuItem[]>(menuItems);
+
+  // Sync local state when props change (e.g., after full reload)
+  useEffect(() => {
+    setLocalMenuItems(menuItems);
+  }, [menuItems]);
+
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -208,18 +217,28 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
     const reordered = arrayMove(sortedCategories, oldIndex, newIndex);
 
-    const supabase = createClient();
-    // Update positions in database
-    const updates = reordered.map((cat, index) =>
-      supabase
-        .from('menu_categories')
-        .update({ position: index })
-        .eq('id', cat.id)
-    );
+    try {
+      const supabase = createClient();
+      // Update positions in database sequentially to avoid race conditions
+      for (let index = 0; index < reordered.length; index++) {
+        const cat = reordered[index];
+        const { error } = await supabase
+          .from('menu_categories')
+          .update({ position: index })
+          .eq('id', cat.id);
 
-    await Promise.all(updates);
-    await updateRestaurantTimestamp();
-    onUpdate();
+        if (error) {
+          console.error(`Error updating category ${cat.id}:`, error);
+          throw error;
+        }
+      }
+
+      await updateRestaurantTimestamp();
+      onUpdate();
+    } catch (error) {
+      console.error('Error reordering categories:', error);
+      alert('Fehler beim Speichern der Reihenfolge. Bitte versuche es erneut.');
+    }
   };
 
   // Handle menu item reordering within a category
@@ -227,7 +246,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const categoryItems = menuItems
+    const categoryItems = localMenuItems
       .filter(i => i.category_id === categoryId)
       .sort((a, b) => a.position - b.position);
 
@@ -238,18 +257,45 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
     const reordered = arrayMove(categoryItems, oldIndex, newIndex);
 
-    const supabase = createClient();
-    // Update positions in database
-    const updates = reordered.map((item, index) =>
-      supabase
-        .from('menu_items')
-        .update({ position: index })
-        .eq('id', item.id)
-    );
+    // 1. Calculate new positions
+    const updatedCategoryItems = reordered.map((item, index) => ({
+      ...item,
+      position: index
+    }));
 
-    await Promise.all(updates);
-    await updateRestaurantTimestamp();
-    onUpdate();
+    // 2. Optimistically update UI immediately
+    const previousItems = localMenuItems;
+    setLocalMenuItems(prev => {
+      // Replace items in this category with reordered ones
+      const otherItems = prev.filter(i => i.category_id !== categoryId);
+      return [...otherItems, ...updatedCategoryItems];
+    });
+
+    // 3. Save to Supabase
+    try {
+      const supabase = createClient();
+      // Update positions in database sequentially to avoid race conditions
+      for (const item of updatedCategoryItems) {
+        const { error } = await supabase
+          .from('menu_items')
+          .update({ position: item.position })
+          .eq('id', item.id);
+
+        if (error) {
+          console.error(`Error updating item ${item.id}:`, error);
+          throw error;
+        }
+      }
+
+      await updateRestaurantTimestamp();
+      console.log('Sort order saved successfully');
+      // Don't call onUpdate() - we already updated local state
+    } catch (error) {
+      console.error('Error reordering items:', error);
+      // Revert to previous order on error
+      setLocalMenuItems(previousItems);
+      alert('Fehler beim Speichern der Reihenfolge. Bitte versuche es erneut.');
+    }
   };
 
   const toggleAllergen = (allergenId: string, isNewItem: boolean) => {
@@ -378,7 +424,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
     }
 
     try {
-      const categoryItems = menuItems.filter(i => i.category_id === newItemCategory);
+      const categoryItems = localMenuItems.filter(i => i.category_id === newItemCategory);
 
       // Create the item first to get its ID
       const { data: newItem, error: insertError } = await supabase
@@ -614,7 +660,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Menü bearbeiten</h1>
           <p className="text-gray-500 mt-1 text-sm sm:text-base">
-            {categories.length} Kategorie{categories.length !== 1 ? 'n' : ''} · {menuItems.length} Gericht{menuItems.length !== 1 ? 'e' : ''}
+            {categories.length} Kategorie{categories.length !== 1 ? 'n' : ''} · {localMenuItems.length} Gericht{localMenuItems.length !== 1 ? 'e' : ''}
           </p>
         </div>
         <div className="flex gap-2 sm:gap-3">
@@ -1025,7 +1071,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
             >
               <div className="space-y-6">
               {[...categories].sort((a, b) => a.position - b.position).map((category) => {
-                const items = menuItems
+                const items = localMenuItems
                   .filter((i) => i.category_id === category.id)
                   .sort((a, b) => a.position - b.position);
 
@@ -1226,9 +1272,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                   <div>
                     <h4 className="font-semibold text-emerald-900">Menü erweitern</h4>
                     <p className="text-sm text-emerald-700">
-                      {menuItems.length === 0
+                      {localMenuItems.length === 0
                         ? 'Füge Gerichte hinzu, damit Gäste bestellen können'
-                        : `${menuItems.length} Gericht${menuItems.length !== 1 ? 'e' : ''} online • Weiter so!`
+                        : `${localMenuItems.length} Gericht${localMenuItems.length !== 1 ? 'e' : ''} online • Weiter so!`
                       }
                     </p>
                   </div>
@@ -1256,7 +1302,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
           )}
 
           {/* Tip for completed menus */}
-          {menuItems.length >= 5 && (
+          {localMenuItems.length >= 5 && (
             <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
