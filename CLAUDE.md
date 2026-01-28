@@ -309,3 +309,45 @@ const t = getTranslation(lang);
 - `src/lib/demoData.ts` - Added menu_language
 - `src/lib/sandboxStorage.ts` - Migration v4 for menu_language
 - `supabase/migrations/20240129_add_menu_language.sql` (NEW)
+
+## Agent System
+
+Dieses Projekt hat ein Multi-Agent-System für kontinuierliche Verbesserung.
+
+### Verfügbare Agents
+
+| Command | Agent | Beschreibung |
+|---------|-------|--------------|
+| `/scout` | Scout Agent | Analysiert Konkurrenz, findet neue Feature-Ideen |
+| `/build` | Builder Agent | Implementiert Features aus dem Backlog |
+| `/improve` | Improve Agent | Kleine UX/Code/Performance Verbesserungen |
+
+### Workflow
+
+```
+/scout → Review Backlog → /build → /improve → Repeat
+```
+
+1. **`/scout`** - Finde neue Ideen von der Konkurrenz
+2. **Review** - Prüfe `/docs/feature-backlog.md`
+3. **`/build`** - Implementiere das nächste High-Priority Feature
+4. **`/improve`** - Mache kleine Verbesserungen zwischendurch
+
+### Dokumentation
+
+| Datei | Beschreibung |
+|-------|--------------|
+| `/docs/competitor-analysis.md` | Konkurrenz-Analyse (7 Wettbewerber) |
+| `/docs/feature-backlog.md` | Feature Backlog mit Prioritäten |
+| `/docs/improvements.md` | Log aller Verbesserungen |
+| `.claude/commands/agents.md` | Agent-System Übersicht |
+| `.claude/commands/scout.md` | Scout Agent Anleitung |
+| `.claude/commands/build.md` | Builder Agent Anleitung |
+| `.claude/commands/improve.md` | Improve Agent Anleitung |
+
+### Kommunikation zwischen Agents
+
+Die Agents kommunizieren über gemeinsame Markdown-Dateien in `/docs/`:
+- Scout schreibt → Builder liest
+- Builder aktualisiert → User reviewed
+- Improve dokumentiert → Alle profitieren
