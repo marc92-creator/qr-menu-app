@@ -88,8 +88,6 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
       }
 
       // Create restaurant
-      console.log('Creating restaurant with data:', { name, slug, owner_id: user.id });
-
       const { data: restaurant, error: restaurantError } = await supabase
         .from('restaurants')
         .insert({
@@ -101,9 +99,6 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
         })
         .select()
         .single();
-
-      console.log('Restaurant result:', restaurant);
-      console.log('Supabase error:', restaurantError);
 
       if (restaurantError) {
         setError('Fehler beim Erstellen des Restaurants');

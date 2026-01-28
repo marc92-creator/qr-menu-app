@@ -349,6 +349,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
             </label>
           </div>
           <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/food-images/doener.svg"
               alt="Beispiel"

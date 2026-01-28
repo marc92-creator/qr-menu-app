@@ -582,6 +582,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
                 </label>
               </div>
               <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/food-images/doener.svg"
                   alt="Beispiel"
