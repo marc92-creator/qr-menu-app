@@ -26,6 +26,7 @@ export interface Restaurant {
   is_active: boolean;
   is_demo: boolean;
   auto_images: boolean;
+  trial_ends_at: string | null; // When 14-day trial expires
   created_at: string;
   updated_at: string;
 }
@@ -59,6 +60,7 @@ export interface MenuItem {
   is_special: boolean;
   position: number;
   allergens: string[];
+  tags: string[]; // New: flexible tags like 'new', 'spicy', 'chefs_choice'
   created_at: string;
 }
 

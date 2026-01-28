@@ -10,8 +10,9 @@ import { ImageUpload } from '@/components/ImageUpload';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { uploadMenuItemImage, deleteMenuItemImage } from '@/lib/imageUpload';
-import { canAddCategory, canAddItem, getPlanLimits } from '@/hooks/useSubscription';
-import { UpgradeModal } from '@/components/UpgradeModal';
+import { canAddCategory, canAddItem, getPlanLimits, isPro } from '@/hooks/useSubscription';
+import { UpgradeModal, ProBadge } from '@/components/UpgradeModal';
+import { ITEM_TAGS } from '@/lib/itemTags';
 import {
   DndContext,
   closestCenter,
@@ -153,6 +154,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [upgradeFeature, setUpgradeFeature] = useState('');
 
   const limits = getPlanLimits(subscription);
+  const userIsPro = isPro(subscription);
 
   const showUpgrade = (feature: string) => {
     setUpgradeFeature(feature);
@@ -183,6 +185,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('');
   const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
+  const [newItemTags, setNewItemTags] = useState<string[]>([]);
   const [newItemImagePreview, setNewItemImagePreview] = useState<string | null>(null);
   const [newItemImageFile, setNewItemImageFile] = useState<File | null>(null);
   const [newItemVegetarian, setNewItemVegetarian] = useState(false);
@@ -197,6 +200,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [editDescriptionEn, setEditDescriptionEn] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editAllergens, setEditAllergens] = useState<string[]>([]);
+  const [editTags, setEditTags] = useState<string[]>([]);
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
   const [editImageRemoved, setEditImageRemoved] = useState(false);
@@ -349,6 +353,22 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     }
   };
 
+  const toggleTag = (tagId: string, isNewItem: boolean) => {
+    if (isNewItem) {
+      setNewItemTags(prev =>
+        prev.includes(tagId)
+          ? prev.filter(t => t !== tagId)
+          : [...prev, tagId]
+      );
+    } else {
+      setEditTags(prev =>
+        prev.includes(tagId)
+          ? prev.filter(t => t !== tagId)
+          : [...prev, tagId]
+      );
+    }
+  };
+
   const handleEditItem = (item: MenuItem) => {
     setEditingItem(item);
     setEditName(item.name);
@@ -357,6 +377,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     setEditDescriptionEn(item.description_en || '');
     setEditPrice(item.price.toFixed(2).replace('.', ','));
     setEditAllergens(item.allergens || []);
+    setEditTags(item.tags || []);
     setEditImagePreview(item.image_url);
     setEditImageFile(null);
     setEditImageRemoved(false);
@@ -405,6 +426,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           description_en: editDescriptionEn.trim() || null,
           price,
           allergens: editAllergens,
+          tags: editTags,
           image_url: imageUrl,
           is_vegetarian: editVegetarian,
           is_vegan: editVegan,
@@ -475,6 +497,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           price,
           position: categoryItems.length,
           allergens: newItemAllergens,
+          tags: newItemTags,
           is_vegetarian: newItemVegetarian,
           is_vegan: newItemVegan,
           is_popular: newItemPopular,
@@ -506,6 +529,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
       setNewItemPrice('');
       setNewItemCategory('');
       setNewItemAllergens([]);
+      setNewItemTags([]);
       setNewItemImagePreview(null);
       setNewItemImageFile(null);
       setNewItemVegetarian(false);
@@ -666,6 +690,42 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     </div>
   );
 
+  // Tag Selector Component
+  const TagSelector = ({ selected, onToggle }: { selected: string[], onToggle: (id: string) => void }) => (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-semibold text-gray-700">
+          Tags & Klassifizierung
+        </label>
+        {selected.length > 0 && (
+          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+            {selected.length} ausgewählt
+          </span>
+        )}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {ITEM_TAGS.map((tag) => (
+          <button
+            key={tag.id}
+            type="button"
+            onClick={() => onToggle(tag.id)}
+            className={`
+              flex items-center gap-2 p-3 rounded-xl text-left text-sm
+              transition-all duration-200 touch-manipulation min-h-[48px]
+              ${selected.includes(tag.id)
+                ? `${tag.bgColor} ${tag.textColor} ring-2 ring-current shadow-sm`
+                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+              }
+            `}
+          >
+            <span className="text-lg">{tag.icon}</span>
+            <span className="truncate font-medium">{tag.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Demo Mode Banner */}
@@ -769,13 +829,29 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="z.B. Vorspeisen"
               />
-              <Input
-                id="categoryNameEn"
-                label="Name auf Englisch (optional)"
-                value={newCategoryNameEn}
-                onChange={(e) => setNewCategoryNameEn(e.target.value)}
-                placeholder="e.g. Starters"
-              />
+              {userIsPro ? (
+                <Input
+                  id="categoryNameEn"
+                  label="Name auf Englisch (optional)"
+                  value={newCategoryNameEn}
+                  onChange={(e) => setNewCategoryNameEn(e.target.value)}
+                  placeholder="e.g. Starters"
+                />
+              ) : (
+                <div className="relative">
+                  <div className="absolute -top-1 right-0 z-10">
+                    <ProBadge onClick={() => showUpgrade('Mehrsprachige Speisekarte')} />
+                  </div>
+                  <Input
+                    id="categoryNameEn"
+                    label="Name auf Englisch (optional)"
+                    value=""
+                    onChange={() => {}}
+                    placeholder="e.g. Starters"
+                    disabled
+                  />
+                </div>
+              )}
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => { setShowAddCategory(false); setNewCategoryNameEn(''); }}>
                   Abbrechen
@@ -797,6 +873,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
             if (e.target === e.currentTarget) {
               setShowAddItem(false);
               setNewItemAllergens([]);
+      setNewItemTags([]);
               setNewItemImagePreview(null);
               setNewItemImageFile(null);
             }
@@ -817,6 +894,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+      setNewItemTags([]);
                   setNewItemImagePreview(null);
                   setNewItemImageFile(null);
                 }}
@@ -853,26 +931,50 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 placeholder="z.B. Döner im Brot"
               />
               <Input
-                id="itemNameEn"
-                label="Name auf Englisch (optional)"
-                value={newItemNameEn}
-                onChange={(e) => setNewItemNameEn(e.target.value)}
-                placeholder="e.g. Döner in Bread"
-              />
-              <Input
                 id="itemDescription"
                 label="Beschreibung (optional)"
                 value={newItemDescription}
                 onChange={(e) => setNewItemDescription(e.target.value)}
                 placeholder="z.B. Mit frischem Salat und Soße"
               />
-              <Input
-                id="itemDescriptionEn"
-                label="Beschreibung auf Englisch (optional)"
-                value={newItemDescriptionEn}
-                onChange={(e) => setNewItemDescriptionEn(e.target.value)}
-                placeholder="e.g. With fresh salad and sauce"
-              />
+              {/* English Translation Section - Pro only */}
+              {userIsPro ? (
+                <div className="border-t border-gray-100 pt-4 mt-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-lg">🇬🇧</span>
+                    <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+                  </div>
+                  <div className="space-y-3 pl-1">
+                    <Input
+                      id="itemNameEn"
+                      label="Name (English)"
+                      value={newItemNameEn}
+                      onChange={(e) => setNewItemNameEn(e.target.value)}
+                      placeholder="e.g. Döner in Bread"
+                    />
+                    <Input
+                      id="itemDescriptionEn"
+                      label="Description (English)"
+                      value={newItemDescriptionEn}
+                      onChange={(e) => setNewItemDescriptionEn(e.target.value)}
+                      placeholder="e.g. With fresh salad and sauce"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="border-t border-gray-100 pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🇬🇧</span>
+                      <span className="font-medium text-gray-400">Englische Übersetzung</span>
+                    </div>
+                    <ProBadge onClick={() => showUpgrade('Mehrsprachige Speisekarte')} />
+                  </div>
+                  <p className="text-sm text-gray-400">
+                    Mit Pro kannst du deine Gerichte auf Deutsch und Englisch anbieten.
+                  </p>
+                </div>
+              )}
               <Input
                 id="itemPrice"
                 label="Preis (€)"
@@ -901,10 +1003,15 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onPopularChange={setNewItemPopular}
                 onSpecialChange={setNewItemSpecial}
               />
+              <TagSelector
+                selected={newItemTags}
+                onToggle={(id) => toggleTag(id, true)}
+              />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+      setNewItemTags([]);
                   setNewItemImagePreview(null);
                   setNewItemImageFile(null);
                   setNewItemVegetarian(false);
@@ -984,29 +1091,44 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 placeholder="z.B. 5,50"
               />
 
-              {/* English Translation Section */}
-              <div className="border-t border-gray-100 pt-4 mt-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-lg">🇬🇧</span>
-                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+              {/* English Translation Section - Pro only */}
+              {userIsPro ? (
+                <div className="border-t border-gray-100 pt-4 mt-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-lg">🇬🇧</span>
+                    <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+                  </div>
+                  <div className="space-y-3 pl-1">
+                    <Input
+                      id="editNameEn"
+                      label="Name (English)"
+                      value={editNameEn}
+                      onChange={(e) => setEditNameEn(e.target.value)}
+                      placeholder="e.g. Döner in Bread"
+                    />
+                    <Input
+                      id="editDescriptionEn"
+                      label="Description (English)"
+                      value={editDescriptionEn}
+                      onChange={(e) => setEditDescriptionEn(e.target.value)}
+                      placeholder="e.g. With fresh salad and sauce"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-3 pl-1">
-                  <Input
-                    id="editNameEn"
-                    label="Name (English)"
-                    value={editNameEn}
-                    onChange={(e) => setEditNameEn(e.target.value)}
-                    placeholder="e.g. Döner in Bread"
-                  />
-                  <Input
-                    id="editDescriptionEn"
-                    label="Description (English)"
-                    value={editDescriptionEn}
-                    onChange={(e) => setEditDescriptionEn(e.target.value)}
-                    placeholder="e.g. With fresh salad and sauce"
-                  />
+              ) : (
+                <div className="border-t border-gray-100 pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🇬🇧</span>
+                      <span className="font-medium text-gray-400">Englische Übersetzung</span>
+                    </div>
+                    <ProBadge onClick={() => showUpgrade('Mehrsprachige Speisekarte')} />
+                  </div>
+                  <p className="text-sm text-gray-400">
+                    Mit Pro kannst du deine Gerichte auf Deutsch und Englisch anbieten.
+                  </p>
                 </div>
-              </div>
+              )}
               <ImageUpload
                 value={editImagePreview}
                 onChange={(url, file) => {
@@ -1033,6 +1155,10 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onVeganChange={setEditVegan}
                 onPopularChange={setEditPopular}
                 onSpecialChange={setEditSpecial}
+              />
+              <TagSelector
+                selected={editTags}
+                onToggle={(id) => toggleTag(id, false)}
               />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {

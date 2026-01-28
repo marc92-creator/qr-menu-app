@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Margarita Glass -->
+  <defs>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E3F2FD"/>
+    </linearGradient>
+    <linearGradient id="margarita" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C5E1A5"/>
+      <stop offset="100%" style="stop-color:#9CCC65"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="112" rx="15" ry="4" fill="#00000020"/>
+  <!-- Stem and base -->
+  <ellipse cx="60" cy="108" rx="15" ry="4" fill="url(#glass)" opacity="0.6"/>
+  <rect x="58" y="70" width="4" height="38" fill="url(#glass)" opacity="0.6"/>
+  <!-- Wide margarita bowl -->
+  <ellipse cx="60" cy="45" rx="35" ry="15" fill="url(#glass)" opacity="0.5"/>
+  <path d="M25 45 L60 70 L95 45" fill="url(#glass)" opacity="0.5"/>
+  <!-- Margarita liquid -->
+  <ellipse cx="60" cy="48" rx="28" ry="10" fill="url(#margarita)"/>
+  <path d="M32 48 L60 65 L88 48" fill="url(#margarita)"/>
+  <!-- Salt rim -->
+  <ellipse cx="60" cy="42" rx="32" ry="4" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.8"/>
+  <!-- Lime wedge -->
+  <path d="M85 38 Q95 35 92 48 L85 45 Z" fill="#CDDC39"/>
+  <path d="M86 40 L90 44" stroke="#F0F4C3" stroke-width="1"/>
+  <!-- Glass shine -->
+  <path d="M35 42 Q50 55 55 60" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4"/>
+</svg>

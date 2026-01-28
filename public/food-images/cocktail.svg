@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Cocktail Glass -->
+  <defs>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E3F2FD"/>
+    </linearGradient>
+    <linearGradient id="cocktail" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8A65"/>
+      <stop offset="50%" style="stop-color:#FF5722"/>
+      <stop offset="100%" style="stop-color:#E64A19"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="112" rx="15" ry="4" fill="#00000020"/>
+  <!-- Stem and base -->
+  <ellipse cx="60" cy="108" rx="15" ry="4" fill="url(#glass)" opacity="0.6"/>
+  <rect x="58" y="65" width="4" height="43" fill="url(#glass)" opacity="0.6"/>
+  <!-- Martini glass bowl -->
+  <path d="M25 25 L60 65 L95 25 Z" fill="url(#glass)" opacity="0.5"/>
+  <!-- Cocktail liquid -->
+  <path d="M32 30 L60 58 L88 30 Z" fill="url(#cocktail)"/>
+  <!-- Olive on stick -->
+  <line x1="60" y1="20" x2="60" y2="50" stroke="#8D6E63" stroke-width="2"/>
+  <circle cx="60" cy="40" r="6" fill="#8BC34A"/>
+  <circle cx="60" cy="40" r="2" fill="#C62828"/>
+  <!-- Glass shine -->
+  <path d="M30 26 L50 50" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+</svg>

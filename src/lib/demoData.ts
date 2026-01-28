@@ -7,8 +7,8 @@ export const DEMO_RESTAURANT: Restaurant = {
   slug: 'demo-doener-palace',
   name: 'Demo Döner Palace',
   address: 'Musterstraße 1, 65549 Limburg',
-  phone: null,
-  whatsapp_number: null,
+  phone: '+49 6431 123456',
+  whatsapp_number: '+49 151 12345678',
   opening_hours: {
     mo: { open: '11:00', close: '22:00' },
     di: { open: '11:00', close: '22:00' },
@@ -24,6 +24,7 @@ export const DEMO_RESTAURANT: Restaurant = {
   is_active: true,
   is_demo: true,
   auto_images: true,
+  trial_ends_at: null, // Demo doesn't have trial
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
 };
@@ -75,6 +76,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 0,
     allergens: ['gluten', 'sesame'],
+    tags: ['bestseller'],
     created_at: new Date().toISOString(),
   },
   {
@@ -95,6 +97,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: true,
     position: 1,
     allergens: ['gluten'],
+    tags: ['chefs_choice'],
     created_at: new Date().toISOString(),
   },
   {
@@ -115,6 +118,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 2,
     allergens: ['gluten', 'sesame'],
+    tags: ['new'],
     created_at: new Date().toISOString(),
   },
   {
@@ -135,6 +139,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 3,
     allergens: ['gluten', 'sesame'],
+    tags: ['healthy'],
     created_at: new Date().toISOString(),
   },
   // Beilagen
@@ -156,6 +161,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 0,
     allergens: [],
+    tags: ['kids'],
     created_at: new Date().toISOString(),
   },
   {
@@ -176,6 +182,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 1,
     allergens: [],
+    tags: ['healthy'],
     created_at: new Date().toISOString(),
   },
   {
@@ -196,6 +203,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 2,
     allergens: ['sesame'],
+    tags: ['homemade'],
     created_at: new Date().toISOString(),
   },
   // Getränke
@@ -217,6 +225,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 0,
     allergens: [],
+    tags: [],
     created_at: new Date().toISOString(),
   },
   {
@@ -237,6 +246,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 1,
     allergens: [],
+    tags: [],
     created_at: new Date().toISOString(),
   },
   {
@@ -257,6 +267,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 2,
     allergens: ['milk'],
+    tags: [],
     created_at: new Date().toISOString(),
   },
   {
@@ -277,6 +288,7 @@ export const DEMO_MENU_ITEMS: MenuItem[] = [
     is_special: false,
     position: 3,
     allergens: [],
+    tags: [],
     created_at: new Date().toISOString(),
   },
 ];

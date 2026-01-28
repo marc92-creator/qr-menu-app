@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Shot Glass -->
+  <defs>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E3F2FD"/>
+    </linearGradient>
+    <linearGradient id="schnaps" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ECEFF1"/>
+      <stop offset="100%" style="stop-color:#CFD8DC"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="18" ry="5" fill="#00000020"/>
+  <!-- Shot glass -->
+  <path d="M42 45 L45 95 L75 95 L78 45 Z" fill="url(#glass)" opacity="0.6"/>
+  <!-- Thick bottom -->
+  <rect x="45" y="85" width="30" height="10" fill="url(#glass)" opacity="0.4"/>
+  <!-- Schnaps liquid -->
+  <path d="M46 55 L47 83 L73 83 L74 55 Z" fill="url(#schnaps)" opacity="0.8"/>
+  <!-- Liquid surface -->
+  <ellipse cx="60" cy="55" rx="14" ry="3" fill="#FFFFFF" opacity="0.3"/>
+  <!-- Glass shine -->
+  <path d="M46 50 L47 85" stroke="#FFFFFF" stroke-width="2" opacity="0.5"/>
+</svg>

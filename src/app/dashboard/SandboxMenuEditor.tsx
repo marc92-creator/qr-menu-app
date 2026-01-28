@@ -423,6 +423,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       is_available: true,
       position: categoryItems.length,
       allergens: newItemAllergens,
+      tags: [],
       is_vegetarian: false,
       is_vegan: false,
       is_popular: false,

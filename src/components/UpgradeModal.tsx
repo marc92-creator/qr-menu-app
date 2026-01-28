@@ -8,17 +8,24 @@ interface UpgradeModalProps {
   onClose: () => void;
   feature: string;
   description?: string;
+  isSandbox?: boolean; // True if user is in sandbox mode (not logged in)
 }
 
-export function UpgradeModal({ isOpen, onClose, feature, description }: UpgradeModalProps) {
+export function UpgradeModal({ isOpen, onClose, feature, description, isSandbox = false }: UpgradeModalProps) {
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
   const handleUpgrade = async () => {
+    // If in sandbox mode, redirect to register first
+    if (isSandbox) {
+      window.location.href = '/register?upgrade=true';
+      return;
+    }
+
     setLoading(true);
     try {
-      // Redirect to checkout
+      // Try to create checkout session
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -26,14 +33,23 @@ export function UpgradeModal({ isOpen, onClose, feature, description }: UpgradeM
 
       const data = await response.json();
 
+      // If user is not logged in, redirect to register
+      if (response.status === 401) {
+        window.location.href = '/register?upgrade=true';
+        return;
+      }
+
       if (data.url) {
         window.location.href = data.url;
+      } else if (data.error) {
+        throw new Error(data.error);
       } else {
         throw new Error('No checkout URL');
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Fehler beim Upgrade. Bitte versuche es erneut.');
+      // Show contact info as fallback
+      alert('Für Upgrade-Anfragen kontaktiere uns bitte unter:\n\ninfo@menuapp.de\n\nOder registriere dich zuerst unter /register');
     } finally {
       setLoading(false);
     }
@@ -119,6 +135,15 @@ export function UpgradeModal({ isOpen, onClose, feature, description }: UpgradeM
           <span className="text-gray-500">/Monat</span>
         </div>
 
+        {/* Sandbox note */}
+        {isSandbox && (
+          <div className="bg-blue-50 rounded-xl p-3 mb-4 text-center">
+            <p className="text-sm text-blue-800">
+              Registriere dich kostenlos, um Pro freizuschalten.
+            </p>
+          </div>
+        )}
+
         {/* Buttons */}
         <div className="flex gap-3">
           <Button
@@ -133,7 +158,7 @@ export function UpgradeModal({ isOpen, onClose, feature, description }: UpgradeM
             onClick={handleUpgrade}
             loading={loading}
           >
-            Jetzt upgraden
+            {isSandbox ? 'Jetzt registrieren' : 'Jetzt upgraden'}
           </Button>
         </div>
       </div>

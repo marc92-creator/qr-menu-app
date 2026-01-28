@@ -6,7 +6,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Logo } from '@/components/Logo';
 import { generateSlug } from '@/lib/utils';
-import { doenerTemplate } from '@/lib/doener-template';
+import { RESTAURANT_TEMPLATES, getTemplateById } from '@/lib/restaurantTemplates';
 
 interface SetupWizardProps {
   onComplete: () => void;
@@ -25,8 +25,8 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
-  // Step 3: Template
-  const [useTemplate, setUseTemplate] = useState<boolean | null>(null);
+  // Step 3: Template (null = not selected, 'empty' = no template, or template ID)
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,6 +87,10 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
         slug = `${slug}-${Date.now().toString(36)}`;
       }
 
+      // Calculate trial end date (14 days from now)
+      const trialEndsAt = new Date();
+      trialEndsAt.setDate(trialEndsAt.getDate() + 14);
+
       // Create restaurant
       const { data: restaurant, error: restaurantError } = await supabase
         .from('restaurants')
@@ -96,6 +100,7 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
           slug,
           address: address || null,
           logo_url: logoUrl,
+          trial_ends_at: trialEndsAt.toISOString(),
         })
         .select()
         .single();
@@ -114,30 +119,39 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
       });
 
       // Add template menu if selected
-      if (useTemplate && restaurant) {
-        for (let i = 0; i < doenerTemplate.length; i++) {
-          const category = doenerTemplate[i];
+      if (selectedTemplate && selectedTemplate !== 'empty' && restaurant) {
+        const template = getTemplateById(selectedTemplate);
+        if (template) {
+          for (let i = 0; i < template.categories.length; i++) {
+            const category = template.categories[i];
 
-          const { data: categoryData } = await supabase
-            .from('menu_categories')
-            .insert({
-              restaurant_id: restaurant.id,
-              name: category.name,
-              position: i,
-            })
-            .select()
-            .single();
+            const { data: categoryData } = await supabase
+              .from('menu_categories')
+              .insert({
+                restaurant_id: restaurant.id,
+                name: category.name,
+                name_en: category.name_en || null,
+                position: i,
+              })
+              .select()
+              .single();
 
-          if (categoryData) {
-            for (let j = 0; j < category.items.length; j++) {
-              const item = category.items[j];
-              await supabase.from('menu_items').insert({
-                category_id: categoryData.id,
-                name: item.name,
-                description: item.description || null,
-                price: item.price,
-                position: j,
-              });
+            if (categoryData) {
+              for (let j = 0; j < category.items.length; j++) {
+                const item = category.items[j];
+                await supabase.from('menu_items').insert({
+                  category_id: categoryData.id,
+                  name: item.name,
+                  name_en: item.name_en || null,
+                  description: item.description || null,
+                  description_en: item.description_en || null,
+                  price: item.price,
+                  position: j,
+                  is_vegetarian: item.is_vegetarian || false,
+                  is_vegan: item.is_vegan || false,
+                  tags: item.tags || [],
+                });
+              }
             }
           }
         }
@@ -284,29 +298,36 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
                 <h1 className="text-2xl font-bold text-center mb-2">
                   Vorlage wählen
                 </h1>
-                <p className="text-gray-600 text-center mb-8">
+                <p className="text-gray-600 text-center mb-6">
                   Starte mit einer Vorlage oder leer
                 </p>
 
-                <div className="space-y-4">
-                  <button
-                    onClick={() => setUseTemplate(true)}
-                    className={`w-full p-4 rounded-xl border-2 text-left transition-colors ${
-                      useTemplate === true
-                        ? 'border-emerald-500 bg-emerald-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="font-semibold mb-1">🥙 Döner-Menü Vorlage</div>
-                    <div className="text-sm text-gray-600">
-                      Vorausgefüllt mit typischen Döner-Gerichten
-                    </div>
-                  </button>
+                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                  {/* Restaurant Templates */}
+                  {RESTAURANT_TEMPLATES.map((template) => (
+                    <button
+                      key={template.id}
+                      onClick={() => setSelectedTemplate(template.id)}
+                      className={`w-full p-4 rounded-xl border-2 text-left transition-colors ${
+                        selectedTemplate === template.id
+                          ? 'border-emerald-500 bg-emerald-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="font-semibold mb-1">
+                        {template.icon} {template.name}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {template.description}
+                      </div>
+                    </button>
+                  ))}
 
+                  {/* Empty option */}
                   <button
-                    onClick={() => setUseTemplate(false)}
+                    onClick={() => setSelectedTemplate('empty')}
                     className={`w-full p-4 rounded-xl border-2 text-left transition-colors ${
-                      useTemplate === false
+                      selectedTemplate === 'empty'
                         ? 'border-emerald-500 bg-emerald-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
@@ -316,24 +337,24 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
                       Erstelle dein Menü komplett selbst
                     </div>
                   </button>
+                </div>
 
-                  {error && (
-                    <p className="text-red-500 text-sm text-center">{error}</p>
-                  )}
+                {error && (
+                  <p className="text-red-500 text-sm text-center mt-4">{error}</p>
+                )}
 
-                  <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(2)}>
-                      Zurück
-                    </Button>
-                    <Button
-                      className="flex-1"
-                      onClick={handleComplete}
-                      disabled={useTemplate === null}
-                      loading={loading}
-                    >
-                      Fertig
-                    </Button>
-                  </div>
+                <div className="flex gap-3 mt-6">
+                  <Button variant="outline" className="flex-1" onClick={() => setStep(2)}>
+                    Zurück
+                  </Button>
+                  <Button
+                    className="flex-1"
+                    onClick={handleComplete}
+                    disabled={selectedTemplate === null}
+                    loading={loading}
+                  >
+                    Fertig
+                  </Button>
                 </div>
               </>
             )}

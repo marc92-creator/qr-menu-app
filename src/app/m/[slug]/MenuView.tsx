@@ -7,6 +7,7 @@ import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
 import { getItemImageUrl } from '@/lib/foodImages';
 import { getTranslation, formatRelativeTime, Language } from '@/lib/translations';
+import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
 
 // Premium Image Component with loading state and blur effect
 function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
@@ -229,50 +230,51 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       }
     });
 
-    // Find the category element by ID
-    const categoryElement = document.getElementById(`category-${categoryId}`);
+    // Find the category element using our ref map (more reliable than getElementById in embedded mode)
+    const categoryElement = categoryRefs.current.get(categoryId);
+
     if (!categoryElement) {
-      console.warn('Category element not found:', categoryId);
-      return;
+      // Fallback to getElementById
+      const fallbackElement = document.getElementById(`category-${categoryId}`);
+      if (!fallbackElement) return;
     }
 
-    const headerHeight = 160; // Height of sticky header + category pills (matches scroll-mt-40)
+    const targetElement = categoryElement || document.getElementById(`category-${categoryId}`);
+    if (!targetElement) return;
 
-    if (isEmbedded) {
-      // For embedded mode, find the scrollable parent by traversing up
-      let scrollContainer: HTMLElement | null = categoryElement.parentElement;
+    // For embedded mode, we need to scroll within the scroll container
+    requestAnimationFrame(() => {
+      if (isEmbedded && scrollContainerRef.current) {
+        // The scroll container is the parent of our MenuView div
+        const scrollParent = scrollContainerRef.current.parentElement;
 
-      // Find the first scrollable ancestor
-      while (scrollContainer) {
-        const style = window.getComputedStyle(scrollContainer);
-        const isScrollable =
-          (style.overflowY === 'auto' || style.overflowY === 'scroll') &&
-          scrollContainer.scrollHeight > scrollContainer.clientHeight;
+        if (scrollParent && scrollParent.scrollTo) {
+          // Get positions using getBoundingClientRect for accuracy
+          const containerRect = scrollParent.getBoundingClientRect();
+          const elementRect = targetElement.getBoundingClientRect();
+          const currentScroll = scrollParent.scrollTop;
 
-        if (isScrollable) break;
-        scrollContainer = scrollContainer.parentElement;
+          // Calculate where element is relative to container
+          const elementOffset = elementRect.top - containerRect.top + currentScroll;
+
+          // Account for sticky header (approximately 180px)
+          const headerOffset = 180;
+          const scrollTo = elementOffset - headerOffset;
+
+          scrollParent.scrollTo({
+            top: Math.max(0, scrollTo),
+            behavior: 'smooth'
+          });
+          return;
+        }
       }
 
-      if (scrollContainer) {
-        const containerRect = scrollContainer.getBoundingClientRect();
-        const elementRect = categoryElement.getBoundingClientRect();
-        const scrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - headerHeight;
-
-        scrollContainer.scrollTo({
-          top: Math.max(0, scrollTop),
-          behavior: 'smooth'
-        });
-      }
-    } else {
-      // For standalone page, scroll the window
-      const elementPosition = categoryElement.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerHeight;
-
-      window.scrollTo({
-        top: Math.max(0, offsetPosition),
-        behavior: 'smooth'
+      // Standalone mode: use scrollIntoView
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
-    }
+    });
   };
 
   // Check if any menu item has allergens
@@ -620,6 +622,15 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                           🥬
                                         </span>
                                       )}
+                                      {/* Custom Tags */}
+                                      {item.tags && item.tags.length > 0 && getTagsByIds(item.tags).map((tag) => (
+                                        <span
+                                          key={tag.id}
+                                          className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-semibold rounded ${tag.bgColor} ${tag.textColor}`}
+                                        >
+                                          {tag.icon} {getLocalizedTagName(tag, currentLang)}
+                                        </span>
+                                      ))}
                                     </div>
                                   </div>
                                   <span

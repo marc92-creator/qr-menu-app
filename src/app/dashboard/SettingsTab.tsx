@@ -9,7 +9,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
 import { uploadRestaurantLogo, validateImageFile } from '@/lib/imageUpload';
-import { isThemeAllowed } from '@/hooks/useSubscription';
+import { isThemeAllowed, isPro } from '@/hooks/useSubscription';
 import { UpgradeModal, ProBadge } from '@/components/UpgradeModal';
 
 interface SettingsTabProps {
@@ -56,6 +56,8 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState('');
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const userIsPro = isPro(subscription);
 
   const showUpgrade = (feature: string) => {
     setUpgradeFeature(feature);
@@ -311,15 +313,22 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
                   accept="image/*"
                   onChange={handleLogoUpload}
                   className="hidden"
-                  disabled={isDemo}
+                  disabled={isDemo || !userIsPro}
                 />
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => logoInputRef.current?.click()}
+                    onClick={() => {
+                      if (!userIsPro) {
+                        showUpgrade('Logo-Upload');
+                        return;
+                      }
+                      logoInputRef.current?.click();
+                    }}
                     disabled={isDemo || logoLoading}
-                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-200 disabled:text-gray-400 text-white text-sm font-medium rounded-lg transition-colors"
+                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-200 disabled:text-gray-400 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   >
                     {logoUrl ? 'Logo ändern' : 'Logo hochladen'}
+                    {!userIsPro && <ProBadge />}
                   </button>
                   {logoUrl && (
                     <button

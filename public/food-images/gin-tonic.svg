@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Gin Tonic Glass -->
+  <defs>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E3F2FD"/>
+    </linearGradient>
+    <linearGradient id="gt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0F7FA"/>
+      <stop offset="100%" style="stop-color:#B2EBF2"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="25" ry="5" fill="#00000020"/>
+  <!-- Copa glass bowl -->
+  <circle cx="60" cy="50" r="32" fill="url(#glass)" opacity="0.5"/>
+  <!-- Stem -->
+  <rect x="58" y="78" width="4" height="25" fill="url(#glass)" opacity="0.6"/>
+  <!-- Base -->
+  <ellipse cx="60" cy="105" rx="15" ry="4" fill="url(#glass)" opacity="0.6"/>
+  <!-- Gin tonic liquid -->
+  <circle cx="60" cy="52" r="26" fill="url(#gt)" opacity="0.6"/>
+  <!-- Ice cubes -->
+  <rect x="45" cy="40" width="12" height="10" rx="2" fill="#E0F7FA" opacity="0.7" transform="rotate(-10 51 45)"/>
+  <rect x="60" cy="45" width="14" height="12" rx="2" fill="#E0F7FA" opacity="0.6" transform="rotate(5 67 51)"/>
+  <!-- Lime slice -->
+  <circle cx="55" cy="55" r="8" fill="#CDDC39" opacity="0.9"/>
+  <circle cx="55" cy="55" r="5" fill="#C0CA33"/>
+  <path d="M50 55 L60 55 M55 50 L55 60" stroke="#F0F4C3" stroke-width="1.5"/>
+  <!-- Bubbles -->
+  <circle cx="48" cy="65" r="1.5" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="70" cy="60" r="2" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="65" cy="70" r="1" fill="#FFFFFF" opacity="0.6"/>
+  <!-- Glass shine -->
+  <path d="M35 35 Q32 50 38 65" stroke="#FFFFFF" stroke-width="2" opacity="0.4"/>
+</svg>

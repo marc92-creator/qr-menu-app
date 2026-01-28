@@ -372,7 +372,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Responsive Menu View - wie Gäste es sehen */}
-              <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden max-h-[calc(100vh-200px)] overflow-y-auto">
+              <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
                 <MenuView
                   restaurant={sandboxData.restaurant}
                   categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
@@ -702,7 +702,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Responsive Menu View - wie Gäste es sehen */}
-            <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
               <MenuView
                 restaurant={selectedRestaurant}
                 categories={categories.sort((a, b) => a.position - b.position)}

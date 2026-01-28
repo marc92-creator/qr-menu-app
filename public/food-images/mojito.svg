@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Mojito Glass -->
+  <defs>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E3F2FD"/>
+    </linearGradient>
+    <linearGradient id="mojito" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F5E9"/>
+      <stop offset="100%" style="stop-color:#C8E6C9"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="22" ry="5" fill="#00000020"/>
+  <!-- Highball glass -->
+  <path d="M38 20 L42 100 L78 100 L82 20 Z" fill="url(#glass)" opacity="0.6"/>
+  <!-- Mojito liquid -->
+  <path d="M40 30 L44 97 L76 97 L80 30 Z" fill="url(#mojito)"/>
+  <!-- Lime slices -->
+  <circle cx="50" cy="50" r="8" fill="#CDDC39"/>
+  <circle cx="50" cy="50" r="5" fill="#C0CA33"/>
+  <path d="M45 50 L55 50 M50 45 L50 55" stroke="#F0F4C3" stroke-width="2"/>
+  <!-- Mint leaves -->
+  <ellipse cx="65" cy="35" rx="8" ry="5" fill="#4CAF50" transform="rotate(-20 65 35)"/>
+  <ellipse cx="58" cy="40" rx="6" ry="4" fill="#66BB6A" transform="rotate(15 58 40)"/>
+  <ellipse cx="70" cy="42" rx="5" ry="3" fill="#81C784" transform="rotate(-10 70 42)"/>
+  <!-- Bubbles -->
+  <circle cx="55" cy="70" r="2" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="65" cy="80" r="2.5" fill="#FFFFFF" opacity="0.4"/>
+  <circle cx="52" cy="85" r="1.5" fill="#FFFFFF" opacity="0.5"/>
+  <!-- Straw -->
+  <rect x="68" y="10" width="4" height="60" rx="1" fill="#4CAF50"/>
+  <!-- Glass shine -->
+  <path d="M42 25 L44 95" stroke="#FFFFFF" stroke-width="2" opacity="0.4"/>
+</svg>
