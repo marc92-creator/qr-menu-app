@@ -355,16 +355,18 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   key={category.id}
                   data-category={category.id}
                   onClick={() => scrollToCategory(category.id)}
-                  className="px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all duration-200 flex-shrink-0 active:scale-95 touch-manipulation"
+                  className={`px-4 py-2.5 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-200 flex-shrink-0 touch-manipulation ${
+                    isActive ? 'scale-105' : 'hover:scale-102 active:scale-95'
+                  }`}
                   style={isActive ? {
                     background: styles.pillActiveBg,
                     color: styles.pillActiveText,
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                   } : {
                     backgroundColor: isGradient(styles.pillBg) ? undefined : styles.pillBg,
                     backgroundImage: isGradient(styles.pillBg) ? styles.pillBg : undefined,
                     color: styles.pillText,
-                    boxShadow: `inset 0 0 0 1px ${styles.border}`,
+                    boxShadow: `inset 0 0 0 1.5px ${styles.border}`,
                   }}
                 >
                   {category.name}
@@ -429,7 +431,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                         return (
                           <article
                             key={item.id}
-                            className="rounded-xl p-4 transition-all duration-200"
+                            className="rounded-2xl p-4 transition-all duration-300 hover:shadow-lg"
                             style={{
                               backgroundColor: styles.cardBg,
                               border: `1px solid ${styles.cardBorder}`,
@@ -523,7 +525,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                     </div>
                                   </div>
                                   <span
-                                    className="flex-shrink-0 text-base font-bold"
+                                    className="flex-shrink-0 text-lg font-bold tabular-nums"
                                     style={{ color: styles.priceColor }}
                                   >
                                     {formatPrice(item.price)}

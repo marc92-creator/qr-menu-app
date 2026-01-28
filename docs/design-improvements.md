@@ -146,9 +146,31 @@ Themes sind definiert in `src/lib/themes.ts`.
 
 ## Verbesserungen
 
-### [Datum] - [Bereich]
+### 28. Januar 2025 - Public Menu (Daily Run)
 
-*Wird vom Design Agent erweitert*
+**Fokus:** Öffentliches Menü (`/m/[slug]`) - Das sehen Kunden!
+
+**Änderungen:**
+
+1. **Category Pills verbessert**
+   - Padding erhöht: `py-2` → `py-2.5`
+   - Font-Weight: `font-medium` → `font-semibold`
+   - Active-State: `scale-105` für bessere Sichtbarkeit
+   - Schatten verstärkt: `0 2px 8px` → `0 4px 12px`
+   - Border: `1px` → `1.5px` für besseren Kontrast
+
+2. **Menu Item Cards verbessert**
+   - Rundung: `rounded-xl` → `rounded-2xl` (konsistent mit Design-System)
+   - Transition: `duration-200` → `duration-300` (smoother)
+   - Hover-Effekt: `hover:shadow-lg` hinzugefügt
+
+3. **Preis-Styling verbessert**
+   - Größe: `text-base` → `text-lg` (prominenter)
+   - `tabular-nums` hinzugefügt (Zahlen gleich breit)
+
+**Datei:** `src/app/m/[slug]/MenuView.tsx`
+
+---
 
 ---
 
