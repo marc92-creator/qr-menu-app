@@ -29,7 +29,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { getCategoryImage } from '@/lib/foodImages';
+import { getCategoryImage, getItemImageUrl } from '@/lib/foodImages';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -152,7 +152,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
 
   // Edit item form
   const [editName, setEditName] = useState('');
+  const [editNameEn, setEditNameEn] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [editDescriptionEn, setEditDescriptionEn] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editAllergens, setEditAllergens] = useState<string[]>([]);
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
@@ -269,7 +271,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   const handleEditItem = (item: MenuItem) => {
     setEditingItem(item);
     setEditName(item.name);
+    setEditNameEn(item.name_en || '');
     setEditDescription(item.description || '');
+    setEditDescriptionEn(item.description_en || '');
     setEditPrice(item.price.toFixed(2).replace('.', ','));
     setEditAllergens(item.allergens || []);
     setEditImagePreview(item.image_url);
@@ -315,7 +319,9 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
         .from('menu_items')
         .update({
           name: editName.trim(),
+          name_en: editNameEn.trim() || null,
           description: editDescription.trim() || null,
+          description_en: editDescriptionEn.trim() || null,
           price,
           allergens: editAllergens,
           image_url: imageUrl,
@@ -869,6 +875,30 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 onChange={(e) => setEditPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
+
+              {/* English Translation Section */}
+              <div className="border-t border-gray-100 pt-4 mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🇬🇧</span>
+                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+                </div>
+                <div className="space-y-3 pl-1">
+                  <Input
+                    id="editNameEn"
+                    label="Name (English)"
+                    value={editNameEn}
+                    onChange={(e) => setEditNameEn(e.target.value)}
+                    placeholder="e.g. Döner in Bread"
+                  />
+                  <Input
+                    id="editDescriptionEn"
+                    label="Description (English)"
+                    value={editDescriptionEn}
+                    onChange={(e) => setEditDescriptionEn(e.target.value)}
+                    placeholder="e.g. With fresh salad and sauce"
+                  />
+                </div>
+              </div>
               <ImageUpload
                 value={editImagePreview}
                 onChange={(url, file) => {
@@ -1002,21 +1032,21 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                 return (
                   <SortableCategory key={category.id} category={category} isDragDisabled={isDemo}>
                     <div className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200">
-                      {/* Category Header */}
-                      <div className={`px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between ${!isDemo ? 'pl-12' : ''}`}>
+                      {/* Category Header - Distinct from items with emerald accent */}
+                      <div className={`px-5 sm:px-6 py-4 bg-gradient-to-r from-emerald-50 via-emerald-50/50 to-white border-b-2 border-emerald-200 flex items-center justify-between ${!isDemo ? 'pl-12' : ''}`}>
                         <div className="flex items-center gap-3">
                           {(() => {
                             const catImage = getCategoryImage(category.name);
                             return (
-                              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100">
+                              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md overflow-hidden bg-white ring-2 ring-emerald-200">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={catImage.image} alt={category.name} className="w-8 h-8 object-contain" />
+                                <img src={catImage.image} alt={category.name} className="w-9 h-9 object-contain" />
                               </div>
                             );
                           })()}
                           <div>
                             <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
-                            <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
+                            <p className="text-xs text-emerald-600 font-medium">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
                           </div>
                         </div>
                         {!isDemo && (
@@ -1073,8 +1103,23 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                                 return (
                                   <SortableMenuItem key={item.id} item={item} isDragDisabled={isDemo}>
                                     <div
-                                      className={`px-5 sm:px-6 py-4 flex items-start gap-4 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-12' : ''}`}
+                                      className={`px-5 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-12' : ''}`}
                                     >
+                          {/* Thumbnail */}
+                          {(() => {
+                            const imageUrl = getItemImageUrl(item, true);
+                            if (!imageUrl) return null;
+                            return (
+                              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={imageUrl}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            );
+                          })()}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-semibold text-gray-900">{item.name}</span>

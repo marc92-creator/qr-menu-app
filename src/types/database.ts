@@ -44,7 +44,9 @@ export interface MenuItem {
   id: string;
   category_id: string;
   name: string;
+  name_en?: string | null;
   description: string | null;
+  description_en?: string | null;
   price: number;
   image_url: string | null;
   image_mode: ImageMode;

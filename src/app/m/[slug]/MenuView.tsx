@@ -98,6 +98,22 @@ const saveLanguage = (restaurantId: string, lang: Language) => {
   localStorage.setItem(`menu_lang_${restaurantId}`, lang);
 };
 
+// Get localized item name (English if available and selected, otherwise German)
+const getLocalizedName = (item: MenuItem, lang: Language): string => {
+  if (lang === 'en' && item.name_en && item.name_en.trim() !== '') {
+    return item.name_en;
+  }
+  return item.name;
+};
+
+// Get localized item description (English if available and selected, otherwise German)
+const getLocalizedDescription = (item: MenuItem, lang: Language): string | null => {
+  if (lang === 'en' && item.description_en && item.description_en.trim() !== '') {
+    return item.description_en;
+  }
+  return item.description;
+};
+
 export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
@@ -123,13 +139,6 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       setCurrentLang(browserLang);
     }
   }, [restaurant.id]);
-
-  // Toggle language
-  const toggleLanguage = () => {
-    const newLang = currentLang === 'de' ? 'en' : 'de';
-    setCurrentLang(newLang);
-    saveLanguage(restaurant.id, newLang);
-  };
 
   // Get translations based on current language
   const t = getTranslation(currentLang);
@@ -215,24 +224,33 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     // Scroll to category section
     const categorySection = categoryRefs.current.get(categoryId);
     if (categorySection) {
+      const headerHeight = 160; // Height of sticky header + category pills
+
       if (isEmbedded) {
         // For embedded mode, find the scrollable parent container
-        // The parent should have overflow-y-auto
-        let scrollParent = scrollContainerRef.current?.parentElement;
+        let scrollParent: HTMLElement | null = scrollContainerRef.current?.parentElement || null;
 
         // Find the actual scrollable container (with overflow-y-auto)
-        while (scrollParent && scrollParent.scrollHeight <= scrollParent.clientHeight) {
+        while (scrollParent && getComputedStyle(scrollParent).overflowY !== 'auto' && getComputedStyle(scrollParent).overflowY !== 'scroll') {
           scrollParent = scrollParent.parentElement;
         }
 
         if (scrollParent) {
-          // Use scrollIntoView with scroll-margin handling from CSS
-          // The scroll-mt-44 class on categories handles the offset
-          categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Calculate the scroll position manually for embedded mode
+          const containerRect = scrollParent.getBoundingClientRect();
+          const categoryRect = categorySection.getBoundingClientRect();
+          const currentScrollTop = scrollParent.scrollTop;
+
+          // Calculate target position: current scroll + (category top - container top) - header offset
+          const targetScrollTop = currentScrollTop + (categoryRect.top - containerRect.top) - headerHeight;
+
+          scrollParent.scrollTo({
+            top: Math.max(0, targetScrollTop),
+            behavior: 'smooth'
+          });
         }
       } else {
         // For standalone page, scroll the window
-        const headerHeight = 180; // Height to account for header + pills
         const elementPosition = categorySection.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.scrollY - headerHeight;
 
@@ -325,20 +343,39 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   </span>
                 </div>
               )}
-              {/* Language Toggle Button */}
-              <button
-                onClick={toggleLanguage}
-                className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+              {/* Language Toggle - Clean DE/EN Switcher */}
+              <div
+                className="absolute top-3 right-3 flex items-center gap-0.5 p-0.5 rounded-lg text-xs font-medium"
                 style={{
                   backgroundColor: styles.surfaceHover || styles.cardBg,
-                  color: styles.textMuted,
                   border: `1px solid ${styles.border}`,
                 }}
-                title={currentLang === 'de' ? 'Switch to English' : 'Auf Deutsch wechseln'}
               >
-                <span className="text-sm">{currentLang === 'de' ? '🇩🇪' : '🇬🇧'}</span>
-                <span className="hidden sm:inline">{currentLang === 'de' ? 'DE' : 'EN'}</span>
-              </button>
+                <button
+                  onClick={() => { setCurrentLang('de'); saveLanguage(restaurant.id, 'de'); }}
+                  className={`px-2 py-1 rounded-md transition-all duration-200 ${
+                    currentLang === 'de' ? 'font-semibold' : 'opacity-60 hover:opacity-100'
+                  }`}
+                  style={{
+                    backgroundColor: currentLang === 'de' ? styles.primary : 'transparent',
+                    color: currentLang === 'de' ? '#fff' : styles.textMuted,
+                  }}
+                >
+                  DE
+                </button>
+                <button
+                  onClick={() => { setCurrentLang('en'); saveLanguage(restaurant.id, 'en'); }}
+                  className={`px-2 py-1 rounded-md transition-all duration-200 ${
+                    currentLang === 'en' ? 'font-semibold' : 'opacity-60 hover:opacity-100'
+                  }`}
+                  style={{
+                    backgroundColor: currentLang === 'en' ? styles.primary : 'transparent',
+                    color: currentLang === 'en' ? '#fff' : styles.textMuted,
+                  }}
+                >
+                  EN
+                </button>
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="text-xl font-bold truncate" style={{ color: styles.text }}>
@@ -522,7 +559,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                         className="text-base font-semibold leading-tight"
                                         style={{ color: styles.text }}
                                       >
-                                        {item.name}
+                                        {getLocalizedName(item, currentLang)}
                                       </h3>
                                       {/* Badges */}
                                       {item.is_special && (
@@ -581,14 +618,17 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                     {formatPrice(item.price)}
                                   </span>
                                 </div>
-                                {item.description && (
-                                  <p
-                                    className="text-sm mt-1 line-clamp-2 leading-relaxed"
-                                    style={{ color: styles.textMuted }}
-                                  >
-                                    {item.description}
-                                  </p>
-                                )}
+                                {(() => {
+                                  const localizedDesc = getLocalizedDescription(item, currentLang);
+                                  return localizedDesc ? (
+                                    <p
+                                      className="text-sm mt-1 line-clamp-2 leading-relaxed"
+                                      style={{ color: styles.textMuted }}
+                                    >
+                                      {localizedDesc}
+                                    </p>
+                                  ) : null;
+                                })()}
                                 {/* Allergen Badges */}
                                 {itemAllergens.length > 0 && (
                                   <div className="flex flex-wrap gap-1.5 mt-2">
