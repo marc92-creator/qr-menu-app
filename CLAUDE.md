@@ -321,6 +321,7 @@ Dieses Projekt hat ein Multi-Agent-System für kontinuierliche Verbesserung.
 | `/scout` | Scout Agent | Analysiert Konkurrenz, findet neue Feature-Ideen |
 | `/build` | Builder Agent | Implementiert Features aus dem Backlog |
 | `/improve` | Improve Agent | Kleine UX/Code/Performance Verbesserungen |
+| `/design` | Design Agent | Visuelles Design, Themes, Animationen, moderne UI |
 
 ### Workflow
 
@@ -340,10 +341,12 @@ Dieses Projekt hat ein Multi-Agent-System für kontinuierliche Verbesserung.
 | `/docs/competitor-analysis.md` | Konkurrenz-Analyse (7 Wettbewerber) |
 | `/docs/feature-backlog.md` | Feature Backlog mit Prioritäten |
 | `/docs/improvements.md` | Log aller Verbesserungen |
+| `/docs/design-improvements.md` | Design-System und visuelle Verbesserungen |
 | `.claude/commands/agents.md` | Agent-System Übersicht |
 | `.claude/commands/scout.md` | Scout Agent Anleitung |
 | `.claude/commands/build.md` | Builder Agent Anleitung |
 | `.claude/commands/improve.md` | Improve Agent Anleitung |
+| `.claude/commands/design.md` | Design Agent Anleitung |
 
 ### Kommunikation zwischen Agents
 

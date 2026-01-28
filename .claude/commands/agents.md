@@ -7,21 +7,21 @@
 | `/scout` | Scout Agent | Analysiert Konkurrenz, findet neue Feature-Ideen |
 | `/build` | Builder Agent | Implementiert Features aus dem Backlog |
 | `/improve` | Improve Agent | Kleine UX/Code/Performance Verbesserungen |
+| `/design` | Design Agent | Visuelles Design, UI, Animationen |
 
 ## Workflow
 
 ```
-┌─────────┐     ┌─────────┐     ┌─────────┐
-│  SCOUT  │ ──▶ │  BUILD  │ ──▶ │ IMPROVE │
-└─────────┘     └─────────┘     └─────────┘
-     │               │               │
-     ▼               ▼               ▼
-┌─────────────────────────────────────────┐
-│         /docs/ Dokumentation            │
-│  - competitor-analysis.md               │
-│  - feature-backlog.md                   │
-│  - improvements.md                      │
-└─────────────────────────────────────────┘
+┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
+│  SCOUT  │ ──▶ │  BUILD  │ ──▶ │ IMPROVE │ ──▶ │ DESIGN  │
+└─────────┘     └─────────┘     └─────────┘     └─────────┘
+     │               │               │               │
+     ▼               ▼               ▼               ▼
+┌───────────────────────────────────────────────────────────┐
+│                   /docs/ Dokumentation                    │
+│  - competitor-analysis.md    - improvements.md            │
+│  - feature-backlog.md        - design-improvements.md     │
+└───────────────────────────────────────────────────────────┘
 ```
 
 ### Typischer Workflow:
@@ -41,7 +41,8 @@ Die Agents kommunizieren über gemeinsame Markdown-Dateien:
 | `/docs/competitor-analysis.md` | Scout | Builder, User |
 | `/docs/feature-backlog.md` | Scout, Builder | Builder, User |
 | `/docs/improvements.md` | Improve | User |
-| `CLAUDE.md` | Builder, Improve | Alle |
+| `/docs/design-improvements.md` | Design | User |
+| `CLAUDE.md` | Builder, Improve, Design | Alle |
 
 ## Projekt-Kontext
 
