@@ -355,7 +355,7 @@ export default function DashboardPage() {
         {/* Content */}
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {activeTab === 'menu' && (
-            <SandboxMenuEditor onUpdate={handleSandboxUpdate} />
+            <SandboxMenuEditor onDataChange={handleSandboxUpdate} onUpdate={handleSandboxUpdate} />
           )}
 
           {activeTab === 'preview' && sandboxData && (

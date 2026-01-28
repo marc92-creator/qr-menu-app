@@ -15,6 +15,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -27,6 +28,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { getCategoryImage } from '@/lib/foodImages';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -60,11 +63,12 @@ function SortableCategory({
         {!isDragDisabled && (
           <div
             {...listeners}
-            className="absolute left-2 top-4 cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 z-10"
+            className="absolute left-2 top-4 cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 z-10 touch-none"
+            style={{ touchAction: 'none' }}
             title="Kategorie verschieben"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
             </svg>
           </div>
         )}
@@ -105,11 +109,12 @@ function SortableMenuItem({
       {!isDragDisabled && (
         <div
           {...listeners}
-          className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-2 text-gray-300 hover:text-gray-500 z-10"
+          className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-2 text-gray-300 hover:text-gray-500 z-10 touch-none"
+          style={{ touchAction: 'none' }}
           title="Gericht verschieben"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+          <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
           </svg>
         </div>
       )}
@@ -161,11 +166,17 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
 
-  // Drag & Drop sensors
+  // Drag & Drop sensors with touch support
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 8,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -976,6 +987,7 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleCategoryDragEnd}
+            modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext
               items={[...categories].sort((a, b) => a.position - b.position).map(c => c.id)}
@@ -993,9 +1005,15 @@ export function MenuEditor({ restaurant, categories, menuItems, onUpdate }: Menu
                       {/* Category Header */}
                       <div className={`px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between ${!isDemo ? 'pl-12' : ''}`}>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
-                            <span className="text-white text-lg">📂</span>
-                          </div>
+                          {(() => {
+                            const catImage = getCategoryImage(category.name);
+                            return (
+                              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={catImage.image} alt={category.name} className="w-8 h-8 object-contain" />
+                              </div>
+                            );
+                          })()}
                           <div>
                             <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
                             <p className="text-xs text-gray-500">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>

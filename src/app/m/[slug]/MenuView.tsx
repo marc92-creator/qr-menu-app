@@ -215,27 +215,24 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     // Scroll to category section
     const categorySection = categoryRefs.current.get(categoryId);
     if (categorySection) {
-      const headerHeight = 180; // Increased height to account for header + pills
-
       if (isEmbedded) {
         // For embedded mode, find the scrollable parent container
-        const scrollParent = scrollContainerRef.current?.parentElement;
-        if (scrollParent) {
-          const containerTop = scrollParent.getBoundingClientRect().top;
-          const elementTop = categorySection.getBoundingClientRect().top;
-          const currentScroll = scrollParent.scrollTop;
-          const offsetPosition = currentScroll + (elementTop - containerTop) - headerHeight;
+        // The parent should have overflow-y-auto
+        let scrollParent = scrollContainerRef.current?.parentElement;
 
-          // Use requestAnimationFrame for smoother scrolling
-          requestAnimationFrame(() => {
-            scrollParent.scrollTo({
-              top: Math.max(0, offsetPosition),
-              behavior: 'smooth'
-            });
-          });
+        // Find the actual scrollable container (with overflow-y-auto)
+        while (scrollParent && scrollParent.scrollHeight <= scrollParent.clientHeight) {
+          scrollParent = scrollParent.parentElement;
+        }
+
+        if (scrollParent) {
+          // Use scrollIntoView with scroll-margin handling from CSS
+          // The scroll-mt-44 class on categories handles the offset
+          categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       } else {
         // For standalone page, scroll the window
+        const headerHeight = 180; // Height to account for header + pills
         const elementPosition = categorySection.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.scrollY - headerHeight;
 
