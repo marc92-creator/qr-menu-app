@@ -2,7 +2,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from './demoData';
 
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
-const SANDBOX_DATA_VERSION = 4; // Increment when demo data structure changes
+const SANDBOX_DATA_VERSION = 5; // Increment when demo data structure changes
 
 export interface SandboxData {
   restaurant: Restaurant;
@@ -72,6 +72,34 @@ function migrateSandboxData(data: SandboxData): SandboxData {
         menu_language: data.restaurant.menu_language || 'de',
       },
       version: 4,
+    };
+  }
+
+  if (currentVersion < 5) {
+    // Migration v5: Add English translations from demo data
+    const demoData = getDemoData();
+    const migratedItems = data.menuItems.map(item => {
+      // Copy English translations from demo data for demo items
+      const demoItem = demoData.menuItems.find(d => d.id === item.id);
+      if (demoItem) {
+        return {
+          ...item,
+          name_en: item.name_en || demoItem.name_en || null,
+          description_en: item.description_en || demoItem.description_en || null,
+        };
+      }
+      // For user-created items, keep existing or set null
+      return {
+        ...item,
+        name_en: item.name_en || null,
+        description_en: item.description_en || null,
+      };
+    });
+
+    data = {
+      ...data,
+      menuItems: migratedItems,
+      version: 5,
     };
   }
 

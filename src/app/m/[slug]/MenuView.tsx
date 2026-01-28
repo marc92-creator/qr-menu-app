@@ -211,7 +211,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
 
-    // Scroll tab into view with a small delay to ensure state is updated
+    // Scroll tab pill into view
     requestAnimationFrame(() => {
       if (tabsRef.current) {
         const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
@@ -221,46 +221,49 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       }
     });
 
-    // Scroll to category section
-    const categorySection = categoryRefs.current.get(categoryId);
-    if (categorySection) {
-      const headerHeight = 160; // Height of sticky header + category pills
+    // Find the category element by ID
+    const categoryElement = document.getElementById(`category-${categoryId}`);
+    if (!categoryElement) {
+      console.warn('Category element not found:', categoryId);
+      return;
+    }
 
-      if (isEmbedded) {
-        // For embedded mode, find the scrollable parent container
-        let scrollParent: HTMLElement | null = scrollContainerRef.current?.parentElement || null;
+    const headerHeight = 150; // Height of sticky header + category pills
 
-        // Find the actual scrollable container (with overflow-y-auto)
-        while (scrollParent && getComputedStyle(scrollParent).overflowY !== 'auto' && getComputedStyle(scrollParent).overflowY !== 'scroll') {
-          scrollParent = scrollParent.parentElement;
-        }
+    if (isEmbedded) {
+      // For embedded mode, find the scrollable parent by traversing up
+      let scrollContainer: HTMLElement | null = categoryElement.parentElement;
 
-        if (scrollParent) {
-          // Calculate the scroll position manually for embedded mode
-          const containerRect = scrollParent.getBoundingClientRect();
-          const categoryRect = categorySection.getBoundingClientRect();
-          const currentScrollTop = scrollParent.scrollTop;
+      // Find the first scrollable ancestor
+      while (scrollContainer) {
+        const style = window.getComputedStyle(scrollContainer);
+        const isScrollable =
+          (style.overflowY === 'auto' || style.overflowY === 'scroll') &&
+          scrollContainer.scrollHeight > scrollContainer.clientHeight;
 
-          // Calculate target position: current scroll + (category top - container top) - header offset
-          const targetScrollTop = currentScrollTop + (categoryRect.top - containerRect.top) - headerHeight;
+        if (isScrollable) break;
+        scrollContainer = scrollContainer.parentElement;
+      }
 
-          scrollParent.scrollTo({
-            top: Math.max(0, targetScrollTop),
-            behavior: 'smooth'
-          });
-        }
-      } else {
-        // For standalone page, scroll the window
-        const elementPosition = categorySection.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerHeight;
+      if (scrollContainer) {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const elementRect = categoryElement.getBoundingClientRect();
+        const scrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - headerHeight;
 
-        requestAnimationFrame(() => {
-          window.scrollTo({
-            top: Math.max(0, offsetPosition),
-            behavior: 'smooth'
-          });
+        scrollContainer.scrollTo({
+          top: Math.max(0, scrollTop),
+          behavior: 'smooth'
         });
       }
+    } else {
+      // For standalone page, scroll the window
+      const elementPosition = categoryElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerHeight;
+
+      window.scrollTo({
+        top: Math.max(0, offsetPosition),
+        behavior: 'smooth'
+      });
     }
   };
 
