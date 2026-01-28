@@ -8,6 +8,7 @@
 | `/build` | Builder Agent | Implementiert Features aus dem Backlog |
 | `/improve` | Improve Agent | Kleine UX/Code/Performance Verbesserungen |
 | `/design` | Design Agent | Visuelles Design, UI, Animationen |
+| `/daily` | Orchestrator | Führt alle Agents nacheinander aus (mit Limits und Pausen) |
 
 ## Workflow
 

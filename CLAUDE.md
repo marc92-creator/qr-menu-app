@@ -322,6 +322,17 @@ Dieses Projekt hat ein Multi-Agent-System für kontinuierliche Verbesserung.
 | `/build` | Builder Agent | Implementiert Features aus dem Backlog |
 | `/improve` | Improve Agent | Kleine UX/Code/Performance Verbesserungen |
 | `/design` | Design Agent | Visuelles Design, Themes, Animationen, moderne UI |
+| `/daily` | Orchestrator | Führt alle Agents nacheinander aus (mit Limits und Pausen) |
+
+### Orchestrator: /daily
+
+Der `/daily` Command führt alle Agents einmal durch mit Limits:
+- **Phase 1 Scout:** Max 3 Feature-Ideen (10 Min)
+- **Phase 2 Design:** Max 3 visuelle Änderungen (15 Min)
+- **Phase 3 Improve:** Max 3 Code-Fixes (10 Min)
+- **Phase 4 Build:** Max 1 Feature/Bugfix (20 Min)
+
+Nach jeder Phase gibt es einen Status-Report und du entscheidest ob es weitergeht.
 
 ### Workflow
 
@@ -347,6 +358,7 @@ Dieses Projekt hat ein Multi-Agent-System für kontinuierliche Verbesserung.
 | `.claude/commands/build.md` | Builder Agent Anleitung |
 | `.claude/commands/improve.md` | Improve Agent Anleitung |
 | `.claude/commands/design.md` | Design Agent Anleitung |
+| `.claude/commands/daily.md` | Daily Orchestrator Anleitung |
 
 ### Kommunikation zwischen Agents
 
