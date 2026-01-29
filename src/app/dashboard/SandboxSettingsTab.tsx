@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Restaurant, OpeningHours, MenuTheme, MenuLanguage } from '@/types/database';
 import { Button } from '@/components/Button';
@@ -38,6 +38,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
   const [name, setName] = useState(restaurant.name);
   const [address, setAddress] = useState(restaurant.address || '');
   const [whatsappNumber, setWhatsappNumber] = useState(restaurant.whatsapp_number || '');
+  const [logoPreview, setLogoPreview] = useState<string | null>(restaurant.logo_url || null);
   const [openingHours, setOpeningHours] = useState<OpeningHours>(
     restaurant.opening_hours || DEFAULT_HOURS
   );
@@ -45,6 +46,19 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
   const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
   const [success, setSuccess] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setLogoPreview(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
     setOpeningHours(prev => ({
@@ -64,6 +78,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
       name,
       address: address || null,
       whatsapp_number: whatsappNumber || null,
+      logo_url: logoPreview,
       opening_hours: openingHours,
       theme,
       menu_language: menuLanguage,
@@ -125,6 +140,63 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
           <p className="text-sm text-gray-500">
             Wenn angegeben, wird ein WhatsApp-Button auf deiner Speisekarte angezeigt.
           </p>
+        </div>
+      </div>
+
+      {/* Logo Upload */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-gray-100">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">Restaurant-Logo</h2>
+        <div className="flex items-start gap-6">
+          {/* Logo Preview */}
+          <div className="flex-shrink-0">
+            {logoPreview ? (
+              <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-100 ring-2 ring-gray-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={logoPreview}
+                  alt="Logo"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  onClick={() => setLogoPreview(null)}
+                  className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            ) : (
+              <div className="w-24 h-24 rounded-xl bg-gray-100 flex items-center justify-center ring-2 ring-dashed ring-gray-300">
+                <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
+          </div>
+
+          {/* Upload Controls */}
+          <div className="flex-1">
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleLogoChange}
+              className="hidden"
+            />
+            <button
+              onClick={() => logoInputRef.current?.click()}
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              {logoPreview ? 'Logo ändern' : 'Logo hochladen'}
+            </button>
+            <p className="text-sm text-gray-500 mt-2">
+              Wird auf deiner Speisekarte angezeigt. JPG, PNG oder WebP.
+            </p>
+            <p className="text-xs text-purple-600 mt-1">
+              Demo: Logo wird nur lokal gespeichert und in der Vorschau angezeigt.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -359,35 +431,35 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
         </div>
       </div>
 
-      {/* Locked Features */}
-      <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+      {/* Register CTA */}
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl">🔒</span>
+          <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl">🚀</span>
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 mb-1">Nur mit kostenlosem Account</h3>
+            <h3 className="font-bold text-gray-900 mb-1">Bereit für dein eigenes Restaurant?</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Die folgenden Funktionen sind im Sandbox-Modus nicht verfügbar:
+              Registriere dich kostenlos und erhalte 14 Tage vollen Zugang:
             </p>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Bilder für Gerichte hochladen
+                Eigene URL für dein Restaurant
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Eigene URL / Slug wählen
+                Funktionierender QR-Code zum Drucken
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                QR-Code generieren und drucken
+                Daten dauerhaft gespeichert
               </li>
             </ul>
             <Link href="/register" className="inline-block mt-4">

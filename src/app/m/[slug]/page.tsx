@@ -80,6 +80,25 @@ export default async function PublicMenuPage({ params }: PageProps) {
 
   const showWatermark = !subscription || subscription.plan !== 'basic';
 
+  // Debug: Log what data we're passing to MenuView
+  console.log('=== PUBLIC MENU DEBUG ===');
+  console.log('Restaurant:', {
+    id: restaurant.id,
+    name: restaurant.name,
+    theme: restaurant.theme,
+    whatsapp_number: restaurant.whatsapp_number,
+    menu_language: restaurant.menu_language,
+  });
+  console.log('Categories count:', categories?.length || 0);
+  console.log('Menu items count:', menuItems?.length || 0);
+  if (menuItems && menuItems.length > 0) {
+    console.log('First item:', {
+      name: menuItems[0].name,
+      name_en: menuItems[0].name_en,
+      description_en: menuItems[0].description_en,
+    });
+  }
+
   return (
     <MenuView
       restaurant={restaurant}

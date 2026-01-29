@@ -101,6 +101,7 @@ const saveLanguage = (restaurantId: string, lang: Language) => {
 
 // Get localized item name (English if available and selected, otherwise German)
 const getLocalizedName = (item: MenuItem, lang: Language): string => {
+  console.log('getLocalizedName called:', { name: item.name, name_en: item.name_en, lang });
   if (lang === 'en' && item.name_en && item.name_en.trim() !== '') {
     return item.name_en;
   }
@@ -368,7 +369,11 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                 }}
               >
                 <button
-                  onClick={() => { setCurrentLang('de'); saveLanguage(restaurant.id, 'de'); }}
+                  onClick={() => {
+                    console.log('Language button clicked: DE');
+                    setCurrentLang('de');
+                    saveLanguage(restaurant.id, 'de');
+                  }}
                   className={`px-2 py-1 rounded-md transition-all duration-200 ${
                     currentLang === 'de' ? 'font-semibold' : 'opacity-60 hover:opacity-100'
                   }`}
@@ -380,7 +385,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   DE
                 </button>
                 <button
-                  onClick={() => { setCurrentLang('en'); saveLanguage(restaurant.id, 'en'); }}
+                  onClick={() => {
+                    console.log('Language button clicked: EN');
+                    console.log('Current lang before:', currentLang);
+                    setCurrentLang('en');
+                    saveLanguage(restaurant.id, 'en');
+                  }}
                   className={`px-2 py-1 rounded-md transition-all duration-200 ${
                     currentLang === 'en' ? 'font-semibold' : 'opacity-60 hover:opacity-100'
                   }`}

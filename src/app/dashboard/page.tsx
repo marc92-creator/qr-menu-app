@@ -11,6 +11,7 @@ import { SetupWizard } from './SetupWizard';
 import { MenuEditor } from './MenuEditor';
 import { SandboxMenuEditor } from './SandboxMenuEditor';
 import { QRCodeTab } from './QRCodeTab';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { SettingsTab } from './SettingsTab';
 import { SandboxSettingsTab } from './SandboxSettingsTab';
 import { RestaurantList } from './RestaurantList';
@@ -69,8 +70,10 @@ export default function DashboardPage() {
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        // No user - enter sandbox mode
+        // No user - enter sandbox mode with FRESH demo data every time
         setIsSandbox(true);
+        // Always reset to fresh demo data on page load (not just new sessions)
+        resetSandboxData();
         loadSandboxData();
         setLoading(false);
         return;
@@ -566,6 +569,81 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'qr' && sandboxData && (
+            <div className="max-w-2xl mx-auto space-y-6">
+              {/* Header */}
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">QR-Code</h1>
+                <p className="text-gray-500 mt-1">Demo-Vorschau deines QR-Codes</p>
+              </div>
+
+              {/* Demo QR Code */}
+              <div className="bg-white rounded-2xl p-8 shadow-sm ring-1 ring-gray-100">
+                <div className="flex flex-col items-center">
+                  {/* QR Code Preview */}
+                  <div className="relative">
+                    <QRCodeGenerator
+                      slug="demo-doener-palace"
+                      restaurantName="Demo Restaurant"
+                      size={200}
+                    />
+                    {/* Demo overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-xl">
+                      <div className="text-center p-4">
+                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <span className="text-2xl">🔒</span>
+                        </div>
+                        <p className="text-sm font-medium text-gray-700">Demo-Vorschau</p>
+                        <p className="text-xs text-gray-500 mt-1">Registriere dich für deinen eigenen QR-Code</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="mt-6 text-center">
+                    <p className="text-gray-600 text-sm mb-4">
+                      Im Sandbox-Modus ist der QR-Code eine Vorschau.<br />
+                      Registriere dich kostenlos für deinen eigenen funktionierenden QR-Code.
+                    </p>
+                    <Link href="/register">
+                      <Button className="shadow-lg shadow-emerald-500/20">
+                        Kostenlos registrieren
+                        <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features Teaser */}
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                <h3 className="font-bold text-gray-900 mb-3">Mit kostenlosem Account:</h3>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Funktionierender QR-Code für dein Restaurant
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    PDF-Download für Tischaufsteller
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Link teilen per WhatsApp, E-Mail, etc.
+                  </li>
+                </ul>
               </div>
             </div>
           )}
