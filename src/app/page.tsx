@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100/50">
+      <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100/50 isolate">
         <nav className="container mx-auto px-5 py-4 flex items-center justify-between max-w-6xl">
           <div className="flex items-center gap-3">
             <Logo />
@@ -14,15 +14,15 @@ export default function Home() {
               Demo
             </span>
           </div>
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/login"
-              className="text-gray-600 hover:text-gray-900 font-medium text-sm sm:text-base px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors"
+              className="text-gray-600 hover:text-gray-900 font-medium text-sm sm:text-base px-4 py-3 min-h-[44px] flex items-center rounded-xl hover:bg-gray-100 transition-colors active:bg-gray-200"
             >
               Anmelden
             </Link>
             <Link href="/register">
-              <Button size="sm" className="text-sm shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
+              <Button size="sm" className="text-sm min-h-[44px] shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                 <span className="hidden sm:inline">Kostenlos registrieren</span>
                 <span className="sm:hidden">Registrieren</span>
               </Button>
@@ -36,7 +36,7 @@ export default function Home() {
         <section className="relative overflow-hidden">
           {/* Background Gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-emerald-50 via-white to-white pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-br from-emerald-100/50 to-teal-100/50 rounded-full blur-3xl -z-10" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-br from-emerald-100/50 to-teal-100/50 rounded-full blur-3xl -z-10 pointer-events-none" />
 
           <div className="container mx-auto px-5 max-w-6xl relative">
             <div className="py-16 sm:py-24 md:py-32">
