@@ -218,11 +218,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     return () => observer.disconnect();
   }, [categories, isEmbedded, activeCategory]);
 
-  // Track page view / scan
+  // Track page view / scan (only once per session)
   useEffect(() => {
+    // Skip tracking for demo restaurants and embedded previews
+    if (isDemo || isEmbedded) return;
+
+    // Prevent duplicate tracking in the same session
+    const trackingKey = `tracked_${restaurant.id}`;
+    if (typeof window !== 'undefined' && sessionStorage.getItem(trackingKey)) {
+      return;
+    }
+
     const trackScan = async () => {
       try {
-        await fetch('/api/track-scan', {
+        const response = await fetch('/api/track-scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -230,13 +239,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
             language: currentLang,
           }),
         });
+
+        if (response.ok) {
+          // Mark as tracked for this session
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem(trackingKey, 'true');
+          }
+        }
       } catch {
         // Silently fail - tracking shouldn't break the menu
       }
     };
 
     trackScan();
-  }, [restaurant.id, currentLang]);
+  }, [restaurant.id, isDemo, isEmbedded, currentLang]);
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
