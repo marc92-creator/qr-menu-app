@@ -185,6 +185,7 @@ export function saveSandboxData(data: Partial<SandboxData>): void {
       categories: data.categories || current.categories,
       menuItems: data.menuItems || current.menuItems,
       lastModified: new Date().toISOString(),
+      version: SANDBOX_DATA_VERSION, // Preserve version to prevent re-migration
     };
     storage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(updated));
   } catch (error) {
