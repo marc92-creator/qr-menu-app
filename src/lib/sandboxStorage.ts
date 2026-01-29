@@ -2,7 +2,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from './demoData';
 
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
-const SANDBOX_DATA_VERSION = 6; // Increment when demo data structure changes
+const SANDBOX_DATA_VERSION = 7; // Increment when demo data structure changes
 
 // Use sessionStorage for demo mode - this ensures each new visitor starts fresh
 // sessionStorage persists during page refreshes but clears when browser/tab closes
@@ -126,6 +126,25 @@ function migrateSandboxData(data: SandboxData): SandboxData {
       ...data,
       categories: migratedCategories,
       version: 6,
+    };
+  }
+
+  if (currentVersion < 7) {
+    // Migration v7: Add wifi fields to restaurant and is_sold_out to menu items
+    const migratedItems = data.menuItems.map(item => ({
+      ...item,
+      is_sold_out: item.is_sold_out || false,
+    }));
+
+    data = {
+      ...data,
+      restaurant: {
+        ...data.restaurant,
+        wifi_name: data.restaurant.wifi_name || null,
+        wifi_password: data.restaurant.wifi_password || null,
+      },
+      menuItems: migratedItems,
+      version: 7,
     };
   }
 
@@ -353,4 +372,41 @@ export function getFixedDemoData() {
     categories: DEMO_CATEGORIES,
     menuItems: DEMO_MENU_ITEMS,
   };
+}
+
+/**
+ * Get sandbox data for migration to a real account
+ * Returns null if there are no meaningful modifications
+ */
+export function getSandboxDataForMigration(): SandboxData | null {
+  if (typeof window === 'undefined') return null;
+
+  const storage = getStorage();
+  if (!storage) return null;
+
+  const stored = storage.getItem(SANDBOX_STORAGE_KEY);
+  if (!stored) return null;
+
+  try {
+    const data = JSON.parse(stored) as SandboxData;
+
+    // Check if user made any modifications
+    // Consider modified if they have any items (even if just the demo items)
+    if (data.menuItems.length === 0 && data.categories.length === 0) return null;
+
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clear sandbox data after successful migration
+ */
+export function clearSandboxData(): void {
+  if (typeof window === 'undefined') return;
+  const storage = getStorage();
+  if (storage) {
+    storage.removeItem(SANDBOX_STORAGE_KEY);
+  }
 }

@@ -23,6 +23,8 @@ export interface Restaurant {
   theme: MenuTheme;
   menu_language: MenuLanguage;
   logo_url: string | null;
+  wifi_name: string | null;
+  wifi_password: string | null;
   is_active: boolean;
   is_demo: boolean;
   auto_images: boolean;
@@ -58,6 +60,7 @@ export interface MenuItem {
   is_vegan: boolean;
   is_popular: boolean;
   is_special: boolean;
+  is_sold_out: boolean;
   position: number;
   allergens: string[];
   tags: string[]; // New: flexible tags like 'new', 'spicy', 'chefs_choice'
@@ -101,6 +104,7 @@ export interface MenuScan {
   scanned_at: string;
   user_agent: string | null;
   referrer: string | null;
+  language: string | null;
 }
 
 export interface ScanStats {

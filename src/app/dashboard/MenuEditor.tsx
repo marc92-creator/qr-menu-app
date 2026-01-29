@@ -179,6 +179,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [newItemVegan, setNewItemVegan] = useState(false);
   const [newItemPopular, setNewItemPopular] = useState(false);
   const [newItemSpecial, setNewItemSpecial] = useState(false);
+  const [newItemSoldOut, setNewItemSoldOut] = useState(false);
 
   // Edit item form
   const [editName, setEditName] = useState('');
@@ -198,6 +199,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [editVegan, setEditVegan] = useState(false);
   const [editPopular, setEditPopular] = useState(false);
   const [editSpecial, setEditSpecial] = useState(false);
+  const [editSoldOut, setEditSoldOut] = useState(false);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -379,6 +381,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     setEditVegan(item.is_vegan || false);
     setEditPopular(item.is_popular || false);
     setEditSpecial(item.is_special || false);
+    setEditSoldOut(item.is_sold_out || false);
   };
 
   const handleSaveItem = async () => {
@@ -433,6 +436,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           is_vegan: editVegan,
           is_popular: editPopular,
           is_special: editSpecial,
+          is_sold_out: editSoldOut,
         })
         .eq('id', editingItem.id);
 
@@ -498,6 +502,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
         is_vegan: newItemVegan,
         is_popular: newItemPopular,
         is_special: newItemSpecial,
+        is_sold_out: newItemSoldOut,
         // Optional fields - only include if they have values
         ...(newItemNameEn.trim() ? { name_en: newItemNameEn.trim() } : {}),
         ...(newItemDescriptionEn.trim() ? { description_en: newItemDescriptionEn.trim() } : {}),
@@ -548,6 +553,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
       setNewItemVegan(false);
       setNewItemPopular(false);
       setNewItemSpecial(false);
+      setNewItemSoldOut(false);
       setShowAddItem(false);
       onUpdate();
     } catch (error) {
@@ -577,25 +583,56 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     onUpdate();
   };
 
+  // Quick toggle sold out status
+  const handleToggleSoldOut = async (item: MenuItem) => {
+    const newSoldOutStatus = !item.is_sold_out;
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.map(i => i.id === item.id ? { ...i, is_sold_out: newSoldOutStatus } : i)
+    );
+
+    try {
+      const supabase = createClient();
+      await supabase
+        .from('menu_items')
+        .update({ is_sold_out: newSoldOutStatus })
+        .eq('id', item.id);
+
+      await updateRestaurantTimestamp();
+      onUpdate();
+    } catch (error) {
+      console.error('Error toggling sold out:', error);
+      // Revert optimistic update on error
+      setLocalMenuItems(prev =>
+        prev.map(i => i.id === item.id ? { ...i, is_sold_out: !newSoldOutStatus } : i)
+      );
+    }
+  };
+
   // Badge Selector Component
   const BadgeSelector = ({
     vegetarian,
     vegan,
     popular,
     special,
+    soldOut,
     onVegetarianChange,
     onVeganChange,
     onPopularChange,
     onSpecialChange,
+    onSoldOutChange,
   }: {
     vegetarian: boolean;
     vegan: boolean;
     popular: boolean;
     special: boolean;
+    soldOut: boolean;
     onVegetarianChange: (v: boolean) => void;
     onVeganChange: (v: boolean) => void;
     onPopularChange: (v: boolean) => void;
     onSpecialChange: (v: boolean) => void;
+    onSoldOutChange: (v: boolean) => void;
   }) => (
     <div className="space-y-3">
       <label className="block text-sm font-semibold text-gray-700">
@@ -661,6 +698,25 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
         >
           <span className="text-lg">⭐</span>
           <span className="font-medium">Tagesangebot</span>
+        </button>
+      </div>
+      {/* Sold Out Toggle - Separate section for visibility */}
+      <div className="pt-2 border-t border-gray-100">
+        <button
+          type="button"
+          onClick={() => onSoldOutChange(!soldOut)}
+          className={`
+            w-full flex items-center gap-2 p-3 rounded-xl text-left text-sm
+            transition-all duration-200 touch-manipulation min-h-[48px]
+            ${soldOut
+              ? 'bg-red-100 text-red-800 ring-2 ring-red-500 shadow-sm'
+              : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+            }
+          `}
+        >
+          <span className="text-lg">🚫</span>
+          <span className="font-medium">Ausverkauft</span>
+          {soldOut && <span className="ml-auto text-xs bg-red-200 px-2 py-0.5 rounded-full">Aktiv</span>}
         </button>
       </div>
     </div>
@@ -1100,10 +1156,12 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 vegan={newItemVegan}
                 popular={newItemPopular}
                 special={newItemSpecial}
+                soldOut={newItemSoldOut}
                 onVegetarianChange={setNewItemVegetarian}
                 onVeganChange={setNewItemVegan}
                 onPopularChange={setNewItemPopular}
                 onSpecialChange={setNewItemSpecial}
+                onSoldOutChange={setNewItemSoldOut}
               />
               <TagSelector
                 selected={newItemTags}
@@ -1359,10 +1417,12 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 vegan={editVegan}
                 popular={editPopular}
                 special={editSpecial}
+                soldOut={editSoldOut}
                 onVegetarianChange={setEditVegetarian}
                 onVeganChange={setEditVegan}
                 onPopularChange={setEditPopular}
                 onSpecialChange={setEditSpecial}
+                onSoldOutChange={setEditSoldOut}
               />
               <TagSelector
                 selected={editTags}
@@ -1590,6 +1650,12 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                                   <span className="hidden sm:inline">Vegetarisch</span>
                                 </span>
                               )}
+                              {item.is_sold_out && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                                  <span>🚫</span>
+                                  <span>Ausverkauft</span>
+                                </span>
+                              )}
                             </div>
                             {item.description && (
                               <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
@@ -1618,6 +1684,18 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                             </span>
                             {!isDemo && (
                               <>
+                                {/* Quick Sold Out Toggle */}
+                                <button
+                                  onClick={() => handleToggleSoldOut(item)}
+                                  className={`p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors ${
+                                    item.is_sold_out
+                                      ? 'text-red-600 bg-red-50 hover:bg-red-100'
+                                      : 'text-gray-300 group-hover:text-gray-400 hover:text-red-500 hover:bg-red-50'
+                                  }`}
+                                  title={item.is_sold_out ? 'Als verfügbar markieren' : 'Als ausverkauft markieren'}
+                                >
+                                  <span className="text-base">{item.is_sold_out ? '🚫' : '✅'}</span>
+                                </button>
                                 {/* Edit Button */}
                                 <button
                                   onClick={() => handleEditItem(item)}

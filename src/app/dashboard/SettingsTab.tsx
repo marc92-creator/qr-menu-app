@@ -48,6 +48,8 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
   const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
+  const [wifiName, setWifiName] = useState(restaurant.wifi_name || '');
+  const [wifiPassword, setWifiPassword] = useState(restaurant.wifi_password || '');
   const [loading, setLoading] = useState(false);
   const [logoLoading, setLogoLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
@@ -135,6 +137,8 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         theme,
         menu_language: menuLanguage,
         auto_images: autoImages,
+        wifi_name: wifiName || null,
+        wifi_password: wifiPassword || null,
       })
       .eq('id', restaurant.id);
 
@@ -276,6 +280,34 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
             <p className="text-xs text-gray-500 mt-1.5">
               Wird auf der Speisekarte als Kontaktbutton angezeigt
             </p>
+          </div>
+
+          {/* WLAN for Guests */}
+          <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+            <h4 className="font-medium text-blue-900 mb-3 flex items-center gap-2">
+              <span>📶</span> WLAN für Gäste
+            </h4>
+            <div className="space-y-3">
+              <Input
+                id="wifi_name"
+                label="Netzwerkname (SSID)"
+                value={wifiName}
+                onChange={(e) => setWifiName(e.target.value)}
+                placeholder="z.B. Restaurant-Gast"
+                disabled={isDemo}
+              />
+              <Input
+                id="wifi_password"
+                label="Passwort"
+                value={wifiPassword}
+                onChange={(e) => setWifiPassword(e.target.value)}
+                placeholder="z.B. Willkommen2025"
+                disabled={isDemo}
+              />
+              <p className="text-xs text-blue-700">
+                Wird oben auf der Speisekarte angezeigt - Gäste lieben das!
+              </p>
+            </div>
           </div>
 
           {/* Restaurant Logo */}

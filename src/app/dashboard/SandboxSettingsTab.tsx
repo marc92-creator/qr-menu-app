@@ -45,6 +45,8 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
   const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
+  const [wifiName, setWifiName] = useState(restaurant.wifi_name || '');
+  const [wifiPassword, setWifiPassword] = useState(restaurant.wifi_password || '');
   const [success, setSuccess] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
@@ -83,6 +85,8 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
       theme,
       menu_language: menuLanguage,
       auto_images: autoImages,
+      wifi_name: wifiName || null,
+      wifi_password: wifiPassword || null,
     });
 
     setSuccess(true);
@@ -139,6 +143,32 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
           />
           <p className="text-sm text-gray-500">
             Wenn angegeben, wird ein WhatsApp-Button auf deiner Speisekarte angezeigt.
+          </p>
+        </div>
+      </div>
+
+      {/* WLAN for Guests */}
+      <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
+        <h2 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+          <span>📶</span> WLAN für Gäste
+        </h2>
+        <div className="space-y-4">
+          <Input
+            id="wifi_name"
+            label="Netzwerkname (SSID)"
+            value={wifiName}
+            onChange={(e) => setWifiName(e.target.value)}
+            placeholder="z.B. Restaurant-Gast"
+          />
+          <Input
+            id="wifi_password"
+            label="Passwort"
+            value={wifiPassword}
+            onChange={(e) => setWifiPassword(e.target.value)}
+            placeholder="z.B. Willkommen2025"
+          />
+          <p className="text-sm text-blue-700">
+            Wird oben auf der Speisekarte angezeigt - Gäste lieben das!
           </p>
         </div>
       </div>

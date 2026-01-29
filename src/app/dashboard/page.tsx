@@ -14,6 +14,7 @@ import { QRCodeTab } from './QRCodeTab';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { SettingsTab } from './SettingsTab';
 import { SandboxSettingsTab } from './SandboxSettingsTab';
+import { AnalyticsTab } from './AnalyticsTab';
 import { RestaurantList } from './RestaurantList';
 import { OnboardingChecklist } from '@/components/OnboardingChecklist';
 import { MenuView } from '@/app/m/[slug]/MenuView';
@@ -21,15 +22,18 @@ import {
   getSandboxData,
   resetSandboxData,
   SandboxData,
+  getSandboxDataForMigration,
+  clearSandboxData,
 } from '@/lib/sandboxStorage';
 
-type Tab = 'restaurants' | 'menu' | 'preview' | 'qr' | 'settings';
+type Tab = 'restaurants' | 'menu' | 'preview' | 'qr' | 'analytics' | 'settings';
 
 const tabConfig: { id: Tab; label: string; shortLabel: string; icon: string }[] = [
   { id: 'restaurants', label: 'Restaurants', shortLabel: 'Home', icon: '🏠' },
   { id: 'menu', label: 'Menü bearbeiten', shortLabel: 'Menü', icon: '📋' },
   { id: 'preview', label: 'Vorschau', shortLabel: 'Vorschau', icon: '👁️' },
   { id: 'qr', label: 'QR-Code', shortLabel: 'QR', icon: '📱' },
+  { id: 'analytics', label: 'Statistiken', shortLabel: 'Stats', icon: '📊' },
   { id: 'settings', label: 'Einstellungen', shortLabel: 'Settings', icon: '⚙️' },
 ];
 
@@ -58,6 +62,10 @@ export default function DashboardPage() {
   const [sandboxData, setSandboxData] = useState<SandboxData | null>(null);
   // Fullscreen preview state (for sandbox mode)
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // Migration dialog state
+  const [showMigrationDialog, setShowMigrationDialog] = useState(false);
+  const [pendingSandboxData, setPendingSandboxData] = useState<SandboxData | null>(null);
+  const [migrating, setMigrating] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -81,6 +89,13 @@ export default function DashboardPage() {
 
       // User is logged in - normal dashboard mode
       setIsSandbox(false);
+
+      // Check for sandbox data to migrate
+      const sandboxMigrationData = getSandboxDataForMigration();
+      if (sandboxMigrationData && sandboxMigrationData.menuItems.length > 0) {
+        setPendingSandboxData(sandboxMigrationData);
+        setShowMigrationDialog(true);
+      }
 
       // Load all restaurants for this user
       const { data: restaurantsData } = await supabase
@@ -203,6 +218,41 @@ export default function DashboardPage() {
     if (!confirm('Alle Änderungen zurücksetzen? Die Demo-Daten werden wiederhergestellt.')) return;
     resetSandboxData();
     loadSandboxData();
+  };
+
+  const handleMigrateSandbox = async () => {
+    if (!pendingSandboxData) return;
+    setMigrating(true);
+
+    try {
+      const response = await fetch('/api/migrate-sandbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sandboxData: pendingSandboxData }),
+      });
+
+      if (response.ok) {
+        clearSandboxData();
+        setShowMigrationDialog(false);
+        setPendingSandboxData(null);
+        // Reload dashboard to show new restaurant
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        alert(`Migration fehlgeschlagen: ${data.error || 'Unbekannter Fehler'}`);
+      }
+    } catch (error) {
+      console.error('Migration failed:', error);
+      alert('Migration fehlgeschlagen. Bitte versuche es erneut.');
+    } finally {
+      setMigrating(false);
+    }
+  };
+
+  const handleSkipMigration = () => {
+    clearSandboxData();
+    setShowMigrationDialog(false);
+    setPendingSandboxData(null);
   };
 
   const selectRestaurant = async (restaurant: Restaurant) => {
@@ -718,6 +768,9 @@ export default function DashboardPage() {
             onUpdate={loadData}
           />
         )}
+        {activeTab === 'analytics' && selectedRestaurant && (
+          <AnalyticsTab restaurant={selectedRestaurant} />
+        )}
       </main>
 
       {/* Mobile Bottom Navigation - Modern iOS Style */}
@@ -749,6 +802,42 @@ export default function DashboardPage() {
           ))}
         </div>
       </nav>
+
+      {/* Migration Dialog */}
+      {showMigrationDialog && pendingSandboxData && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <div className="text-center mb-4">
+              <span className="text-5xl">🎉</span>
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+              Demo-Daten übernehmen?
+            </h2>
+            <p className="text-gray-600 text-center mb-6">
+              Du hast <span className="font-semibold text-emerald-600">{pendingSandboxData.menuItems.length}</span> Gerichte
+              und <span className="font-semibold text-emerald-600">{pendingSandboxData.categories.length}</span> Kategorien
+              in der Demo erstellt. Möchtest du diese in dein neues Konto übernehmen?
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={handleSkipMigration}
+                disabled={migrating}
+              >
+                Nein, neu starten
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={handleMigrateSandbox}
+                loading={migrating}
+              >
+                Ja, übernehmen
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

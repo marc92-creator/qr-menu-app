@@ -145,6 +145,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const [currentLang, setCurrentLang] = useState<Language>('de');
   // For embedded mode: filter by category instead of scroll (null = show all)
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  // Dietary/allergen filters
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -223,7 +225,10 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         await fetch('/api/track-scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ restaurantId: restaurant.id }),
+          body: JSON.stringify({
+            restaurantId: restaurant.id,
+            language: currentLang,
+          }),
         });
       } catch {
         // Silently fail - tracking shouldn't break the menu
@@ -231,7 +236,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     };
 
     trackScan();
-  }, [restaurant.id]);
+  }, [restaurant.id, currentLang]);
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -271,6 +276,29 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     }, 10);
   };
 
+  // Filter toggle functions
+  const toggleFilter = (filter: string) => {
+    setActiveFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(filter)) next.delete(filter);
+      else next.add(filter);
+      return next;
+    });
+  };
+
+  const clearFilters = () => setActiveFilters(new Set());
+
+  // Filter items based on active dietary filters
+  const filterItem = (item: MenuItem): boolean => {
+    if (activeFilters.size === 0) return true;
+    if (activeFilters.has('vegetarian') && !item.is_vegetarian && !item.is_vegan) return false;
+    if (activeFilters.has('vegan') && !item.is_vegan) return false;
+    if (activeFilters.has('glutenFree') && item.allergens?.includes('gluten')) return false;
+    if (activeFilters.has('noNuts') &&
+        (item.allergens?.includes('peanuts') || item.allergens?.includes('nuts'))) return false;
+    return true;
+  };
+
   // Check if any menu item has allergens
   const hasAnyAllergens = menuItems.some(item => item.allergens && item.allergens.length > 0);
 
@@ -299,6 +327,34 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     setSelectedAllergen(selectedAllergen === allergenId ? null : allergenId);
   };
 
+  // Generate JSON-LD structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": restaurant.name,
+    "address": restaurant.address,
+    "url": `https://qr-menu-app-beta.vercel.app/m/${restaurant.slug}`,
+    "menu": {
+      "@type": "Menu",
+      "hasMenuSection": categories.map(cat => ({
+        "@type": "MenuSection",
+        "name": cat.name,
+        "hasMenuItem": menuItems
+          .filter(i => i.category_id === cat.id)
+          .map(item => ({
+            "@type": "MenuItem",
+            "name": item.name,
+            "description": item.description,
+            "offers": {
+              "@type": "Offer",
+              "price": item.price,
+              "priceCurrency": "EUR"
+            }
+          }))
+      }))
+    }
+  };
+
   return (
     <div
       ref={scrollContainerRef}
@@ -308,6 +364,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         backgroundImage: styles.backgroundPattern || 'none',
       }}
     >
+      {/* JSON-LD Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
       {/* Decorative gradient overlay */}
       {styles.decorativeGradient && (
         <div
@@ -437,6 +499,26 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                     </div>
                   );
                 })()}
+                {/* WiFi Info */}
+                {restaurant.wifi_name && (
+                  <div
+                    className="flex items-center gap-2 mt-2 px-3 py-1.5 rounded-lg text-xs"
+                    style={{ background: styles.primaryLight, border: `1px solid ${styles.border}` }}
+                  >
+                    <span className="text-base">📶</span>
+                    <span className="font-medium" style={{ color: styles.text }}>
+                      {restaurant.wifi_name}
+                    </span>
+                    {restaurant.wifi_password && (
+                      <>
+                        <span style={{ color: styles.textMuted }}>•</span>
+                        <span className="font-mono" style={{ color: styles.textMuted }}>
+                          {restaurant.wifi_password}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -498,6 +580,36 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
             })}
           </div>
         )}
+
+        {/* Filter Chips */}
+        <div className="flex overflow-x-auto px-4 pb-3 gap-2 scrollbar-hide md:px-6 md:justify-center"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
+          {[
+            { id: 'vegetarian', icon: '🥬', label: t.filterVegetarian },
+            { id: 'vegan', icon: '🌱', label: t.filterVegan },
+            { id: 'glutenFree', icon: '🌾', label: t.filterGlutenFree },
+            { id: 'noNuts', icon: '🥜', label: t.filterNoNuts },
+          ].map(filter => (
+            <button
+              key={filter.id}
+              onClick={() => toggleFilter(filter.id)}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-all flex-shrink-0 touch-manipulation active:scale-95"
+              style={{
+                background: activeFilters.has(filter.id) ? styles.primary : 'transparent',
+                color: activeFilters.has(filter.id) ? '#fff' : styles.text,
+                border: `1px solid ${activeFilters.has(filter.id) ? styles.primary : styles.border}`,
+              }}
+            >
+              <span>{filter.icon}</span>
+              {filter.label}
+            </button>
+          ))}
+        </div>
       </header>
 
       {/* Menu Items - All Categories */}
@@ -536,16 +648,32 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                   </div>
 
                   {/* Items */}
-                  {items.length === 0 ? (
-                    <div
-                      className="py-8 text-center text-sm"
-                      style={{ color: styles.textMuted }}
-                    >
-                      {t.noItemsInCategory}
-                    </div>
-                  ) : (
+                  {(() => {
+                    const filteredItems = items.filter(filterItem);
+                    if (filteredItems.length === 0 && activeFilters.size > 0) {
+                      return (
+                        <div className="py-8 text-center text-sm" style={{ color: styles.textMuted }}>
+                          <p>{t.noMatchingItems}</p>
+                          <button
+                            onClick={clearFilters}
+                            className="mt-2 text-sm font-medium hover:underline"
+                            style={{ color: styles.primary }}
+                          >
+                            {t.clearFilters}
+                          </button>
+                        </div>
+                      );
+                    }
+                    if (filteredItems.length === 0) {
+                      return (
+                        <div className="py-8 text-center text-sm" style={{ color: styles.textMuted }}>
+                          {t.noItemsInCategory}
+                        </div>
+                      );
+                    }
+                    return (
                     <div className="space-y-3">
-                      {items.map((item) => {
+                      {filteredItems.map((item) => {
                         const itemAllergens = getAllergensByIds(item.allergens || []);
                         const isHovered = hoveredCard === item.id;
                         const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
@@ -554,7 +682,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                         return (
                           <article
                             key={item.id}
-                            className="rounded-2xl p-4 transition-all duration-300 hover:shadow-lg"
+                            className={`rounded-2xl p-4 transition-all duration-300 hover:shadow-lg ${item.is_sold_out ? 'opacity-60' : ''}`}
                             style={{
                               backgroundColor: styles.cardBg,
                               border: `1px solid ${styles.cardBorder}`,
@@ -654,11 +782,23 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                           {tag.icon} {getLocalizedTagName(tag, currentLang)}
                                         </span>
                                       ))}
+                                      {/* Sold Out Badge */}
+                                      {item.is_sold_out && (
+                                        <span
+                                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded"
+                                          style={{
+                                            backgroundColor: styles.badgeSoldOutBg,
+                                            color: styles.badgeSoldOutText,
+                                          }}
+                                        >
+                                          🚫 {t.soldOut}
+                                        </span>
+                                      )}
                                     </div>
                                   </div>
                                   <span
-                                    className="flex-shrink-0 text-lg font-bold tabular-nums"
-                                    style={{ color: styles.priceColor }}
+                                    className={`flex-shrink-0 text-lg font-bold tabular-nums ${item.is_sold_out ? 'line-through' : ''}`}
+                                    style={{ color: item.is_sold_out ? styles.textMuted : styles.priceColor }}
                                   >
                                     {formatPrice(item.price)}
                                   </span>
@@ -706,7 +846,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                         );
                       })}
                     </div>
-                  )}
+                  );
+                  })()}
                 </section>
               ))}
 

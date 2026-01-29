@@ -38,6 +38,8 @@ export interface ThemeStyles {
   badgePopularText: string;
   badgeSpecialBg: string;
   badgeSpecialText: string;
+  badgeSoldOutBg: string;
+  badgeSoldOutText: string;
 
   // Allergen badges
   allergenBg: string;
@@ -107,6 +109,8 @@ const classicStyles: ThemeStyles = {
   badgePopularText: '#dc2626',
   badgeSpecialBg: '#fef3c7',
   badgeSpecialText: '#d97706',
+  badgeSoldOutBg: '#fee2e2',
+  badgeSoldOutText: '#991b1b',
 
   allergenBg: '#f3f4f6',
   allergenText: '#4b5563',
@@ -160,6 +164,8 @@ const darkStyles: ThemeStyles = {
   badgePopularText: '#fca5a5',
   badgeSpecialBg: '#78350f',
   badgeSpecialText: '#fcd34d',
+  badgeSoldOutBg: '#7f1d1d',
+  badgeSoldOutText: '#fca5a5',
 
   allergenBg: '#1e293b',
   allergenText: '#94a3b8',
@@ -215,6 +221,8 @@ const rusticStyles: ThemeStyles = {
   badgePopularText: '#991b1b',
   badgeSpecialBg: '#fef08a',
   badgeSpecialText: '#854d0e',
+  badgeSoldOutBg: '#fecaca',
+  badgeSoldOutText: '#991b1b',
 
   allergenBg: '#fef3c7',
   allergenText: '#78350f',
@@ -270,6 +278,8 @@ const modernStyles: ThemeStyles = {
   badgePopularText: '#be185d',
   badgeSpecialBg: 'linear-gradient(135deg, #fef3c7, #fde68a)',
   badgeSpecialText: '#b45309',
+  badgeSoldOutBg: '#fee2e2',
+  badgeSoldOutText: '#991b1b',
 
   allergenBg: '#f3e8ff',
   allergenText: '#6b21a8',
@@ -325,6 +335,8 @@ const orientalStyles: ThemeStyles = {
   badgePopularText: '#dc2626',
   badgeSpecialBg: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
   badgeSpecialText: '#ffffff',
+  badgeSoldOutBg: '#fee2e2',
+  badgeSoldOutText: '#991b1b',
 
   allergenBg: '#fef3c7',
   allergenText: '#92400e',

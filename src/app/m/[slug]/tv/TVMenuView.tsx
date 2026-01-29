@@ -210,7 +210,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
             return (
               <div
                 key={item.id}
-                className="rounded-2xl overflow-hidden transition-transform hover:scale-[1.02]"
+                className={`rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] ${item.is_sold_out ? 'opacity-60' : ''}`}
                 style={{
                   background: styles.cardBg,
                   border: `2px solid ${styles.cardBorder}`,
@@ -250,6 +250,17 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                           🔥 {t.popular}
                         </span>
                       )}
+                      {item.is_sold_out && (
+                        <span
+                          className="px-3 py-1 rounded-full text-sm font-bold"
+                          style={{
+                            background: styles.badgeSoldOutBg,
+                            color: styles.badgeSoldOutText,
+                          }}
+                        >
+                          🚫 {t.soldOut}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -271,8 +282,8 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                       })()}
                     </div>
                     <div
-                      className="text-2xl font-bold flex-shrink-0"
-                      style={{ color: styles.priceColor }}
+                      className={`text-2xl font-bold flex-shrink-0 ${item.is_sold_out ? 'line-through' : ''}`}
+                      style={{ color: item.is_sold_out ? styles.textMuted : styles.priceColor }}
                     >
                       {formatPrice(item.price)}
                     </div>

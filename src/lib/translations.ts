@@ -17,6 +17,15 @@ export interface MenuTranslations {
   popular: string;
   special: string;
   dailySpecial: string;
+  soldOut: string;
+
+  // Filters
+  filterVegetarian: string;
+  filterVegan: string;
+  filterGlutenFree: string;
+  filterNoNuts: string;
+  noMatchingItems: string;
+  clearFilters: string;
 
   // Allergens section
   allergens: string;
@@ -74,6 +83,15 @@ export const translations: Record<Language, MenuTranslations> = {
     popular: 'Beliebt',
     special: 'Angebot',
     dailySpecial: 'Tagesangebot',
+    soldOut: 'Ausverkauft',
+
+    // Filters
+    filterVegetarian: 'Vegetarisch',
+    filterVegan: 'Vegan',
+    filterGlutenFree: 'Glutenfrei',
+    filterNoNuts: 'Ohne Nüsse',
+    noMatchingItems: 'Keine passenden Gerichte gefunden',
+    clearFilters: 'Filter zurücksetzen',
 
     // Allergens
     allergens: 'Allergene',
@@ -129,6 +147,15 @@ export const translations: Record<Language, MenuTranslations> = {
     popular: 'Popular',
     special: 'Special',
     dailySpecial: 'Daily Special',
+    soldOut: 'Sold Out',
+
+    // Filters
+    filterVegetarian: 'Vegetarian',
+    filterVegan: 'Vegan',
+    filterGlutenFree: 'Gluten-Free',
+    filterNoNuts: 'No Nuts',
+    noMatchingItems: 'No matching items found',
+    clearFilters: 'Clear filters',
 
     // Allergens
     allergens: 'Allergens',

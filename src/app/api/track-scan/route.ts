@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    const { restaurantId } = await request.json();
+    const { restaurantId, language } = await request.json();
 
     if (!restaurantId) {
       return NextResponse.json({ error: 'Restaurant ID required' }, { status: 400 });
@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
         restaurant_id: restaurantId,
         user_agent: userAgent,
         referrer: referrer,
+        language: language || null,
       });
 
     if (error) {

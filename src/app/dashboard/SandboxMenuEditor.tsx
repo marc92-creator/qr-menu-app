@@ -131,10 +131,12 @@ function SortableMenuItem({
   item,
   onEdit,
   onDelete,
+  onToggleSoldOut,
 }: {
   item: MenuItem;
   onEdit: (item: MenuItem) => void;
   onDelete: (itemId: string) => void;
+  onToggleSoldOut: (item: MenuItem) => void;
 }) {
   const {
     attributes,
@@ -194,7 +196,15 @@ function SortableMenuItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{item.name}</div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{item.name}</div>
+              {item.is_sold_out && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                  <span>🚫</span>
+                  <span className="hidden sm:inline">Ausverkauft</span>
+                </span>
+              )}
+            </div>
             {item.description && (
               <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
                 {item.description}
@@ -220,6 +230,17 @@ function SortableMenuItem({
         )}
       </div>
       <div className="flex flex-col sm:flex-row items-center gap-1 flex-shrink-0">
+        <button
+          onClick={() => onToggleSoldOut(item)}
+          className={`p-1.5 sm:p-2 touch-manipulation min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg transition-colors ${
+            item.is_sold_out
+              ? 'text-red-600 bg-red-50 hover:bg-red-100'
+              : 'text-gray-300 group-hover:text-gray-400 hover:text-red-500 hover:bg-red-50'
+          }`}
+          title={item.is_sold_out ? 'Als verfügbar markieren' : 'Als ausverkauft markieren'}
+        >
+          <span className="text-sm">{item.is_sold_out ? '🚫' : '✅'}</span>
+        </button>
         <button
           onClick={() => onEdit(item)}
           className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg hover:bg-emerald-50"
@@ -453,6 +474,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       is_vegan: false,
       is_popular: false,
       is_special: false,
+      is_sold_out: false,
     });
 
     setNewItemName('');
@@ -484,6 +506,12 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const handleResetSandbox = () => {
     if (!confirm('Alle Änderungen zurücksetzen? Die Demo-Daten werden wiederhergestellt.')) return;
     resetSandboxData();
+    loadData();
+  };
+
+  // Quick toggle sold out status
+  const handleToggleSoldOut = (item: MenuItem) => {
+    updateSandboxMenuItem(item.id, { is_sold_out: !item.is_sold_out });
     loadData();
   };
 
@@ -1181,6 +1209,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                                 item={item}
                                 onEdit={handleEditItem}
                                 onDelete={handleDeleteItem}
+                                onToggleSoldOut={handleToggleSoldOut}
                               />
                             ))}
                           </div>

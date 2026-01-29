@@ -97,12 +97,34 @@ export async function generateMetadata({ params }: PageProps) {
 
   const { data: restaurant } = await supabase
     .from('restaurants')
-    .select('name')
+    .select('name, address, logo_url')
     .eq('slug', slug)
     .single();
 
+  if (!restaurant) {
+    return { title: 'Speisekarte nicht gefunden' };
+  }
+
+  const title = `${restaurant.name} - Speisekarte`;
+  const description = restaurant.address
+    ? `Digitale Speisekarte von ${restaurant.name} in ${restaurant.address}. Jetzt online ansehen!`
+    : `Digitale Speisekarte von ${restaurant.name}. Jetzt online ansehen!`;
+
   return {
-    title: restaurant ? `${restaurant.name} - Speisekarte` : 'Speisekarte',
-    description: restaurant ? `Speisekarte von ${restaurant.name}` : 'Digitale Speisekarte',
+    title,
+    description,
+    keywords: [restaurant.name, 'Speisekarte', 'Menü', 'Restaurant', restaurant.address].filter(Boolean).join(', '),
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `https://qr-menu-app-beta.vercel.app/m/${slug}`,
+      images: restaurant.logo_url ? [{ url: restaurant.logo_url }] : [],
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
