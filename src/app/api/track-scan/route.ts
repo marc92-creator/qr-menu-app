@@ -1,49 +1,39 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceKey) {
+    console.error('Missing Supabase credentials');
+    return NextResponse.json({ error: 'Server config error' }, { status: 500 });
+  }
+
   try {
-    // Check for service role key
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!serviceRoleKey) {
-      console.error('SUPABASE_SERVICE_ROLE_KEY not configured');
-      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
-    }
-
-    // Create client with service role key to bypass RLS
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      serviceRoleKey
-    );
-
     const { restaurantId, language } = await request.json();
 
     if (!restaurantId) {
-      return NextResponse.json({ error: 'Restaurant ID required' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing restaurantId' }, { status: 400 });
     }
 
-    // Get user agent and referrer from headers
-    const userAgent = request.headers.get('user-agent') || null;
-    const referrer = request.headers.get('referer') || null;
+    const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Insert the scan record
-    const { error } = await supabase
-      .from('menu_scans')
-      .insert({
-        restaurant_id: restaurantId,
-        user_agent: userAgent,
-        referrer: referrer,
-        language: language || null,
-      });
+    // Nur die existierenden Spalten verwenden - KEIN referrer!
+    const { error } = await supabase.from('menu_scans').insert({
+      restaurant_id: restaurantId,
+      language: language || 'de',
+      user_agent: request.headers.get('user-agent') || null
+    });
 
     if (error) {
-      console.error('Error tracking scan:', error);
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      console.error('Supabase error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Track scan error:', error);
-    return NextResponse.json({ success: false, error: 'Internal error' }, { status: 500 });
+  } catch (err) {
+    console.error('Track scan error:', err);
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }
