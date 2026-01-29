@@ -135,6 +135,24 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // Debug: Log restaurant data on mount
+  useEffect(() => {
+    console.log('MenuView loaded with:', {
+      restaurantTheme: restaurant.theme,
+      whatsappNumber: restaurant.whatsapp_number,
+      menuLanguage: restaurant.menu_language,
+      isDemo,
+      isEmbedded,
+    });
+    if (menuItems.length > 0) {
+      console.log('First menu item:', {
+        name: menuItems[0].name,
+        name_en: menuItems[0].name_en,
+        description_en: menuItems[0].description_en,
+      });
+    }
+  }, [restaurant, menuItems, isDemo, isEmbedded]);
+
   // Get theme configuration
   const theme = getTheme(restaurant.theme || 'classic');
   const styles = theme.styles;

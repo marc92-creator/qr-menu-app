@@ -260,86 +260,29 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-3xl mx-auto">
-              {/* Free Plan */}
-              <div className="bg-white rounded-3xl p-8 shadow-sm ring-1 ring-gray-200 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <span className="text-xl">🆓</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">Demo</h3>
-                </div>
-                <p className="text-4xl sm:text-5xl font-bold mb-1 tracking-tight">
-                  0€
-                  <span className="text-lg font-normal text-gray-500">/Monat</span>
-                </p>
-                <p className="text-gray-500 mb-6">Demo-Version</p>
-
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center gap-3">
-                    <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <span className="text-gray-700">Digitale Speisekarte</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <span className="text-gray-700">QR-Code Generator</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <span className="text-gray-700">Allergen-Infos</span>
-                  </li>
-                  <li className="flex items-center gap-3 opacity-50">
-                    <div className="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </div>
-                    <span className="text-gray-500">Mit Wasserzeichen</span>
-                  </li>
-                </ul>
-
-                <Link href="/dashboard" className="block">
-                  <Button variant="outline" className="w-full min-h-[52px] text-base hover:bg-gray-50 transition-all duration-200">
-                    Demo starten
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Pro Plan */}
+            <div className="max-w-2xl mx-auto">
+              {/* Single unified pricing */}
               <div className="relative bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-8 shadow-xl text-white overflow-hidden">
                 {/* Glow effect */}
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/20 rounded-full blur-3xl" />
 
-                {/* Popular badge */}
+                {/* Trial badge */}
                 <div className="absolute top-6 right-6 bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                  ⭐ Beliebt
+                  🎉 14 Tage kostenlos
                 </div>
 
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                      <span className="text-xl">👑</span>
+                      <span className="text-xl">🚀</span>
                     </div>
-                    <h3 className="text-xl font-bold">Pro</h3>
+                    <h3 className="text-xl font-bold">Alle Features inklusive</h3>
                   </div>
                   <p className="text-4xl sm:text-5xl font-bold mb-1 tracking-tight">
-                    9,99€
-                    <span className="text-lg font-normal opacity-75">/Monat</span>
+                    14 Tage gratis
                   </p>
                   <p className="opacity-75 mb-6">
-                    Voller Funktionsumfang
+                    Dann nur 9,99€/Monat · Jederzeit kündbar
                   </p>
 
                   <ul className="space-y-4 mb-8">
@@ -349,7 +292,7 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span>Alles aus Demo</span>
+                      <span>Digitale Speisekarte mit QR-Code</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -357,7 +300,7 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span>Kein Wasserzeichen</span>
+                      <span>100+ Ghibli-Illustrationen</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -365,7 +308,7 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span>Eigenes Logo</span>
+                      <span>5 Design-Themes</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -373,13 +316,35 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span>Priority Support</span>
+                      <span>Mehrsprachig (DE/EN)</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>Logo & Allergen-Infos</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>TV-Modus & PDF-Export</span>
                     </li>
                   </ul>
 
-                  <Link href="/register" className="block">
+                  <Link href="/register" className="block mb-4">
                     <button className="w-full min-h-[52px] text-base font-semibold bg-white text-emerald-600 rounded-xl hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                      Jetzt upgraden
+                      Kostenlos starten
+                    </button>
+                  </Link>
+
+                  <Link href="/dashboard" className="block">
+                    <button className="w-full min-h-[44px] text-sm font-medium bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-200 border border-white/20">
+                      Erst Demo ausprobieren
                     </button>
                   </Link>
                 </div>

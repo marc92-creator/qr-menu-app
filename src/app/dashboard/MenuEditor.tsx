@@ -486,30 +486,39 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     try {
       const categoryItems = localMenuItems.filter(i => i.category_id === newItemCategory);
 
+      // Build item data - only include fields that exist in database
+      const itemData = {
+        category_id: newItemCategory,
+        name: newItemName.trim(),
+        description: newItemDescription.trim() || null,
+        price,
+        position: categoryItems.length,
+        allergens: newItemAllergens,
+        is_vegetarian: newItemVegetarian,
+        is_vegan: newItemVegan,
+        is_popular: newItemPopular,
+        is_special: newItemSpecial,
+        // Optional fields - only include if they have values
+        ...(newItemNameEn.trim() ? { name_en: newItemNameEn.trim() } : {}),
+        ...(newItemDescriptionEn.trim() ? { description_en: newItemDescriptionEn.trim() } : {}),
+        ...(newItemTags.length > 0 ? { tags: newItemTags } : {}),
+        ...(newItemImageMode !== 'auto' ? { image_mode: newItemImageMode } : {}),
+        ...(newItemImageMode === 'library' && newItemImageLibraryKey ? { image_library_key: newItemImageLibraryKey } : {}),
+      };
+
+      console.log('Adding item with data:', itemData);
+
       // Create the item first to get its ID
       const { data: newItem, error: insertError } = await supabase
         .from('menu_items')
-        .insert({
-          category_id: newItemCategory,
-          name: newItemName.trim(),
-          name_en: newItemNameEn.trim() || null,
-          description: newItemDescription.trim() || null,
-          description_en: newItemDescriptionEn.trim() || null,
-          price,
-          position: categoryItems.length,
-          allergens: newItemAllergens,
-          tags: newItemTags,
-          is_vegetarian: newItemVegetarian,
-          is_vegan: newItemVegan,
-          is_popular: newItemPopular,
-          is_special: newItemSpecial,
-          image_mode: newItemImageMode,
-          image_library_key: newItemImageMode === 'library' ? newItemImageLibraryKey : null,
-        })
+        .insert(itemData)
         .select()
         .single();
 
+      console.log('Insert result:', { newItem, insertError });
+
       if (insertError || !newItem) {
+        console.error('Insert error details:', insertError);
         throw insertError || new Error('Failed to create item');
       }
 
