@@ -129,6 +129,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [currentLang, setCurrentLang] = useState<Language>('de');
+  // For embedded mode: filter by category instead of scroll (null = show all)
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -220,6 +222,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
 
+    // For embedded mode: use filtering instead of scrolling (more reliable)
+    if (isEmbedded) {
+      // Toggle filter: if clicking the same category, show all
+      setFilterCategory(prev => prev === categoryId ? null : categoryId);
+      return;
+    }
+
     // Scroll tab pill into view
     requestAnimationFrame(() => {
       if (tabsRef.current) {
@@ -242,34 +251,9 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     const targetElement = categoryElement || document.getElementById(`category-${categoryId}`);
     if (!targetElement) return;
 
-    // For embedded mode, we need to scroll within the scroll container
+    // Standalone mode: scroll to category
     requestAnimationFrame(() => {
-      if (isEmbedded && scrollContainerRef.current) {
-        // The scroll container is the parent of our MenuView div
-        const scrollParent = scrollContainerRef.current.parentElement;
-
-        if (scrollParent && scrollParent.scrollTo) {
-          // Get positions using getBoundingClientRect for accuracy
-          const containerRect = scrollParent.getBoundingClientRect();
-          const elementRect = targetElement.getBoundingClientRect();
-          const currentScroll = scrollParent.scrollTop;
-
-          // Calculate where element is relative to container
-          const elementOffset = elementRect.top - containerRect.top + currentScroll;
-
-          // Account for sticky header (approximately 180px)
-          const headerOffset = 180;
-          const scrollTo = elementOffset - headerOffset;
-
-          scrollParent.scrollTo({
-            top: Math.max(0, scrollTo),
-            behavior: 'smooth'
-          });
-          return;
-        }
-      }
-
-      // Standalone mode: use scrollIntoView
+      // Scroll to the target element
       targetElement.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
@@ -295,6 +279,11 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     });
     return { category, items: sortedItems };
   });
+
+  // For embedded mode: filter to show only selected category
+  const displayedCategories = isEmbedded && filterCategory
+    ? itemsByCategory.filter(({ category }) => category.id === filterCategory)
+    : itemsByCategory;
 
   const handleAllergenClick = (allergenId: string) => {
     setSelectedAllergen(selectedAllergen === allergenId ? null : allergenId);
@@ -448,8 +437,26 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               WebkitOverflowScrolling: 'touch'
             }}
           >
+            {/* "Alle" button for embedded mode when filtering is active */}
+            {isEmbedded && filterCategory && (
+              <button
+                onClick={() => setFilterCategory(null)}
+                className="px-4 py-2.5 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-200 flex-shrink-0 touch-manipulation hover:scale-102 active:scale-95"
+                style={{
+                  backgroundColor: isGradient(styles.pillBg) ? undefined : styles.pillBg,
+                  backgroundImage: isGradient(styles.pillBg) ? styles.pillBg : undefined,
+                  color: styles.pillText,
+                  boxShadow: `inset 0 0 0 1.5px ${styles.border}`,
+                }}
+              >
+                ← {t.allCategories}
+              </button>
+            )}
             {categories.map((category) => {
-              const isActive = activeCategory === category.id;
+              // In embedded mode: show active state based on filter, not scroll position
+              const isActive = isEmbedded
+                ? filterCategory === category.id
+                : activeCategory === category.id;
               return (
                 <button
                   key={category.id}
@@ -487,7 +494,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
             </div>
           ) : (
             <div className="space-y-6 pt-4">
-              {itemsByCategory.map(({ category, items }) => (
+              {displayedCategories.map(({ category, items }) => (
                 <section
                   key={category.id}
                   id={`category-${category.id}`}

@@ -4,19 +4,19 @@ import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from '
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
 const SANDBOX_DATA_VERSION = 6; // Increment when demo data structure changes
 
+// Use sessionStorage for demo mode - this ensures each new visitor starts fresh
+// sessionStorage persists during page refreshes but clears when browser/tab closes
+function getStorage(): Storage | null {
+  if (typeof window === 'undefined') return null;
+  return window.sessionStorage;
+}
+
 export interface SandboxData {
   restaurant: Restaurant;
   categories: Category[];
   menuItems: MenuItem[];
   lastModified: string;
   version?: number;
-}
-
-/**
- * Check if we're running in the browser
- */
-function isBrowser(): boolean {
-  return typeof window !== 'undefined';
 }
 
 /**
@@ -136,7 +136,8 @@ function migrateSandboxData(data: SandboxData): SandboxData {
  * Get sandbox data from localStorage, or return default demo data
  */
 export function getSandboxData(): SandboxData {
-  if (!isBrowser()) {
+  const storage = getStorage();
+  if (!storage) {
     return {
       ...getDemoData(),
       lastModified: new Date().toISOString(),
@@ -145,7 +146,7 @@ export function getSandboxData(): SandboxData {
   }
 
   try {
-    const stored = localStorage.getItem(SANDBOX_STORAGE_KEY);
+    const stored = storage.getItem(SANDBOX_STORAGE_KEY);
     if (stored) {
       let data = JSON.parse(stored) as SandboxData;
 
@@ -153,7 +154,7 @@ export function getSandboxData(): SandboxData {
       if (!data.version || data.version < SANDBOX_DATA_VERSION) {
         data = migrateSandboxData(data);
         // Save migrated data
-        localStorage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(data));
+        storage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(data));
       }
 
       return data;
@@ -174,7 +175,8 @@ export function getSandboxData(): SandboxData {
  * Save sandbox data to localStorage
  */
 export function saveSandboxData(data: Partial<SandboxData>): void {
-  if (!isBrowser()) return;
+  const storage = getStorage();
+  if (!storage) return;
 
   try {
     const current = getSandboxData();
@@ -184,7 +186,7 @@ export function saveSandboxData(data: Partial<SandboxData>): void {
       menuItems: data.menuItems || current.menuItems,
       lastModified: new Date().toISOString(),
     };
-    localStorage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(updated));
+    storage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(updated));
   } catch (error) {
     console.error('Error saving sandbox data:', error);
   }
@@ -194,10 +196,11 @@ export function saveSandboxData(data: Partial<SandboxData>): void {
  * Reset sandbox data to default demo data
  */
 export function resetSandboxData(): void {
-  if (!isBrowser()) return;
+  const storage = getStorage();
+  if (!storage) return;
 
   try {
-    localStorage.removeItem(SANDBOX_STORAGE_KEY);
+    storage.removeItem(SANDBOX_STORAGE_KEY);
   } catch (error) {
     console.error('Error resetting sandbox data:', error);
   }
@@ -207,10 +210,11 @@ export function resetSandboxData(): void {
  * Check if sandbox has been modified from defaults
  */
 export function hasSandboxModifications(): boolean {
-  if (!isBrowser()) return false;
+  const storage = getStorage();
+  if (!storage) return false;
 
   try {
-    const stored = localStorage.getItem(SANDBOX_STORAGE_KEY);
+    const stored = storage.getItem(SANDBOX_STORAGE_KEY);
     return stored !== null;
   } catch {
     return false;

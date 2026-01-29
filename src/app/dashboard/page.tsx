@@ -55,6 +55,8 @@ export default function DashboardPage() {
 
   // Sandbox data state
   const [sandboxData, setSandboxData] = useState<SandboxData | null>(null);
+  // Fullscreen preview state (for sandbox mode)
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -359,30 +361,68 @@ export default function DashboardPage() {
           )}
 
           {activeTab === 'preview' && sandboxData && (
-            <div className="max-w-2xl mx-auto">
-              {/* Info Header */}
-              <div className="flex items-center justify-between mb-4 px-1">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Live-Vorschau (Sandbox)
+            <>
+              {/* Fullscreen overlay */}
+              {isFullscreen && (
+                <div className="fixed inset-0 z-50 bg-white">
+                  {/* Close button */}
+                  <button
+                    onClick={() => setIsFullscreen(false)}
+                    className="fixed top-4 right-4 z-50 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+                    title="Vollbild beenden"
+                  >
+                    <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  {/* Fullscreen menu view */}
+                  <div className="h-full overflow-y-auto">
+                    <MenuView
+                      restaurant={sandboxData.restaurant}
+                      categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
+                      menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
+                      showWatermark={true}
+                      isDemo={true}
+                      isEmbedded={false}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="max-w-2xl mx-auto">
+                {/* Info Header */}
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Live-Vorschau (Sandbox)
+                  </div>
+                  <button
+                    onClick={() => setIsFullscreen(true)}
+                    className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+                  >
+                    Vollbild öffnen
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Responsive Menu View - wie Gäste es sehen */}
+                <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
+                  <MenuView
+                    restaurant={sandboxData.restaurant}
+                    categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
+                    menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
+                    showWatermark={true}
+                    isDemo={true}
+                    isEmbedded={true}
+                  />
                 </div>
               </div>
-
-              {/* Responsive Menu View - wie Gäste es sehen */}
-              <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
-                <MenuView
-                  restaurant={sandboxData.restaurant}
-                  categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
-                  menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
-                  showWatermark={true}
-                  isDemo={true}
-                  isEmbedded={true}
-                />
-              </div>
-            </div>
+            </>
           )}
 
           {activeTab === 'qr' && (

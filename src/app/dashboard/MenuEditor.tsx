@@ -6,12 +6,12 @@ import { createClient } from '@/lib/supabase/client';
 import { Restaurant, Category, MenuItem, Subscription } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
-import { ImageUpload } from '@/components/ImageUpload';
+// ImageUpload component available for custom uploads if needed
+// import { ImageUpload } from '@/components/ImageUpload';
+import { ImageGalleryModal } from '@/components/ImageGalleryModal';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { uploadMenuItemImage, deleteMenuItemImage } from '@/lib/imageUpload';
-import { canAddCategory, canAddItem, getPlanLimits, isPro } from '@/hooks/useSubscription';
-import { UpgradeModal, ProBadge } from '@/components/UpgradeModal';
 import { ITEM_TAGS } from '@/lib/itemTags';
 import {
   DndContext,
@@ -32,7 +32,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { getCategoryImage, getItemImageUrl } from '@/lib/foodImages';
+import { getCategoryImage, getItemImageUrl, ImageMode } from '@/lib/foodImages';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -135,6 +135,7 @@ interface MenuEditorProps {
   onItemsChange?: (items: MenuItem[]) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function MenuEditor({ restaurant, categories, menuItems, subscription, onUpdate, onItemsChange }: MenuEditorProps) {
   const isDemo = restaurant.is_demo;
 
@@ -150,30 +151,13 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState('');
 
-  const limits = getPlanLimits(subscription);
-  const userIsPro = isPro(subscription);
-
-  const showUpgrade = (feature: string) => {
-    setUpgradeFeature(feature);
-    setShowUpgradeModal(true);
-  };
-
+  // All features available for everyone (Trial + Pro)
   const handleAddCategoryClick = () => {
-    if (!canAddCategory(categories.length, subscription)) {
-      showUpgrade(`Kategorien-Limit erreicht`);
-      return;
-    }
     setShowAddCategory(true);
   };
 
   const handleAddItemClick = () => {
-    if (!canAddItem(localMenuItems.length, subscription)) {
-      showUpgrade(`Gerichte-Limit erreicht`);
-      return;
-    }
     setShowAddItem(true);
   };
 
@@ -188,6 +172,9 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [newItemTags, setNewItemTags] = useState<string[]>([]);
   const [newItemImagePreview, setNewItemImagePreview] = useState<string | null>(null);
   const [newItemImageFile, setNewItemImageFile] = useState<File | null>(null);
+  const [newItemImageMode, setNewItemImageMode] = useState<ImageMode>('auto');
+  const [newItemImageLibraryKey, setNewItemImageLibraryKey] = useState<string | null>(null);
+  const [showNewItemImageGallery, setShowNewItemImageGallery] = useState(false);
   const [newItemVegetarian, setNewItemVegetarian] = useState(false);
   const [newItemVegan, setNewItemVegan] = useState(false);
   const [newItemPopular, setNewItemPopular] = useState(false);
@@ -204,6 +191,9 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
   const [editImageRemoved, setEditImageRemoved] = useState(false);
+  const [editImageMode, setEditImageMode] = useState<ImageMode>('auto');
+  const [editImageLibraryKey, setEditImageLibraryKey] = useState<string | null>(null);
+  const [showEditImageGallery, setShowEditImageGallery] = useState(false);
   const [editVegetarian, setEditVegetarian] = useState(false);
   const [editVegan, setEditVegan] = useState(false);
   const [editPopular, setEditPopular] = useState(false);
@@ -378,7 +368,11 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     setEditPrice(item.price.toFixed(2).replace('.', ','));
     setEditAllergens(item.allergens || []);
     setEditTags(item.tags || []);
-    setEditImagePreview(item.image_url);
+    // Set image mode from item (default to 'auto' if not set)
+    setEditImageMode(item.image_mode || 'auto');
+    setEditImageLibraryKey(item.image_library_key || null);
+    // Only show preview for custom uploaded images
+    setEditImagePreview(item.image_mode === 'custom' ? item.image_url : null);
     setEditImageFile(null);
     setEditImageRemoved(false);
     setEditVegetarian(item.is_vegetarian || false);
@@ -400,21 +394,26 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     }
 
     try {
-      let imageUrl = editingItem.image_url;
+      let imageUrl: string | null = null;
 
-      // Handle image removal
-      if (editImageRemoved && editingItem.image_url) {
-        await deleteMenuItemImage(editingItem.image_url);
-        imageUrl = null;
-      }
-
-      // Handle new image upload
-      if (editImageFile) {
-        // Delete old image if exists
-        if (editingItem.image_url) {
+      // Handle image based on mode
+      if (editImageMode === 'custom') {
+        if (editImageFile) {
+          // Delete old custom image if exists
+          if (editingItem.image_url && editingItem.image_mode === 'custom') {
+            await deleteMenuItemImage(editingItem.image_url);
+          }
+          // Upload new custom image
+          imageUrl = await uploadMenuItemImage(editImageFile, restaurant.id, editingItem.id);
+        } else if (!editImageRemoved && editingItem.image_url) {
+          // Keep existing custom image
+          imageUrl = editingItem.image_url;
+        }
+      } else {
+        // For auto, library, or none modes - delete any existing custom image
+        if (editingItem.image_url && editingItem.image_mode === 'custom') {
           await deleteMenuItemImage(editingItem.image_url);
         }
-        imageUrl = await uploadMenuItemImage(editImageFile, restaurant.id, editingItem.id);
       }
 
       await supabase
@@ -428,6 +427,8 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           allergens: editAllergens,
           tags: editTags,
           image_url: imageUrl,
+          image_mode: editImageMode,
+          image_library_key: editImageMode === 'library' ? editImageLibraryKey : null,
           is_vegetarian: editVegetarian,
           is_vegan: editVegan,
           is_popular: editPopular,
@@ -502,8 +503,8 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           is_vegan: newItemVegan,
           is_popular: newItemPopular,
           is_special: newItemSpecial,
-          image_mode: 'auto',
-          image_library_key: null,
+          image_mode: newItemImageMode,
+          image_library_key: newItemImageMode === 'library' ? newItemImageLibraryKey : null,
         })
         .select()
         .single();
@@ -512,12 +513,12 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
         throw insertError || new Error('Failed to create item');
       }
 
-      // Upload image if provided
-      if (newItemImageFile) {
+      // Upload custom image if provided
+      if (newItemImageFile && newItemImageMode === 'custom') {
         const imageUrl = await uploadMenuItemImage(newItemImageFile, restaurant.id, newItem.id);
         await supabase
           .from('menu_items')
-          .update({ image_url: imageUrl })
+          .update({ image_url: imageUrl, image_mode: 'custom' })
           .eq('id', newItem.id);
       }
 
@@ -532,6 +533,8 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
       setNewItemTags([]);
       setNewItemImagePreview(null);
       setNewItemImageFile(null);
+      setNewItemImageMode('auto');
+      setNewItemImageLibraryKey(null);
       setNewItemVegetarian(false);
       setNewItemVegan(false);
       setNewItemPopular(false);
@@ -829,29 +832,13 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="z.B. Vorspeisen"
               />
-              {userIsPro ? (
-                <Input
-                  id="categoryNameEn"
-                  label="Name auf Englisch (optional)"
-                  value={newCategoryNameEn}
-                  onChange={(e) => setNewCategoryNameEn(e.target.value)}
-                  placeholder="e.g. Starters"
-                />
-              ) : (
-                <div className="relative">
-                  <div className="absolute -top-1 right-0 z-10">
-                    <ProBadge onClick={() => showUpgrade('Mehrsprachige Speisekarte')} />
-                  </div>
-                  <Input
-                    id="categoryNameEn"
-                    label="Name auf Englisch (optional)"
-                    value=""
-                    onChange={() => {}}
-                    placeholder="e.g. Starters"
-                    disabled
-                  />
-                </div>
-              )}
+              <Input
+                id="categoryNameEn"
+                label="Name auf Englisch (optional)"
+                value={newCategoryNameEn}
+                onChange={(e) => setNewCategoryNameEn(e.target.value)}
+                placeholder="e.g. Starters"
+              />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => { setShowAddCategory(false); setNewCategoryNameEn(''); }}>
                   Abbrechen
@@ -937,44 +924,29 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onChange={(e) => setNewItemDescription(e.target.value)}
                 placeholder="z.B. Mit frischem Salat und Soße"
               />
-              {/* English Translation Section - Pro only */}
-              {userIsPro ? (
-                <div className="border-t border-gray-100 pt-4 mt-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-lg">🇬🇧</span>
-                    <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
-                  </div>
-                  <div className="space-y-3 pl-1">
-                    <Input
-                      id="itemNameEn"
-                      label="Name (English)"
-                      value={newItemNameEn}
-                      onChange={(e) => setNewItemNameEn(e.target.value)}
-                      placeholder="e.g. Döner in Bread"
-                    />
-                    <Input
-                      id="itemDescriptionEn"
-                      label="Description (English)"
-                      value={newItemDescriptionEn}
-                      onChange={(e) => setNewItemDescriptionEn(e.target.value)}
-                      placeholder="e.g. With fresh salad and sauce"
-                    />
-                  </div>
+              {/* English Translation Section - Available for all */}
+              <div className="border-t border-gray-100 pt-4 mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🇬🇧</span>
+                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
                 </div>
-              ) : (
-                <div className="border-t border-gray-100 pt-4 mt-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">🇬🇧</span>
-                      <span className="font-medium text-gray-400">Englische Übersetzung</span>
-                    </div>
-                    <ProBadge onClick={() => showUpgrade('Mehrsprachige Speisekarte')} />
-                  </div>
-                  <p className="text-sm text-gray-400">
-                    Mit Pro kannst du deine Gerichte auf Deutsch und Englisch anbieten.
-                  </p>
+                <div className="space-y-3 pl-1">
+                  <Input
+                    id="itemNameEn"
+                    label="Name (English)"
+                    value={newItemNameEn}
+                    onChange={(e) => setNewItemNameEn(e.target.value)}
+                    placeholder="e.g. Döner in Bread"
+                  />
+                  <Input
+                    id="itemDescriptionEn"
+                    label="Description (English)"
+                    value={newItemDescriptionEn}
+                    onChange={(e) => setNewItemDescriptionEn(e.target.value)}
+                    placeholder="e.g. With fresh salad and sauce"
+                  />
                 </div>
-              )}
+              </div>
               <Input
                 id="itemPrice"
                 label="Preis (€)"
@@ -982,13 +954,134 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 onChange={(e) => setNewItemPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
-              <ImageUpload
-                value={newItemImagePreview}
-                onChange={(url, file) => {
-                  setNewItemImagePreview(url);
-                  setNewItemImageFile(file || null);
-                }}
-              />
+              {/* Image Mode Selector */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Gericht-Bild
+                </label>
+
+                <div className="flex items-start gap-4">
+                  {/* Preview Box */}
+                  <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
+                    {(() => {
+                      // Show custom upload preview if available
+                      if (newItemImagePreview) {
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        return <img src={newItemImagePreview} alt="Vorschau" className="w-full h-full object-cover" />;
+                      }
+                      const previewUrl = newItemImageMode === 'auto'
+                        ? getItemImageUrl({ name: newItemName, image_mode: 'auto' }, true)
+                        : newItemImageMode === 'library' && newItemImageLibraryKey
+                          ? getItemImageUrl({ name: newItemName, image_mode: 'library', image_library_key: newItemImageLibraryKey }, true)
+                          : null;
+                      return previewUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Mode Buttons */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewItemImageMode('auto');
+                          setNewItemImageLibraryKey(null);
+                          setNewItemImagePreview(null);
+                          setNewItemImageFile(null);
+                        }}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          newItemImageMode === 'auto' && !newItemImagePreview
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        🪄 Auto
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowNewItemImageGallery(true)}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          newItemImageMode === 'library'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        📚 Bibliothek
+                      </button>
+                      <label
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all cursor-pointer ${
+                          newItemImagePreview
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        📷 Hochladen
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setNewItemImagePreview(reader.result as string);
+                                setNewItemImageFile(file);
+                                setNewItemImageMode('custom');
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewItemImageMode('none');
+                          setNewItemImageLibraryKey(null);
+                          setNewItemImagePreview(null);
+                          setNewItemImageFile(null);
+                        }}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          newItemImageMode === 'none'
+                            ? 'bg-gray-800 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Keins
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {newItemImageMode === 'auto' && !newItemImagePreview && 'Bild wird automatisch basierend auf dem Namen gewählt'}
+                      {newItemImageMode === 'library' && (newItemImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Bibliothek"')}
+                      {newItemImagePreview && 'Eigenes Bild ausgewählt'}
+                      {newItemImageMode === 'none' && 'Kein Bild wird angezeigt'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Gallery Modal for New Item */}
+              {showNewItemImageGallery && (
+                <ImageGalleryModal
+                  selectedImage={newItemImageLibraryKey}
+                  onSelect={(imageKey) => {
+                    setNewItemImageMode('library');
+                    setNewItemImageLibraryKey(imageKey);
+                    setNewItemImagePreview(null);
+                    setNewItemImageFile(null);
+                    setShowNewItemImageGallery(false);
+                  }}
+                  onClose={() => setShowNewItemImageGallery(false)}
+                />
+              )}
               <AllergenSelector
                 selected={newItemAllergens}
                 onToggle={(id) => toggleAllergen(id, true)}
@@ -1091,57 +1184,163 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 placeholder="z.B. 5,50"
               />
 
-              {/* English Translation Section - Pro only */}
-              {userIsPro ? (
-                <div className="border-t border-gray-100 pt-4 mt-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-lg">🇬🇧</span>
-                    <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
-                  </div>
-                  <div className="space-y-3 pl-1">
-                    <Input
-                      id="editNameEn"
-                      label="Name (English)"
-                      value={editNameEn}
-                      onChange={(e) => setEditNameEn(e.target.value)}
-                      placeholder="e.g. Döner in Bread"
-                    />
-                    <Input
-                      id="editDescriptionEn"
-                      label="Description (English)"
-                      value={editDescriptionEn}
-                      onChange={(e) => setEditDescriptionEn(e.target.value)}
-                      placeholder="e.g. With fresh salad and sauce"
-                    />
-                  </div>
+              {/* English Translation Section - Available for all */}
+              <div className="border-t border-gray-100 pt-4 mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🇬🇧</span>
+                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
                 </div>
-              ) : (
-                <div className="border-t border-gray-100 pt-4 mt-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">🇬🇧</span>
-                      <span className="font-medium text-gray-400">Englische Übersetzung</span>
+                <div className="space-y-3 pl-1">
+                  <Input
+                    id="editNameEn"
+                    label="Name (English)"
+                    value={editNameEn}
+                    onChange={(e) => setEditNameEn(e.target.value)}
+                    placeholder="e.g. Döner in Bread"
+                  />
+                  <Input
+                    id="editDescriptionEn"
+                    label="Description (English)"
+                    value={editDescriptionEn}
+                    onChange={(e) => setEditDescriptionEn(e.target.value)}
+                    placeholder="e.g. With fresh salad and sauce"
+                  />
+                </div>
+              </div>
+              {/* Image Mode Selector for Edit */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Gericht-Bild
+                </label>
+
+                <div className="flex items-start gap-4">
+                  {/* Preview Box */}
+                  <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
+                    {(() => {
+                      // Show custom upload preview if available
+                      if (editImagePreview) {
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        return <img src={editImagePreview} alt="Vorschau" className="w-full h-full object-cover" />;
+                      }
+                      const previewUrl = editImageMode === 'auto'
+                        ? getItemImageUrl({ name: editName, image_mode: 'auto' }, true)
+                        : editImageMode === 'library' && editImageLibraryKey
+                          ? getItemImageUrl({ name: editName, image_mode: 'library', image_library_key: editImageLibraryKey }, true)
+                          : editImageMode === 'custom' && editingItem?.image_url
+                            ? editingItem.image_url
+                            : null;
+                      return previewUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Mode Buttons */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditImageMode('auto');
+                          setEditImageLibraryKey(null);
+                          setEditImagePreview(null);
+                          setEditImageFile(null);
+                          setEditImageRemoved(true);
+                        }}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          editImageMode === 'auto' && !editImagePreview
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        🪄 Auto
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowEditImageGallery(true)}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          editImageMode === 'library'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        📚 Bibliothek
+                      </button>
+                      <label
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all cursor-pointer ${
+                          editImagePreview || (editImageMode === 'custom' && editingItem?.image_url)
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        📷 Hochladen
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setEditImagePreview(reader.result as string);
+                                setEditImageFile(file);
+                                setEditImageMode('custom');
+                                setEditImageRemoved(false);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditImageMode('none');
+                          setEditImageLibraryKey(null);
+                          setEditImagePreview(null);
+                          setEditImageFile(null);
+                          setEditImageRemoved(true);
+                        }}
+                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                          editImageMode === 'none'
+                            ? 'bg-gray-800 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Keins
+                      </button>
                     </div>
-                    <ProBadge onClick={() => showUpgrade('Mehrsprachige Speisekarte')} />
+                    <p className="text-xs text-gray-500">
+                      {editImageMode === 'auto' && !editImagePreview && 'Bild wird automatisch basierend auf dem Namen gewählt'}
+                      {editImageMode === 'library' && (editImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Bibliothek"')}
+                      {(editImagePreview || (editImageMode === 'custom' && editingItem?.image_url)) && 'Eigenes Bild'}
+                      {editImageMode === 'none' && 'Kein Bild wird angezeigt'}
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-400">
-                    Mit Pro kannst du deine Gerichte auf Deutsch und Englisch anbieten.
-                  </p>
                 </div>
-              )}
-              <ImageUpload
-                value={editImagePreview}
-                onChange={(url, file) => {
-                  setEditImagePreview(url);
-                  if (file) {
-                    setEditImageFile(file);
-                    setEditImageRemoved(false);
-                  } else if (url === null) {
+              </div>
+
+              {/* Image Gallery Modal for Edit */}
+              {showEditImageGallery && (
+                <ImageGalleryModal
+                  selectedImage={editImageLibraryKey}
+                  onSelect={(imageKey) => {
+                    setEditImageMode('library');
+                    setEditImageLibraryKey(imageKey);
+                    setEditImagePreview(null);
                     setEditImageFile(null);
                     setEditImageRemoved(true);
-                  }
-                }}
-              />
+                    setShowEditImageGallery(false);
+                  }}
+                  onClose={() => setShowEditImageGallery(false)}
+                />
+              )}
               <AllergenSelector
                 selected={editAllergens}
                 onToggle={(id) => toggleAllergen(id, false)}
@@ -1508,19 +1707,6 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
         </>
       )}
 
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        feature={upgradeFeature}
-        description={
-          upgradeFeature.includes('Kategorien')
-            ? `Du hast das Maximum von ${limits.maxCategories} Kategorien erreicht. Upgrade auf Pro für unbegrenzte Kategorien.`
-            : upgradeFeature.includes('Gerichte')
-              ? `Du hast das Maximum von ${limits.maxItems} Gerichten erreicht. Upgrade auf Pro für unbegrenzte Gerichte.`
-              : undefined
-        }
-      />
     </div>
   );
 }
