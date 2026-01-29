@@ -6,11 +6,34 @@ import { Restaurant, ScanStats } from '@/types/database';
 
 interface AnalyticsTabProps {
   restaurant: Restaurant;
+  isSandboxMode?: boolean;
 }
 
 interface DailyStats {
   date: string;
   count: number;
+}
+
+// Demo data for sandbox mode
+const DEMO_STATS: ScanStats = {
+  scansToday: 12,
+  scansThisWeek: 87,
+  scansThisMonth: 342,
+  totalScans: 1247,
+};
+
+function generateDemoDailyStats(): DailyStats[] {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const demoData = [23, 45, 31, 67, 52, 38, 12]; // Last 7 days of demo data
+
+  return demoData.map((count, i) => {
+    const date = new Date(today.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
+    return {
+      date: date.toISOString().split('T')[0],
+      count,
+    };
+  });
 }
 
 function StatCard({ title, value, icon }: { title: string; value: number; icon: string }) {
@@ -27,14 +50,21 @@ function StatCard({ title, value, icon }: { title: string; value: number; icon: 
   );
 }
 
-export function AnalyticsTab({ restaurant }: AnalyticsTabProps) {
+export function AnalyticsTab({ restaurant, isSandboxMode = false }: AnalyticsTabProps) {
   const [stats, setStats] = useState<ScanStats | null>(null);
   const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStats();
-  }, [restaurant.id]);
+    if (isSandboxMode) {
+      // Use demo data for sandbox mode
+      setStats(DEMO_STATS);
+      setDailyStats(generateDemoDailyStats());
+      setLoading(false);
+    } else {
+      loadStats();
+    }
+  }, [restaurant.id, isSandboxMode]);
 
   const loadStats = async () => {
     const supabase = createClient();
@@ -107,6 +137,22 @@ export function AnalyticsTab({ restaurant }: AnalyticsTabProps) {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Statistiken</h1>
         <p className="text-gray-500 mt-1">Wie oft wird deine Speisekarte aufgerufen?</p>
       </div>
+
+      {/* Demo Banner for Sandbox Mode */}
+      {isSandboxMode && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-4 border border-amber-200">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">📊</span>
+            <div>
+              <h3 className="font-semibold text-amber-900">Beispiel-Statistiken</h3>
+              <p className="text-amber-700 text-sm mt-1">
+                Das sind Demo-Daten. Nach der Registrierung siehst du hier echte Statistiken
+                von deinen Gästen, die deine Speisekarte aufrufen.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

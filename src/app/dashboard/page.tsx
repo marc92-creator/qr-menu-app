@@ -42,6 +42,7 @@ const sandboxTabConfig: { id: Tab; label: string; shortLabel: string; icon: stri
   { id: 'menu', label: 'Menü bearbeiten', shortLabel: 'Menü', icon: '📋' },
   { id: 'preview', label: 'Vorschau', shortLabel: 'Vorschau', icon: '👁️' },
   { id: 'qr', label: 'QR-Code', shortLabel: 'QR', icon: '📱' },
+  { id: 'analytics', label: 'Statistiken', shortLabel: 'Stats', icon: '📊' },
   { id: 'settings', label: 'Einstellungen', shortLabel: 'Settings', icon: '⚙️' },
 ];
 
@@ -573,6 +574,13 @@ export default function DashboardPage() {
             <SandboxSettingsTab
               restaurant={sandboxData.restaurant}
               onUpdate={handleSandboxUpdate}
+            />
+          )}
+
+          {activeTab === 'analytics' && sandboxData && (
+            <AnalyticsTab
+              restaurant={sandboxData.restaurant}
+              isSandboxMode={true}
             />
           )}
         </main>

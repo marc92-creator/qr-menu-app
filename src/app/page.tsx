@@ -167,59 +167,77 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Feature 1 */}
+              {/* Feature 1: QR-Code Menü */}
               <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
                   <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">QR-Code & Tischaufsteller</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">QR-Code Menü</h3>
                 <p className="text-gray-600 text-sm">
-                  Druckfertiges PDF im A4 oder A6 Format. Einfach ausdrucken und auf die Tische legen.
+                  Druckfertiger Tischaufsteller als PDF. Gäste scannen und sehen sofort dein Menü.
                 </p>
               </div>
 
-              {/* Feature 2 */}
+              {/* Feature 2: Automatische Übersetzung */}
               <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30">
-                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
+                  <span className="text-xl">🌍</span>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">Mobile-First Design</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Automatische Übersetzung</h3>
                 <p className="text-gray-600 text-sm">
-                  Optimiert für Smartphones mit großer Schrift und einfacher Navigation.
+                  Dein Menü in Deutsch und Englisch. Gäste wählen ihre Sprache selbst.
                 </p>
               </div>
 
-              {/* Feature 3 */}
-              <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-purple-500/30">
-                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">100+ Profi-Illustrationen</h3>
-                <p className="text-gray-600 text-sm">
-                  Wähle aus über 100 professionellen Ghibli-Stil Illustrationen oder lade eigene Fotos hoch.
-                </p>
-              </div>
-
-              {/* Feature 4 */}
+              {/* Feature 3: Allergene & Filter */}
               <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
                 <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-orange-500/30">
                   <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">14 EU-Allergene</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Allergene & Filter</h3>
                 <p className="text-gray-600 text-sm">
-                  Kennzeichne Allergene nach EU-Verordnung. DSGVO-konform und rechtssicher.
+                  14 EU-Allergene + Filter für vegetarisch, vegan, glutenfrei. DSGVO-konform.
                 </p>
               </div>
 
-              {/* Feature 5 */}
+              {/* Feature 4: Analytics Dashboard */}
+              <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-purple-500/30">
+                  <span className="text-xl">📊</span>
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Analytics Dashboard</h3>
+                <p className="text-gray-600 text-sm">
+                  Sieh wie oft deine Speisekarte aufgerufen wird. Täglich, wöchentlich, monatlich.
+                </p>
+              </div>
+
+              {/* Feature 5: Ausverkauft-Schalter */}
+              <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-red-500/30">
+                  <span className="text-xl">🚫</span>
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Ausverkauft-Schalter</h3>
+                <p className="text-gray-600 text-sm">
+                  Ein Klick und das Gericht ist ausverkauft. Gäste sehen es sofort auf der Karte.
+                </p>
+              </div>
+
+              {/* Feature 6: WLAN für Gäste */}
+              <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-cyan-500/30">
+                  <span className="text-xl">📶</span>
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">WLAN für Gäste</h3>
+                <p className="text-gray-600 text-sm">
+                  Zeige WLAN-Name und Passwort direkt auf der Speisekarte. Gäste lieben das!
+                </p>
+              </div>
+
+              {/* Feature 7: WhatsApp-Kontakt */}
               <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
                 <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
                   <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -232,16 +250,25 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Feature 6 */}
+              {/* Feature 8: 5 Profi-Designs */}
+              <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-pink-500/30">
+                  <span className="text-xl">🎨</span>
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">5 Profi-Designs</h3>
+                <p className="text-gray-600 text-sm">
+                  Classic, Dark, Rustic, Modern, Oriental. Wähle das Theme das zu dir passt.
+                </p>
+              </div>
+
+              {/* Feature 9: Google SEO */}
               <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ring-1 ring-gray-100 flex flex-col items-center text-center sm:items-start sm:text-left">
                 <div className="w-12 h-12 bg-gradient-to-br from-rose-400 to-rose-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-rose-500/30">
-                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
+                  <span className="text-xl">🔍</span>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">Jederzeit bearbeiten</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Google SEO</h3>
                 <p className="text-gray-600 text-sm">
-                  Preise und Gerichte ändern sich sofort. Keine Druckkosten mehr.
+                  Dein Menü erscheint in Google. Mit strukturierten Daten für bessere Sichtbarkeit.
                 </p>
               </div>
             </div>
