@@ -379,6 +379,20 @@ export default function DashboardPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
+                  {/* WhatsApp button - fixed position OUTSIDE scroll container */}
+                  {sandboxData.restaurant.whatsapp_number && (
+                    <a
+                      href={`https://wa.me/${sandboxData.restaurant.whatsapp_number.replace(/[^0-9+]/g, '').replace('+', '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="fixed z-50 w-14 h-14 bg-[#25D366] hover:bg-[#20BA5C] rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation bottom-20 right-4"
+                      title="Per WhatsApp kontaktieren"
+                    >
+                      <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
+                    </a>
+                  )}
                   {/* Fullscreen menu view - use isEmbedded for filtering behavior */}
                   <div className="h-full overflow-y-auto">
                     <MenuView
@@ -415,7 +429,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Responsive Menu View - wie Gäste es sehen */}
-                <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
+                <div className="relative bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
                   <MenuView
                     restaurant={sandboxData.restaurant}
                     categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
@@ -424,6 +438,20 @@ export default function DashboardPage() {
                     isDemo={true}
                     isEmbedded={true}
                   />
+                  {/* WhatsApp button - sticky at bottom of preview */}
+                  {sandboxData.restaurant.whatsapp_number && (
+                    <a
+                      href={`https://wa.me/${sandboxData.restaurant.whatsapp_number.replace(/[^0-9+]/g, '').replace('+', '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="sticky bottom-20 float-right mr-4 mb-4 z-40 w-12 h-12 bg-[#25D366] hover:bg-[#20BA5C] rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
+                      title="Per WhatsApp kontaktieren"
+                    >
+                      <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
             </>
@@ -578,58 +606,53 @@ export default function DashboardPage() {
               {/* Header */}
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">QR-Code</h1>
-                <p className="text-gray-500 mt-1">Demo-Vorschau deines QR-Codes</p>
+                <p className="text-gray-500 mt-1">Demo QR-Code zum Testen</p>
               </div>
 
-              {/* Demo QR Code */}
+              {/* Demo QR Code - Funktionierend! */}
               <div className="bg-white rounded-2xl p-8 shadow-sm ring-1 ring-gray-100">
                 <div className="flex flex-col items-center">
-                  {/* QR Code Preview */}
-                  <div className="relative">
-                    <QRCodeGenerator
-                      slug="demo-doener-palace"
-                      restaurantName="Demo Restaurant"
-                      size={200}
-                    />
-                    {/* Demo overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-xl">
-                      <div className="text-center p-4">
-                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <span className="text-2xl">🔒</span>
-                        </div>
-                        <p className="text-sm font-medium text-gray-700">Demo-Vorschau</p>
-                        <p className="text-xs text-gray-500 mt-1">Registriere dich für deinen eigenen QR-Code</p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Funktionierender QR Code */}
+                  <QRCodeGenerator
+                    slug="demo-doener-palace"
+                    restaurantName="Demo Döner Palace"
+                    size={220}
+                  />
 
                   {/* Info */}
                   <div className="mt-6 text-center">
-                    <p className="text-gray-600 text-sm mb-4">
-                      Im Sandbox-Modus ist der QR-Code eine Vorschau.<br />
-                      Registriere dich kostenlos für deinen eigenen funktionierenden QR-Code.
+                    <p className="text-emerald-600 font-medium mb-2">
+                      ✓ Dieser QR-Code funktioniert!
                     </p>
-                    <Link href="/register">
-                      <Button className="shadow-lg shadow-emerald-500/20">
-                        Kostenlos registrieren
-                        <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                      </Button>
-                    </Link>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Scanne ihn mit deinem Handy um das Demo-Menü zu sehen.
+                    </p>
+
+                    {/* Demo Info Box */}
+                    <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mt-4">
+                      <p className="text-sm text-purple-800">
+                        <strong>Dies ist ein Demo-QR-Code.</strong><br />
+                        Registriere dich kostenlos für deinen eigenen QR-Code mit deiner persönlichen URL.
+                      </p>
+                      <Link href="/register" className="inline-block mt-3">
+                        <Button size="sm" className="shadow-lg shadow-emerald-500/20">
+                          Eigenen QR-Code erstellen
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Features Teaser */}
-              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-                <h3 className="font-bold text-gray-900 mb-3">Mit kostenlosem Account:</h3>
+              {/* Features */}
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
+                <h3 className="font-bold text-gray-900 mb-3">Mit eigenem Account:</h3>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Funktionierender QR-Code für dein Restaurant
+                    Eigene URL (z.B. /m/dein-restaurant)
                   </li>
                   <li className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -641,7 +664,7 @@ export default function DashboardPage() {
                     <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Link teilen per WhatsApp, E-Mail, etc.
+                    Daten dauerhaft gespeichert
                   </li>
                 </ul>
               </div>

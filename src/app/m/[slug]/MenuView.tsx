@@ -101,7 +101,6 @@ const saveLanguage = (restaurantId: string, lang: Language) => {
 
 // Get localized item name (English if available and selected, otherwise German)
 const getLocalizedName = (item: MenuItem, lang: Language): string => {
-  console.log('getLocalizedName called:', { name: item.name, name_en: item.name_en, lang });
   if (lang === 'en' && item.name_en && item.name_en.trim() !== '') {
     return item.name_en;
   }
@@ -135,24 +134,6 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  // Debug: Log restaurant data on mount
-  useEffect(() => {
-    console.log('MenuView loaded with:', {
-      restaurantTheme: restaurant.theme,
-      whatsappNumber: restaurant.whatsapp_number,
-      menuLanguage: restaurant.menu_language,
-      isDemo,
-      isEmbedded,
-    });
-    if (menuItems.length > 0) {
-      console.log('First menu item:', {
-        name: menuItems[0].name,
-        name_en: menuItems[0].name_en,
-        description_en: menuItems[0].description_en,
-      });
-    }
-  }, [restaurant, menuItems, isDemo, isEmbedded]);
 
   // Get theme configuration
   const theme = getTheme(restaurant.theme || 'classic');
@@ -370,7 +351,6 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
               >
                 <button
                   onClick={() => {
-                    console.log('Language button clicked: DE');
                     setCurrentLang('de');
                     saveLanguage(restaurant.id, 'de');
                   }}
@@ -386,8 +366,6 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                 </button>
                 <button
                   onClick={() => {
-                    console.log('Language button clicked: EN');
-                    console.log('Current lang before:', currentLang);
                     setCurrentLang('en');
                     saveLanguage(restaurant.id, 'en');
                   }}
@@ -851,8 +829,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         </div>
       )}
 
-      {/* WhatsApp Floating Button */}
-      {restaurant.whatsapp_number && (
+      {/* WhatsApp Floating Button - hidden in embedded mode (parent handles it) */}
+      {!isEmbedded && restaurant.whatsapp_number && (
         <a
           href={`https://wa.me/${restaurant.whatsapp_number.replace(/[^0-9+]/g, '').replace('+', '')}`}
           target="_blank"
