@@ -6,7 +6,7 @@ import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
 import { getItemImageUrl } from '@/lib/foodImages';
-import { getTranslation, formatRelativeTime, Language } from '@/lib/translations';
+import { getTranslation, formatRelativeTime, Language, autoTranslate } from '@/lib/translations';
 import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
 
 // Premium Image Component with loading state and blur effect
@@ -99,28 +99,42 @@ const saveLanguage = (restaurantId: string, lang: Language) => {
   localStorage.setItem(`menu_lang_${restaurantId}`, lang);
 };
 
-// Get localized item name (English if available and selected, otherwise German)
+// Get localized item name (English if available and selected, otherwise auto-translate)
 const getLocalizedName = (item: MenuItem, lang: Language): string => {
-  if (lang === 'en' && item.name_en && item.name_en.trim() !== '') {
+  if (lang === 'de') {
+    return item.name;
+  }
+  // English: use manual translation if available, otherwise auto-translate
+  if (item.name_en && item.name_en.trim() !== '') {
     return item.name_en;
   }
-  return item.name;
+  return autoTranslate(item.name);
 };
 
-// Get localized item description (English if available and selected, otherwise German)
+// Get localized item description (English if available and selected, otherwise auto-translate)
 const getLocalizedDescription = (item: MenuItem, lang: Language): string | null => {
-  if (lang === 'en' && item.description_en && item.description_en.trim() !== '') {
+  if (!item.description) return null;
+
+  if (lang === 'de') {
+    return item.description;
+  }
+  // English: use manual translation if available, otherwise auto-translate
+  if (item.description_en && item.description_en.trim() !== '') {
     return item.description_en;
   }
-  return item.description;
+  return autoTranslate(item.description);
 };
 
-// Get localized category name (English if available and selected, otherwise German)
+// Get localized category name (English if available and selected, otherwise auto-translate)
 const getLocalizedCategoryName = (category: Category, lang: Language): string => {
-  if (lang === 'en' && category.name_en && category.name_en.trim() !== '') {
+  if (lang === 'de') {
+    return category.name;
+  }
+  // English: use manual translation if available, otherwise auto-translate
+  if (category.name_en && category.name_en.trim() !== '') {
     return category.name_en;
   }
-  return category.name;
+  return autoTranslate(category.name);
 };
 
 export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {

@@ -457,136 +457,54 @@ export default function DashboardPage() {
             </>
           )}
 
-          {activeTab === 'qr' && (
+          {activeTab === 'qr' && sandboxData && (
             <div className="max-w-2xl mx-auto space-y-6">
               {/* Header */}
-              <div className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
-                    <span className="text-white text-lg">📱</span>
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-gray-900">QR-Code Vorschau</h2>
-                    <p className="text-sm text-gray-500">So wird dein QR-Code aussehen</p>
-                  </div>
-                </div>
+              <div className="text-center">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Demo QR-Code</h1>
+                <p className="text-gray-500 mt-1">Scanne den QR-Code um die Demo-Speisekarte zu öffnen</p>
               </div>
 
-              {/* QR Code Preview Mockup */}
+              {/* Demo QR Code - Clean & Simple */}
               <div className="bg-white rounded-2xl p-8 shadow-sm ring-1 ring-gray-100">
-                <div className="flex flex-col items-center">
-                  {/* Simulated QR Code */}
-                  <div className="relative mb-6">
-                    <div className="w-48 h-48 bg-white rounded-2xl shadow-lg p-4 ring-1 ring-gray-100">
-                      {/* QR Code Pattern Simulation */}
-                      <div className="w-full h-full bg-gray-900 rounded-lg relative overflow-hidden">
-                        {/* Simulated QR pattern */}
-                        <svg viewBox="0 0 100 100" className="w-full h-full">
-                          <rect fill="white" width="100" height="100"/>
-                          {/* Corner markers */}
-                          <rect fill="black" x="5" y="5" width="25" height="25"/>
-                          <rect fill="white" x="8" y="8" width="19" height="19"/>
-                          <rect fill="black" x="11" y="11" width="13" height="13"/>
-
-                          <rect fill="black" x="70" y="5" width="25" height="25"/>
-                          <rect fill="white" x="73" y="8" width="19" height="19"/>
-                          <rect fill="black" x="76" y="11" width="13" height="13"/>
-
-                          <rect fill="black" x="5" y="70" width="25" height="25"/>
-                          <rect fill="white" x="8" y="73" width="19" height="19"/>
-                          <rect fill="black" x="11" y="76" width="13" height="13"/>
-
-                          {/* Random pattern */}
-                          <rect fill="black" x="35" y="5" width="5" height="5"/>
-                          <rect fill="black" x="45" y="5" width="5" height="5"/>
-                          <rect fill="black" x="55" y="5" width="5" height="5"/>
-                          <rect fill="black" x="35" y="15" width="5" height="5"/>
-                          <rect fill="black" x="50" y="15" width="5" height="5"/>
-                          <rect fill="black" x="60" y="15" width="5" height="5"/>
-                          <rect fill="black" x="40" y="25" width="5" height="5"/>
-                          <rect fill="black" x="55" y="25" width="5" height="5"/>
-
-                          <rect fill="black" x="5" y="35" width="5" height="5"/>
-                          <rect fill="black" x="15" y="35" width="5" height="5"/>
-                          <rect fill="black" x="25" y="35" width="5" height="5"/>
-                          <rect fill="black" x="35" y="35" width="5" height="5"/>
-                          <rect fill="black" x="45" y="35" width="5" height="5"/>
-                          <rect fill="black" x="55" y="35" width="5" height="5"/>
-                          <rect fill="black" x="65" y="35" width="5" height="5"/>
-                          <rect fill="black" x="75" y="35" width="5" height="5"/>
-                          <rect fill="black" x="85" y="35" width="5" height="5"/>
-
-                          <rect fill="black" x="10" y="45" width="5" height="5"/>
-                          <rect fill="black" x="25" y="45" width="5" height="5"/>
-                          <rect fill="black" x="40" y="45" width="5" height="5"/>
-                          <rect fill="black" x="50" y="45" width="5" height="5"/>
-                          <rect fill="black" x="70" y="45" width="5" height="5"/>
-                          <rect fill="black" x="85" y="45" width="5" height="5"/>
-
-                          <rect fill="black" x="5" y="55" width="5" height="5"/>
-                          <rect fill="black" x="20" y="55" width="5" height="5"/>
-                          <rect fill="black" x="35" y="55" width="5" height="5"/>
-                          <rect fill="black" x="45" y="55" width="5" height="5"/>
-                          <rect fill="black" x="60" y="55" width="5" height="5"/>
-                          <rect fill="black" x="75" y="55" width="5" height="5"/>
-                          <rect fill="black" x="90" y="55" width="5" height="5"/>
-
-                          <rect fill="black" x="35" y="70" width="5" height="5"/>
-                          <rect fill="black" x="50" y="70" width="5" height="5"/>
-                          <rect fill="black" x="60" y="70" width="5" height="5"/>
-                          <rect fill="black" x="75" y="70" width="5" height="5"/>
-                          <rect fill="black" x="85" y="70" width="5" height="5"/>
-
-                          <rect fill="black" x="40" y="80" width="5" height="5"/>
-                          <rect fill="black" x="55" y="80" width="5" height="5"/>
-                          <rect fill="black" x="70" y="80" width="5" height="5"/>
-                          <rect fill="black" x="80" y="80" width="5" height="5"/>
-                          <rect fill="black" x="90" y="80" width="5" height="5"/>
-
-                          <rect fill="black" x="35" y="90" width="5" height="5"/>
-                          <rect fill="black" x="45" y="90" width="5" height="5"/>
-                          <rect fill="black" x="60" y="90" width="5" height="5"/>
-                          <rect fill="black" x="75" y="90" width="5" height="5"/>
-                        </svg>
-                      </div>
-                    </div>
-                    {/* Blur overlay for demo */}
-                    <div className="absolute inset-0 backdrop-blur-[2px] bg-white/30 rounded-2xl flex items-center justify-center">
-                      <span className="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full">
-                        VORSCHAU
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-gray-500 mb-6 text-center max-w-sm">
-                    Scanne den QR-Code mit deinem Handy, um deine Speisekarte zu öffnen.
-                  </p>
-
-                  {/* Table Stand Preview */}
-                  <div className="w-full max-w-xs bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-200">
-                    <div className="text-center">
-                      <div className="text-3xl mb-2">🪧</div>
-                      <h4 className="font-semibold text-gray-900 text-sm">Tischaufsteller A6</h4>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Druckfertige PDF mit deinem QR-Code
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <QRCodeGenerator
+                  slug="demo-doener-palace"
+                  restaurantName="Demo Döner Palace"
+                  size={220}
+                />
               </div>
 
-              {/* Locked Notice */}
-              <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-6 border border-purple-200">
+              {/* Register CTA */}
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🔐</span>
+                  <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-2xl">✨</span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-purple-900 mb-1">Dein eigener QR-Code</h3>
-                    <p className="text-sm text-purple-700 mb-4">
-                      Registriere dich kostenlos, um deinen personalisierten QR-Code zu erhalten.
-                      Drucke ihn aus und stelle ihn auf deine Tische!
+                    <h3 className="font-bold text-gray-900 mb-1">Registriere dich für deinen eigenen QR-Code</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Mit einem kostenlosen Account erhältst du:
                     </p>
+                    <ul className="space-y-1.5 text-sm text-gray-600 mb-4">
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Eigene URL (z.B. /m/dein-restaurant)
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        PDF-Download für Tischaufsteller
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Daten dauerhaft gespeichert
+                      </li>
+                    </ul>
                     <Link href="/register">
                       <Button className="shadow-lg shadow-emerald-500/20">
                         Kostenlos registrieren
@@ -597,76 +515,6 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'qr' && sandboxData && (
-            <div className="max-w-2xl mx-auto space-y-6">
-              {/* Header */}
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">QR-Code</h1>
-                <p className="text-gray-500 mt-1">Demo QR-Code zum Testen</p>
-              </div>
-
-              {/* Demo QR Code - Funktionierend! */}
-              <div className="bg-white rounded-2xl p-8 shadow-sm ring-1 ring-gray-100">
-                <div className="flex flex-col items-center">
-                  {/* Funktionierender QR Code */}
-                  <QRCodeGenerator
-                    slug="demo-doener-palace"
-                    restaurantName="Demo Döner Palace"
-                    size={220}
-                  />
-
-                  {/* Info */}
-                  <div className="mt-6 text-center">
-                    <p className="text-emerald-600 font-medium mb-2">
-                      ✓ Dieser QR-Code funktioniert!
-                    </p>
-                    <p className="text-gray-600 text-sm mb-4">
-                      Scanne ihn mit deinem Handy um das Demo-Menü zu sehen.
-                    </p>
-
-                    {/* Demo Info Box */}
-                    <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mt-4">
-                      <p className="text-sm text-purple-800">
-                        <strong>Dies ist ein Demo-QR-Code.</strong><br />
-                        Registriere dich kostenlos für deinen eigenen QR-Code mit deiner persönlichen URL.
-                      </p>
-                      <Link href="/register" className="inline-block mt-3">
-                        <Button size="sm" className="shadow-lg shadow-emerald-500/20">
-                          Eigenen QR-Code erstellen
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Features */}
-              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
-                <h3 className="font-bold text-gray-900 mb-3">Mit eigenem Account:</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Eigene URL (z.B. /m/dein-restaurant)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    PDF-Download für Tischaufsteller
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Daten dauerhaft gespeichert
-                  </li>
-                </ul>
               </div>
             </div>
           )}

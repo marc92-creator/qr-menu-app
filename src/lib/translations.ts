@@ -251,3 +251,206 @@ export const LANGUAGE_OPTIONS: { id: Language; label: string; flag: string }[] =
   { id: 'de', label: 'Deutsch', flag: '🇩🇪' },
   { id: 'en', label: 'English', flag: '🇬🇧' },
 ];
+
+// ===========================================
+// AUTO-TRANSLATION DICTIONARY
+// ===========================================
+// For menu items without manual translations
+
+// Dictionary for exact matches (German -> English)
+const exactTranslations: Record<string, string> = {
+  // Categories
+  'Döner': 'Kebab',
+  'Döner & Wraps': 'Kebab & Wraps',
+  'Beilagen': 'Side Dishes',
+  'Getränke': 'Beverages',
+  'Drinks': 'Drinks',
+  'Vorspeisen': 'Starters',
+  'Hauptgerichte': 'Main Courses',
+  'Desserts': 'Desserts',
+  'Nachspeisen': 'Desserts',
+  'Salate': 'Salads',
+  'Pizza': 'Pizza',
+  'Pasta': 'Pasta',
+  'Burger': 'Burgers',
+  'Suppen': 'Soups',
+  'Frühstück': 'Breakfast',
+  'Mittagstisch': 'Lunch Menu',
+  'Spezialitäten': 'Specialties',
+  'Fleischgerichte': 'Meat Dishes',
+  'Fischgerichte': 'Fish Dishes',
+  'Vegetarisch': 'Vegetarian',
+  'Kinder': 'Kids Menu',
+  'Kindermenü': 'Kids Menu',
+
+  // Common dishes
+  'Döner im Brot': 'Döner in Bread',
+  'Döner Teller': 'Döner Plate',
+  'Döner Box': 'Döner Box',
+  'Dürüm': 'Dürüm Wrap',
+  'Lahmacun': 'Lahmacun',
+  'Pide': 'Pide',
+  'Vegetarischer Döner': 'Vegetarian Döner',
+  'Falafel': 'Falafel',
+  'Falafel Teller': 'Falafel Plate',
+  'Falafel im Brot': 'Falafel in Bread',
+  'Pommes': 'French Fries',
+  'Pommes Frites': 'French Fries',
+  'Salat': 'Salad',
+  'Gemischter Salat': 'Mixed Salad',
+  'Bauernsalat': 'Farmer Salad',
+  'Hirtensalat': 'Shepherd Salad',
+  'Cola': 'Coke',
+  'Fanta': 'Fanta',
+  'Sprite': 'Sprite',
+  'Wasser': 'Water',
+  'Mineralwasser': 'Mineral Water',
+  'Ayran': 'Ayran',
+  'Bier': 'Beer',
+  'Wein': 'Wine',
+  'Saft': 'Juice',
+  'Orangensaft': 'Orange Juice',
+  'Apfelsaft': 'Apple Juice',
+  'Kaffee': 'Coffee',
+  'Tee': 'Tea',
+  'Türkischer Tee': 'Turkish Tea',
+  'Espresso': 'Espresso',
+  'Cappuccino': 'Cappuccino',
+
+  // More dishes
+  'Schnitzel': 'Schnitzel',
+  'Hähnchen': 'Chicken',
+  'Hähnchenspieß': 'Chicken Skewer',
+  'Lammspieß': 'Lamb Skewer',
+  'Adana': 'Adana Kebab',
+  'Adana Kebab': 'Adana Kebab',
+  'Iskender': 'Iskender',
+  'Köfte': 'Köfte',
+  'Reis': 'Rice',
+  'Bulgur': 'Bulgur',
+  'Hummus': 'Hummus',
+  'Tzatziki': 'Tzatziki',
+  'Cacık': 'Cacık',
+  'Börek': 'Börek',
+  'Baklava': 'Baklava',
+  'Künefe': 'Künefe',
+
+  // Common description phrases
+  'Mit frischem Salat und Soße': 'With fresh salad and sauce',
+  'Mit frischem Salat, Tomaten, Zwiebeln und Soße nach Wahl': 'With fresh salad, tomatoes, onions and sauce of your choice',
+  'Mit Reis oder Pommes': 'With rice or fries',
+  'Mit Reis oder Pommes, Salat und Soße': 'With rice or fries, salad and sauce',
+  'Knusprige Pommes Frites': 'Crispy French Fries',
+  'Gemischter Salat mit Dressing': 'Mixed salad with dressing',
+  'Hausgemacht': 'Homemade',
+  'Nach Wahl': 'Of your choice',
+  'Täglich frisch': 'Fresh daily',
+};
+
+// Dictionary for word-by-word replacements
+const wordTranslations: Record<string, string> = {
+  // Connectors
+  'mit': 'with',
+  'und': 'and',
+  'oder': 'or',
+  'ohne': 'without',
+  'nach': 'of',
+
+  // Adjectives
+  'frisch': 'fresh',
+  'hausgemacht': 'homemade',
+  'knusprig': 'crispy',
+  'gegrillt': 'grilled',
+  'gebraten': 'fried',
+  'gemischt': 'mixed',
+  'scharf': 'spicy',
+  'mild': 'mild',
+  'groß': 'large',
+  'klein': 'small',
+  'extra': 'extra',
+
+  // Ingredients
+  'Salat': 'salad',
+  'Tomaten': 'tomatoes',
+  'Zwiebeln': 'onions',
+  'Gurken': 'cucumbers',
+  'Paprika': 'peppers',
+  'Käse': 'cheese',
+  'Fleisch': 'meat',
+  'Hähnchen': 'chicken',
+  'Lamm': 'lamb',
+  'Rind': 'beef',
+  'Kalb': 'veal',
+  'Soße': 'sauce',
+  'Dressing': 'dressing',
+  'Kräuter': 'herbs',
+  'Knoblauch': 'garlic',
+  'Joghurt': 'yogurt',
+  'Brot': 'bread',
+  'Fladenbrot': 'flatbread',
+  'Reis': 'rice',
+  'Pommes': 'fries',
+  'Kartoffeln': 'potatoes',
+  'Oliven': 'olives',
+  'Feta': 'feta',
+  'Schafskäse': 'feta cheese',
+};
+
+/**
+ * Auto-translate German text to English
+ * First tries exact match, then word-by-word replacement
+ */
+export function autoTranslate(text: string): string {
+  if (!text) return text;
+
+  // First check for exact match
+  if (exactTranslations[text]) {
+    return exactTranslations[text];
+  }
+
+  // Try case-insensitive exact match
+  const lowerText = text.toLowerCase();
+  for (const [de, en] of Object.entries(exactTranslations)) {
+    if (de.toLowerCase() === lowerText) {
+      return en;
+    }
+  }
+
+  // Word-by-word replacement (preserving case for first letter)
+  let result = text;
+  for (const [de, en] of Object.entries(wordTranslations)) {
+    // Create regex that matches the word with word boundaries
+    const regex = new RegExp(`\\b${de}\\b`, 'gi');
+    result = result.replace(regex, (match) => {
+      // Preserve capitalization of first letter
+      if (match[0] === match[0].toUpperCase()) {
+        return en.charAt(0).toUpperCase() + en.slice(1);
+      }
+      return en;
+    });
+  }
+
+  return result;
+}
+
+/**
+ * Get localized text with auto-translation fallback
+ * Returns manual translation if available, otherwise auto-translates
+ */
+export function getLocalizedText(
+  germanText: string,
+  englishText: string | null | undefined,
+  lang: Language
+): string {
+  if (lang === 'de') {
+    return germanText;
+  }
+
+  // English requested
+  if (englishText && englishText.trim() !== '') {
+    return englishText;
+  }
+
+  // Auto-translate from German
+  return autoTranslate(germanText);
+}

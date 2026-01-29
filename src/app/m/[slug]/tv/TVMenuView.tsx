@@ -5,7 +5,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getTheme } from '@/lib/themes';
 import { formatPrice } from '@/lib/utils';
 import { getItemImageUrl } from '@/lib/foodImages';
-import { getTranslation, Language } from '@/lib/translations';
+import { getTranslation, Language, autoTranslate } from '@/lib/translations';
 
 interface TVMenuViewProps {
   restaurant: Restaurant;
@@ -22,6 +22,26 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
   // Get translations
   const lang = (restaurant.menu_language || 'de') as Language;
   const t = getTranslation(lang);
+
+  // Localization helpers with auto-translation fallback
+  const getLocalizedName = (item: MenuItem): string => {
+    if (lang === 'de') return item.name;
+    if (item.name_en && item.name_en.trim() !== '') return item.name_en;
+    return autoTranslate(item.name);
+  };
+
+  const getLocalizedDescription = (item: MenuItem): string | null => {
+    if (!item.description) return null;
+    if (lang === 'de') return item.description;
+    if (item.description_en && item.description_en.trim() !== '') return item.description_en;
+    return autoTranslate(item.description);
+  };
+
+  const getLocalizedCategoryName = (category: Category): string => {
+    if (lang === 'de') return category.name;
+    if (category.name_en && category.name_en.trim() !== '') return category.name_en;
+    return autoTranslate(category.name);
+  };
 
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
 
@@ -151,7 +171,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
               {t.category} {currentCategoryIndex + 1} {t.of} {sortedCategories.length}
             </div>
             <h2 className="text-3xl font-bold" style={{ color: styles.primary }}>
-              {currentCategory?.name}
+              {currentCategory ? getLocalizedCategoryName(currentCategory) : ''}
             </h2>
           </div>
         </div>
@@ -174,7 +194,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                 border: `2px solid ${index === currentCategoryIndex ? 'transparent' : styles.border}`,
               }}
             >
-              {cat.name}
+              {getLocalizedCategoryName(cat)}
             </button>
           ))}
         </div>
@@ -203,7 +223,7 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={imageUrl}
-                      alt={item.name}
+                      alt={getLocalizedName(item)}
                       className={`w-full h-full ${isSvgImage ? 'object-contain p-6' : 'object-cover'}`}
                     />
                     {/* Badges */}
@@ -239,13 +259,16 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="text-xl font-bold truncate" style={{ color: styles.text }}>
-                        {item.name}
+                        {getLocalizedName(item)}
                       </h3>
-                      {item.description && (
-                        <p className="text-base mt-1 line-clamp-2" style={{ color: styles.textMuted }}>
-                          {item.description}
-                        </p>
-                      )}
+                      {(() => {
+                        const desc = getLocalizedDescription(item);
+                        return desc ? (
+                          <p className="text-base mt-1 line-clamp-2" style={{ color: styles.textMuted }}>
+                            {desc}
+                          </p>
+                        ) : null;
+                      })()}
                     </div>
                     <div
                       className="text-2xl font-bold flex-shrink-0"
