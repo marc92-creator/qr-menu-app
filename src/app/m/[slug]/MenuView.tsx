@@ -6,7 +6,7 @@ import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
 import { getItemImageUrl } from '@/lib/foodImages';
-import { getTranslation, formatRelativeTime, Language, autoTranslate } from '@/lib/translations';
+import { getTranslation, formatRelativeTime, Language, autoTranslate, getAllergenName, getAllergenDescription } from '@/lib/translations';
 import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
 
 // Premium Image Component with loading state and blur effect
@@ -694,7 +694,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                           }}
                                         >
                                           <span className="text-sm">{allergen.icon}</span>
-                                          <span className="hidden sm:inline">{allergen.name}</span>
+                                          <span className="hidden sm:inline">{getAllergenName(allergen.id, currentLang)}</span>
                                         </button>
                                       );
                                     })}
@@ -771,13 +771,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                   className="font-medium text-sm"
                                   style={{ color: isSelected ? styles.allergenSelectedText : styles.text }}
                                 >
-                                  {allergen.name}
+                                  {getAllergenName(allergen.id, currentLang)}
                                 </div>
                                 <div
                                   className="text-xs"
                                   style={{ color: isSelected ? styles.allergenSelectedText : styles.textMuted, opacity: isSelected ? 0.8 : 1 }}
                                 >
-                                  {allergen.description}
+                                  {getAllergenDescription(allergen.id, currentLang)}
                                 </div>
                               </div>
                             </div>
@@ -825,8 +825,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                     <span className="text-xl">{allergen.icon}</span>
                   </div>
                   <div className="flex-1">
-                    <div className="font-medium text-sm" style={{ color: styles.text }}>{allergen.name}</div>
-                    <div className="text-xs" style={{ color: styles.textMuted }}>{allergen.description}</div>
+                    <div className="font-medium text-sm" style={{ color: styles.text }}>{getAllergenName(allergen.id, currentLang)}</div>
+                    <div className="text-xs" style={{ color: styles.textMuted }}>{getAllergenDescription(allergen.id, currentLang)}</div>
                   </div>
                   <button
                     className="p-1 touch-manipulation transition-colors"
