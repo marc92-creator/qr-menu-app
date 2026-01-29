@@ -146,17 +146,18 @@ export default function DashboardPage() {
         }
         setRestaurantStats(statsMap);
 
-        // If no restaurant is selected, select the first one
+        // If no restaurant is selected, select the first one and show restaurants tab
         if (!selectedRestaurant) {
           await selectRestaurant(restaurantsData[0]);
+          // Only set to restaurants tab on initial load (when no restaurant was selected)
+          setActiveTab('restaurants');
         } else {
-          // Refresh selected restaurant data
+          // Refresh selected restaurant data - but DON'T change the active tab
           const updated = restaurantsData.find(r => r.id === selectedRestaurant.id);
           if (updated) {
             await selectRestaurant(updated);
           }
         }
-        setActiveTab('restaurants');
       } else {
         setRestaurants([]);
         setRestaurantStats({});
@@ -365,17 +366,17 @@ export default function DashboardPage() {
               {/* Fullscreen overlay */}
               {isFullscreen && (
                 <div className="fixed inset-0 z-50 bg-white">
-                  {/* Close button */}
+                  {/* Close button - top LEFT to avoid conflict with language switcher */}
                   <button
                     onClick={() => setIsFullscreen(false)}
-                    className="fixed top-4 right-4 z-50 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+                    className="fixed top-4 left-4 z-50 bg-black/70 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-black/80 transition-colors"
                     title="Vollbild beenden"
                   >
-                    <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  {/* Fullscreen menu view */}
+                  {/* Fullscreen menu view - use isEmbedded for filtering behavior */}
                   <div className="h-full overflow-y-auto">
                     <MenuView
                       restaurant={sandboxData.restaurant}
@@ -383,7 +384,7 @@ export default function DashboardPage() {
                       menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
                       showWatermark={true}
                       isDemo={true}
-                      isEmbedded={false}
+                      isEmbedded={true}
                     />
                   </div>
                 </div>

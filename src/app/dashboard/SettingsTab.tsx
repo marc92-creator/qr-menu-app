@@ -9,8 +9,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
 import { uploadRestaurantLogo, validateImageFile } from '@/lib/imageUpload';
-import { isThemeAllowed, isPro } from '@/hooks/useSubscription';
-import { UpgradeModal, ProBadge } from '@/components/UpgradeModal';
+import { isInTrial, getTrialDaysRemaining, getAccessStatus } from '@/hooks/useSubscription';
 
 interface SettingsTabProps {
   restaurant: Restaurant;
@@ -53,16 +52,11 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
   const [logoLoading, setLogoLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState('');
   const logoInputRef = useRef<HTMLInputElement>(null);
 
-  const userIsPro = isPro(subscription);
-
-  const showUpgrade = (feature: string) => {
-    setUpgradeFeature(feature);
-    setShowUpgradeModal(true);
-  };
+  const userInTrial = isInTrial(restaurant);
+  const trialDaysRemaining = getTrialDaysRemaining(restaurant);
+  const accessStatus = getAccessStatus(subscription, restaurant);
 
   const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
     setOpeningHours(prev => ({
@@ -211,23 +205,34 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
       </div>
 
       {/* Current Plan Badge */}
-      <div className={`rounded-2xl p-5 text-white ${isPremium ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`}>
+      <div className={`rounded-2xl p-5 text-white ${
+        isPremium
+          ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+          : accessStatus === 'expired'
+            ? 'bg-gradient-to-r from-red-500 to-orange-500'
+            : 'bg-gradient-to-r from-blue-500 to-indigo-500'
+      }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">{isPremium ? '👑' : '🎁'}</span>
+              <span className="text-2xl">{isPremium ? '👑' : userInTrial ? '🚀' : '⏰'}</span>
             </div>
             <div>
               <div className="font-bold text-lg">
-                {isPremium ? 'Pro' : 'Demo-Version'}
+                {isPremium ? 'Pro' : userInTrial ? `Trial - ${trialDaysRemaining} Tage` : 'Trial abgelaufen'}
               </div>
               <div className="text-white/80 text-sm">
-                {isPremium ? 'Kein Wasserzeichen' : 'Testen Sie alle Features'}
+                {isPremium
+                  ? 'Unbegrenzter Zugang'
+                  : userInTrial
+                    ? 'Alle Features freigeschaltet'
+                    : 'Upgrade für weiteren Zugang'
+                }
               </div>
             </div>
           </div>
           <span className="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-            {isPremium ? 'Aktiv' : 'Demo'}
+            {isPremium ? 'Aktiv' : userInTrial ? 'Trial' : 'Abgelaufen'}
           </span>
         </div>
       </div>
@@ -313,22 +318,15 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
                   accept="image/*"
                   onChange={handleLogoUpload}
                   className="hidden"
-                  disabled={isDemo || !userIsPro}
+                  disabled={isDemo}
                 />
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => {
-                      if (!userIsPro) {
-                        showUpgrade('Logo-Upload');
-                        return;
-                      }
-                      logoInputRef.current?.click();
-                    }}
+                    onClick={() => logoInputRef.current?.click()}
                     disabled={isDemo || logoLoading}
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-200 disabled:text-gray-400 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   >
                     {logoUrl ? 'Logo ändern' : 'Logo hochladen'}
-                    {!userIsPro && <ProBadge />}
                   </button>
                   {logoUrl && (
                     <button
@@ -413,17 +411,12 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
               {THEME_LIST.map((t) => {
                 const isActive = theme === t.id;
                 const s = t.styles;
-                const isLocked = !isThemeAllowed(t.id, subscription);
                 return (
                   <button
                     key={t.id}
                     type="button"
                     onClick={() => {
                       if (isDemo) return;
-                      if (isLocked) {
-                        showUpgrade('Premium Theme: ' + t.name);
-                        return;
-                      }
                       setTheme(t.id);
                     }}
                     disabled={isDemo}
@@ -431,21 +424,13 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
                       relative rounded-xl border-2 text-left transition-all overflow-hidden
                       ${isActive
                         ? 'border-emerald-500 ring-2 ring-emerald-500/20 scale-[1.02]'
-                        : isLocked
-                          ? 'border-gray-200 opacity-75'
-                          : 'border-gray-200 hover:border-gray-300'
+                        : 'border-gray-200 hover:border-gray-300'
                       }
                       ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                     `}
                   >
-                    {/* Pro Badge for locked themes */}
-                    {isLocked && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <ProBadge />
-                      </div>
-                    )}
                     {/* Active indicator */}
-                    {isActive && !isLocked && (
+                    {isActive && (
                       <div className="absolute top-2 right-2 z-10 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -646,61 +631,75 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         </div>
       </div>
 
-      {/* Subscription - Only show upgrade if not premium */}
+      {/* Subscription Info - Show different content based on status */}
       {!isPremium && (
         <div className="bg-white rounded-2xl sm:rounded-3xl p-6 shadow-sm ring-1 ring-gray-100">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">⭐</span>
+            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+              <span className="text-xl">{userInTrial ? '🎉' : '⏰'}</span>
             </div>
-            <h2 className="font-bold text-lg text-gray-900">Upgrade auf Pro</h2>
+            <h2 className="font-bold text-lg text-gray-900">
+              {userInTrial ? 'Dein Trial-Status' : 'Trial abgelaufen'}
+            </h2>
           </div>
 
-          <div className="p-5 bg-gradient-to-br from-gray-50 to-white rounded-2xl border-2 border-emerald-200">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="font-bold text-gray-900">Pro</div>
-                <div className="text-sm text-gray-500">Für professionelle Restaurants</div>
+          {userInTrial ? (
+            // Trial active - show positive messaging
+            <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
+              <div className="text-center mb-4">
+                <div className="text-4xl font-bold text-blue-600">{trialDaysRemaining}</div>
+                <div className="text-sm text-blue-700 font-medium">Tage verbleibend</div>
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-gray-900">9,99€</div>
-                <div className="text-sm text-gray-500">/Monat</div>
+
+              <div className="bg-white/60 rounded-xl p-4 mb-4">
+                <p className="text-sm text-gray-700 text-center">
+                  <strong>Alle Features sind freigeschaltet!</strong><br />
+                  Genieße während deines Trials vollen Zugang zu allen Funktionen.
+                </p>
               </div>
+
+              <div className="text-center text-sm text-gray-600 mb-4">
+                Nach dem Trial: <strong>9,99€/Monat</strong> für unbegrenzten Zugang
+              </div>
+
+              <Button
+                className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
+                onClick={handleUpgrade}
+                loading={upgradeLoading}
+              >
+                Jetzt auf Pro upgraden
+              </Button>
             </div>
+          ) : (
+            // Trial expired - show upgrade prompt
+            <div className="p-5 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border-2 border-red-200">
+              <div className="text-center mb-4">
+                <div className="text-2xl font-bold text-red-600">Trial abgelaufen</div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Upgrade jetzt, um weiterhin alle Features nutzen zu können.
+                </p>
+              </div>
 
-            <ul className="space-y-2 mb-5">
-              <li className="flex items-center gap-2 text-sm text-gray-700">
-                <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Kein Wasserzeichen auf der Speisekarte
-              </li>
-              <li className="flex items-center gap-2 text-sm text-gray-700">
-                <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Eigenes Logo hochladen
-              </li>
-              <li className="flex items-center gap-2 text-sm text-gray-700">
-                <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Priority E-Mail Support
-              </li>
-            </ul>
+              <div className="flex items-center justify-between mb-4 p-3 bg-white/60 rounded-xl">
+                <div>
+                  <div className="font-bold text-gray-900">Pro</div>
+                  <div className="text-sm text-gray-500">Unbegrenzter Zugang</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">9,99€</div>
+                  <div className="text-sm text-gray-500">/Monat</div>
+                </div>
+              </div>
 
-            <Button
-              className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
-              onClick={handleUpgrade}
-              loading={upgradeLoading}
-            >
-              Jetzt upgraden
-            </Button>
-
-            <p className="text-xs text-gray-500 text-center mt-3">
-              Demo-Version aktiv · Upgrade für volle Funktionen ohne Wasserzeichen
-            </p>
-          </div>
+              <Button
+                className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
+                onClick={handleUpgrade}
+                loading={upgradeLoading}
+              >
+                Jetzt upgraden
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
@@ -782,13 +781,6 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
           Restaurant löschen
         </Button>
       </div>
-
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        feature={upgradeFeature}
-      />
     </div>
   );
 }

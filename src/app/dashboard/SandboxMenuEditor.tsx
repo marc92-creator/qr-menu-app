@@ -9,6 +9,7 @@ import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getItemImageUrl, getCategoryImage, ImageMode } from '@/lib/foodImages';
 import { ImageGalleryModal } from '@/components/ImageGalleryModal';
+import { ITEM_TAGS } from '@/lib/itemTags';
 import {
   DndContext,
   closestCenter,
@@ -307,10 +308,13 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
 
   // New item form
   const [newItemName, setNewItemName] = useState('');
+  const [newItemNameEn, setNewItemNameEn] = useState('');
   const [newItemDescription, setNewItemDescription] = useState('');
+  const [newItemDescriptionEn, setNewItemDescriptionEn] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('');
   const [newItemAllergens, setNewItemAllergens] = useState<string[]>([]);
+  const [newItemTags, setNewItemTags] = useState<string[]>([]);
   const [newItemImageMode, setNewItemImageMode] = useState<ImageMode>('auto');
   const [newItemImageLibraryKey, setNewItemImageLibraryKey] = useState<string | null>(null);
   const [showNewItemImageGallery, setShowNewItemImageGallery] = useState(false);
@@ -322,6 +326,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
   const [editDescriptionEn, setEditDescriptionEn] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editAllergens, setEditAllergens] = useState<string[]>([]);
+  const [editTags, setEditTags] = useState<string[]>([]);
   const [editImageMode, setEditImageMode] = useState<ImageMode>('auto');
   const [editImageLibraryKey, setEditImageLibraryKey] = useState<string | null>(null);
   const [showImageGallery, setShowImageGallery] = useState(false);
@@ -361,6 +366,22 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     }
   };
 
+  const toggleTag = (tagId: string, isNewItem: boolean) => {
+    if (isNewItem) {
+      setNewItemTags(prev =>
+        prev.includes(tagId)
+          ? prev.filter(t => t !== tagId)
+          : [...prev, tagId]
+      );
+    } else {
+      setEditTags(prev =>
+        prev.includes(tagId)
+          ? prev.filter(t => t !== tagId)
+          : [...prev, tagId]
+      );
+    }
+  };
+
   const handleEditItem = (item: MenuItem) => {
     setEditingItem(item);
     setEditName(item.name);
@@ -369,6 +390,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     setEditDescriptionEn(item.description_en || '');
     setEditPrice(item.price.toFixed(2).replace('.', ','));
     setEditAllergens(item.allergens || []);
+    setEditTags(item.tags || []);
     setEditImageMode(item.image_mode || 'auto');
     setEditImageLibraryKey(item.image_library_key || null);
   };
@@ -386,6 +408,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       description_en: editDescriptionEn.trim() || null,
       price,
       allergens: editAllergens,
+      tags: editTags,
       image_mode: editImageMode,
       image_library_key: editImageMode === 'library' ? editImageLibraryKey : null,
     });
@@ -415,7 +438,9 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     addSandboxMenuItem({
       category_id: newItemCategory,
       name: newItemName.trim(),
+      name_en: newItemNameEn.trim() || null,
       description: newItemDescription.trim() || null,
+      description_en: newItemDescriptionEn.trim() || null,
       price,
       image_url: null,
       image_mode: newItemImageMode,
@@ -423,7 +448,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       is_available: true,
       position: categoryItems.length,
       allergens: newItemAllergens,
-      tags: [],
+      tags: newItemTags,
       is_vegetarian: false,
       is_vegan: false,
       is_popular: false,
@@ -431,10 +456,13 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     });
 
     setNewItemName('');
+    setNewItemNameEn('');
     setNewItemDescription('');
+    setNewItemDescriptionEn('');
     setNewItemPrice('');
     setNewItemCategory('');
     setNewItemAllergens([]);
+    setNewItemTags([]);
     setNewItemImageMode('auto');
     setNewItemImageLibraryKey(null);
     setShowAddItem(false);
@@ -489,6 +517,42 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
           >
             <span className="text-lg">{allergen.icon}</span>
             <span className="truncate font-medium">{allergen.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Tag Selector Component
+  const TagSelector = ({ selected, onToggle }: { selected: string[], onToggle: (id: string) => void }) => (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-semibold text-gray-700">
+          Tags & Klassifizierung
+        </label>
+        {selected.length > 0 && (
+          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+            {selected.length} ausgewählt
+          </span>
+        )}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {ITEM_TAGS.map((tag) => (
+          <button
+            key={tag.id}
+            type="button"
+            onClick={() => onToggle(tag.id)}
+            className={`
+              flex items-center gap-2 p-3 rounded-xl text-left text-sm
+              transition-all duration-200 touch-manipulation min-h-[48px]
+              ${selected.includes(tag.id)
+                ? `${tag.bgColor} ${tag.textColor} ring-2 ring-current shadow-sm`
+                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:scale-95'
+              }
+            `}
+          >
+            <span className="text-lg">{tag.icon}</span>
+            <span className="truncate font-medium">{tag.name}</span>
           </button>
         ))}
       </div>
@@ -791,6 +855,34 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 />
               )}
 
+              {/* English Translations for New Item */}
+              <div className="border-t border-gray-100 pt-4 mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🇬🇧</span>
+                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+                </div>
+                <div className="space-y-3 pl-1">
+                  <Input
+                    id="newItemNameEn"
+                    label="Name (English)"
+                    value={newItemNameEn}
+                    onChange={(e) => setNewItemNameEn(e.target.value)}
+                    placeholder="e.g. Döner in Bread"
+                  />
+                  <Input
+                    id="newItemDescriptionEn"
+                    label="Description (English)"
+                    value={newItemDescriptionEn}
+                    onChange={(e) => setNewItemDescriptionEn(e.target.value)}
+                    placeholder="e.g. With fresh salad and sauce"
+                  />
+                </div>
+              </div>
+
+              <TagSelector
+                selected={newItemTags}
+                onToggle={(id) => toggleTag(id, true)}
+              />
               <AllergenSelector
                 selected={newItemAllergens}
                 onToggle={(id) => toggleAllergen(id, true)}
@@ -799,6 +891,9 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
                   setNewItemAllergens([]);
+                  setNewItemTags([]);
+                  setNewItemNameEn('');
+                  setNewItemDescriptionEn('');
                   setNewItemImageMode('auto');
                   setNewItemImageLibraryKey(null);
                 }}>
@@ -977,6 +1072,10 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
                 />
               )}
 
+              <TagSelector
+                selected={editTags}
+                onToggle={(id) => toggleTag(id, false)}
+              />
               <AllergenSelector
                 selected={editAllergens}
                 onToggle={(id) => toggleAllergen(id, false)}

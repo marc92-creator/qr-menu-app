@@ -222,7 +222,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
 
-    // For embedded mode: use filtering instead of scrolling (more reliable)
+    // For embedded mode: use filtering instead of scrolling (more reliable in iframe/preview)
     if (isEmbedded) {
       // Toggle filter: if clicking the same category, show all
       setFilterCategory(prev => prev === categoryId ? null : categoryId);
@@ -239,26 +239,22 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       }
     });
 
-    // Find the category element using our ref map (more reliable than getElementById in embedded mode)
-    const categoryElement = categoryRefs.current.get(categoryId);
-
-    if (!categoryElement) {
-      // Fallback to getElementById
-      const fallbackElement = document.getElementById(`category-${categoryId}`);
-      if (!fallbackElement) return;
-    }
-
-    const targetElement = categoryElement || document.getElementById(`category-${categoryId}`);
+    // Find the category element using our ref map
+    const targetElement = categoryRefs.current.get(categoryId) || document.getElementById(`category-${categoryId}`);
     if (!targetElement) return;
 
-    // Standalone mode: scroll to category
-    requestAnimationFrame(() => {
-      // Scroll to the target element
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+    // Standalone mode: scroll to category with offset for sticky header
+    // Use setTimeout to ensure DOM is ready after any state changes
+    setTimeout(() => {
+      const headerHeight = 180; // Approximate header height with pills
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
       });
-    });
+    }, 10);
   };
 
   // Check if any menu item has allergens
