@@ -2,7 +2,36 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { MenuView } from './MenuView';
 import { getFixedDemoData } from '@/lib/sandboxStorage';
-import { shouldShowWatermark } from '@/hooks/useSubscription';
+import { Subscription, Restaurant } from '@/types/database';
+
+// Trial duration in days (duplicated from useSubscription.ts for server-side use)
+const TRIAL_DURATION_DAYS = 14;
+
+// Check if restaurant is still in trial period (server-side compatible)
+function isInTrial(restaurant: Restaurant | null): boolean {
+  if (!restaurant) return false;
+  if (restaurant.trial_ends_at) {
+    return new Date(restaurant.trial_ends_at) > new Date();
+  }
+  // Fallback: use created_at + 14 days for legacy restaurants
+  const createdAt = new Date(restaurant.created_at);
+  const trialEndsAt = new Date(createdAt.getTime() + TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000);
+  return trialEndsAt > new Date();
+}
+
+// Check if watermark should be shown (server-side compatible)
+function shouldShowWatermark(subscription: Subscription | null, restaurant: Restaurant | null): boolean {
+  // Pro subscription: no watermark
+  if (subscription?.plan === 'basic' && subscription?.status === 'active') {
+    return false;
+  }
+  // During trial: no watermark
+  if (isInTrial(restaurant)) {
+    return false;
+  }
+  // Trial expired and no Pro: show watermark
+  return true;
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
