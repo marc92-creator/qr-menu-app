@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { MenuView } from './MenuView';
 import { getFixedDemoData } from '@/lib/sandboxStorage';
+import { shouldShowWatermark } from '@/hooks/useSubscription';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -78,14 +79,18 @@ export default async function PublicMenuPage({ params }: PageProps) {
     .eq('status', 'active')
     .single();
 
-  const showWatermark = !subscription || subscription.plan !== 'basic';
+  // Watermark logic: Show only if trial expired AND no Pro subscription
+  // - During trial (day 1-14): NO watermark
+  // - Trial expired + no Pro: SHOW watermark
+  // - Pro subscription active: NO watermark
+  const showWatermarkFlag = shouldShowWatermark(subscription, restaurant);
 
   return (
     <MenuView
       restaurant={restaurant}
       categories={categories || []}
       menuItems={menuItems || []}
-      showWatermark={showWatermark}
+      showWatermark={showWatermarkFlag}
       isDemo={false}
     />
   );

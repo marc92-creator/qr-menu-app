@@ -33,6 +33,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { getCategoryImage, getItemImageUrl, ImageMode } from '@/lib/foodImages';
+import { getAccessStatus } from '@/hooks/useSubscription';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -138,6 +139,11 @@ interface MenuEditorProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function MenuEditor({ restaurant, categories, menuItems, subscription, onUpdate, onItemsChange }: MenuEditorProps) {
   const isDemo = restaurant.is_demo;
+
+  // Check trial/subscription status
+  const accessStatus = getAccessStatus(subscription, restaurant);
+  const isExpired = accessStatus === 'expired';
+  const isEditingDisabled = isDemo || isExpired;
 
   // Local state for optimistic UI updates
   const [localMenuItems, setLocalMenuItems] = useState<MenuItem[]>(menuItems);
@@ -824,6 +830,35 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
         </div>
       )}
 
+      {/* Trial Expired Banner */}
+      {isExpired && !isDemo && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl border border-red-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-xl">⏰</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-red-900">Trial abgelaufen</h3>
+                <p className="text-sm text-red-700">
+                  Dein 14-Tage-Trial ist beendet. Upgrade auf Pro um weiter zu bearbeiten.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/dashboard?tab=settings"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-500/20 whitespace-nowrap"
+            >
+              <span className="text-lg">👑</span>
+              Jetzt upgraden
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <div>
@@ -837,7 +872,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
             variant="outline"
             size="sm"
             onClick={handleAddCategoryClick}
-            disabled={isDemo}
+            disabled={isEditingDisabled}
             className="text-sm rounded-xl hover:bg-gray-50 transition-all"
           >
             <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -849,7 +884,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           <Button
             size="sm"
             onClick={handleAddItemClick}
-            disabled={categories.length === 0 || isDemo}
+            disabled={categories.length === 0 || isEditingDisabled}
             className="text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
           >
             <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1532,7 +1567,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                   .sort((a, b) => a.position - b.position);
 
                 return (
-                  <SortableCategory key={category.id} category={category} isDragDisabled={isDemo}>
+                  <SortableCategory key={category.id} category={category} isDragDisabled={isEditingDisabled}>
                     <div className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-all duration-200">
                       {/* Category Header - Distinct from items with emerald accent */}
                       <div className={`px-5 sm:px-6 py-4 bg-gradient-to-r from-emerald-50 via-emerald-50/50 to-white border-b-2 border-emerald-200 flex items-center justify-between ${!isDemo ? 'pl-12' : ''}`}>
@@ -1551,7 +1586,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                             <p className="text-xs text-emerald-600 font-medium">{items.length} Gericht{items.length !== 1 ? 'e' : ''}</p>
                           </div>
                         </div>
-                        {!isDemo && (
+                        {!isEditingDisabled && (
                           <button
                             onClick={() => handleDeleteCategory(category.id)}
                             className="text-gray-400 hover:text-red-500 active:text-red-600 transition-colors p-3 -m-2 touch-manipulation rounded-xl hover:bg-red-50"
@@ -1573,7 +1608,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                     <p className="text-gray-500 text-sm mb-4 max-w-xs mx-auto">
                       Füge dein erstes Gericht zu &quot;{category.name}&quot; hinzu.
                     </p>
-                    {!isDemo && (
+                    {!isEditingDisabled && (
                       <button
                         onClick={() => {
                           setNewItemCategory(category.id);
@@ -1603,7 +1638,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                                 const itemAllergens = getAllergensByIds(item.allergens || []);
 
                                 return (
-                                  <SortableMenuItem key={item.id} item={item} isDragDisabled={isDemo}>
+                                  <SortableMenuItem key={item.id} item={item} isDragDisabled={isEditingDisabled}>
                                     <div
                                       className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-10 sm:pl-12' : ''}`}
                                     >
@@ -1682,7 +1717,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                           </div>
                           {/* Action Buttons - Compact on mobile */}
                           <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
-                            {!isDemo && (
+                            {!isEditingDisabled && (
                               <>
                                 {/* Quick Sold Out Toggle */}
                                 <button
@@ -1735,8 +1770,8 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
             </SortableContext>
           </DndContext>
 
-          {/* Quick Add Section - Hide in demo mode */}
-          {!isDemo && (
+          {/* Quick Add Section - Hide in demo mode and when editing disabled */}
+          {!isEditingDisabled && (
             <div className="mt-6 p-5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3 text-center sm:text-left">

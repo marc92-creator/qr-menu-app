@@ -25,6 +25,7 @@ import {
   getSandboxDataForMigration,
   clearSandboxData,
 } from '@/lib/sandboxStorage';
+import { shouldShowWatermark } from '@/hooks/useSubscription';
 
 type Tab = 'restaurants' | 'menu' | 'preview' | 'qr' | 'analytics' | 'settings';
 
@@ -755,7 +756,7 @@ export default function DashboardPage() {
                 restaurant={selectedRestaurant}
                 categories={categories.sort((a, b) => a.position - b.position)}
                 menuItems={menuItems.sort((a, b) => a.position - b.position)}
-                showWatermark={!subscription}
+                showWatermark={shouldShowWatermark(subscription, selectedRestaurant)}
                 isDemo={false}
                 isEmbedded={true}
               />
