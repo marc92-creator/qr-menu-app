@@ -101,13 +101,27 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
       // Upload logo if provided (now we have the restaurant ID)
       if (logoFile && restaurant) {
         try {
+          console.log('=== LOGO UPLOAD DEBUG ===');
+          console.log('Logo file:', logoFile.name, logoFile.size, 'bytes');
+          console.log('Restaurant ID:', restaurant.id);
+
           const logoUrl = await uploadRestaurantLogo(logoFile, restaurant.id);
+          console.log('Uploaded logo URL:', logoUrl);
 
           // Update restaurant with logo URL
-          await supabase
+          const { data: updatedRestaurant, error: updateError } = await supabase
             .from('restaurants')
             .update({ logo_url: logoUrl })
-            .eq('id', restaurant.id);
+            .eq('id', restaurant.id)
+            .select()
+            .single();
+
+          if (updateError) {
+            console.error('Failed to update logo_url in database:', updateError);
+          } else {
+            console.log('Restaurant updated with logo:', updatedRestaurant?.logo_url);
+          }
+          console.log('=========================');
         } catch (uploadError) {
           console.error('Logo upload error:', uploadError);
           // Continue without logo - user can add it later in settings

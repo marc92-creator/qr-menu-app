@@ -62,14 +62,14 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // ============================================
   {
     id: 'doener',
-    keywords: ['döner', 'doner', 'kebab', 'kebap', 'fleisch im brot'],
+    keywords: ['döner', 'doner', 'kebab', 'kebap', 'fleisch im brot', 'döner im brot', 'döner brot', 'döner sandwich', 'döner klein', 'döner groß'],
     image: '/food-images/doener.svg',
     label: 'Döner',
     category: 'doener',
   },
   {
     id: 'dueruem',
-    keywords: ['dürüm', 'durum', 'wrap', 'yufka', 'rolle'],
+    keywords: ['dürüm', 'durum', 'dürum', 'wrap', 'yufka', 'rolle', 'dürüm döner', 'chicken dürüm', 'hähnchen dürüm'],
     image: '/food-images/dueruem.svg',
     label: 'Dürüm / Wrap',
     category: 'doener',
@@ -90,14 +90,14 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   },
   {
     id: 'doener-teller',
-    keywords: ['döner teller', 'kebap teller', 'teller mit reis'],
+    keywords: ['döner teller', 'dönerteller', 'kebap teller', 'teller mit reis', 'döner mit reis', 'döner mit pommes', 'döner mit salat'],
     image: '/food-images/doener-teller.svg',
     label: 'Döner Teller',
     category: 'doener',
   },
   {
     id: 'doener-box',
-    keywords: ['döner box', 'doner box', 'box mit pommes', 'dönerbox'],
+    keywords: ['döner box', 'dönerbox', 'doner box', 'box mit pommes', 'döner to go'],
     image: '/food-images/doener-box.svg',
     label: 'Döner Box',
     category: 'doener',
@@ -1781,17 +1781,34 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
 /**
  * Get automatic image based on dish name
  * Searches through keywords case-insensitive
+ * Prioritizes longer/more specific keyword matches
  */
 export function getAutoImage(dishName: string): string {
   const nameLower = dishName.toLowerCase();
 
-  // Search for matching keywords
+  // Collect all matching entries with their best matching keyword length
+  const matches: { entry: FoodImageEntry; keywordLength: number }[] = [];
+
   for (const entry of FOOD_IMAGE_LIBRARY) {
     for (const keyword of entry.keywords) {
       if (nameLower.includes(keyword.toLowerCase())) {
-        return entry.image;
+        // Track the longest matching keyword for this entry
+        const existing = matches.find(m => m.entry.id === entry.id);
+        if (existing) {
+          if (keyword.length > existing.keywordLength) {
+            existing.keywordLength = keyword.length;
+          }
+        } else {
+          matches.push({ entry, keywordLength: keyword.length });
+        }
       }
     }
+  }
+
+  // Sort by keyword length (longest first) to get most specific match
+  if (matches.length > 0) {
+    matches.sort((a, b) => b.keywordLength - a.keywordLength);
+    return matches[0].entry.image;
   }
 
   // Return default image if no match found
