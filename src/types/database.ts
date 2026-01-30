@@ -73,6 +73,8 @@ export interface Subscription {
   plan: string;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
+  lemon_squeezy_customer_id: string | null;
+  lemon_squeezy_subscription_id: string | null;
   status: string;
   current_period_end: string | null;
   created_at: string;

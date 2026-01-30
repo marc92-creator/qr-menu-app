@@ -131,6 +131,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY           # For webhooks and scan tracking
 NEXT_PUBLIC_APP_URL                 # Production URL for QR codes
 NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL  # Lemon Squeezy checkout
+LEMON_SQUEEZY_WEBHOOK_SECRET        # Webhook signature verification (optional but recommended)
 ```
 
 ## Gotchas
