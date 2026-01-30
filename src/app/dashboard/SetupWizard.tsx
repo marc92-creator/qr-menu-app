@@ -7,6 +7,7 @@ import { Input } from '@/components/Input';
 import { Logo } from '@/components/Logo';
 import { generateSlug } from '@/lib/utils';
 import { RESTAURANT_TEMPLATES, getTemplateById } from '@/lib/restaurantTemplates';
+import { uploadRestaurantLogo, validateImageFile } from '@/lib/imageUpload';
 
 interface SetupWizardProps {
   onComplete: () => void;
@@ -31,6 +32,13 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file before accepting
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        alert(validationError);
+        return;
+      }
+
       setLogoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -54,27 +62,6 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
         return;
       }
 
-      let logoUrl = null;
-
-      // Upload logo if provided
-      if (logoFile) {
-        const fileExt = logoFile.name.split('.').pop();
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('logos')
-          .upload(fileName, logoFile);
-
-        if (uploadError) {
-          console.error('Logo upload error:', uploadError);
-        } else {
-          const { data: urlData } = supabase.storage
-            .from('logos')
-            .getPublicUrl(fileName);
-          logoUrl = urlData.publicUrl;
-        }
-      }
-
       // Generate unique slug
       let slug = generateSlug(name);
       const { data: existingSlug } = await supabase
@@ -91,7 +78,7 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
       const trialEndsAt = new Date();
       trialEndsAt.setDate(trialEndsAt.getDate() + 14);
 
-      // Create restaurant
+      // Create restaurant first (without logo)
       const { data: restaurant, error: restaurantError } = await supabase
         .from('restaurants')
         .insert({
@@ -99,7 +86,7 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
           name,
           slug,
           address: address || null,
-          logo_url: logoUrl,
+          logo_url: null,
           trial_ends_at: trialEndsAt.toISOString(),
         })
         .select()
@@ -109,6 +96,22 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
         setError('Fehler beim Erstellen des Restaurants');
         setLoading(false);
         return;
+      }
+
+      // Upload logo if provided (now we have the restaurant ID)
+      if (logoFile && restaurant) {
+        try {
+          const logoUrl = await uploadRestaurantLogo(logoFile, restaurant.id);
+
+          // Update restaurant with logo URL
+          await supabase
+            .from('restaurants')
+            .update({ logo_url: logoUrl })
+            .eq('id', restaurant.id);
+        } catch (uploadError) {
+          console.error('Logo upload error:', uploadError);
+          // Continue without logo - user can add it later in settings
+        }
       }
 
       // Create free subscription
