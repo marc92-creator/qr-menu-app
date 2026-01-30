@@ -62,7 +62,7 @@ npm run start    # Start production server
 ### Tech Stack
 - **Framework**: Next.js 14 (App Router, no pages directory)
 - **Database**: Supabase (PostgreSQL with Row Level Security)
-- **Payments**: Stripe (checkout sessions, webhooks)
+- **Payments**: Lemon Squeezy (primary) / Stripe (legacy, checkout sessions, webhooks)
 - **Styling**: Tailwind CSS (emerald-500 primary, amber-500 for demo badges)
 - **PDF**: jspdf for table tent generation
 - **QR Codes**: qrcode.react
@@ -298,17 +298,44 @@ const t = getTranslation(lang);
 4. **Professionelles Design out-of-the-box** - 5+ Themes
 5. **Günstigster Preis** - 9,99€/Monat vs. 69-129€ bei Konkurrenz
 
-### Files Changed in Recent Session:
-- `src/lib/translations.ts` (NEW) - Translation system
-- `src/types/database.ts` - Added MenuLanguage type
-- `src/app/dashboard/SettingsTab.tsx` - Language selector
-- `src/app/dashboard/SandboxSettingsTab.tsx` - Language selector
-- `src/app/m/[slug]/MenuView.tsx` - Uses translations
-- `src/app/m/[slug]/tv/TVMenuView.tsx` - Uses translations
-- `src/components/MenuPDFExport.tsx` - Uses translations
-- `src/lib/demoData.ts` - Added menu_language
-- `src/lib/sandboxStorage.ts` - Migration v4 for menu_language
-- `supabase/migrations/20240129_add_menu_language.sql` (NEW)
+### Current Session (January 2025) - Completed Work:
+
+**1. Food Image Library Expansion:**
+- Expanded to 235+ food images with better keyword matching
+- Improved `getAutoImage()` to prioritize longer/more specific keywords
+- Added tea variants (grüner, schwarzer, jasmin, pfefferminz, etc.)
+- Tested emoji fallback system (reverted - didn't match Ghibli style)
+- Tested CSS hue-rotate filters (reverted - made food look unappetizing)
+- Final: Original SVG images with consistent #f9fafb background
+
+**2. Bug Fixes:**
+- Password Reset: Fixed to wait for Supabase session from URL hash
+- Logo Upload in SetupWizard: Changed to use `menu-images` bucket
+- ESLint errors: Removed unused variables
+
+**3. Trial & Payment System:**
+- Verified trial logic is complete (14 days, trial_ends_at field)
+- Fixed upgrade button with fallback contact modal
+- Enhanced upgrade modal with feature comparison table (FREE vs PRO)
+- Integrated Lemon Squeezy payment (env: NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL)
+
+**Key Files Modified:**
+- `src/lib/foodImages.ts` - 235+ food images, improved matching
+- `src/app/reset-password/page.tsx` - Session handling fix
+- `src/app/dashboard/SetupWizard.tsx` - Logo upload fix
+- `src/app/dashboard/SettingsTab.tsx` - Enhanced upgrade modal + Lemon Squeezy
+- `src/app/m/[slug]/MenuView.tsx` - Image rendering (no filters, original colors)
+- `src/hooks/useSubscription.ts` - Trial logic (already complete)
+
+### Environment Variables (new):
+```
+NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL  # Lemon Squeezy checkout URL for Pro plan
+```
+
+### TODO - Next Steps:
+1. Create Lemon Squeezy product (9,99€/month subscription)
+2. Set up Lemon Squeezy webhook for auto-activation
+3. Update WhatsApp number in upgrade modal (currently placeholder)
 
 ## Agent System
 
