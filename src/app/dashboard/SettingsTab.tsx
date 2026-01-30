@@ -158,27 +158,46 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const handleUpgrade = async () => {
-    setUpgradeLoading(true);
+  // Direct Lemon Squeezy checkout
+  const handleLemonSqueezyCheckout = () => {
+    const checkoutUrl = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL;
+    if (checkoutUrl) {
+      const url = new URL(checkoutUrl);
+      // Pass restaurant ID for webhook identification
+      url.searchParams.set('checkout[custom][restaurant_id]', restaurant.id);
+      if (restaurant.owner_id) {
+        url.searchParams.set('checkout[custom][user_id]', restaurant.owner_id);
+      }
+      window.open(url.toString(), '_blank');
+    } else {
+      // Fallback: show modal with contact info
+      setShowUpgradeModal(true);
+    }
+  };
 
+  // Legacy Stripe checkout (kept as fallback)
+  const handleUpgrade = async () => {
+    // Try Lemon Squeezy first
+    const lsUrl = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL;
+    if (lsUrl) {
+      handleLemonSqueezyCheckout();
+      return;
+    }
+
+    // Fallback to Stripe
+    setUpgradeLoading(true);
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-
       const data = await response.json();
-
       if (data.url) {
         window.location.href = data.url;
       } else {
-        // Stripe not configured or error - show contact modal
-        console.log('Checkout response:', data);
         setShowUpgradeModal(true);
       }
-    } catch (err) {
-      console.error('Error creating checkout session:', err);
-      // Show contact modal as fallback
+    } catch {
       setShowUpgradeModal(true);
     } finally {
       setUpgradeLoading(false);
@@ -903,28 +922,22 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
               </p>
             </div>
 
-            {/* CTA Button - Lemon Squeezy */}
+            {/* CTA Button - Lemon Squeezy Checkout */}
             <Button
               className="w-full rounded-xl py-3 text-base shadow-lg shadow-emerald-500/20 mb-4"
               onClick={() => {
-                // Lemon Squeezy Checkout URL - replace XXX with actual product ID
-                const checkoutUrl = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL || 'https://menuapp.lemonsqueezy.com/checkout/buy/XXX';
-                const params = new URLSearchParams();
-                params.set('checkout[custom][restaurant_id]', restaurant.id);
-                if (restaurant.owner_id) {
-                  params.set('checkout[custom][user_id]', restaurant.owner_id);
-                }
-                window.open(`${checkoutUrl}?${params.toString()}`, '_blank');
+                handleLemonSqueezyCheckout();
+                setShowUpgradeModal(false);
               }}
             >
-              💳 Jetzt upgraden
+              💳 Jetzt für 9,99€/Monat upgraden
             </Button>
 
             {/* Alternative Contact */}
             <div className="text-center text-sm text-gray-500 mb-4">
-              <p className="mb-2">Oder kontaktiere uns:</p>
+              <p className="mb-1">Fragen zum Upgrade?</p>
               <a
-                href="mailto:support@menuapp.de?subject=Pro Upgrade für mein Restaurant"
+                href="mailto:support@menuapp.de?subject=Frage zum Pro Upgrade"
                 className="text-emerald-600 hover:text-emerald-700 font-medium"
               >
                 📧 support@menuapp.de
