@@ -5,7 +5,7 @@ import { Restaurant, Category, MenuItem, OpeningHours } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
-import { getItemImageUrl, getImageColorFilter } from '@/lib/foodImages';
+import { getItemImageUrl } from '@/lib/foodImages';
 import { getTranslation, formatRelativeTime, Language, autoTranslate, getAllergenName, getAllergenDescription } from '@/lib/translations';
 import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
 
@@ -695,8 +695,6 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                         const isHovered = hoveredCard === item.id;
                         const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
                         const isSvgImage = imageUrl?.endsWith('.svg');
-                        // Apply subtle color variation to SVG images for visual diversity
-                        const colorFilter = isSvgImage ? getImageColorFilter(item.name) : undefined;
 
                         return (
                           <article
@@ -712,7 +710,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                             onMouseLeave={() => setHoveredCard(null)}
                           >
                             <div className="flex gap-4">
-                              {/* Image - with subtle color variation for SVGs */}
+                              {/* Image - original colors, no filters */}
                               {imageUrl && (
                                 <div className="flex-shrink-0">
                                   {isSvgImage ? (
@@ -721,10 +719,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                       src={imageUrl}
                                       alt={item.name}
                                       className="w-20 h-20 rounded-lg object-cover"
-                                      style={{
-                                        backgroundColor: styles.surfaceHover,
-                                        filter: colorFilter,
-                                      }}
+                                      style={{ backgroundColor: '#f9fafb' }}
                                     />
                                   ) : (
                                     <MenuImage

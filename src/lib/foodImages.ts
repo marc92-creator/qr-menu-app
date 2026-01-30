@@ -2096,23 +2096,3 @@ export function getItemImageUrl(
       return getAutoImage(item.name);
   }
 }
-
-/**
- * Get CSS filter for image color variation
- * Uses deterministic hash of item name to create subtle hue shifts
- * This makes same-SVG items appear slightly different while keeping the Ghibli style
- */
-export function getImageColorFilter(itemName: string): string {
-  const hash = hashString(itemName.toLowerCase());
-
-  // Create subtle hue shift (0-60 degrees for subtle variation)
-  const hueShift = hash % 60;
-
-  // Slight saturation variation (90-110%)
-  const saturation = 90 + (hash % 20);
-
-  // Very subtle brightness variation (95-105%)
-  const brightness = 95 + ((hash >> 8) % 10);
-
-  return `hue-rotate(${hueShift}deg) saturate(${saturation}%) brightness(${brightness}%)`;
-}
