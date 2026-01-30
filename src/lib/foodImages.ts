@@ -11,21 +11,6 @@ export interface FoodImageEntry {
   image: string;
   label: string;
   category: FoodCategory;
-  /** Emoji fallback when image is shared/generic */
-  emoji?: string;
-  /** True if this entry has its own unique SVG, false if it shares with others */
-  hasUniqueImage?: boolean;
-}
-
-/**
- * Result from getAutoImageResult - contains both SVG path and emoji info
- */
-export interface AutoImageResult {
-  image: string;
-  emoji: string;
-  hasUniqueImage: boolean;
-  /** Background gradient for emoji display */
-  emojiBg: string;
 }
 
 export type FoodCategory =
@@ -1090,15 +1075,12 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     label: 'Sprite / Limo',
     category: 'getraenke',
   },
-  // ---- TEES: Alle teilen tee.svg, daher Emoji-Fallback ----
   {
     id: 'tee',
     keywords: ['tee', 'tea', 'çay', 'cay'],
     image: '/food-images/tee.svg',
     label: 'Tee',
     category: 'getraenke',
-    emoji: '🍵',
-    hasUniqueImage: false,
   },
   {
     id: 'gruener-tee',
@@ -1106,8 +1088,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Grüner Tee',
     category: 'getraenke',
-    emoji: '🍵',
-    hasUniqueImage: false,
   },
   {
     id: 'schwarzer-tee',
@@ -1115,8 +1095,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Schwarzer Tee',
     category: 'getraenke',
-    emoji: '☕',
-    hasUniqueImage: false,
   },
   {
     id: 'jasmin-tee',
@@ -1124,8 +1102,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Jasmin Tee',
     category: 'getraenke',
-    emoji: '🫖',
-    hasUniqueImage: false,
   },
   {
     id: 'pfefferminz-tee',
@@ -1133,8 +1109,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Pfefferminz Tee',
     category: 'getraenke',
-    emoji: '🌿',
-    hasUniqueImage: false,
   },
   {
     id: 'fruechte-tee',
@@ -1142,8 +1116,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Früchte Tee',
     category: 'getraenke',
-    emoji: '🍓',
-    hasUniqueImage: false,
   },
   {
     id: 'kamille-tee',
@@ -1151,8 +1123,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Kamille Tee',
     category: 'getraenke',
-    emoji: '🌼',
-    hasUniqueImage: false,
   },
   {
     id: 'ingwer-tee',
@@ -1160,8 +1130,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Ingwer Tee',
     category: 'getraenke',
-    emoji: '🫚',
-    hasUniqueImage: false,
   },
   {
     id: 'tuerkischer-tee',
@@ -1169,8 +1137,6 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
     image: '/food-images/tee.svg',
     label: 'Türkischer Tee',
     category: 'getraenke',
-    emoji: '🇹🇷',
-    hasUniqueImage: false,
   },
   {
     id: 'kaffee',
@@ -2017,91 +1983,6 @@ export function getAutoImageWithFallback(dishName: string, categoryName?: string
 }
 
 /**
- * Category-based emoji background gradients
- */
-const EMOJI_BACKGROUNDS: Record<FoodCategory, string> = {
-  doener: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', // warm amber
-  pizza: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)', // warm red
-  pasta: 'linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)', // yellow
-  burger: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)', // orange
-  asiatisch: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)', // pink
-  deutsch: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', // amber
-  salate: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)', // green
-  beilagen: 'linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)', // yellow
-  suppen: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)', // orange
-  fruehstueck: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', // amber
-  getraenke: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', // sky blue
-  desserts: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)', // pink
-  vegan: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)', // green
-  snacks: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)', // orange
-  mexikanisch: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', // amber
-  griechisch: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', // blue
-  andere: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)', // gray
-};
-
-/**
- * Get automatic image result with emoji fallback info
- * Returns both the SVG path AND emoji info for hybrid rendering
- */
-export function getAutoImageResult(dishName: string): AutoImageResult {
-  const nameLower = dishName.toLowerCase();
-
-  // Collect all matching entries
-  const matches: { entry: FoodImageEntry; keywordLength: number }[] = [];
-
-  for (const entry of FOOD_IMAGE_LIBRARY) {
-    for (const keyword of entry.keywords) {
-      if (nameLower.includes(keyword.toLowerCase())) {
-        const existing = matches.find(m => m.entry.id === entry.id);
-        if (existing) {
-          if (keyword.length > existing.keywordLength) {
-            existing.keywordLength = keyword.length;
-          }
-        } else {
-          matches.push({ entry, keywordLength: keyword.length });
-        }
-      }
-    }
-  }
-
-  // Default result
-  const defaultResult: AutoImageResult = {
-    image: '/food-images/default-food.svg',
-    emoji: '🍽️',
-    hasUniqueImage: true,
-    emojiBg: EMOJI_BACKGROUNDS.andere,
-  };
-
-  if (matches.length === 0) {
-    return defaultResult;
-  }
-
-  // Sort by keyword length (longest first)
-  matches.sort((a, b) => b.keywordLength - a.keywordLength);
-
-  // Get best match(es)
-  const bestLength = matches[0].keywordLength;
-  const topMatches = matches.filter(m => m.keywordLength === bestLength);
-
-  // Select entry (hash-based if multiple)
-  let selectedEntry: FoodImageEntry;
-  if (topMatches.length === 1) {
-    selectedEntry = topMatches[0].entry;
-  } else {
-    const hash = hashString(nameLower);
-    const selectedIndex = hash % topMatches.length;
-    selectedEntry = topMatches[selectedIndex].entry;
-  }
-
-  return {
-    image: selectedEntry.image,
-    emoji: selectedEntry.emoji || '🍽️',
-    hasUniqueImage: selectedEntry.hasUniqueImage !== false, // Default to true
-    emojiBg: EMOJI_BACKGROUNDS[selectedEntry.category] || EMOJI_BACKGROUNDS.andere,
-  };
-}
-
-/**
  * Get image entry by ID
  */
 export function getImageById(id: string): FoodImageEntry | undefined {
@@ -2217,54 +2098,21 @@ export function getItemImageUrl(
 }
 
 /**
- * Get full image result for a menu item (with emoji fallback info)
- * Use this for hybrid SVG/Emoji rendering
+ * Get CSS filter for image color variation
+ * Uses deterministic hash of item name to create subtle hue shifts
+ * This makes same-SVG items appear slightly different while keeping the Ghibli style
  */
-export function getItemImageResult(
-  item: {
-    name: string;
-    image_url?: string | null;
-    image_library_key?: string | null;
-    image_mode?: ImageMode;
-  },
-  autoImagesEnabled: boolean = true
-): AutoImageResult | null {
-  const mode = item.image_mode || 'auto';
+export function getImageColorFilter(itemName: string): string {
+  const hash = hashString(itemName.toLowerCase());
 
-  // If restaurant has disabled auto images, only show custom images
-  if (!autoImagesEnabled && mode !== 'custom') {
-    return null;
-  }
+  // Create subtle hue shift (0-60 degrees for subtle variation)
+  const hueShift = hash % 60;
 
-  switch (mode) {
-    case 'none':
-      return null;
-    case 'custom':
-      // Custom images are always "unique"
-      if (item.image_url) {
-        return {
-          image: item.image_url,
-          emoji: '🍽️',
-          hasUniqueImage: true,
-          emojiBg: EMOJI_BACKGROUNDS.andere,
-        };
-      }
-      return null;
-    case 'library':
-      if (item.image_library_key) {
-        const entry = getImageById(item.image_library_key);
-        if (entry) {
-          return {
-            image: entry.image,
-            emoji: entry.emoji || '🍽️',
-            hasUniqueImage: entry.hasUniqueImage !== false,
-            emojiBg: EMOJI_BACKGROUNDS[entry.category] || EMOJI_BACKGROUNDS.andere,
-          };
-        }
-      }
-      return null;
-    case 'auto':
-    default:
-      return getAutoImageResult(item.name);
-  }
+  // Slight saturation variation (90-110%)
+  const saturation = 90 + (hash % 20);
+
+  // Very subtle brightness variation (95-105%)
+  const brightness = 95 + ((hash >> 8) % 10);
+
+  return `hue-rotate(${hueShift}deg) saturate(${saturation}%) brightness(${brightness}%)`;
 }

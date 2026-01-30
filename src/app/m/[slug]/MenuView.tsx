@@ -5,12 +5,12 @@ import { Restaurant, Category, MenuItem, OpeningHours } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
-import { getItemImageResult, AutoImageResult } from '@/lib/foodImages';
+import { getItemImageUrl, getImageColorFilter } from '@/lib/foodImages';
 import { getTranslation, formatRelativeTime, Language, autoTranslate, getAllergenName, getAllergenDescription } from '@/lib/translations';
 import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
 
 // Premium Image Component with loading state and blur effect
-function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+function MenuImage({ src, alt, className, style }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -25,7 +25,7 @@ function MenuImage({ src, alt, className }: { src: string; alt: string; classNam
   }
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={`relative overflow-hidden ${className}`} style={style}>
       {/* Blur placeholder */}
       {!isLoaded && (
         <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
@@ -37,63 +37,13 @@ function MenuImage({ src, alt, className }: { src: string; alt: string; classNam
         className={`w-full h-full object-cover transition-all duration-500 ${
           isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
         }`}
+        style={style}
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
         loading="lazy"
       />
     </div>
   );
-}
-
-// Emoji Image Component - renders emoji with gradient background
-function EmojiImage({ emoji, background, className }: { emoji: string; background: string; className?: string }) {
-  return (
-    <div
-      className={`flex items-center justify-center ${className}`}
-      style={{
-        background,
-        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)',
-      }}
-    >
-      <span className="text-4xl drop-shadow-sm" style={{ lineHeight: 1 }}>
-        {emoji}
-      </span>
-    </div>
-  );
-}
-
-// Hybrid Image Component - shows SVG or Emoji based on hasUniqueImage
-function HybridMenuImage({
-  imageResult,
-  alt,
-  className,
-  surfaceColor,
-}: {
-  imageResult: AutoImageResult;
-  alt: string;
-  className?: string;
-  surfaceColor?: string;
-}) {
-  const isSvgImage = imageResult.image.endsWith('.svg');
-
-  // If has unique image, show the SVG/image
-  if (imageResult.hasUniqueImage) {
-    if (isSvgImage) {
-      return (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={imageResult.image}
-          alt={alt}
-          className={className}
-          style={{ backgroundColor: surfaceColor }}
-        />
-      );
-    }
-    return <MenuImage src={imageResult.image} alt={alt} className={className} />;
-  }
-
-  // No unique image - show emoji fallback
-  return <EmojiImage emoji={imageResult.emoji} background={imageResult.emojiBg} className={className} />;
 }
 
 interface MenuViewProps {
@@ -743,7 +693,10 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                       {filteredItems.map((item) => {
                         const itemAllergens = getAllergensByIds(item.allergens || []);
                         const isHovered = hoveredCard === item.id;
-                        const imageResult = getItemImageResult(item, restaurant.auto_images !== false);
+                        const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                        const isSvgImage = imageUrl?.endsWith('.svg');
+                        // Apply subtle color variation to SVG images for visual diversity
+                        const colorFilter = isSvgImage ? getImageColorFilter(item.name) : undefined;
 
                         return (
                           <article
@@ -759,15 +712,27 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                             onMouseLeave={() => setHoveredCard(null)}
                           >
                             <div className="flex gap-4">
-                              {/* Image - Hybrid SVG/Emoji system */}
-                              {imageResult && (
+                              {/* Image - with subtle color variation for SVGs */}
+                              {imageUrl && (
                                 <div className="flex-shrink-0">
-                                  <HybridMenuImage
-                                    imageResult={imageResult}
-                                    alt={item.name}
-                                    className="w-20 h-20 rounded-lg object-cover"
-                                    surfaceColor={styles.surfaceHover}
-                                  />
+                                  {isSvgImage ? (
+                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                    <img
+                                      src={imageUrl}
+                                      alt={item.name}
+                                      className="w-20 h-20 rounded-lg object-cover"
+                                      style={{
+                                        backgroundColor: styles.surfaceHover,
+                                        filter: colorFilter,
+                                      }}
+                                    />
+                                  ) : (
+                                    <MenuImage
+                                      src={imageUrl}
+                                      alt={item.name}
+                                      className="w-20 h-20 rounded-lg"
+                                    />
+                                  )}
                                 </div>
                               )}
 
