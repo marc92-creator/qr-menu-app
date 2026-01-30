@@ -673,69 +673,204 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
 
       {/* Subscription Info - Show different content based on status */}
       {!isPremium && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 shadow-sm ring-1 ring-gray-100">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">{userInTrial ? '🎉' : '⏰'}</span>
-            </div>
-            <h2 className="font-bold text-lg text-gray-900">
-              {userInTrial ? 'Dein Trial-Status' : 'Trial abgelaufen'}
-            </h2>
-          </div>
-
+        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl sm:rounded-3xl p-6 shadow-sm border border-emerald-100">
           {userInTrial ? (
-            // Trial active - show positive messaging
-            <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
-              <div className="text-center mb-4">
-                <div className="text-4xl font-bold text-blue-600">{trialDaysRemaining}</div>
-                <div className="text-sm text-blue-700 font-medium">Tage verbleibend</div>
+            // Trial active - modern design with progress bar
+            <div className="space-y-5">
+              {/* Trial Status Card */}
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-emerald-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <span className="text-xl">🚀</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900">Dein Trial</h3>
+                    <p className="text-sm text-gray-500">Kostenloser Testzeitraum</p>
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">Verbleibende Zeit</span>
+                    <span className={`text-sm font-bold ${
+                      trialDaysRemaining > 7 ? 'text-emerald-600' :
+                      trialDaysRemaining > 3 ? 'text-amber-600' : 'text-red-600'
+                    }`}>
+                      {trialDaysRemaining} von 14 Tagen
+                    </span>
+                  </div>
+                  <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        trialDaysRemaining > 7 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' :
+                        trialDaysRemaining > 3 ? 'bg-gradient-to-r from-amber-400 to-amber-500' :
+                        'bg-gradient-to-r from-red-400 to-red-500'
+                      }`}
+                      style={{ width: `${(trialDaysRemaining / 14) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Feature Status */}
+                <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 rounded-xl">
+                  <span className="text-emerald-500">✨</span>
+                  <span className="text-sm font-medium text-emerald-700">Alle Features freigeschaltet</span>
+                </div>
               </div>
 
-              <div className="bg-white/60 rounded-xl p-4 mb-4">
-                <p className="text-sm text-gray-700 text-center">
-                  <strong>Alle Features sind freigeschaltet!</strong><br />
-                  Genieße während deines Trials vollen Zugang zu allen Funktionen.
+              {/* Upgrade CTA */}
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-4">
+                  Gefällt dir MenuApp? Sichere dir jetzt deinen Zugang bevor dein Trial endet.
                 </p>
               </div>
 
-              <div className="text-center text-sm text-gray-600 mb-4">
-                Nach dem Trial: <strong>9,99€/Monat</strong> für unbegrenzten Zugang
-              </div>
+              {/* Pro Plan Card */}
+              <div className="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 relative overflow-hidden">
+                {/* Subtle gradient accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-100 to-transparent opacity-50 rounded-bl-full" />
 
-              <Button
-                className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
-                onClick={handleUpgrade}
-              >
-                Jetzt auf Pro upgraden
-              </Button>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <span className="text-xl">👑</span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">Pro</h3>
+                        <p className="text-sm text-gray-500">Unbegrenzter Zugang</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-900">9,99€</div>
+                      <div className="text-sm text-gray-500">/Monat</div>
+                    </div>
+                  </div>
+
+                  {/* Benefits */}
+                  <div className="space-y-2 mb-5">
+                    <div className="flex items-center gap-3 text-sm">
+                      <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                      <span className="text-gray-700">Kein Watermark auf deiner Speisekarte</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span className="text-gray-700">Unbegrenzter Zugang zu allen Features</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <span className="text-gray-700">Priority Support per E-Mail</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    className="w-full rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+                    onClick={handleUpgrade}
+                  >
+                    Jetzt upgraden
+                  </Button>
+                </div>
+              </div>
             </div>
           ) : (
-            // Trial expired - show upgrade prompt
-            <div className="p-5 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border-2 border-red-200">
-              <div className="text-center mb-4">
-                <div className="text-2xl font-bold text-red-600">Trial abgelaufen</div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Upgrade jetzt, um weiterhin alle Features nutzen zu können.
+            // Trial expired - urgent upgrade prompt
+            <div className="space-y-5">
+              {/* Expired Status Card */}
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-red-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/20">
+                    <span className="text-xl">⏰</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-red-600">Trial abgelaufen</h3>
+                    <p className="text-sm text-gray-500">Dein Testzeitraum ist beendet</p>
+                  </div>
+                </div>
+
+                {/* Progress Bar - Empty */}
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">Verbleibende Zeit</span>
+                    <span className="text-sm font-bold text-red-600">0 von 14 Tagen</span>
+                  </div>
+                  <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-full w-0 bg-gradient-to-r from-red-400 to-red-500 rounded-full" />
+                  </div>
+                </div>
+
+                {/* Warning */}
+                <div className="flex items-center gap-2 px-3 py-2 bg-red-50 rounded-xl">
+                  <span className="text-red-500">⚠️</span>
+                  <span className="text-sm font-medium text-red-700">Watermark wird auf deiner Speisekarte angezeigt</span>
+                </div>
+              </div>
+
+              {/* Upgrade CTA */}
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-4">
+                  Upgrade jetzt, um das Watermark zu entfernen und alle Features zu nutzen.
                 </p>
               </div>
 
-              <div className="flex items-center justify-between mb-4 p-3 bg-white/60 rounded-xl">
-                <div>
-                  <div className="font-bold text-gray-900">Pro</div>
-                  <div className="text-sm text-gray-500">Unbegrenzter Zugang</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-gray-900">9,99€</div>
-                  <div className="text-sm text-gray-500">/Monat</div>
+              {/* Pro Plan Card */}
+              <div className="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-shadow border-2 border-emerald-200 relative overflow-hidden">
+                {/* Highlight border animation */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-emerald-500/5" />
+
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <span className="text-xl">👑</span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">Pro</h3>
+                        <p className="text-sm text-gray-500">Unbegrenzter Zugang</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-900">9,99€</div>
+                      <div className="text-sm text-gray-500">/Monat</div>
+                    </div>
+                  </div>
+
+                  {/* Benefits */}
+                  <div className="space-y-2 mb-5">
+                    <div className="flex items-center gap-3 text-sm">
+                      <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                      <span className="text-gray-700">Kein Watermark auf deiner Speisekarte</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span className="text-gray-700">Unbegrenzter Zugang zu allen Features</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <span className="text-gray-700">Priority Support per E-Mail</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    className="w-full rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+                    onClick={handleUpgrade}
+                  >
+                    Jetzt upgraden
+                  </Button>
                 </div>
               </div>
-
-              <Button
-                className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
-                onClick={handleUpgrade}
-              >
-                Jetzt upgraden
-              </Button>
             </div>
           )}
         </div>
