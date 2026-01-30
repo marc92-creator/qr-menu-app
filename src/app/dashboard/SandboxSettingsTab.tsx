@@ -57,9 +57,18 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
       reader.onload = (event) => {
         const dataUrl = event.target?.result as string;
         setLogoPreview(dataUrl);
+        // Immediately save to localStorage so preview updates
+        updateSandboxRestaurant({ logo_url: dataUrl });
+        onUpdate();
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoPreview(null);
+    updateSandboxRestaurant({ logo_url: null });
+    onUpdate();
   };
 
   const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
@@ -188,7 +197,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
                   className="w-full h-full object-cover"
                 />
                 <button
-                  onClick={() => setLogoPreview(null)}
+                  onClick={handleRemoveLogo}
                   className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

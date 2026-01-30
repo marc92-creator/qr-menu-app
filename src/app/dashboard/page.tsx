@@ -774,6 +774,7 @@ export default function DashboardPage() {
             restaurant={selectedRestaurant}
             subscription={subscription}
             onUpdate={loadData}
+            onRestaurantUpdate={(updated) => setSelectedRestaurant(updated)}
           />
         )}
         {activeTab === 'analytics' && selectedRestaurant && (

@@ -15,6 +15,7 @@ interface SettingsTabProps {
   restaurant: Restaurant;
   subscription: Subscription | null;
   onUpdate: () => void;
+  onRestaurantUpdate?: (restaurant: Restaurant) => void;
 }
 
 const DAYS = [
@@ -37,7 +38,7 @@ const DEFAULT_HOURS: OpeningHours = {
   so: { open: '12:00', close: '21:00' },
 };
 
-export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabProps) {
+export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUpdate }: SettingsTabProps) {
   const [name, setName] = useState(restaurant.name);
   const [address, setAddress] = useState(restaurant.address || '');
   const [whatsappNumber, setWhatsappNumber] = useState(restaurant.whatsapp_number || '');
@@ -92,6 +93,10 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         .update({ logo_url: url })
         .eq('id', restaurant.id);
 
+      // Update parent state immediately for preview
+      if (onRestaurantUpdate) {
+        onRestaurantUpdate({ ...restaurant, logo_url: url });
+      }
       onUpdate();
     } catch (error) {
       console.error('Logo upload error:', error);
@@ -113,6 +118,10 @@ export function SettingsTab({ restaurant, subscription, onUpdate }: SettingsTabP
         .eq('id', restaurant.id);
 
       setLogoUrl('');
+      // Update parent state immediately for preview
+      if (onRestaurantUpdate) {
+        onRestaurantUpdate({ ...restaurant, logo_url: null });
+      }
       onUpdate();
     } catch (error) {
       console.error('Remove logo error:', error);
