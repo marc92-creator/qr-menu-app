@@ -194,40 +194,56 @@ function SortableMenuItem({
       })()}
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{item.name}</div>
-              {item.is_sold_out && (
-                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
-                  <span>🚫</span>
-                  <span className="hidden sm:inline">Ausverkauft</span>
-                </span>
-              )}
-            </div>
-            {item.description && (
-              <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
-                {item.description}
-              </div>
-            )}
-          </div>
-          <span className="text-sm sm:text-lg font-bold text-emerald-600 whitespace-nowrap flex-shrink-0">
+        {/* Name + Price Row - Stack on mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2">
+          <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{item.name}</h4>
+          <span className="text-sm sm:text-lg font-bold text-emerald-600 whitespace-nowrap">
             {formatPrice(item.price)}
           </span>
         </div>
-        {itemAllergens.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1.5">
-            {itemAllergens.map((allergen) => (
-              <span
-                key={allergen.id}
-                title={allergen.name}
-                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
-              >
-                <span>{allergen.icon}</span>
-              </span>
-            ))}
+        {item.description && (
+          <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
+            {item.description}
           </div>
         )}
+        {/* Badges Row */}
+        <div className="flex flex-wrap gap-1 mt-1.5">
+          {item.is_sold_out && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+              <span>🚫</span>
+              <span className="hidden sm:inline">Ausverkauft</span>
+            </span>
+          )}
+          {item.is_special && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
+              <span>⭐</span>
+            </span>
+          )}
+          {item.is_popular && !item.is_special && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+              <span>❤️</span>
+            </span>
+          )}
+          {item.is_vegan && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+              <span>🌱</span>
+            </span>
+          )}
+          {item.is_vegetarian && !item.is_vegan && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+              <span>🥬</span>
+            </span>
+          )}
+          {itemAllergens.map((allergen) => (
+            <span
+              key={allergen.id}
+              title={allergen.name}
+              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
+            >
+              <span>{allergen.icon}</span>
+            </span>
+          ))}
+        </div>
       </div>
       <div className="flex flex-col sm:flex-row items-center gap-1 flex-shrink-0">
         <button

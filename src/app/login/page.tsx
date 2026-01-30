@@ -76,6 +76,15 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
 
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-emerald-600 hover:text-emerald-700"
+                >
+                  Passwort vergessen?
+                </Link>
+              </div>
+
               {error && (
                 <p className="text-red-500 text-sm text-center">{error}</p>
               )}

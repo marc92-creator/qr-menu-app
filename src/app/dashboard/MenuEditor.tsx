@@ -1605,14 +1605,14 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                                 return (
                                   <SortableMenuItem key={item.id} item={item} isDragDisabled={isDemo}>
                                     <div
-                                      className={`px-5 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-12' : ''}`}
+                                      className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-10 sm:pl-12' : ''}`}
                                     >
                           {/* Thumbnail */}
                           {(() => {
                             const imageUrl = getItemImageUrl(item, true);
                             if (!imageUrl) return null;
                             return (
-                              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
+                              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                   src={imageUrl}
@@ -1623,102 +1623,102 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                             );
                           })()}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-semibold text-gray-900">{item.name}</span>
-                              {/* Item Badges */}
+                            {/* Name + Price Row - Stack on mobile */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2">
+                              <h4 className="font-semibold text-gray-900 truncate text-sm sm:text-base">{item.name}</h4>
+                              <span className="text-sm sm:text-lg font-bold text-emerald-600 whitespace-nowrap">
+                                {formatPrice(item.price)}
+                              </span>
+                            </div>
+                            {item.description && (
+                              <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
+                                {item.description}
+                              </div>
+                            )}
+                            {/* Badges Row */}
+                            <div className="flex flex-wrap gap-1 mt-1.5">
                               {item.is_special && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
                                   <span>⭐</span>
                                   <span className="hidden sm:inline">Tagesangebot</span>
                                 </span>
                               )}
                               {item.is_popular && !item.is_special && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
                                   <span>❤️</span>
                                   <span className="hidden sm:inline">Beliebt</span>
                                 </span>
                               )}
                               {item.is_vegan && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
                                   <span>🌱</span>
                                   <span className="hidden sm:inline">Vegan</span>
                                 </span>
                               )}
                               {item.is_vegetarian && !item.is_vegan && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
                                   <span>🥬</span>
                                   <span className="hidden sm:inline">Vegetarisch</span>
                                 </span>
                               )}
                               {item.is_sold_out && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
                                   <span>🚫</span>
-                                  <span>Ausverkauft</span>
+                                  <span className="hidden sm:inline">Ausverkauft</span>
                                 </span>
                               )}
+                              {/* Allergen Badges - inline with other badges */}
+                              {itemAllergens.map((allergen) => (
+                                <span
+                                  key={allergen.id}
+                                  title={allergen.name}
+                                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
+                                >
+                                  <span>{allergen.icon}</span>
+                                  <span className="hidden sm:inline">{allergen.name}</span>
+                                </span>
+                              ))}
                             </div>
-                            {item.description && (
-                              <div className="text-sm text-gray-500 mt-0.5 line-clamp-1">
-                                {item.description}
-                              </div>
-                            )}
-                            {/* Allergen Badges */}
-                            {itemAllergens.length > 0 && (
-                              <div className="flex flex-wrap gap-1.5 mt-2">
-                                {itemAllergens.map((allergen) => (
-                                  <span
-                                    key={allergen.id}
-                                    title={allergen.name}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
-                                  >
-                                    <span>{allergen.icon}</span>
-                                    <span className="hidden sm:inline">{allergen.name}</span>
-                                  </span>
-                                ))}
-                              </div>
-                            )}
                           </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <span className="text-lg font-bold text-emerald-600">
-                              {formatPrice(item.price)}
-                            </span>
+                          {/* Action Buttons - Compact on mobile */}
+                          <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                             {!isDemo && (
                               <>
                                 {/* Quick Sold Out Toggle */}
                                 <button
                                   onClick={() => handleToggleSoldOut(item)}
-                                  className={`p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors ${
+                                  className={`p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl transition-colors ${
                                     item.is_sold_out
                                       ? 'text-red-600 bg-red-50 hover:bg-red-100'
                                       : 'text-gray-300 group-hover:text-gray-400 hover:text-red-500 hover:bg-red-50'
                                   }`}
                                   title={item.is_sold_out ? 'Als verfügbar markieren' : 'Als ausverkauft markieren'}
                                 >
-                                  <span className="text-base">{item.is_sold_out ? '🚫' : '✅'}</span>
+                                  <span className="text-sm sm:text-base">{item.is_sold_out ? '🚫' : '✅'}</span>
                                 </button>
                                 {/* Edit Button */}
                                 <button
                                   onClick={() => handleEditItem(item)}
-                                  className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-emerald-50"
+                                  className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl hover:bg-emerald-50"
                                   title="Bearbeiten"
                                 >
-                                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                   </svg>
                                 </button>
                                 {/* Delete Button */}
                                 <button
                                   onClick={() => handleDeleteItem(item.id)}
-                                  className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-2 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-50"
+                                  className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl hover:bg-red-50"
                                   title="Löschen"
                                 >
-                                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                 </button>
-                                        </>
-                                      )}
-                                    </div>
+                              </>
+                            )}
+                          </div>
                                   </div>
                                 </SortableMenuItem>
                               );
