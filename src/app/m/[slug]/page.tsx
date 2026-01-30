@@ -152,7 +152,7 @@ export async function generateMetadata({ params }: PageProps) {
       title,
       description,
       type: 'website',
-      url: `https://qr-menu-app-beta.vercel.app/m/${slug}`,
+      url: `https://www.mymenuapp.de/m/${slug}`,
       images: restaurant.logo_url ? [{ url: restaurant.logo_url }] : [],
     },
     twitter: {

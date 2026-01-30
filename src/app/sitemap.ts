@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .eq('is_demo', false);
 
   const menuUrls = (restaurants || []).map(r => ({
-    url: `https://qr-menu-app-beta.vercel.app/m/${r.slug}`,
+    url: `https://www.mymenuapp.de/m/${r.slug}`,
     lastModified: new Date(r.updated_at),
     changeFrequency: 'daily' as const,
     priority: 0.8,
@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     {
-      url: 'https://qr-menu-app-beta.vercel.app',
+      url: 'https://www.mymenuapp.de',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,

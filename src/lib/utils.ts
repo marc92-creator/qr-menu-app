@@ -24,7 +24,7 @@ export function getAppUrl(): string {
   }
 
   // Fallback to production URL (never localhost in production)
-  return 'https://qr-menu-app-beta.vercel.app';
+  return 'https://www.mymenuapp.de';
 }
 
 /**

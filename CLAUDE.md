@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **QR Menu App** - A SaaS digital menu system for restaurants in Germany. Restaurant owners create menus, generate QR codes, and customers scan to view menus on phones. All UI text is German.
 
-- **Live URL**: https://qr-menu-app-beta.vercel.app
+- **Live URL**: https://www.mymenuapp.de
 - **Pricing**: 14-day free trial (all features) → Pro 9.99€/month
 
 ## Commands

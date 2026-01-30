@@ -350,7 +350,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     "@type": "Restaurant",
     "name": restaurant.name,
     "address": restaurant.address,
-    "url": `https://qr-menu-app-beta.vercel.app/m/${restaurant.slug}`,
+    "url": `https://www.mymenuapp.de/m/${restaurant.slug}`,
     "menu": {
       "@type": "Menu",
       "hasMenuSection": categories.map(cat => ({
