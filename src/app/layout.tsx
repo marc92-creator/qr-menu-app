@@ -15,11 +15,20 @@ export const metadata: Metadata = {
     siteName: 'MenuApp',
     locale: 'de_DE',
     type: 'website',
+    images: [
+      {
+        url: 'https://www.mymenuapp.de/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'MenuApp - Digitale Speisekarten für Restaurants',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MenuApp - Digitale Speisekarten für Restaurants',
     description: 'Erstelle deine digitale Speisekarte in Minuten.',
+    images: ['https://www.mymenuapp.de/opengraph-image'],
   },
 };
 
