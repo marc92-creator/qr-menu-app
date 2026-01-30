@@ -53,7 +53,6 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
   const [wifiPassword, setWifiPassword] = useState(restaurant.wifi_password || '');
   const [loading, setLoading] = useState(false);
   const [logoLoading, setLogoLoading] = useState(false);
-  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
@@ -158,50 +157,24 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
+  // Lemon Squeezy Checkout URL (hardcoded as fallback)
+  const LEMON_SQUEEZY_CHECKOUT_URL = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL
+    || 'https://e-rechnung-handwerk.lemonsqueezy.com/checkout/buy/9718ca8d-8906-4270-b2d4-2312451d840c';
+
   // Direct Lemon Squeezy checkout
   const handleLemonSqueezyCheckout = () => {
-    const checkoutUrl = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL;
-    if (checkoutUrl) {
-      const url = new URL(checkoutUrl);
-      // Pass restaurant ID for webhook identification
-      url.searchParams.set('checkout[custom][restaurant_id]', restaurant.id);
-      if (restaurant.owner_id) {
-        url.searchParams.set('checkout[custom][user_id]', restaurant.owner_id);
-      }
-      window.open(url.toString(), '_blank');
-    } else {
-      // Fallback: show modal with contact info
-      setShowUpgradeModal(true);
+    const url = new URL(LEMON_SQUEEZY_CHECKOUT_URL);
+    // Pass restaurant ID for webhook identification
+    url.searchParams.set('checkout[custom][restaurant_id]', restaurant.id);
+    if (restaurant.owner_id) {
+      url.searchParams.set('checkout[custom][user_id]', restaurant.owner_id);
     }
+    window.open(url.toString(), '_blank');
   };
 
-  // Legacy Stripe checkout (kept as fallback)
-  const handleUpgrade = async () => {
-    // Try Lemon Squeezy first
-    const lsUrl = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL;
-    if (lsUrl) {
-      handleLemonSqueezyCheckout();
-      return;
-    }
-
-    // Fallback to Stripe
-    setUpgradeLoading(true);
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setShowUpgradeModal(true);
-      }
-    } catch {
-      setShowUpgradeModal(true);
-    } finally {
-      setUpgradeLoading(false);
-    }
+  // Main upgrade handler - uses Lemon Squeezy
+  const handleUpgrade = () => {
+    handleLemonSqueezyCheckout();
   };
 
   const isPremium = subscription?.plan === 'basic' && subscription?.status === 'active';
@@ -732,7 +705,6 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
               <Button
                 className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
                 onClick={handleUpgrade}
-                loading={upgradeLoading}
               >
                 Jetzt auf Pro upgraden
               </Button>
@@ -761,7 +733,6 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
               <Button
                 className="w-full rounded-xl shadow-lg shadow-emerald-500/20"
                 onClick={handleUpgrade}
-                loading={upgradeLoading}
               >
                 Jetzt upgraden
               </Button>
@@ -849,71 +820,48 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
         </Button>
       </div>
 
-      {/* Enhanced Upgrade Modal with Feature Comparison */}
+      {/* Upgrade Modal - Simple & Honest */}
       {showUpgradeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl my-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl">
             {/* Header */}
             <div className="text-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <span className="text-3xl">👑</span>
               </div>
               <h2 className="text-2xl font-bold text-gray-900">Upgrade auf Pro</h2>
-              <p className="text-gray-500 mt-1">Schalte alle Features frei</p>
+              {userInTrial && trialDaysRemaining > 0 && (
+                <p className="text-gray-600 mt-2">
+                  Dein Trial endet in <span className="font-semibold text-amber-600">{trialDaysRemaining} Tagen</span>.
+                </p>
+              )}
+              <p className="text-gray-500 mt-1">
+                Upgrade jetzt um deine Speisekarte dauerhaft online zu behalten!
+              </p>
             </div>
 
-            {/* Feature Comparison Table */}
-            <div className="mb-6 rounded-xl overflow-hidden border border-gray-200">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="py-3 px-4 text-left font-semibold text-gray-600">Feature</th>
-                    <th className="py-3 px-3 text-center font-semibold text-gray-400 w-20">Free</th>
-                    <th className="py-3 px-3 text-center font-semibold text-emerald-600 w-20 bg-emerald-50">Pro</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">Speisekarten</td>
-                    <td className="py-3 px-3 text-center text-gray-400">1</td>
-                    <td className="py-3 px-3 text-center text-emerald-600 bg-emerald-50/50 font-medium">Unbegrenzt</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">Kategorien</td>
-                    <td className="py-3 px-3 text-center text-gray-400">5</td>
-                    <td className="py-3 px-3 text-center text-emerald-600 bg-emerald-50/50 font-medium">Unbegrenzt</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">Watermark</td>
-                    <td className="py-3 px-3 text-center text-gray-400">Ja</td>
-                    <td className="py-3 px-3 text-center bg-emerald-50/50"><span className="text-emerald-600">✓</span> Keins</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">Themes</td>
-                    <td className="py-3 px-3 text-center text-gray-400">2</td>
-                    <td className="py-3 px-3 text-center text-emerald-600 bg-emerald-50/50 font-medium">Alle 5</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">Analytics</td>
-                    <td className="py-3 px-3 text-center text-gray-400">Basis</td>
-                    <td className="py-3 px-3 text-center bg-emerald-50/50"><span className="text-emerald-600">✓</span> Erweitert</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">TV-Modus</td>
-                    <td className="py-3 px-3 text-center text-gray-400">—</td>
-                    <td className="py-3 px-3 text-center bg-emerald-50/50"><span className="text-emerald-600">✓</span></td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-gray-700">Support</td>
-                    <td className="py-3 px-3 text-center text-gray-400">Community</td>
-                    <td className="py-3 px-3 text-center bg-emerald-50/50"><span className="text-emerald-600">✓</span> Priority</td>
-                  </tr>
-                </tbody>
-              </table>
+            {/* Benefits List */}
+            <div className="mb-6 space-y-3">
+              <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl">
+                <span className="text-emerald-600 text-lg">✓</span>
+                <span className="text-gray-700">Kein Watermark auf deiner Speisekarte</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl">
+                <span className="text-emerald-600 text-lg">✓</span>
+                <span className="text-gray-700">Unbegrenzter Zugang zu allen Features</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl">
+                <span className="text-emerald-600 text-lg">✓</span>
+                <span className="text-gray-700">Alle 5 Themes freigeschaltet</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl">
+                <span className="text-emerald-600 text-lg">✓</span>
+                <span className="text-gray-700">Priority Support per E-Mail</span>
+              </div>
             </div>
 
             {/* Pricing */}
-            <div className="text-center mb-4">
+            <div className="text-center mb-5">
               <div className="text-3xl font-bold text-gray-900">
                 9,99€<span className="text-lg font-normal text-gray-500">/Monat</span>
               </div>
@@ -922,7 +870,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
               </p>
             </div>
 
-            {/* CTA Button - Lemon Squeezy Checkout */}
+            {/* CTA Button */}
             <Button
               className="w-full rounded-xl py-3 text-base shadow-lg shadow-emerald-500/20 mb-4"
               onClick={() => {
@@ -930,21 +878,21 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
                 setShowUpgradeModal(false);
               }}
             >
-              💳 Jetzt für 9,99€/Monat upgraden
+              💳 Jetzt upgraden
             </Button>
 
-            {/* Alternative Contact */}
-            <div className="text-center text-sm text-gray-500 mb-4">
-              <p className="mb-1">Fragen zum Upgrade?</p>
+            {/* Contact */}
+            <div className="text-center text-sm text-gray-500 mb-3">
+              <span>Fragen? </span>
               <a
                 href="mailto:support@menuapp.de?subject=Frage zum Pro Upgrade"
                 className="text-emerald-600 hover:text-emerald-700 font-medium"
               >
-                📧 support@menuapp.de
+                support@menuapp.de
               </a>
             </div>
 
-            {/* Close Button */}
+            {/* Close */}
             <button
               onClick={() => setShowUpgradeModal(false)}
               className="w-full text-center text-sm text-gray-400 hover:text-gray-600 transition-colors"
