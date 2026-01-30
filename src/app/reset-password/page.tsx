@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -15,6 +15,37 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+  const supabase = createClient();
+
+  // Wait for the session from the URL hash
+  useEffect(() => {
+    const checkSession = async () => {
+      // Supabase automatically sets the session from the hash
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (session) {
+        setIsReady(true);
+      } else if (error) {
+        setError('Der Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an.');
+      }
+    };
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsReady(true);
+      }
+    });
+
+    // Initial check
+    checkSession();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase.auth]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +64,20 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const supabase = createClient();
       const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
-        setError('Fehler beim Ändern des Passworts. Bitte versuche es erneut.');
+        console.error('Password update error:', error);
+        if (error.message.includes('session') || error.message.includes('token')) {
+          setError('Der Link ist abgelaufen. Bitte fordere einen neuen an.');
+        } else {
+          setError('Fehler beim Ändern des Passworts: ' + error.message);
+        }
       } else {
         setSuccess(true);
-        setTimeout(() => router.push('/dashboard'), 3000);
+        // Sign out so user can log in with new password
+        await supabase.auth.signOut();
+        setTimeout(() => router.push('/login'), 3000);
       }
     } catch (err) {
       console.error('Update password error:', err);
@@ -70,7 +107,7 @@ export default function ResetPasswordPage() {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">Passwort geändert!</h1>
               <p className="text-gray-600 mb-6">
                 Dein Passwort wurde erfolgreich geändert.
-                Du wirst gleich zum Dashboard weitergeleitet...
+                Du wirst gleich zum Login weitergeleitet...
               </p>
               <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto"></div>
             </div>
@@ -96,39 +133,56 @@ export default function ResetPasswordPage() {
               Gib dein neues Passwort ein.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
-                  {error}
+            {!isReady && !error && (
+              <div className="text-center py-8">
+                <div className="animate-spin w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-500">Link wird überprüft...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
+                {error}
+                <div className="mt-3">
+                  <Link
+                    href="/forgot-password"
+                    className="inline-block bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Neuen Link anfordern
+                  </Link>
                 </div>
-              )}
+              </div>
+            )}
 
-              <Input
-                id="password"
-                type="password"
-                label="Neues Passwort"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                placeholder="Mindestens 6 Zeichen"
-              />
+            {isReady && (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Input
+                  id="password"
+                  type="password"
+                  label="Neues Passwort"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Mindestens 6 Zeichen"
+                />
 
-              <Input
-                id="confirmPassword"
-                type="password"
-                label="Passwort bestätigen"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                placeholder="Passwort wiederholen"
-              />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  label="Passwort bestätigen"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Passwort wiederholen"
+                />
 
-              <Button type="submit" className="w-full" loading={loading}>
-                Passwort ändern
-              </Button>
-            </form>
+                <Button type="submit" className="w-full" loading={loading}>
+                  Passwort ändern
+                </Button>
+              </form>
+            )}
 
             <div className="mt-6 text-center">
               <Link href="/login" className="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
