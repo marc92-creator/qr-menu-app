@@ -156,6 +156,8 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
     onUpdate();
   };
 
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
   const handleUpgrade = async () => {
     setUpgradeLoading(true);
 
@@ -169,13 +171,18 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
 
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        // Stripe not configured or error - show contact modal
+        console.log('Checkout response:', data);
+        setShowUpgradeModal(true);
       }
     } catch (err) {
       console.error('Error creating checkout session:', err);
-      alert('Fehler beim Erstellen der Checkout-Session');
+      // Show contact modal as fallback
+      setShowUpgradeModal(true);
+    } finally {
+      setUpgradeLoading(false);
     }
-
-    setUpgradeLoading(false);
   };
 
   const isPremium = subscription?.plan === 'basic' && subscription?.status === 'active';
@@ -822,6 +829,62 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
           Restaurant löschen
         </Button>
       </div>
+
+      {/* Upgrade Contact Modal */}
+      {showUpgradeModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">👑</span>
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Auf Pro upgraden</h2>
+              <p className="text-gray-600">
+                Die automatische Zahlung wird gerade eingerichtet.
+                Kontaktiere uns für ein manuelles Upgrade!
+              </p>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              <a
+                href="mailto:support@menuapp.de?subject=Pro Upgrade für mein Restaurant"
+                className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors"
+              >
+                <span className="text-2xl">📧</span>
+                <div>
+                  <div className="font-semibold text-gray-900">E-Mail</div>
+                  <div className="text-sm text-blue-600">support@menuapp.de</div>
+                </div>
+              </a>
+
+              <a
+                href="https://wa.me/4915123456789?text=Hallo! Ich möchte mein Restaurant auf Pro upgraden."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors"
+              >
+                <span className="text-2xl">💬</span>
+                <div>
+                  <div className="font-semibold text-gray-900">WhatsApp</div>
+                  <div className="text-sm text-green-600">Direkt schreiben</div>
+                </div>
+              </a>
+            </div>
+
+            <div className="text-center text-sm text-gray-500 mb-4">
+              Pro kostet nur <strong>9,99€/Monat</strong> - keine versteckten Kosten!
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full rounded-xl"
+              onClick={() => setShowUpgradeModal(false)}
+            >
+              Schließen
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
