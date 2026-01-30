@@ -5,7 +5,7 @@ import { Restaurant, Category, MenuItem, OpeningHours } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getTheme, isGradient } from '@/lib/themes';
-import { getItemImageUrl } from '@/lib/foodImages';
+import { getItemImageResult, AutoImageResult } from '@/lib/foodImages';
 import { getTranslation, formatRelativeTime, Language, autoTranslate, getAllergenName, getAllergenDescription } from '@/lib/translations';
 import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
 
@@ -43,6 +43,57 @@ function MenuImage({ src, alt, className }: { src: string; alt: string; classNam
       />
     </div>
   );
+}
+
+// Emoji Image Component - renders emoji with gradient background
+function EmojiImage({ emoji, background, className }: { emoji: string; background: string; className?: string }) {
+  return (
+    <div
+      className={`flex items-center justify-center ${className}`}
+      style={{
+        background,
+        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)',
+      }}
+    >
+      <span className="text-4xl drop-shadow-sm" style={{ lineHeight: 1 }}>
+        {emoji}
+      </span>
+    </div>
+  );
+}
+
+// Hybrid Image Component - shows SVG or Emoji based on hasUniqueImage
+function HybridMenuImage({
+  imageResult,
+  alt,
+  className,
+  surfaceColor,
+}: {
+  imageResult: AutoImageResult;
+  alt: string;
+  className?: string;
+  surfaceColor?: string;
+}) {
+  const isSvgImage = imageResult.image.endsWith('.svg');
+
+  // If has unique image, show the SVG/image
+  if (imageResult.hasUniqueImage) {
+    if (isSvgImage) {
+      return (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={imageResult.image}
+          alt={alt}
+          className={className}
+          style={{ backgroundColor: surfaceColor }}
+        />
+      );
+    }
+    return <MenuImage src={imageResult.image} alt={alt} className={className} />;
+  }
+
+  // No unique image - show emoji fallback
+  return <EmojiImage emoji={imageResult.emoji} background={imageResult.emojiBg} className={className} />;
 }
 
 interface MenuViewProps {
@@ -692,8 +743,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                       {filteredItems.map((item) => {
                         const itemAllergens = getAllergensByIds(item.allergens || []);
                         const isHovered = hoveredCard === item.id;
-                        const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
-                        const isSvgImage = imageUrl?.endsWith('.svg');
+                        const imageResult = getItemImageResult(item, restaurant.auto_images !== false);
 
                         return (
                           <article
@@ -709,24 +759,15 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                             onMouseLeave={() => setHoveredCard(null)}
                           >
                             <div className="flex gap-4">
-                              {/* Image - only show if there's an image URL */}
-                              {imageUrl && (
+                              {/* Image - Hybrid SVG/Emoji system */}
+                              {imageResult && (
                                 <div className="flex-shrink-0">
-                                  {isSvgImage ? (
-                                    /* eslint-disable-next-line @next/next/no-img-element */
-                                    <img
-                                      src={imageUrl}
-                                      alt={item.name}
-                                      className="w-20 h-20 rounded-lg object-cover"
-                                      style={{ backgroundColor: styles.surfaceHover }}
-                                    />
-                                  ) : (
-                                    <MenuImage
-                                      src={imageUrl}
-                                      alt={item.name}
-                                      className="w-20 h-20 rounded-lg"
-                                    />
-                                  )}
+                                  <HybridMenuImage
+                                    imageResult={imageResult}
+                                    alt={item.name}
+                                    className="w-20 h-20 rounded-lg object-cover"
+                                    surfaceColor={styles.surfaceHover}
+                                  />
                                 </div>
                               )}
 
