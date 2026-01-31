@@ -77,28 +77,6 @@ export default function Home() {
                     </Button>
                   </Link>
                 </div>
-
-                {/* Trust badges */}
-                <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm text-gray-500">
-                  <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Keine Kreditkarte nötig
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    In 2 Minuten online
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    DSGVO-konform
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -526,7 +504,7 @@ export default function Home() {
               </Link>
             </div>
             <p className="text-gray-500 text-sm">
-              © 2025 MenuApp. Made with ❤️ in Limburg
+              © 2025 MenuApp
             </p>
           </div>
           <div className="flex items-center justify-center gap-2 text-gray-400 text-sm mt-6 pt-6 border-t border-gray-100">
