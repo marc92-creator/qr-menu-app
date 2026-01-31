@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowRight, Play } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 
@@ -13,8 +14,14 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
+              href="/demo"
+              className="text-emerald-600 hover:text-emerald-700 font-medium text-sm sm:text-base px-3 sm:px-4 py-3 min-h-[44px] flex items-center rounded-xl hover:bg-emerald-50 transition-colors active:bg-emerald-100"
+            >
+              Demo
+            </Link>
+            <Link
               href="/login"
-              className="text-gray-600 hover:text-gray-900 font-medium text-sm sm:text-base px-4 py-3 min-h-[44px] flex items-center rounded-xl hover:bg-gray-100 transition-colors active:bg-gray-200"
+              className="text-gray-600 hover:text-gray-900 font-medium text-sm sm:text-base px-3 sm:px-4 py-3 min-h-[44px] flex items-center rounded-xl hover:bg-gray-100 transition-colors active:bg-gray-200"
             >
               Anmelden
             </Link>
@@ -64,9 +71,13 @@ export default function Home() {
                   <Link href="/register" className="w-full sm:w-auto">
                     <Button size="lg" className="w-full min-h-[56px] text-base sm:text-lg px-8 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
                       Kostenlos starten
-                      <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                  <Link href="/demo" className="w-full sm:w-auto">
+                    <Button size="lg" variant="outline" className="w-full min-h-[56px] text-base sm:text-lg px-8 border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5">
+                      Live-Demo ansehen
+                      <Play className="w-5 h-5 ml-2" />
                     </Button>
                   </Link>
                 </div>
@@ -92,6 +103,11 @@ export default function Home() {
                     DSGVO-konform
                   </div>
                 </div>
+
+                {/* Demo hint */}
+                <p className="text-gray-500 mt-6 text-sm sm:text-base">
+                  Noch unsicher? <Link href="/demo" className="text-emerald-600 hover:text-emerald-700 hover:underline font-medium">Schau dir erst die Live-Demo an →</Link>
+                </p>
               </div>
             </div>
           </div>
@@ -366,12 +382,26 @@ export default function Home() {
                     </button>
                   </Link>
 
-                  <Link href="/dashboard" className="block">
-                    <button className="w-full min-h-[44px] text-sm font-medium bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-200 border border-white/20">
-                      Erst unverbindlich testen
+                  <Link href="/demo" className="block">
+                    <button className="w-full min-h-[44px] text-sm font-medium bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-200 border border-white/20 flex items-center justify-center gap-2">
+                      <Play className="w-4 h-4" />
+                      Ohne Anmeldung testen
                     </button>
                   </Link>
                 </div>
+              </div>
+
+              {/* Demo hint card */}
+              <div className="text-center mt-8 p-6 bg-emerald-50 rounded-2xl ring-1 ring-emerald-100">
+                <p className="text-gray-700 mb-3">
+                  <span className="font-semibold text-gray-900">Nicht sicher?</span> Teste MenuApp jetzt ohne Registrierung.
+                </p>
+                <Link href="/demo">
+                  <button className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium text-sm hover:underline">
+                    <Play className="w-4 h-4" />
+                    Live-Demo ansehen
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
