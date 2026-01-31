@@ -4,11 +4,11 @@ import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from '
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
 const SANDBOX_DATA_VERSION = 7; // Increment when demo data structure changes
 
-// Use sessionStorage for demo mode - this ensures each new visitor starts fresh
-// sessionStorage persists during page refreshes but clears when browser/tab closes
+// Use localStorage for demo mode - this allows sharing between tabs and persists across sessions
+// Data can be manually reset via the "Zurücksetzen" button
 function getStorage(): Storage | null {
   if (typeof window === 'undefined') return null;
-  return window.sessionStorage;
+  return window.localStorage;
 }
 
 export interface SandboxData {
