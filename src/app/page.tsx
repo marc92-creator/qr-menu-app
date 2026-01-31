@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Play } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
+import { FAQSection } from '@/components/landing/FAQSection';
 
 export default function Home() {
   return (
@@ -599,6 +600,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <FAQSection />
       </main>
 
       {/* Footer */}
