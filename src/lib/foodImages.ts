@@ -5,6 +5,9 @@
  * Images are auto-matched based on dish names or can be manually selected.
  */
 
+import { normalizeText, fuzzyMatch, calculateMatchScore } from './stringUtils';
+import { expandWithSynonyms } from './foodSynonyms';
+
 export interface FoodImageEntry {
   id: string;
   keywords: string[];
@@ -1861,25 +1864,81 @@ function hashString(str: string): number {
  * - "Jasmin Tee" matches the jasmin-tee entry specifically
  * - "Kräuter Tee" and "Waldfrüchte Tee" get different tea images if multiple exist
  */
+/**
+ * Get automatic image for a dish name (SMART V2 - Intelligent Matching)
+ *
+ * Uses advanced matching algorithms:
+ * - ✅ Synonym expansion (Döner = Doner = Donner = Kebab)
+ * - ✅ Fuzzy matching (typo tolerance)
+ * - ✅ Text normalization (ö→oe, ß→ss)
+ * - ✅ Regional variants (Pommes = Frites = Fritten)
+ * - ✅ Multi-language (Chicken = Hähnchen = Poulet)
+ * - ✅ Match quality scoring
+ *
+ * Examples:
+ * - "Donner Kebab" → finds "Döner" (typo + synonym)
+ * - "Hähnchen Döner" → finds "Chicken Dürüm"
+ * - "Frites" → finds "Pommes" (regional)
+ * - "Hendl" → finds "Hähnchen" (regional)
+ */
 export function getAutoImage(dishName: string): string {
-  const nameLower = dishName.toLowerCase();
+  if (!dishName || dishName.trim().length === 0) {
+    return '/food-images/default-food.svg';
+  }
 
-  // Stage 1: Collect all matching entries with their best matching keyword length
-  const matches: { entry: FoodImageEntry; keywordLength: number }[] = [];
+  const normalizedDish = normalizeText(dishName);
+
+  // Stage 1: Expand search with synonyms
+  const searchTerms = expandWithSynonyms(normalizedDish);
+
+  // Stage 2: Collect all matching entries with their match scores
+  const matches: { entry: FoodImageEntry; score: number; matchedKeyword: string }[] = [];
 
   for (const entry of FOOD_IMAGE_LIBRARY) {
+    let bestScore = 0;
+    let bestKeyword = '';
+
+    // Try each keyword
     for (const keyword of entry.keywords) {
-      if (nameLower.includes(keyword.toLowerCase())) {
-        // Track the longest matching keyword for this entry
-        const existing = matches.find(m => m.entry.id === entry.id);
-        if (existing) {
-          if (keyword.length > existing.keywordLength) {
-            existing.keywordLength = keyword.length;
+      const normalizedKeyword = normalizeText(keyword);
+
+      // Check against all search terms (original + synonyms)
+      for (const searchTerm of searchTerms) {
+        const normalizedSearch = normalizeText(searchTerm);
+
+        // Exact match (highest priority)
+        if (normalizedSearch === normalizedKeyword) {
+          const score = calculateMatchScore(dishName, keyword, true);
+          if (score > bestScore) {
+            bestScore = score;
+            bestKeyword = keyword;
           }
-        } else {
-          matches.push({ entry, keywordLength: keyword.length });
+          continue;
+        }
+
+        // Contains match
+        if (normalizedSearch.includes(normalizedKeyword)) {
+          const score = calculateMatchScore(dishName, keyword, false);
+          if (score > bestScore) {
+            bestScore = score;
+            bestKeyword = keyword;
+          }
+          continue;
+        }
+
+        // Fuzzy match (typo tolerance)
+        if (fuzzyMatch(searchTerm, keyword, 0.85)) {
+          const score = calculateMatchScore(dishName, keyword, false) - 10; // Slight penalty for fuzzy
+          if (score > bestScore) {
+            bestScore = score;
+            bestKeyword = keyword;
+          }
         }
       }
+    }
+
+    if (bestScore > 0) {
+      matches.push({ entry, score: bestScore, matchedKeyword: bestKeyword });
     }
   }
 
@@ -1888,21 +1947,21 @@ export function getAutoImage(dishName: string): string {
     return '/food-images/default-food.svg';
   }
 
-  // Sort by keyword length (longest first) to get most specific matches
-  matches.sort((a, b) => b.keywordLength - a.keywordLength);
+  // Sort by score (highest first) to get best matches
+  matches.sort((a, b) => b.score - a.score);
 
-  // Stage 2: Check if there are multiple matches with the same (highest) priority
-  const bestLength = matches[0].keywordLength;
-  const topMatches = matches.filter(m => m.keywordLength === bestLength);
+  // Stage 3: Get top scoring matches
+  const bestScore = matches[0].score;
+  const topMatches = matches.filter(m => m.score >= bestScore - 5); // Allow small score variance
 
   if (topMatches.length === 1) {
     // Single best match - return it
     return topMatches[0].entry.image;
   }
 
-  // Multiple equally good matches - use hash for deterministic selection
+  // Multiple good matches - use hash for deterministic selection
   // This gives variety while ensuring the same dish name always gets the same image
-  const hash = hashString(nameLower);
+  const hash = hashString(normalizedDish);
   const selectedIndex = hash % topMatches.length;
   return topMatches[selectedIndex].entry.image;
 }
