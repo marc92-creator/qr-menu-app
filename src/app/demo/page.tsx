@@ -7,15 +7,20 @@ import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 import { SandboxMenuEditor } from '@/app/dashboard/SandboxMenuEditor';
+import { SandboxSettingsTab } from '@/app/dashboard/SandboxSettingsTab';
+import { AnalyticsTab } from '@/app/dashboard/AnalyticsTab';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { getSandboxData } from '@/lib/sandboxStorage';
 import { getMenuUrl } from '@/lib/utils';
+import { DEMO_RESTAURANT } from '@/lib/demoData';
 
-type Tab = 'menu' | 'qr' | 'preview';
+type Tab = 'menu' | 'qr' | 'preview' | 'analytics' | 'settings';
 
 export default function DemoPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('menu');
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [sandboxRestaurant, setSandboxRestaurant] = useState(DEMO_RESTAURANT);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -48,6 +53,12 @@ export default function DemoPage() {
 
   const sandboxData = getSandboxData();
   const demoMenuUrl = getMenuUrl('demo-doener-palace');
+
+  const handleRestaurantUpdate = () => {
+    // Reload sandbox data after settings update
+    const updatedData = getSandboxData();
+    setSandboxRestaurant(updatedData.restaurant);
+  };
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-24 sm:pb-0">
@@ -84,6 +95,8 @@ export default function DemoPage() {
                 { id: 'menu' as Tab, label: 'Menü bearbeiten', icon: '📋' },
                 { id: 'preview' as Tab, label: 'Vorschau', icon: '👁️' },
                 { id: 'qr' as Tab, label: 'QR-Code', icon: '📱' },
+                { id: 'analytics' as Tab, label: 'Statistiken', icon: '📊' },
+                { id: 'settings' as Tab, label: 'Einstellungen', icon: '⚙️' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -176,34 +189,47 @@ export default function DemoPage() {
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 mb-2">QR-Code</h2>
                 <p className="text-gray-500 text-sm">
+                  So sieht dein QR-Code aus - Gäste scannen ihn, um dein Menü zu sehen.
+                </p>
+              </div>
+
+              <div className="p-4 bg-purple-50 rounded-xl mb-6">
+                <p className="text-sm text-purple-700">
+                  <strong>Demo-QR-Code:</strong> Dieser Code führt zur öffentlichen Demo-Seite.
                   Registriere dich, um deinen eigenen QR-Code zu erhalten!
                 </p>
               </div>
 
-              <div className="p-4 bg-amber-50 rounded-xl mb-6 border border-amber-200">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">🔒</span>
-                  <div>
-                    <h4 className="font-semibold text-amber-900">Sandbox-Modus</h4>
-                    <p className="text-sm text-amber-700 mt-1">
-                      Im Sandbox-Modus kannst du keinen eigenen QR-Code erstellen.
-                      Registriere dich kostenlos, um einen einzigartigen QR-Code für dein Restaurant zu erhalten!
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <QRCodeGenerator
+                slug="demo-doener-palace"
+                restaurantName="Demo Döner Palace"
+                size={256}
+              />
 
-              <Link
-                href="/register"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-all shadow-lg shadow-emerald-500/20"
-              >
-                Jetzt registrieren
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
+              <div className="mt-6">
+                <Link
+                  href="/register"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-all shadow-lg shadow-emerald-500/20"
+                >
+                  Eigenen QR-Code erstellen
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <AnalyticsTab restaurant={DEMO_RESTAURANT} isSandboxMode={true} />
+        )}
+
+        {activeTab === 'settings' && (
+          <SandboxSettingsTab
+            restaurant={sandboxRestaurant}
+            onUpdate={handleRestaurantUpdate}
+          />
         )}
       </main>
 
@@ -214,6 +240,8 @@ export default function DemoPage() {
             { id: 'menu' as Tab, label: 'Menü', icon: '📋' },
             { id: 'preview' as Tab, label: 'Vorschau', icon: '👁️' },
             { id: 'qr' as Tab, label: 'QR', icon: '📱' },
+            { id: 'analytics' as Tab, label: 'Stats', icon: '📊' },
+            { id: 'settings' as Tab, label: 'Settings', icon: '⚙️' },
           ].map((tab) => (
             <button
               key={tab.id}
