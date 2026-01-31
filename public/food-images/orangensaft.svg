@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Glass -->
+  <path d="M 70 60 L 75 150 Q 100 155 125 150 L 130 60 Z"
+        fill="url(#orangeGradient)" stroke="#D35400" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFA500;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Glass rim -->
+  <ellipse cx="100" cy="60" rx="30" ry="8" fill="#FFA500" stroke="#D35400" stroke-width="2"/>
+
+  <!-- Bubbles -->
+  <circle cx="85" cy="80" r="3" fill="#FFE0B2" opacity="0.6"/>
+  <circle cx="95" cy="100" r="2.5" fill="#FFE0B2" opacity="0.6"/>
+  <circle cx="110" cy="90" r="3.5" fill="#FFE0B2" opacity="0.6"/>
+  <circle cx="105" cy="120" r="2" fill="#FFE0B2" opacity="0.6"/>
+  <circle cx="88" cy="130" r="2.8" fill="#FFE0B2" opacity="0.6"/>
+
+  <!-- Orange slice on rim -->
+  <g transform="translate(115, 55)">
+    <circle cx="0" cy="0" r="12" fill="#FFA500" stroke="#D35400" stroke-width="1.5"/>
+    <path d="M -10 0 L 0 0 L 0 -10 Z" fill="#FFE0B2" opacity="0.7"/>
+    <path d="M 0 0 L 10 0 L 0 10 Z" fill="#FFE0B2" opacity="0.7"/>
+    <path d="M 0 0 L 0 -10 L 10 0 Z" fill="#FFB84D" opacity="0.5"/>
+    <circle cx="0" cy="0" r="3" fill="#FFF" opacity="0.3"/>
+  </g>
+
+  <!-- Straw -->
+  <rect x="105" y="30" width="6" height="80" fill="#E74C3C" opacity="0.8" rx="3"/>
+  <rect x="105" y="30" width="6" height="15" fill="#C0392B" opacity="0.3" rx="3"/>
+
+  <!-- Glass highlights -->
+  <path d="M 75 70 Q 77 100 78 140" stroke="#FFF" stroke-width="3" opacity="0.3" fill="none"/>
+  <ellipse cx="100" cy="65" rx="25" ry="5" fill="#FFF" opacity="0.2"/>
+</svg>

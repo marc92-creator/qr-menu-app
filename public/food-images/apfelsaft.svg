@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Glass -->
+  <path d="M 70 60 L 75 150 Q 100 155 125 150 L 130 60 Z"
+        fill="url(#appleGradient)" stroke="#7CB342" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="appleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C8E6C9;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#AED581;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Glass rim -->
+  <ellipse cx="100" cy="60" rx="30" ry="8" fill="#C8E6C9" stroke="#7CB342" stroke-width="2"/>
+
+  <!-- Bubbles -->
+  <circle cx="85" cy="85" r="3" fill="#E8F5E9" opacity="0.7"/>
+  <circle cx="95" cy="105" r="2.5" fill="#E8F5E9" opacity="0.7"/>
+  <circle cx="110" cy="95" r="3.5" fill="#E8F5E9" opacity="0.7"/>
+  <circle cx="105" cy="125" r="2" fill="#E8F5E9" opacity="0.7"/>
+  <circle cx="88" cy="135" r="2.8" fill="#E8F5E9" opacity="0.7"/>
+  <circle cx="115" cy="110" r="2.2" fill="#E8F5E9" opacity="0.7"/>
+
+  <!-- Apple slice on rim -->
+  <g transform="translate(115, 55)">
+    <ellipse cx="0" cy="0" rx="12" ry="10" fill="#C8E6C9" stroke="#7CB342" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="8" fill="#F1F8E9"/>
+    <!-- Seeds -->
+    <ellipse cx="-3" cy="0" rx="1.5" ry="2" fill="#5D4037"/>
+    <ellipse cx="3" cy="0" rx="1.5" ry="2" fill="#5D4037"/>
+    <!-- Stem hole -->
+    <circle cx="0" cy="-4" r="1.5" fill="#7CB342"/>
+  </g>
+
+  <!-- Straw -->
+  <rect x="92" y="30" width="6" height="80" fill="#4CAF50" opacity="0.8" rx="3"/>
+  <rect x="92" y="30" width="6" height="15" fill="#388E3C" opacity="0.3" rx="3"/>
+
+  <!-- Glass highlights -->
+  <path d="M 75 70 Q 77 100 78 140" stroke="#FFF" stroke-width="3" opacity="0.4" fill="none"/>
+  <ellipse cx="100" cy="65" rx="25" ry="5" fill="#FFF" opacity="0.25"/>
+</svg>
