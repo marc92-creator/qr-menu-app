@@ -11,9 +11,8 @@ import { SandboxSettingsTab } from '@/app/dashboard/SandboxSettingsTab';
 import { AnalyticsTab } from '@/app/dashboard/AnalyticsTab';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { getSandboxData } from '@/lib/sandboxStorage';
-import { getMenuUrl } from '@/lib/utils';
 import { DEMO_RESTAURANT } from '@/lib/demoData';
-import MenuView from '@/app/m/[slug]/MenuView';
+import { MenuView } from '@/app/m/[slug]/MenuView';
 
 type Tab = 'menu' | 'qr' | 'preview' | 'analytics' | 'settings';
 
@@ -61,8 +60,6 @@ export default function DemoPage() {
       </div>
     );
   }
-
-  const demoMenuUrl = getMenuUrl('demo-doener-palace');
 
   const handleRestaurantUpdate = () => {
     // Reload sandbox data after settings update
