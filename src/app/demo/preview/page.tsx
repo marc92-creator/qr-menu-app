@@ -41,7 +41,7 @@ export default function SandboxPreviewPage() {
             const parsedData = JSON.parse(openerStorage);
             setSandboxData(parsedData);
           }
-        } catch (e) {
+        } catch {
           // Fallback to own sessionStorage if cross-window access fails
           const updatedData = getSandboxData();
           setSandboxData(updatedData);
