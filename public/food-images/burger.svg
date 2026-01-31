@@ -1,38 +1,155 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <!-- Warm Ghibli-style Burger -->
+  <!-- Enhanced Ghibli-style Burger with professional details -->
   <defs>
+    <!-- Soft shadow filter -->
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Enhanced bun gradient (toasted sesame bun) -->
     <linearGradient id="bun" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFAB40"/>
+      <stop offset="0%" style="stop-color:#FFD699"/>
+      <stop offset="30%" style="stop-color:#FFAB40"/>
+      <stop offset="70%" style="stop-color:#FB8C00"/>
       <stop offset="100%" style="stop-color:#E65100"/>
     </linearGradient>
+
+    <!-- Patty gradient (juicy grilled beef) -->
     <linearGradient id="patty" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="0%" style="stop-color:#6D4C41"/>
+      <stop offset="40%" style="stop-color:#5D4037"/>
+      <stop offset="75%" style="stop-color:#4E342E"/>
       <stop offset="100%" style="stop-color:#3E2723"/>
     </linearGradient>
+
+    <!-- Cheese gradient (melted cheddar) -->
+    <linearGradient id="cheese" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFEB3B"/>
+      <stop offset="50%" style="stop-color:#FFC107"/>
+      <stop offset="100%" style="stop-color:#FF9800"/>
+    </linearGradient>
+
+    <!-- Shine gradient for top bun -->
+    <radialGradient id="bunShine">
+      <stop offset="0%" style="stop-color:#FFFFFF" stop-opacity="0.5"/>
+      <stop offset="60%" style="stop-color:#FFE0B2" stop-opacity="0.2"/>
+      <stop offset="100%" style="stop-color:#FFE0B2" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <!-- Shadow -->
-  <ellipse cx="60" cy="108" rx="35" ry="7" fill="#00000020"/>
-  <!-- Bottom bun -->
-  <ellipse cx="60" cy="95" rx="38" ry="10" fill="url(#bun)"/>
-  <path d="M22 92 Q25 100 60 102 Q95 100 98 92" fill="#E65100"/>
-  <!-- Lettuce -->
-  <path d="M20 88 Q30 78 45 86 Q55 78 70 86 Q85 78 100 88 L98 92 Q85 84 70 90 Q55 84 45 90 Q30 84 22 92 Z" fill="#7CB342"/>
-  <!-- Tomato -->
-  <ellipse cx="40" cy="82" rx="10" ry="4" fill="#E53935"/>
-  <ellipse cx="70" cy="83" rx="12" ry="5" fill="#E53935"/>
-  <!-- Cheese (melting) -->
-  <path d="M25 76 L28 82 L35 78 L42 84 L50 76 L58 82 L65 76 L72 82 L80 76 L88 82 L95 76 L95 72 L25 72 Z" fill="#FFC107"/>
-  <!-- Patty -->
-  <ellipse cx="60" cy="70" rx="40" ry="10" fill="url(#patty)"/>
-  <ellipse cx="60" cy="68" rx="38" ry="8" fill="#6D4C41"/>
-  <!-- Top bun -->
+
+  <!-- Soft shadow -->
+  <ellipse cx="60" cy="110" rx="38" ry="7" fill="#000000" opacity="0.15" filter="url(#softShadow)"/>
+
+  <!-- Bottom bun with enhanced detail -->
+  <ellipse cx="60" cy="95" rx="39" ry="11" fill="url(#bun)"/>
+  <!-- Bottom bun shading -->
+  <path d="M22 92 Q25 100 60 102 Q95 100 98 92" fill="#E65100" opacity="0.3"/>
+  <!-- Bottom bun texture -->
+  <path d="M25 93 Q35 90 45 93" stroke="#D84315" stroke-width="0.8" opacity="0.3" fill="none"/>
+  <path d="M70 94 Q80 91 90 94" stroke="#D84315" stroke-width="0.8" opacity="0.3" fill="none"/>
+
+  <!-- Lettuce (wavy realistic structure) -->
+  <path d="M20 88 Q25 82 32 86 Q40 78 48 85 Q56 78 64 85 Q72 78 80 85 Q88 78 96 85 Q98 82 100 88
+           L98 92 Q90 87 82 92 Q74 87 66 92 Q58 87 50 92 Q42 87 34 92 Q26 87 22 92 Z"
+        fill="#7CB342"/>
+  <!-- Lettuce veins for detail -->
+  <path d="M24 89 Q32 84 40 89 Q48 84 56 89 Q64 84 72 89 Q80 84 88 89 Q94 86 98 89"
+        stroke="#689F38" stroke-width="1.2" fill="none" opacity="0.5"/>
+  <path d="M26 91 Q34 86 42 91 Q50 86 58 91 Q66 86 74 91 Q82 86 90 91 Q96 88 98 91"
+        stroke="#558B2F" stroke-width="0.9" fill="none" opacity="0.4"/>
+
+  <!-- Tomato slices with realistic highlights -->
+  <ellipse cx="38" cy="82" rx="11" ry="5" fill="#E53935"/>
+  <ellipse cx="38" cy="81" rx="8" ry="3.5" fill="#EF5350" opacity="0.7"/>
+  <circle cx="36" cy="80" r="1.5" fill="#FFCDD2" opacity="0.6"/>
+
+  <ellipse cx="72" cy="83" rx="13" ry="5.5" fill="#E53935"/>
+  <ellipse cx="72" cy="82" rx="10" ry="4" fill="#EF5350" opacity="0.7"/>
+  <circle cx="70" cy="81" r="1.8" fill="#FFCDD2" opacity="0.6"/>
+
+  <!-- Melted cheese (dripping effect!) -->
+  <path d="M25 76 L28 82 L35 78 L42 84 L50 76 L58 82 L65 76 L72 82 L80 76 L88 82 L95 76
+           L95 72 L25 72 Z"
+        fill="url(#cheese)"/>
+  <!-- Cheese drip details -->
+  <path d="M32 77 Q30 79 32 82" fill="#FFB300" opacity="0.6"/>
+  <path d="M60 77 Q58 79 60 82" fill="#FFB300" opacity="0.6"/>
+  <path d="M85 77 Q83 79 85 82" fill="#FFB300" opacity="0.6"/>
+  <!-- Cheese texture -->
+  <ellipse cx="45" cy="74" rx="5" ry="2" fill="#FFEB3B" opacity="0.4"/>
+  <ellipse cx="75" cy="75" rx="6" ry="2" fill="#FFEB3B" opacity="0.4"/>
+
+  <!-- Beef patty with grill marks and texture -->
+  <ellipse cx="60" cy="70" rx="41" ry="11" fill="url(#patty)"/>
+  <!-- Patty top highlight (cooked edge) -->
+  <ellipse cx="60" cy="68" rx="39" ry="9" fill="#6D4C41" opacity="0.8"/>
+  <!-- Grill marks (realistic char lines) -->
+  <path d="M25 68 Q35 65 45 68" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M35 70 Q45 67 55 70" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M50 68 Q60 65 70 68" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M65 70 Q75 67 85 70" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M75 68 Q85 65 95 68" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Patty texture (meat fibers) -->
+  <ellipse cx="40" cy="69" rx="6" ry="3" fill="#4E342E" opacity="0.3"/>
+  <ellipse cx="70" cy="70" rx="7" ry="3" fill="#4E342E" opacity="0.3"/>
+
+  <!-- Top bun with enhanced details -->
   <path d="M22 65 Q15 40 40 28 Q60 20 80 28 Q105 40 98 65 Z" fill="url(#bun)"/>
-  <!-- Bun shine -->
+  <!-- Top bun texture/char marks -->
+  <path d="M30 50 Q45 35 60 38" stroke="#FB8C00" stroke-width="1" opacity="0.2" fill="none"/>
+  <path d="M60 42 Q75 37 88 48" stroke="#FB8C00" stroke-width="1" opacity="0.2" fill="none"/>
+
+  <!-- Bun shine (glossy fresh bun) -->
+  <ellipse cx="60" cy="42" rx="22" ry="14" fill="url(#bunShine)"/>
   <path d="M40 45 Q55 35 70 45" stroke="#FFE0B2" stroke-width="4" stroke-linecap="round" fill="none"/>
-  <!-- Sesame seeds -->
-  <ellipse cx="45" cy="40" rx="3" ry="2" fill="#FFF8E1" transform="rotate(-15 45 40)"/>
-  <ellipse cx="60" cy="35" rx="3" ry="2" fill="#FFF8E1" transform="rotate(10 60 35)"/>
-  <ellipse cx="75" cy="40" rx="3" ry="2" fill="#FFF8E1" transform="rotate(20 75 40)"/>
-  <ellipse cx="52" cy="48" rx="2" ry="1.5" fill="#FFF8E1"/>
-  <ellipse cx="68" cy="50" rx="2" ry="1.5" fill="#FFF8E1" transform="rotate(-10 68 50)"/>
+  <path d="M45 42 Q60 34 72 43" stroke="#FFECB3" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+
+  <!-- Realistic sesame seeds (3D effect) -->
+  <g id="sesame1">
+    <ellipse cx="45" cy="40" rx="3.5" ry="2.5" fill="#FFF8E1" transform="rotate(-15 45 40)"/>
+    <ellipse cx="45" cy="39" rx="2" ry="1.2" fill="#FFFACD" transform="rotate(-15 45 40)"/>
+    <ellipse cx="46" cy="40.5" rx="1" ry="0.6" fill="#EEE8AA" transform="rotate(-15 45 40)" opacity="0.6"/>
+  </g>
+  <g id="sesame2">
+    <ellipse cx="60" cy="35" rx="3.5" ry="2.5" fill="#FFF8E1" transform="rotate(10 60 35)"/>
+    <ellipse cx="60" cy="34" rx="2" ry="1.2" fill="#FFFACD" transform="rotate(10 60 35)"/>
+    <ellipse cx="61" cy="35.5" rx="1" ry="0.6" fill="#EEE8AA" transform="rotate(10 60 35)" opacity="0.6"/>
+  </g>
+  <g id="sesame3">
+    <ellipse cx="75" cy="40" rx="3.5" ry="2.5" fill="#FFF8E1" transform="rotate(20 75 40)"/>
+    <ellipse cx="75" cy="39" rx="2" ry="1.2" fill="#FFFACD" transform="rotate(20 75 40)"/>
+    <ellipse cx="76" cy="40.5" rx="1" ry="0.6" fill="#EEE8AA" transform="rotate(20 75 40)" opacity="0.6"/>
+  </g>
+  <g id="sesame4">
+    <ellipse cx="52" cy="48" rx="3" ry="2" fill="#FFF8E1"/>
+    <ellipse cx="52" cy="47.2" rx="1.5" ry="0.9" fill="#FFFACD"/>
+  </g>
+  <g id="sesame5">
+    <ellipse cx="68" cy="50" rx="3" ry="2" fill="#FFF8E1" transform="rotate(-10 68 50)"/>
+    <ellipse cx="68" cy="49.2" rx="1.5" ry="0.9" fill="#FFFACD" transform="rotate(-10 68 50)"/>
+  </g>
+  <g id="sesame6">
+    <ellipse cx="38" cy="48" rx="2.5" ry="1.8" fill="#FFF8E1" transform="rotate(25 38 48)"/>
+    <ellipse cx="38" cy="47.5" rx="1.2" ry="0.8" fill="#FFFACD" transform="rotate(25 38 48)"/>
+  </g>
+  <g id="sesame7">
+    <ellipse cx="82" cy="47" rx="2.5" ry="1.8" fill="#FFF8E1" transform="rotate(-20 82 47)"/>
+    <ellipse cx="82" cy="46.5" rx="1.2" ry="0.8" fill="#FFFACD" transform="rotate(-20 82 47)"/>
+  </g>
+
+  <!-- Steam (hot off the grill!) -->
+  <path d="M48 22 Q46 17 50 12" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"
+        fill="none" opacity="0.5"/>
+  <path d="M60 18 Q58 13 62 8" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"
+        fill="none" opacity="0.6"/>
+  <path d="M72 22 Q70 17 74 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"
+        fill="none" opacity="0.45"/>
 </svg>

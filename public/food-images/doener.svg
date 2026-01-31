@@ -1,36 +1,133 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <!-- Warm Ghibli-style Döner im Brot -->
+  <!-- Enhanced Ghibli-style Döner im Brot with professional details -->
   <defs>
+    <!-- Soft shadow with Gaussian blur -->
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="3" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Enhanced bread gradient with multiple stops -->
     <linearGradient id="bread" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#E8B86D"/>
+      <stop offset="0%" style="stop-color:#F5D7A1"/>
+      <stop offset="35%" style="stop-color:#E8B86D"/>
+      <stop offset="70%" style="stop-color:#D4A354"/>
       <stop offset="100%" style="stop-color:#C4863C"/>
     </linearGradient>
+
+    <!-- Meat gradient with grilled texture -->
     <linearGradient id="meat" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8B4513"/>
-      <stop offset="100%" style="stop-color:#654321"/>
+      <stop offset="0%" style="stop-color:#9B5F3B"/>
+      <stop offset="30%" style="stop-color:#8B4513"/>
+      <stop offset="70%" style="stop-color:#704A2B"/>
+      <stop offset="100%" style="stop-color:#5A3821"/>
+    </linearGradient>
+
+    <!-- Highlight gradient for shine effects -->
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="100%" style="stop-color:#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Sauce gradient -->
+    <linearGradient id="sauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5E6D3"/>
+      <stop offset="100%" style="stop-color:#E8D4B8"/>
     </linearGradient>
   </defs>
-  <!-- Shadow -->
-  <ellipse cx="60" cy="105" rx="35" ry="8" fill="#00000020"/>
-  <!-- Bread bottom -->
+
+  <!-- Soft shadow layer -->
+  <ellipse cx="60" cy="107" rx="38" ry="7" fill="#000000" opacity="0.15" filter="url(#softShadow)"/>
+
+  <!-- Bread bottom with enhanced shading -->
   <path d="M25 70 Q20 85 35 95 L85 95 Q100 85 95 70 Z" fill="url(#bread)"/>
-  <!-- Filling: Lettuce -->
-  <path d="M30 72 Q40 65 50 72 Q60 65 70 72 Q80 65 90 72 L88 78 Q75 70 60 78 Q45 70 32 78 Z" fill="#7CB342"/>
-  <!-- Filling: Tomatoes -->
+  <path d="M28 72 Q25 83 37 92 L83 92 Q95 83 92 72" fill="#D4A354" opacity="0.3"/>
+
+  <!-- Sauce drips -->
+  <ellipse cx="38" cy="78" rx="3" ry="5" fill="url(#sauce)" opacity="0.8"/>
+  <ellipse cx="72" cy="80" rx="2.5" ry="4" fill="url(#sauce)" opacity="0.8"/>
+
+  <!-- Filling: Enhanced lettuce with structure -->
+  <path d="M30 72 Q35 67 42 70 Q48 65 55 70 Q62 66 68 70 Q75 65 82 70 Q87 67 90 72
+           L88 76 Q82 71 75 76 Q68 71 60 76 Q52 71 45 76 Q38 71 32 76 Z"
+        fill="#7CB342"/>
+  <path d="M32 73 Q40 69 48 73 Q56 69 64 73 Q72 69 80 73 Q84 70 88 73"
+        stroke="#689F38" stroke-width="1" fill="none" opacity="0.6"/>
+  <path d="M34 75 Q42 71 50 75 Q58 71 66 75 Q74 71 82 75 Q86 72 88 75"
+        stroke="#558B2F" stroke-width="0.8" fill="none" opacity="0.4"/>
+
+  <!-- Filling: Enhanced tomatoes with highlight -->
   <circle cx="40" cy="75" r="6" fill="#E53935"/>
+  <circle cx="40" cy="73" r="2.5" fill="#EF5350" opacity="0.7"/>
   <circle cx="60" cy="73" r="5" fill="#EF5350"/>
+  <circle cx="60" cy="71" r="2" fill="#F44336" opacity="0.6"/>
   <circle cx="80" cy="75" r="6" fill="#E53935"/>
-  <!-- Filling: Meat -->
-  <path d="M32 68 Q45 58 60 68 Q75 58 88 68 L86 74 Q70 62 60 72 Q50 62 34 74 Z" fill="url(#meat)"/>
-  <path d="M35 62 Q50 52 60 62 Q70 52 85 62 L83 68 Q68 56 60 66 Q52 56 37 68 Z" fill="#A0522D"/>
-  <!-- Bread top -->
+  <circle cx="80" cy="73" r="2.5" fill="#EF5350" opacity="0.7"/>
+
+  <!-- Filling: Meat with grill marks and texture -->
+  <path d="M32 68 Q45 58 60 68 Q75 58 88 68 L86 74 Q70 62 60 72 Q50 62 34 74 Z"
+        fill="url(#meat)"/>
+  <path d="M35 62 Q50 52 60 62 Q70 52 85 62 L83 68 Q68 56 60 66 Q52 56 37 68 Z"
+        fill="#A0522D"/>
+  <!-- Grill marks on meat -->
+  <path d="M38 65 Q45 60 52 65" stroke="#4A2810" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M48 62 Q55 57 62 62" stroke="#4A2810" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M58 64 Q65 59 72 64" stroke="#4A2810" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M68 62 Q75 57 82 62" stroke="#4A2810" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Bread top with enhanced texture -->
   <path d="M25 70 Q20 45 40 35 Q60 25 80 35 Q100 45 95 70 Z" fill="url(#bread)"/>
-  <!-- Bread shine -->
+
+  <!-- Bread highlight/shine -->
+  <path d="M30 55 Q45 40 70 48" fill="url(#shine)" opacity="0.5"/>
   <path d="M35 50 Q50 40 65 50" stroke="#F5DEB3" stroke-width="3" stroke-linecap="round" fill="none"/>
-  <!-- Sesame seeds -->
-  <ellipse cx="45" cy="45" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-20 45 45)"/>
-  <ellipse cx="60" cy="38" rx="3" ry="2" fill="#FFF8DC" transform="rotate(10 60 38)"/>
-  <ellipse cx="75" cy="45" rx="3" ry="2" fill="#FFF8DC" transform="rotate(25 75 45)"/>
-  <ellipse cx="55" cy="52" rx="2" ry="1.5" fill="#FFF8DC"/>
-  <ellipse cx="70" cy="55" rx="2" ry="1.5" fill="#FFF8DC" transform="rotate(-15 70 55)"/>
+  <path d="M40 45 Q55 38 68 47" stroke="#FAEBD7" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+
+  <!-- Enhanced realistic sesame seeds with 3D effect -->
+  <g id="sesame1">
+    <ellipse cx="45" cy="45" rx="3.5" ry="2.5" fill="#FFF8DC" transform="rotate(-20 45 45)"/>
+    <ellipse cx="45" cy="44" rx="2" ry="1" fill="#FFFACD" transform="rotate(-20 45 45)"/>
+    <ellipse cx="46" cy="45.5" rx="1" ry="0.5" fill="#EEE8AA" transform="rotate(-20 45 45)" opacity="0.5"/>
+  </g>
+  <g id="sesame2">
+    <ellipse cx="60" cy="38" rx="3.5" ry="2.5" fill="#FFF8DC" transform="rotate(10 60 38)"/>
+    <ellipse cx="60" cy="37" rx="2" ry="1" fill="#FFFACD" transform="rotate(10 60 38)"/>
+    <ellipse cx="61" cy="38.5" rx="1" ry="0.5" fill="#EEE8AA" transform="rotate(10 60 38)" opacity="0.5"/>
+  </g>
+  <g id="sesame3">
+    <ellipse cx="75" cy="45" rx="3.5" ry="2.5" fill="#FFF8DC" transform="rotate(25 75 45)"/>
+    <ellipse cx="75" cy="44" rx="2" ry="1" fill="#FFFACD" transform="rotate(25 75 45)"/>
+    <ellipse cx="76" cy="45.5" rx="1" ry="0.5" fill="#EEE8AA" transform="rotate(25 75 45)" opacity="0.5"/>
+  </g>
+  <g id="sesame4">
+    <ellipse cx="55" cy="52" rx="3" ry="2" fill="#FFF8DC"/>
+    <ellipse cx="55" cy="51" rx="1.5" ry="0.8" fill="#FFFACD"/>
+  </g>
+  <g id="sesame5">
+    <ellipse cx="70" cy="55" rx="3" ry="2" fill="#FFF8DC" transform="rotate(-15 70 55)"/>
+    <ellipse cx="70" cy="54" rx="1.5" ry="0.8" fill="#FFFACD" transform="rotate(-15 70 55)"/>
+  </g>
+  <g id="sesame6">
+    <ellipse cx="50" cy="42" rx="2.5" ry="1.8" fill="#FFF8DC" transform="rotate(35 50 42)"/>
+    <ellipse cx="50" cy="41.5" rx="1.2" ry="0.7" fill="#FFFACD" transform="rotate(35 50 42)"/>
+  </g>
+  <g id="sesame7">
+    <ellipse cx="68" cy="48" rx="2.5" ry="1.8" fill="#FFF8DC" transform="rotate(-25 68 48)"/>
+    <ellipse cx="68" cy="47.5" rx="1.2" ry="0.7" fill="#FFFACD" transform="rotate(-25 68 48)"/>
+  </g>
+
+  <!-- Steam wisps (hot fresh döner!) -->
+  <path d="M45 28 Q43 22 47 18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+        fill="none" opacity="0.4"/>
+  <path d="M55 25 Q53 20 57 16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+        fill="none" opacity="0.5"/>
+  <path d="M65 28 Q63 22 67 17" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+        fill="none" opacity="0.35"/>
 </svg>
