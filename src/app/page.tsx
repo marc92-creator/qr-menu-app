@@ -3,6 +3,7 @@ import { ArrowRight, Play } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 import { FAQSection } from '@/components/landing/FAQSection';
+import { TrustBar } from '@/components/landing/TrustBar';
 
 export default function Home() {
   return (
@@ -113,6 +114,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <TrustBar />
 
         {/* How it Works */}
         <section className="py-16 sm:py-24 bg-[#FAFAFA]">
@@ -622,6 +625,10 @@ export default function Home() {
             <p className="text-gray-500 text-sm">
               © 2025 MenuApp. Made with ❤️ in Limburg
             </p>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-gray-400 text-sm mt-6 pt-6 border-t border-gray-100">
+            <span>🇩🇪</span>
+            <span>Mit ❤️ entwickelt in Deutschland</span>
           </div>
         </div>
       </footer>
