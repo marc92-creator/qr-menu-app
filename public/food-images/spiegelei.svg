@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <ellipse cx="105" cy="145" rx="45" ry="12" fill="#F57C00" opacity="0.15"/>
+  <path d="M 50 90 Q 45 95 50 110 Q 60 125 80 130 Q 100 135 120 130 Q 145 125 155 105 Q 160 90 150 75 Q 135 65 115 70 Q 100 60 85 65 Q 65 70 50 90 Z" fill="#FFF" stroke="#FFB74D" stroke-width="2.5"/>
+  <ellipse cx="105" cy="100" rx="20" ry="18" fill="url(#yolkGradient)"/>
+  <defs>
+    <linearGradient id="yolkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD54F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA726;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="102" cy="95" rx="6" ry="5" fill="#FFF" opacity="0.6"/>
+</svg>

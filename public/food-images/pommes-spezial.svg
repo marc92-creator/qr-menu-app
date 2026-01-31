@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <path d="M 70 140 L 75 100 Q 78 85 82 85 L 85 110 L 90 85 Q 92 80 95 80 L 98 105 L 103 80 Q 105 75 108 75 L 110 100 L 115 80 Q 117 78 120 80 L 122 110 L 125 90 Q 127 88 130 90 L 130 140 Z" fill="url(#friesGradient)" stroke="#F57C00" stroke-width="1.5"/>
+  <defs>
+    <linearGradient id="friesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE082;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB74D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="135" rx="35" ry="12" fill="#E53935" opacity="0.7"/>
+  <ellipse cx="100" cy="132" rx="33" ry="10" fill="#FFC107" opacity="0.8"/>
+  <path d="M 75 120 Q 80 118 85 120" stroke="#F44336" stroke-width="2" opacity="0.6" fill="none"/>
+  <path d="M 95 118 Q 100 116 105 118" stroke="#F44336" stroke-width="2" opacity="0.6" fill="none"/>
+</svg>

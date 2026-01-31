@@ -620,7 +620,7 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   {
     id: 'steak',
     keywords: ['steak', 'rindersteak', 'beef steak', 'rumpsteak', 'filetsteak', 'rind', 'beef'],
-    image: '/food-images/schnitzel.svg', // Using schnitzel as placeholder until steak.svg is added
+    image: '/food-images/steak.svg',
     label: 'Steak',
     category: 'deutsch',
   },
