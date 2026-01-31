@@ -8,7 +8,7 @@ export interface OpeningHours {
   [key: string]: { open: string; close: string; closed?: boolean };
 }
 
-export type MenuTheme = 'classic' | 'dark' | 'rustic' | 'modern' | 'oriental';
+export type MenuTheme = 'classic' | 'dark' | 'rustic' | 'modern' | 'oriental' | 'italian' | 'japanese' | 'cafe' | 'finedining';
 export type MenuLanguage = 'de' | 'en';
 
 export interface Restaurant {

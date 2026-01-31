@@ -407,6 +407,262 @@ const orientalStyles: ThemeStyles = {
   badgeBorderRadius: '10px',
 };
 
+// Italian Theme - Tricolore (Red, Green, White) - Passion & Tradition
+const italianStyles: ThemeStyles = {
+  background: '#fefefe',
+  backgroundPattern: 'linear-gradient(135deg, #fefefe 0%, #fff5f5 30%, #f0fdf4 60%, #fefefe 100%), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(220, 38, 38, 0.02) 60px, rgba(220, 38, 38, 0.02) 120px)',
+  surface: '#ffffff',
+  surfaceHover: '#fff5f5',
+  text: '#1f2937',
+  textMuted: '#6b7280',
+  primary: '#dc2626',
+  primaryLight: '#fee2e2',
+  accent: '#16a34a',
+  border: '#e5e7eb',
+
+  headerBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(254, 226, 226, 0.3) 50%, rgba(240, 253, 244, 0.3) 100%)',
+  headerBorder: 'linear-gradient(90deg, #dc2626, #ffffff, #16a34a)',
+
+  cardBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%)',
+  cardBorder: '#fecaca',
+  cardShadow: '0 4px 16px rgba(220, 38, 38, 0.08), 0 2px 6px rgba(22, 163, 74, 0.04)',
+  cardHoverTransform: 'translateY(-4px)',
+  cardHoverShadow: '0 12px 28px rgba(220, 38, 38, 0.15), 0 6px 14px rgba(22, 163, 74, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+
+  pillBg: '#f9fafb',
+  pillText: '#6b7280',
+  pillActiveBg: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  pillActiveText: '#ffffff',
+  pillHoverBg: '#fee2e2',
+
+  badgeVeganBg: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+  badgeVeganText: '#047857',
+  badgePopularBg: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+  badgePopularText: '#991b1b',
+  badgeSpecialBg: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+  badgeSpecialText: '#92400e',
+  badgeSoldOutBg: '#fee2e2',
+  badgeSoldOutText: '#7f1d1d',
+
+  allergenBg: '#f9fafb',
+  allergenText: '#4b5563',
+  allergenBorder: '#e5e7eb',
+  allergenSelectedBg: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+  allergenSelectedText: '#ffffff',
+
+  statusOpenBg: '#d1fae5',
+  statusOpenText: '#047857',
+  statusClosedBg: '#fee2e2',
+  statusClosedText: '#991b1b',
+
+  priceColor: '#dc2626',
+
+  footerBg: 'linear-gradient(180deg, #ffffff 0%, #f9fafb 100%)',
+  footerText: '#9ca3af',
+  footerBorder: 'linear-gradient(90deg, transparent, #fecaca, transparent)',
+
+  decorativeGradient: 'linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(22, 163, 74, 0.03) 100%)',
+
+  fontFamily: '"Libre Baskerville", Georgia, serif',
+  fontHeading: '"Playfair Display", serif',
+  transitionSpeed: '250ms',
+  animationStyle: 'smooth',
+  cardBorderRadius: '12px',
+  badgeBorderRadius: '8px',
+};
+
+// Japanese Theme - Zen Minimalism (Black, White, Red accent)
+const japaneseStyles: ThemeStyles = {
+  background: '#fafafa',
+  backgroundPattern: 'linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%)',
+  surface: '#ffffff',
+  surfaceHover: '#f5f5f5',
+  text: '#1a1a1a',
+  textMuted: '#737373',
+  primary: '#dc2626',
+  primaryLight: '#fee2e2',
+  accent: '#dc2626',
+  border: '#e5e5e5',
+
+  headerBg: 'rgba(255, 255, 255, 0.98)',
+  headerBorder: '#e5e5e5',
+
+  cardBg: '#ffffff',
+  cardBorder: '#f5f5f5',
+  cardShadow: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+  cardHoverTransform: 'translateY(-2px)',
+  cardHoverShadow: '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04)',
+
+  pillBg: '#f5f5f5',
+  pillText: '#737373',
+  pillActiveBg: '#1a1a1a',
+  pillActiveText: '#ffffff',
+  pillHoverBg: '#e5e5e5',
+
+  badgeVeganBg: '#f0fdf4',
+  badgeVeganText: '#166534',
+  badgePopularBg: '#fee2e2',
+  badgePopularText: '#991b1b',
+  badgeSpecialBg: '#1a1a1a',
+  badgeSpecialText: '#ffffff',
+  badgeSoldOutBg: '#f5f5f5',
+  badgeSoldOutText: '#737373',
+
+  allergenBg: '#f5f5f5',
+  allergenText: '#525252',
+  allergenBorder: '#e5e5e5',
+  allergenSelectedBg: '#1a1a1a',
+  allergenSelectedText: '#ffffff',
+
+  statusOpenBg: '#f0fdf4',
+  statusOpenText: '#166534',
+  statusClosedBg: '#fee2e2',
+  statusClosedText: '#991b1b',
+
+  priceColor: '#dc2626',
+
+  footerBg: '#fafafa',
+  footerText: '#a3a3a3',
+  footerBorder: '#e5e5e5',
+
+  decorativeGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, transparent 100%)',
+
+  fontFamily: '"Noto Sans JP", -apple-system, sans-serif',
+  fontHeading: '"Noto Serif JP", serif',
+  transitionSpeed: '200ms',
+  animationStyle: 'subtle',
+  cardBorderRadius: '8px',
+  badgeBorderRadius: '4px',
+};
+
+// Café Theme - Cozy Coffee Shop (Warm Browns & Cream)
+const cafeStyles: ThemeStyles = {
+  background: '#faf8f5',
+  backgroundPattern: 'radial-gradient(circle at 30% 70%, rgba(120, 53, 15, 0.04) 0%, transparent 50%), linear-gradient(135deg, #faf8f5 0%, #f5f3ef 50%, #faf8f5 100%)',
+  surface: '#fffcf7',
+  surfaceHover: '#f5f1e8',
+  text: '#3e2723',
+  textMuted: '#6d4c41',
+  primary: '#6d4c41',
+  primaryLight: '#efebe9',
+  accent: '#8d6e63',
+  border: '#d7ccc8',
+
+  headerBg: 'linear-gradient(180deg, rgba(255, 252, 247, 0.98) 0%, rgba(245, 241, 232, 0.95) 100%)',
+  headerBorder: '#d7ccc8',
+
+  cardBg: 'linear-gradient(135deg, rgba(255, 252, 247, 0.95) 0%, rgba(249, 245, 238, 0.9) 100%)',
+  cardBorder: '#d7ccc8',
+  cardShadow: '0 3px 12px rgba(109, 76, 65, 0.08), 0 1px 4px rgba(109, 76, 65, 0.06)',
+  cardHoverTransform: 'translateY(-3px)',
+  cardHoverShadow: '0 8px 20px rgba(109, 76, 65, 0.12), 0 4px 10px rgba(109, 76, 65, 0.08)',
+
+  pillBg: '#efebe9',
+  pillText: '#6d4c41',
+  pillActiveBg: 'linear-gradient(135deg, #6d4c41 0%, #5d4037 100%)',
+  pillActiveText: '#ffffff',
+  pillHoverBg: '#d7ccc8',
+
+  badgeVeganBg: 'linear-gradient(135deg, #d9f99d 0%, #bef264 100%)',
+  badgeVeganText: '#3f6212',
+  badgePopularBg: 'linear-gradient(135deg, #ffccbc 0%, #ff8a65 100%)',
+  badgePopularText: '#4e342e',
+  badgeSpecialBg: 'linear-gradient(135deg, #ffd54f 0%, #ffb300 100%)',
+  badgeSpecialText: '#4e342e',
+  badgeSoldOutBg: '#d7ccc8',
+  badgeSoldOutText: '#6d4c41',
+
+  allergenBg: '#efebe9',
+  allergenText: '#5d4037',
+  allergenBorder: '#d7ccc8',
+  allergenSelectedBg: 'linear-gradient(135deg, #6d4c41, #5d4037)',
+  allergenSelectedText: '#ffffff',
+
+  statusOpenBg: '#d9f99d',
+  statusOpenText: '#3f6212',
+  statusClosedBg: '#ffccbc',
+  statusClosedText: '#5d4037',
+
+  priceColor: '#6d4c41',
+
+  footerBg: 'linear-gradient(180deg, #faf8f5 0%, #efebe9 100%)',
+  footerText: '#8d6e63',
+  footerBorder: '#d7ccc8',
+
+  decorativeGradient: 'linear-gradient(135deg, rgba(109, 76, 65, 0.04) 0%, transparent 100%)',
+
+  fontFamily: '"Lora", Georgia, serif',
+  fontHeading: '"Montserrat", sans-serif',
+  transitionSpeed: '250ms',
+  animationStyle: 'smooth',
+  cardBorderRadius: '10px',
+  badgeBorderRadius: '6px',
+};
+
+// Fine Dining Theme - Luxury (Black, Gold, Elegant)
+const finediningStyles: ThemeStyles = {
+  background: '#0f0f0f',
+  backgroundPattern: 'radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0f0f0f 100%), radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%)',
+  surface: '#1a1a1a',
+  surfaceHover: '#262626',
+  text: '#fafafa',
+  textMuted: '#a3a3a3',
+  primary: '#d4af37',
+  primaryLight: '#3f3f0f',
+  accent: '#d4af37',
+  border: '#404040',
+
+  headerBg: 'linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%)',
+  headerBorder: 'linear-gradient(90deg, transparent, #d4af37, transparent)',
+
+  cardBg: 'linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(31, 31, 31, 0.9) 100%)',
+  cardBorder: 'linear-gradient(135deg, #404040, #d4af37, #404040)',
+  cardShadow: '0 4px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.05)',
+  cardHoverTransform: 'translateY(-4px) scale(1.01)',
+  cardHoverShadow: '0 12px 40px rgba(0, 0, 0, 0.6), 0 0 50px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(212, 175, 55, 0.2)',
+
+  pillBg: '#262626',
+  pillText: '#a3a3a3',
+  pillActiveBg: 'linear-gradient(135deg, #d4af37 0%, #b8941f 100%)',
+  pillActiveText: '#0f0f0f',
+  pillHoverBg: '#404040',
+
+  badgeVeganBg: 'linear-gradient(135deg, #166534 0%, #14532d 100%)',
+  badgeVeganText: '#86efac',
+  badgePopularBg: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
+  badgePopularText: '#fecaca',
+  badgeSpecialBg: 'linear-gradient(135deg, #d4af37 0%, #b8941f 100%)',
+  badgeSpecialText: '#0f0f0f',
+  badgeSoldOutBg: '#404040',
+  badgeSoldOutText: '#a3a3a3',
+
+  allergenBg: '#262626',
+  allergenText: '#a3a3a3',
+  allergenBorder: '#404040',
+  allergenSelectedBg: 'linear-gradient(135deg, #d4af37, #b8941f)',
+  allergenSelectedText: '#0f0f0f',
+
+  statusOpenBg: '#166534',
+  statusOpenText: '#86efac',
+  statusClosedBg: '#991b1b',
+  statusClosedText: '#fecaca',
+
+  priceColor: '#d4af37',
+
+  footerBg: 'linear-gradient(180deg, #0f0f0f 0%, #000000 100%)',
+  footerText: '#737373',
+  footerBorder: 'linear-gradient(90deg, transparent, #404040, transparent)',
+
+  decorativeGradient: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, transparent 100%)',
+
+  fontFamily: '"Cormorant Garamond", Georgia, serif',
+  fontHeading: '"Cinzel", serif',
+  transitionSpeed: '300ms',
+  animationStyle: 'elegant',
+  cardBorderRadius: '12px',
+  badgeBorderRadius: '8px',
+};
+
 export const THEMES: Record<MenuTheme, ThemeConfig> = {
   classic: {
     id: 'classic',
@@ -447,6 +703,38 @@ export const THEMES: Record<MenuTheme, ThemeConfig> = {
     preview: '🟨',
     previewColors: ['#fffbeb', '#d97706', '#fef3c7'],
     styles: orientalStyles,
+  },
+  italian: {
+    id: 'italian',
+    name: 'Italian',
+    description: 'Tricolore-Design - authentisch italienisch',
+    preview: '🇮🇹',
+    previewColors: ['#dc2626', '#ffffff', '#16a34a'],
+    styles: italianStyles,
+  },
+  japanese: {
+    id: 'japanese',
+    name: 'Japanese',
+    description: 'Zen-Minimalismus - ruhig und elegant',
+    preview: '🇯🇵',
+    previewColors: ['#ffffff', '#1a1a1a', '#dc2626'],
+    styles: japaneseStyles,
+  },
+  cafe: {
+    id: 'cafe',
+    name: 'Café',
+    description: 'Warme Kaffeehausatmosphäre - gemütlich',
+    preview: '☕',
+    previewColors: ['#faf8f5', '#6d4c41', '#d7ccc8'],
+    styles: cafeStyles,
+  },
+  finedining: {
+    id: 'finedining',
+    name: 'Fine Dining',
+    description: 'Schwarz-Gold - exklusiv und luxuriös',
+    preview: '🌟',
+    previewColors: ['#0f0f0f', '#d4af37', '#1a1a1a'],
+    styles: finediningStyles,
   },
 };
 
