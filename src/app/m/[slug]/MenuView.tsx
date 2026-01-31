@@ -168,6 +168,19 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     }
   }, [restaurant.id]);
 
+  // Track menu view
+  useEffect(() => {
+    // Track view event (fire and forget)
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        restaurantId: restaurant.id,
+        eventType: 'view',
+      }),
+    }).catch((err) => console.error('Analytics tracking failed:', err));
+  }, [restaurant.id]);
+
   // Get translations based on current language
   const t = getTranslation(currentLang);
 
