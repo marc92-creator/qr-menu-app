@@ -9,7 +9,7 @@ import { formatPrice } from '@/lib/utils';
 import { ALLERGENS, getAllergensByIds } from '@/lib/allergens';
 import { getItemImageUrl, getCategoryImage, ImageMode } from '@/lib/foodImages';
 import { ImageGalleryModal } from '@/components/ImageGalleryModal';
-import { ITEM_TAGS } from '@/lib/itemTags';
+import { ITEM_TAGS, getTagsByIds } from '@/lib/itemTags';
 import {
   DndContext,
   closestCenter,
@@ -154,6 +154,7 @@ const SortableMenuItem = memo(function SortableMenuItem({
 
   // Memoize expensive computations
   const itemAllergens = useMemo(() => getAllergensByIds(item.allergens || []), [item.allergens]);
+  const itemTags = useMemo(() => getTagsByIds(item.tags || []), [item.tags]);
   const imageUrl = useMemo(() => getItemImageUrl(item, true), [item]);
 
   return (
@@ -210,26 +211,17 @@ const SortableMenuItem = memo(function SortableMenuItem({
               <span className="hidden sm:inline">Ausverkauft</span>
             </span>
           )}
-          {item.is_special && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
-              <span>⭐</span>
+          {/* Display all tags from the tags array */}
+          {itemTags.map((tag) => (
+            <span
+              key={tag.id}
+              className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 ${tag.bgColor} rounded-full text-xs ${tag.textColor} font-medium`}
+            >
+              <span>{tag.icon}</span>
+              <span className="hidden sm:inline">{tag.name}</span>
             </span>
-          )}
-          {item.is_popular && !item.is_special && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
-              <span>❤️</span>
-            </span>
-          )}
-          {item.is_vegan && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
-              <span>🌱</span>
-            </span>
-          )}
-          {item.is_vegetarian && !item.is_vegan && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
-              <span>🥬</span>
-            </span>
-          )}
+          ))}
+          {/* Display allergens */}
           {itemAllergens.map((allergen) => (
             <span
               key={allergen.id}
