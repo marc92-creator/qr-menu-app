@@ -13,6 +13,7 @@ import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { getSandboxData } from '@/lib/sandboxStorage';
 import { getMenuUrl } from '@/lib/utils';
 import { DEMO_RESTAURANT } from '@/lib/demoData';
+import MenuView from '@/app/m/[slug]/MenuView';
 
 type Tab = 'menu' | 'qr' | 'preview' | 'analytics' | 'settings';
 
@@ -20,7 +21,8 @@ export default function DemoPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('menu');
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [sandboxRestaurant, setSandboxRestaurant] = useState(DEMO_RESTAURANT);
+  const [sandboxData, setSandboxData] = useState(() => getSandboxData());
+  const [sandboxRestaurant, setSandboxRestaurant] = useState(() => getSandboxData().restaurant);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -40,6 +42,15 @@ export default function DemoPage() {
     checkAuth();
   }, [router]);
 
+  // Refresh sandbox data when switching to preview tab
+  useEffect(() => {
+    if (activeTab === 'preview') {
+      const updatedData = getSandboxData();
+      setSandboxData(updatedData);
+      setSandboxRestaurant(updatedData.restaurant);
+    }
+  }, [activeTab]);
+
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
@@ -51,12 +62,12 @@ export default function DemoPage() {
     );
   }
 
-  const sandboxData = getSandboxData();
   const demoMenuUrl = getMenuUrl('demo-doener-palace');
 
   const handleRestaurantUpdate = () => {
     // Reload sandbox data after settings update
     const updatedData = getSandboxData();
+    setSandboxData(updatedData);
     setSandboxRestaurant(updatedData.restaurant);
   };
 
@@ -130,48 +141,62 @@ export default function DemoPage() {
         )}
 
         {activeTab === 'preview' && (
-          <div className="max-w-md mx-auto">
-            <div className="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-gray-100">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <span className="text-3xl">👁️</span>
+          <div className="space-y-6">
+            {/* Info Banner */}
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-6 border border-purple-100">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                    <span className="text-2xl">👁️</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Live-Vorschau</h3>
+                    <p className="text-sm text-gray-600 mb-3">
+                      So sieht dein Menü für deine Gäste aus. Alle Änderungen werden hier in Echtzeit angezeigt.
+                    </p>
+                    <p className="text-xs text-purple-700 bg-white/50 rounded-lg px-3 py-2 inline-block">
+                      <strong>Sandbox-Modus:</strong> Deine Änderungen werden nur in diesem Browser gespeichert und gehen beim Schließen verloren. Registriere dich, um dein Menü dauerhaft zu veröffentlichen!
+                    </p>
+                  </div>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Menü-Vorschau</h2>
-                <p className="text-gray-500 text-sm">
-                  Schau dir an, wie dein Menü für Gäste aussieht.
-                </p>
-              </div>
-
-              <div className="p-4 bg-purple-50 rounded-xl mb-6">
-                <p className="text-sm text-purple-700">
-                  <strong>Hinweis:</strong> Die öffentliche Demo-Seite zeigt immer die Standard-Demo-Daten,
-                  nicht deine Sandbox-Änderungen. Registriere dich, um dein eigenes Menü zu veröffentlichen!
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <Link
-                  href={demoMenuUrl}
-                  target="_blank"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-all shadow-lg shadow-emerald-500/20"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                  Demo-Menü öffnen
-                </Link>
               </div>
             </div>
 
-            {/* Current Sandbox Stats */}
-            <div className="mt-6 bg-white rounded-2xl p-6 shadow-sm ring-1 ring-gray-100">
-              <h3 className="font-semibold text-gray-900 mb-4">Deine Sandbox-Daten</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-xl">
+            {/* Embedded Preview */}
+            <div className="max-w-md mx-auto">
+              <div className="bg-white rounded-3xl shadow-2xl overflow-hidden ring-1 ring-gray-200">
+                {/* Phone mockup bezel */}
+                <div className="bg-gray-900 px-6 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-gray-600 rounded-full"></div>
+                    <div className="w-20 h-1.5 bg-gray-700 rounded-full"></div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-3 border border-gray-600 rounded-sm"></div>
+                    <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                  </div>
+                </div>
+
+                {/* Menu Preview */}
+                <div className="h-[600px] overflow-auto">
+                  <MenuView
+                    restaurant={sandboxRestaurant}
+                    categories={sandboxData.categories}
+                    menuItems={sandboxData.menuItems}
+                    showWatermark={false}
+                    isDemo={false}
+                    isEmbedded={true}
+                  />
+                </div>
+              </div>
+
+              {/* Stats below preview */}
+              <div className="mt-6 grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-gray-100">
                   <div className="text-2xl font-bold text-emerald-600">{sandboxData.categories.length}</div>
                   <div className="text-sm text-gray-500">Kategorien</div>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-xl">
+                <div className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-gray-100">
                   <div className="text-2xl font-bold text-emerald-600">{sandboxData.menuItems.length}</div>
                   <div className="text-sm text-gray-500">Gerichte</div>
                 </div>

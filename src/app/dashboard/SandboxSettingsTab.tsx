@@ -71,6 +71,13 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
     onUpdate();
   };
 
+  const handleThemeChange = (newTheme: MenuTheme) => {
+    setTheme(newTheme);
+    // Immediately save theme to localStorage so preview updates
+    updateSandboxRestaurant({ theme: newTheme });
+    onUpdate();
+  };
+
   const updateDayHours = (day: string, field: 'open' | 'close' | 'closed', value: string | boolean) => {
     setOpeningHours(prev => ({
       ...prev,
@@ -325,7 +332,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
             return (
               <button
                 key={t.id}
-                onClick={() => setTheme(t.id)}
+                onClick={() => handleThemeChange(t.id)}
                 className={`
                   relative rounded-xl border-2 text-left transition-all overflow-hidden
                   ${isActive

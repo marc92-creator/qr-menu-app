@@ -1,32 +1,126 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <!-- Warm Ghibli-style Pommes Frites -->
+  <!-- Enhanced Ghibli-style Pommes Frites with realistic details -->
   <defs>
+    <!-- Soft shadow filter -->
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.25"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Enhanced fry gradient (golden crispy) -->
     <linearGradient id="fry" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD54F"/>
+      <stop offset="0%" style="stop-color:#FFE082"/>
+      <stop offset="30%" style="stop-color:#FFD54F"/>
+      <stop offset="70%" style="stop-color:#FFB300"/>
       <stop offset="100%" style="stop-color:#FFA726"/>
     </linearGradient>
+
+    <!-- Darker fry for depth -->
+    <linearGradient id="fryDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCA28"/>
+      <stop offset="50%" style="stop-color:#FFB300"/>
+      <stop offset="100%" style="stop-color:#FF8F00"/>
+    </linearGradient>
+
+    <!-- Red box gradient -->
     <linearGradient id="box" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#E53935"/>
+      <stop offset="0%" style="stop-color:#EF5350"/>
+      <stop offset="50%" style="stop-color:#E53935"/>
       <stop offset="100%" style="stop-color:#C62828"/>
     </linearGradient>
+
+    <!-- Box shadow gradient -->
+    <linearGradient id="boxShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C62828"/>
+      <stop offset="100%" style="stop-color:#B71C1C"/>
+    </linearGradient>
   </defs>
-  <!-- Shadow -->
-  <ellipse cx="60" cy="108" rx="30" ry="6" fill="#00000020"/>
-  <!-- Box back -->
-  <path d="M35 50 L40 100 L80 100 L85 50 Z" fill="url(#box)"/>
-  <!-- Fries sticking out -->
-  <rect x="38" y="25" width="8" height="55" rx="2" fill="url(#fry)" transform="rotate(-8 42 50)"/>
-  <rect x="48" y="20" width="7" height="58" rx="2" fill="url(#fry)" transform="rotate(3 52 48)"/>
-  <rect x="56" y="22" width="8" height="56" rx="2" fill="url(#fry)" transform="rotate(-5 60 50)"/>
-  <rect x="65" y="18" width="7" height="60" rx="2" fill="url(#fry)" transform="rotate(8 68 48)"/>
-  <rect x="73" y="28" width="8" height="50" rx="2" fill="url(#fry)" transform="rotate(-3 77 53)"/>
-  <rect x="43" y="32" width="6" height="45" rx="2" fill="#FFCA28" transform="rotate(12 46 55)"/>
-  <rect x="60" y="30" width="6" height="48" rx="2" fill="#FFCA28" transform="rotate(-12 63 54)"/>
-  <!-- Box front -->
-  <path d="M35 50 L40 100 L80 100 L85 50 L75 45 L45 45 Z" fill="url(#box)" opacity="0.9"/>
-  <!-- Box decoration -->
-  <path d="M45 60 L75 60" stroke="#FFEB3B" stroke-width="3"/>
-  <path d="M44 70 L76 70" stroke="#FFEB3B" stroke-width="3"/>
-  <!-- Shine -->
-  <path d="M50 52 L55 52" stroke="#FF8A80" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Soft shadow -->
+  <ellipse cx="60" cy="110" rx="32" ry="6" fill="#000000" opacity="0.15" filter="url(#softShadow)"/>
+
+  <!-- Box back panel with depth -->
+  <path d="M35 50 L40 100 L80 100 L85 50 Z" fill="url(#boxShadow)" opacity="0.6"/>
+
+  <!-- Pommes frites (back layer) -->
+  <g opacity="0.9">
+    <rect x="42" y="32" width="6" height="45" rx="2" fill="url(#fryDark)" transform="rotate(12 45 55)"/>
+    <rect x="60" y="30" width="6" height="48" rx="2" fill="url(#fryDark)" transform="rotate(-12 63 54)"/>
+    <rect x="52" y="35" width="5" height="40" rx="2" fill="url(#fryDark)" transform="rotate(6 54 55)"/>
+  </g>
+
+  <!-- Pommes frites (main layer with realistic details) -->
+  <g id="fry1">
+    <rect x="38" y="25" width="8" height="55" rx="2.5" fill="url(#fry)" transform="rotate(-8 42 50)"/>
+    <!-- Crispy edges -->
+    <path d="M38 30 L46 30" stroke="#FFF9C4" stroke-width="1.5" stroke-linecap="round" opacity="0.7" transform="rotate(-8 42 50)"/>
+    <!-- Salt crystals -->
+    <circle cx="42" cy="45" r="0.8" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="41" cy="52" r="0.6" fill="#FFFFFF" opacity="0.7"/>
+  </g>
+
+  <g id="fry2">
+    <rect x="48" y="20" width="7" height="58" rx="2.5" fill="url(#fry)" transform="rotate(3 52 48)"/>
+    <path d="M48 25 L55 25" stroke="#FFF9C4" stroke-width="1.5" stroke-linecap="round" opacity="0.7" transform="rotate(3 52 48)"/>
+    <circle cx="52" cy="40" r="0.7" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="51" cy="50" r="0.6" fill="#FFFFFF" opacity="0.7"/>
+  </g>
+
+  <g id="fry3">
+    <rect x="56" y="22" width="8" height="56" rx="2.5" fill="url(#fry)" transform="rotate(-5 60 50)"/>
+    <path d="M56 27 L64 27" stroke="#FFF9C4" stroke-width="1.5" stroke-linecap="round" opacity="0.7" transform="rotate(-5 60 50)"/>
+    <circle cx="60" cy="42" r="0.8" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="59" cy="54" r="0.6" fill="#FFFFFF" opacity="0.7"/>
+  </g>
+
+  <g id="fry4">
+    <rect x="65" y="18" width="7" height="60" rx="2.5" fill="url(#fry)" transform="rotate(8 68 48)"/>
+    <path d="M65 23 L72 23" stroke="#FFF9C4" stroke-width="1.5" stroke-linecap="round" opacity="0.7" transform="rotate(8 68 48)"/>
+    <circle cx="68" cy="38" r="0.7" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="69" cy="48" r="0.6" fill="#FFFFFF" opacity="0.7"/>
+  </g>
+
+  <g id="fry5">
+    <rect x="73" y="28" width="8" height="50" rx="2.5" fill="url(#fry)" transform="rotate(-3 77 53)"/>
+    <path d="M73 33 L81 33" stroke="#FFF9C4" stroke-width="1.5" stroke-linecap="round" opacity="0.7" transform="rotate(-3 77 53)"/>
+    <circle cx="77" cy="48" r="0.8" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="76" cy="58" r="0.6" fill="#FFFFFF" opacity="0.7"/>
+  </g>
+
+  <!-- Pommes frites (front layer) -->
+  <g opacity="0.95">
+    <rect x="45" y="28" width="6" height="50" rx="2" fill="url(#fry)" transform="rotate(5 48 53)"/>
+    <rect x="62" y="26" width="6" height="52" rx="2" fill="url(#fry)" transform="rotate(-10 65 52)"/>
+  </g>
+
+  <!-- Box front panel with enhanced detail -->
+  <path d="M35 50 L40 100 L80 100 L85 50 L75 45 L45 45 Z" fill="url(#box)"/>
+
+  <!-- Box top edge (3D effect) -->
+  <path d="M45 45 L40 50 L80 50 L75 45 Z" fill="#EF5350" opacity="0.8"/>
+
+  <!-- Box decoration stripes -->
+  <path d="M43 60 L45 76" stroke="#FFEB3B" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M75 60 L77 76" stroke="#FFEB3B" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M46 62 L74 62" stroke="#FFEB3B" stroke-width="3" opacity="0.9"/>
+  <path d="M44 70 L76 70" stroke="#FFEB3B" stroke-width="3" opacity="0.9"/>
+
+  <!-- Box shine/highlight -->
+  <path d="M50 52 L65 52" stroke="#FF8A80" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M48 56 L55 56" stroke="#FFCDD2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Steam wisps (hot fries!) -->
+  <path d="M48 18 Q46 13 50 8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+        fill="none" opacity="0.4"/>
+  <path d="M60 15 Q58 10 62 5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+        fill="none" opacity="0.5"/>
+  <path d="M72 20 Q70 15 74 10" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+        fill="none" opacity="0.35"/>
 </svg>

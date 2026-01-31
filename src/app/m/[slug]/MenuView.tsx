@@ -151,6 +151,8 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const tabsRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isScrollingProgrammatically = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get theme configuration
   const theme = getTheme(restaurant.theme || 'classic');
@@ -192,18 +194,18 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
   // Intersection Observer to update active category while scrolling
   useEffect(() => {
-    if (categories.length === 0) return;
-
-    // For embedded mode, use the parent scroll container as the root
-    const scrollRoot = isEmbedded ? scrollContainerRef.current?.parentElement : null;
+    if (categories.length === 0 || isEmbedded) return; // Skip for embedded mode
 
     const observerOptions: IntersectionObserverInit = {
-      root: scrollRoot,
+      root: null,
       rootMargin: '-25% 0px -65% 0px', // Adjusted for better detection
-      threshold: [0, 0.1], // Multiple thresholds for better accuracy
+      threshold: [0, 0.1, 0.25], // Multiple thresholds for better accuracy
     };
 
     const observer = new IntersectionObserver((entries) => {
+      // Skip if we're programmatically scrolling
+      if (isScrollingProgrammatically.current) return;
+
       // Find the most visible category
       const visibleEntries = entries.filter(entry => entry.isIntersecting);
       if (visibleEntries.length > 0) {
@@ -212,13 +214,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         const categoryId = mostVisible.target.getAttribute('data-category-id');
         if (categoryId && categoryId !== activeCategory) {
           setActiveCategory(categoryId);
-          // Update pill scroll position
-          if (tabsRef.current) {
-            const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
-            if (tab) {
-              tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
+          // Debounce pill scrolling to avoid jank
+          if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
           }
+          scrollTimeoutRef.current = setTimeout(() => {
+            requestAnimationFrame(() => {
+              if (tabsRef.current) {
+                const tab = tabsRef.current.querySelector(`[data-category="${categoryId}"]`);
+                if (tab) {
+                  tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+              }
+            });
+          }, 100); // Debounce by 100ms
         }
       }
     }, observerOptions);
@@ -229,7 +238,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       observer.observe(element);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, [categories, isEmbedded, activeCategory]);
 
   // Track page view / scan (only once per session)
@@ -278,6 +292,9 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       return;
     }
 
+    // Set flag to prevent intersection observer from interfering
+    isScrollingProgrammatically.current = true;
+
     // Scroll tab pill into view
     requestAnimationFrame(() => {
       if (tabsRef.current) {
@@ -290,11 +307,13 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
 
     // Find the category element using our ref map
     const targetElement = categoryRefs.current.get(categoryId) || document.getElementById(`category-${categoryId}`);
-    if (!targetElement) return;
+    if (!targetElement) {
+      isScrollingProgrammatically.current = false;
+      return;
+    }
 
     // Standalone mode: scroll to category with offset for sticky header
-    // Use setTimeout to ensure DOM is ready after any state changes
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       const headerHeight = 180; // Approximate header height with pills
       const elementPosition = targetElement.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
@@ -303,7 +322,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
         top: offsetPosition,
         behavior: 'smooth'
       });
-    }, 10);
+
+      // Clear programmatic scroll flag after animation completes (smooth scroll ~500ms)
+      setTimeout(() => {
+        isScrollingProgrammatically.current = false;
+      }, 600);
+    });
   };
 
   // Filter toggle functions

@@ -619,8 +619,8 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // Fleischgerichte
   {
     id: 'steak',
-    keywords: ['steak', 'rindersteak', 'beef steak', 'rumpsteak', 'filetsteak'],
-    image: '/food-images/steak.svg',
+    keywords: ['steak', 'rindersteak', 'beef steak', 'rumpsteak', 'filetsteak', 'rind', 'beef'],
+    image: '/food-images/schnitzel.svg', // Using schnitzel as placeholder until steak.svg is added
     label: 'Steak',
     category: 'deutsch',
   },
