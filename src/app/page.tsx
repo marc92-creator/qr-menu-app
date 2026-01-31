@@ -10,9 +10,6 @@ export default function Home() {
         <nav className="container mx-auto px-5 py-4 flex items-center justify-between max-w-6xl">
           <div className="flex items-center gap-3">
             <Logo />
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-              Demo
-            </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
@@ -42,12 +39,12 @@ export default function Home() {
             <div className="py-16 sm:py-24 md:py-32">
               <div className="max-w-4xl mx-auto text-center">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-sm font-medium px-4 py-2 rounded-full mb-6 sm:mb-8">
+                <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-2 rounded-full mb-6 sm:mb-8">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  Demo-Version verfügbar
+                  14 Tage kostenlos testen
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-[1.1] tracking-tight">
@@ -59,14 +56,14 @@ export default function Home() {
 
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
                   Erstelle deine digitale Speisekarte mit QR-Code.
-                  <span className="hidden sm:inline"> Demo starten, keine technischen Kenntnisse erforderlich.</span>
+                  <span className="hidden sm:inline"> Kostenlos starten, keine technischen Kenntnisse erforderlich.</span>
                 </p>
 
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
-                  <Link href="/dashboard" className="w-full sm:w-auto">
+                  <Link href="/register" className="w-full sm:w-auto">
                     <Button size="lg" className="w-full min-h-[56px] text-base sm:text-lg px-8 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                      Demo starten
+                      Kostenlos starten
                       <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
@@ -283,7 +280,7 @@ export default function Home() {
                 Einfache Preise
               </h2>
               <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-                Starte mit der Demo und upgrade wenn du bereit bist
+                14 Tage kostenlos testen, dann nur 9,99€/Monat
               </p>
             </div>
 
@@ -371,7 +368,7 @@ export default function Home() {
 
                   <Link href="/dashboard" className="block">
                     <button className="w-full min-h-[44px] text-sm font-medium bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-200 border border-white/20">
-                      Erst Demo ausprobieren
+                      Erst unverbindlich testen
                     </button>
                   </Link>
                 </div>
@@ -483,7 +480,7 @@ export default function Home() {
                   </svg>
                 </summary>
                 <div className="px-6 pb-6 text-gray-600">
-                  Nein! Wenn du ein Smartphone bedienen kannst, kannst du auch ein Menü erstellen. Die Demo zeigt dir Schritt für Schritt, wie es geht.
+                  Nein! Wenn du ein Smartphone bedienen kannst, kannst du auch ein Menü erstellen. Die App zeigt dir Schritt für Schritt, wie es geht.
                 </div>
               </details>
 
@@ -519,7 +516,7 @@ export default function Home() {
                   </svg>
                 </summary>
                 <div className="px-6 pb-6 text-gray-600">
-                  Ja, monatlich kündbar. Keine versteckten Kosten, keine Mindestlaufzeit. Die Demo-Version ist komplett kostenlos.
+                  Ja, monatlich kündbar. Keine versteckten Kosten, keine Mindestlaufzeit. Die ersten 14 Tage sind komplett kostenlos.
                 </div>
               </details>
 
@@ -551,18 +548,18 @@ export default function Home() {
               <div className="relative">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-6">
                   <span className="text-emerald-400">✨</span>
-                  Jetzt Demo testen
+                  14 Tage kostenlos
                 </div>
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight">
                   Bereit für deine<br />digitale Speisekarte?
                 </h2>
                 <p className="text-gray-400 mb-8 sm:mb-10 max-w-xl mx-auto text-lg">
-                  Starte jetzt die Demo und habe dein digitales Menü in weniger als 5 Minuten online.
+                  Starte jetzt kostenlos und habe dein digitales Menü in weniger als 5 Minuten online.
                 </p>
-                <Link href="/dashboard">
+                <Link href="/register">
                   <Button size="lg" className="min-h-[56px] px-10 text-lg shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                    Demo starten
+                    Kostenlos starten
                     <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -580,9 +577,6 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <Logo />
-              <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-                Demo
-              </span>
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">
               <Link href="/impressum" className="hover:text-gray-900 transition-colors">

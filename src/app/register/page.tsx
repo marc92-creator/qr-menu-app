@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
@@ -13,6 +14,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showEmailSent, setShowEmailSent] = useState(false);
@@ -226,27 +229,78 @@ export default function RegisterPage() {
                 placeholder="deine@email.de"
               />
 
-              <Input
-                id="password"
-                type="password"
-                label="Passwort"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                placeholder="Mindestens 6 Zeichen"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  label="Passwort"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Mindestens 6 Zeichen"
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-[38px] text-gray-500 hover:text-gray-700 transition-colors"
+                  aria-label={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
 
-              <Input
-                id="confirmPassword"
-                type="password"
-                label="Passwort bestätigen"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                placeholder="Passwort wiederholen"
-              />
+              {/* Password Strength Indicator */}
+              {password && (
+                <div className="space-y-2">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4].map((level) => {
+                      const strength =
+                        (password.length >= 6 ? 1 : 0) +
+                        (/[A-Z]/.test(password) ? 1 : 0) +
+                        (/[0-9]/.test(password) ? 1 : 0) +
+                        (/[^A-Za-z0-9]/.test(password) ? 1 : 0);
+                      const color = strength >= level
+                        ? strength <= 1 ? 'bg-red-500'
+                          : strength === 2 ? 'bg-orange-500'
+                          : strength === 3 ? 'bg-yellow-500'
+                          : 'bg-emerald-500'
+                        : 'bg-gray-200';
+                      return <div key={level} className={`h-1 flex-1 rounded-full ${color} transition-colors`} />;
+                    })}
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    {password.length < 6 ? 'Mindestens 6 Zeichen' :
+                     !/[A-Z]/.test(password) ? 'Füge einen Großbuchstaben hinzu' :
+                     !/[0-9]/.test(password) ? 'Füge eine Zahl hinzu' :
+                     !/[^A-Za-z0-9]/.test(password) ? 'Füge ein Sonderzeichen hinzu' :
+                     '✓ Starkes Passwort'}
+                  </p>
+                </div>
+              )}
+
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  label="Passwort bestätigen"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Passwort wiederholen"
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-[38px] text-gray-500 hover:text-gray-700 transition-colors"
+                  aria-label={showConfirmPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
 
               {error && (
                 <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
