@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Tiramisu -->
+  <defs>
+    <linearGradient id="tiramisuPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="40" ry="8" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="85" rx="50" ry="18" fill="url(#tiramisuPlate)"/>
+  <ellipse cx="60" cy="83" rx="45" ry="15" fill="#FFFFFF"/>
+  <!-- Tiramisu slice -->
+  <path d="M30 55 L90 55 L85 80 L35 80 Z" fill="#FFF8E1"/>
+  <!-- Layers -->
+  <!-- Mascarpone layer 1 -->
+  <path d="M30 55 L90 55 L89 62 L31 62 Z" fill="#FFFDE7"/>
+  <!-- Savoiardi (coffee soaked) -->
+  <path d="M31 62 L89 62 L88 70 L32 70 Z" fill="#8D6E63"/>
+  <!-- Mascarpone layer 2 -->
+  <path d="M32 70 L88 70 L87 78 L33 78 Z" fill="#FFF8E1"/>
+  <!-- Bottom savoiardi -->
+  <path d="M33 78 L87 78 L86 82 L34 82 Z" fill="#A1887F"/>
+  <!-- Cocoa powder on top -->
+  <rect x="32" y="53" width="56" height="4" fill="#5D4037" opacity="0.8"/>
+  <!-- Cocoa dust texture -->
+  <circle cx="40" cy="54" r="1" fill="#4E342E" opacity="0.5"/>
+  <circle cx="55" cy="55" r="1" fill="#4E342E" opacity="0.5"/>
+  <circle cx="70" cy="54" r="1" fill="#4E342E" opacity="0.5"/>
+  <circle cx="82" cy="55" r="1" fill="#4E342E" opacity="0.5"/>
+  <!-- Coffee drip on plate -->
+  <ellipse cx="92" cy="82" rx="6" ry="3" fill="#6D4C41" opacity="0.3"/>
+  <!-- Chocolate shaving garnish -->
+  <path d="M45 52 Q48 48 52 52" stroke="#3E2723" stroke-width="2" fill="none"/>
+  <path d="M65 51 Q68 47 72 51" stroke="#4E342E" stroke-width="2" fill="none"/>
+  <!-- Mint leaf -->
+  <ellipse cx="60" cy="50" rx="4" ry="6" fill="#2E7D32" transform="rotate(-15 60 50)"/>
+  <ellipse cx="55" cy="52" rx="3" ry="5" fill="#388E3C" transform="rotate(20 55 52)"/>
+  <!-- Cocoa dusting around -->
+  <circle cx="35" cy="84" r="0.8" fill="#5D4037" opacity="0.4"/>
+  <circle cx="50" cy="85" r="0.8" fill="#5D4037" opacity="0.4"/>
+  <circle cx="70" cy="84" r="0.8" fill="#5D4037" opacity="0.4"/>
+  <circle cx="85" cy="85" r="0.8" fill="#5D4037" opacity="0.4"/>
+</svg>

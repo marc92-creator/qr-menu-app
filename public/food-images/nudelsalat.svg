@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Pasta -->
+  <defs>
+    <linearGradient id="pastaBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="noodle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFD54F"/>
+    </linearGradient>
+    <linearGradient id="tomatoSauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E53935"/>
+      <stop offset="100%" style="stop-color:#C62828"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="38" ry="8" fill="#00000020"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="85" rx="42" ry="15" fill="url(#pastaBowl)"/>
+  <path d="M18 85 Q25 105 60 108 Q95 105 102 85" fill="url(#pastaBowl)"/>
+  <!-- Pasta noodles swirl -->
+  <path d="M35 65 Q45 55 55 68 Q65 78 75 65 Q85 55 85 70" stroke="url(#noodle)" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M30 72 Q40 62 50 75 Q60 85 70 72 Q80 62 90 72" stroke="url(#noodle)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M38 78 Q48 68 58 80 Q68 88 78 78" stroke="url(#noodle)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M42 60 Q52 52 60 62 Q68 52 78 60" stroke="#FFE082" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Tomato sauce -->
+  <ellipse cx="55" cy="65" rx="12" ry="8" fill="url(#tomatoSauce)" opacity="0.8"/>
+  <ellipse cx="70" cy="72" rx="10" ry="6" fill="url(#tomatoSauce)" opacity="0.7"/>
+  <!-- Basil leaves -->
+  <ellipse cx="60" cy="58" rx="5" ry="7" fill="#2E7D32" transform="rotate(-15 60 58)"/>
+  <ellipse cx="75" cy="62" rx="4" ry="6" fill="#388E3C" transform="rotate(20 75 62)"/>
+  <!-- Parmesan cheese -->
+  <circle cx="50" cy="62" r="2" fill="#FFF8E1"/>
+  <circle cx="65" cy="58" r="1.5" fill="#FFF8E1"/>
+  <circle cx="72" cy="68" r="1.5" fill="#FFF8E1"/>
+  <!-- Steam -->
+  <path d="M50 45 Q47 38 52 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M65 43 Q62 36 67 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+</svg>

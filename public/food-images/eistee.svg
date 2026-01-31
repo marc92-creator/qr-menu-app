@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Turkish Tea -->
+  <defs>
+    <linearGradient id="teaGlass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="50%" style="stop-color:#FFFDE7"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <linearGradient id="tea" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D84315"/>
+      <stop offset="100%" style="stop-color:#BF360C"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="25" ry="5" fill="#00000015"/>
+  <!-- Saucer -->
+  <ellipse cx="60" cy="100" rx="30" ry="8" fill="#FFFFFF"/>
+  <ellipse cx="60" cy="98" rx="25" ry="6" fill="#F5F5F5"/>
+  <!-- Glass base -->
+  <ellipse cx="60" cy="95" rx="12" ry="4" fill="#E8E8E8"/>
+  <!-- Turkish tea glass (tulip shape) -->
+  <path d="M42 45 Q38 70 45 90 L75 90 Q82 70 78 45" fill="url(#teaGlass)" opacity="0.6"/>
+  <!-- Tea liquid -->
+  <path d="M44 50 Q40 70 46 88 L74 88 Q80 70 76 50" fill="url(#tea)" opacity="0.85"/>
+  <!-- Glass rim -->
+  <ellipse cx="60" cy="45" rx="18" ry="6" fill="url(#teaGlass)" opacity="0.8"/>
+  <ellipse cx="60" cy="45" rx="16" ry="5" fill="url(#tea)" opacity="0.9"/>
+  <!-- Glass shine -->
+  <path d="M46 55 Q44 70 47 85" stroke="#FFFFFF" stroke-width="2" opacity="0.5"/>
+  <!-- Steam -->
+  <path d="M52 38 Q49 30 54 23" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M60 35 Q57 27 62 20" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M68 38 Q65 30 70 23" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <!-- Sugar cubes on saucer -->
+  <rect x="82" y="94" width="6" height="5" rx="1" fill="#FFFFFF"/>
+  <rect x="80" y="96" width="5" height="4" rx="1" fill="#FAFAFA"/>
+  <!-- Spoon -->
+  <ellipse cx="35" cy="98" rx="5" ry="2.5" fill="#C0C0C0"/>
+  <rect x="28" y="97" width="12" height="2" rx="1" fill="#D0D0D0" transform="rotate(-15 34 98)"/>
+</svg>

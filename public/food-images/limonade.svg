@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Sprite/Lemon-Lime Soda -->
+  <defs>
+    <linearGradient id="spriteGlass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E8F5E9"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E8F5E9"/>
+    </linearGradient>
+    <linearGradient id="spriteDrink" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C8E6C9"/>
+      <stop offset="100%" style="stop-color:#A5D6A7"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="22" ry="5" fill="#00000015"/>
+  <!-- Glass -->
+  <path d="M38 25 L42 100 L78 100 L82 25 Z" fill="url(#spriteGlass)" opacity="0.7"/>
+  <!-- Sprite liquid -->
+  <path d="M40 30 L44 95 L76 95 L80 30 Z" fill="url(#spriteDrink)" opacity="0.6"/>
+  <!-- Glass rim -->
+  <ellipse cx="60" cy="25" rx="22" ry="7" fill="url(#spriteGlass)" opacity="0.8"/>
+  <ellipse cx="60" cy="26" rx="20" ry="6" fill="url(#spriteDrink)" opacity="0.7"/>
+  <!-- Lots of bubbles (carbonation) -->
+  <circle cx="48" cy="80" r="2" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="62" cy="70" r="2.5" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="55" cy="90" r="1.5" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="70" cy="55" r="2" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="50" cy="60" r="1.5" fill="#FFFFFF" opacity="0.4"/>
+  <circle cx="68" cy="85" r="1" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="58" cy="45" r="2" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="45" cy="70" r="1" fill="#FFFFFF" opacity="0.4"/>
+  <circle cx="72" cy="42" r="1.5" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="52" cy="35" r="1" fill="#FFFFFF" opacity="0.4"/>
+  <!-- Glass shine -->
+  <path d="M42 35 L44 90" stroke="#FFFFFF" stroke-width="2" opacity="0.6"/>
+  <!-- Ice cubes -->
+  <rect x="48" y="35" width="10" height="8" rx="2" fill="#FFFFFF" opacity="0.5" transform="rotate(-10 48 35)"/>
+  <rect x="62" y="42" width="8" height="7" rx="2" fill="#FFFFFF" opacity="0.45" transform="rotate(5 62 42)"/>
+  <rect x="52" y="50" width="9" height="7" rx="2" fill="#FFFFFF" opacity="0.4"/>
+  <!-- Straw -->
+  <rect x="65" y="10" width="4" height="85" rx="1" fill="#4CAF50"/>
+  <ellipse cx="67" cy="10" rx="2" ry="0.8" fill="#388E3C"/>
+  <!-- Lemon wedge garnish -->
+  <path d="M75 28 Q85 25 88 35 Q85 42 75 38 Z" fill="#FFF59D"/>
+  <path d="M78 31 L84 33" stroke="#FFEB3B" stroke-width="1"/>
+  <path d="M77 35 L84 36" stroke="#FFEB3B" stroke-width="1"/>
+</svg>

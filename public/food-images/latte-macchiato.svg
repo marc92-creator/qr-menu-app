@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Cappuccino -->
+  <defs>
+    <linearGradient id="coffeeCup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="100" rx="40" ry="8" fill="#00000015"/>
+  <!-- Saucer -->
+  <ellipse cx="60" cy="92" rx="45" ry="12" fill="url(#coffeeCup)"/>
+  <ellipse cx="60" cy="90" rx="40" ry="10" fill="#FFFFFF"/>
+  <!-- Cup -->
+  <path d="M30 50 Q28 80 40 88 L80 88 Q92 80 90 50 Z" fill="url(#coffeeCup)"/>
+  <path d="M32 52 Q30 78 42 86 L78 86 Q90 78 88 52 Z" fill="#FFFFFF"/>
+  <!-- Handle -->
+  <path d="M90 55 Q105 55 105 70 Q105 85 90 80" stroke="url(#coffeeCup)" stroke-width="8" fill="none"/>
+  <path d="M90 58 Q100 58 100 70 Q100 82 90 78" stroke="#FFFFFF" stroke-width="4" fill="none"/>
+  <!-- Coffee inside -->
+  <ellipse cx="60" cy="52" rx="28" ry="10" fill="#5D4037"/>
+  <!-- Foam layer -->
+  <ellipse cx="60" cy="50" rx="26" ry="8" fill="#FFF8E1"/>
+  <!-- Latte art (heart) -->
+  <path d="M60 45 Q55 42 52 46 Q50 52 60 58 Q70 52 68 46 Q65 42 60 45" fill="#8D6E63"/>
+  <path d="M60 47 Q57 45 55 48 Q54 52 60 55 Q66 52 65 48 Q63 45 60 47" fill="#A1887F"/>
+  <!-- Foam texture -->
+  <circle cx="48" cy="48" r="2" fill="#FFFDE7"/>
+  <circle cx="72" cy="50" r="2" fill="#FFFDE7"/>
+  <circle cx="55" cy="54" r="1.5" fill="#FFF8E1"/>
+  <circle cx="65" cy="52" r="1.5" fill="#FFF8E1"/>
+  <!-- Cocoa powder sprinkle -->
+  <circle cx="50" cy="46" r="0.8" fill="#5D4037"/>
+  <circle cx="58" cy="44" r="0.8" fill="#5D4037"/>
+  <circle cx="70" cy="48" r="0.8" fill="#5D4037"/>
+  <!-- Small cookie on saucer -->
+  <ellipse cx="90" cy="88" rx="8" ry="5" fill="#D4A056"/>
+  <ellipse cx="90" cy="87" rx="6" ry="3" fill="#E8B86D"/>
+  <!-- Steam -->
+  <path d="M50 35 Q48 30 52 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M60 32 Q58 27 62 22" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M70 35 Q68 30 72 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.3"/>
+</svg>

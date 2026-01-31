@@ -96,7 +96,7 @@ export default function DemoPage() {
         </div>
 
         {/* Tabs */}
-        <div className="border-t border-gray-100/50">
+        <div className="border-t border-gray-100/50 hidden sm:block">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <nav className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
               {[
@@ -175,7 +175,14 @@ export default function DemoPage() {
                 </div>
 
                 {/* Menu Preview */}
-                <div className="h-[600px] overflow-auto">
+                <div
+                  className="h-[600px] overflow-y-auto overflow-x-hidden"
+                  style={{
+                    scrollBehavior: 'smooth',
+                    WebkitOverflowScrolling: 'touch',
+                    willChange: 'scroll-position'
+                  }}
+                >
                   <MenuView
                     restaurant={sandboxRestaurant}
                     categories={sandboxData.categories}
@@ -197,6 +204,23 @@ export default function DemoPage() {
                   <div className="text-2xl font-bold text-emerald-600">{sandboxData.menuItems.length}</div>
                   <div className="text-sm text-gray-500">Gerichte</div>
                 </div>
+              </div>
+
+              {/* Fullscreen Preview Button */}
+              <div className="mt-6">
+                <Link
+                  href="/m/demo-doener-palace"
+                  target="_blank"
+                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-[1.02]"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                  Vorschau im Vollbild öffnen
+                </Link>
+                <p className="text-xs text-gray-500 text-center mt-3">
+                  Hinweis: Die öffentliche Demo zeigt Standard-Daten. Registriere dich für dein eigenes Menü!
+                </p>
               </div>
             </div>
           </div>

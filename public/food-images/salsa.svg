@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Hummus -->
+  <defs>
+    <radialGradient id="hummusBase" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#F5DEB3"/>
+      <stop offset="100%" style="stop-color:#D4A574"/>
+    </radialGradient>
+    <linearGradient id="hummusBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8D6E63"/>
+      <stop offset="100%" style="stop-color:#5D4037"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="35" ry="7" fill="#00000020"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="80" rx="40" ry="18" fill="url(#hummusBowl)"/>
+  <path d="M20 80 Q30 105 60 108 Q90 105 100 80" fill="url(#hummusBowl)"/>
+  <!-- Bowl inner rim -->
+  <ellipse cx="60" cy="78" rx="36" ry="15" fill="#6D4C41"/>
+  <!-- Hummus -->
+  <ellipse cx="60" cy="68" rx="32" ry="18" fill="url(#hummusBase)"/>
+  <!-- Swirl pattern in hummus -->
+  <path d="M35 68 Q45 60 60 68 Q75 76 85 68" stroke="#C4A060" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M40 72 Q50 65 60 72 Q70 79 80 72" stroke="#C4A060" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <!-- Center well for olive oil -->
+  <ellipse cx="60" cy="65" rx="10" ry="6" fill="#F0C040" opacity="0.7"/>
+  <!-- Olive oil pool -->
+  <ellipse cx="60" cy="64" rx="8" ry="4" fill="#C5A028"/>
+  <!-- Chickpeas garnish -->
+  <circle cx="45" cy="62" r="3" fill="#E8D5A8"/>
+  <circle cx="72" cy="65" r="2.5" fill="#E8D5A8"/>
+  <circle cx="55" cy="58" r="2" fill="#E8D5A8"/>
+  <!-- Paprika sprinkle -->
+  <ellipse cx="60" cy="64" rx="6" ry="3" fill="#D32F2F" opacity="0.4"/>
+  <!-- Parsley -->
+  <ellipse cx="65" cy="60" rx="4" ry="2" fill="#4CAF50" transform="rotate(15 65 60)"/>
+  <ellipse cx="52" cy="68" rx="3" ry="1.5" fill="#66BB6A" transform="rotate(-20 52 68)"/>
+  <!-- Pita bread on side -->
+  <path d="M90 85 L105 70 L108 90 Z" fill="#E8C890"/>
+  <path d="M92 82 L100 75" stroke="#D4A060" stroke-width="1" opacity="0.5"/>
+</svg>

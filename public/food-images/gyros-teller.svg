@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Döner Plate -->
+  <defs>
+    <linearGradient id="plate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="meat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8D6E63"/>
+      <stop offset="100%" style="stop-color:#5D4037"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="108" rx="45" ry="8" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="75" rx="48" ry="20" fill="url(#plate)"/>
+  <ellipse cx="60" cy="72" rx="42" ry="16" fill="#F5F5F5"/>
+  <!-- Rice bed -->
+  <ellipse cx="35" cy="70" rx="18" ry="10" fill="#FFFDE7"/>
+  <ellipse cx="32" cy="68" rx="2" ry="1" fill="#FFF8E1"/>
+  <ellipse cx="38" cy="66" rx="2" ry="1" fill="#FFF8E1"/>
+  <ellipse cx="35" cy="72" rx="2" ry="1" fill="#FFF8E1"/>
+  <!-- Salad -->
+  <ellipse cx="80" cy="68" rx="15" ry="10" fill="#8BC34A"/>
+  <ellipse cx="78" cy="66" rx="10" ry="6" fill="#9CCC65"/>
+  <circle cx="85" cy="70" r="3" fill="#E53935"/>
+  <circle cx="75" cy="72" r="2" fill="#E53935"/>
+  <!-- Döner meat slices -->
+  <ellipse cx="55" cy="62" rx="15" ry="8" fill="url(#meat)"/>
+  <ellipse cx="58" cy="58" rx="12" ry="6" fill="#6D4C41"/>
+  <ellipse cx="52" cy="56" rx="10" ry="5" fill="#5D4037"/>
+  <!-- Sauce drizzle -->
+  <path d="M45 60 Q55 55 65 60" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.8"/>
+  <path d="M50 65 Q58 62 66 66" stroke="#E53935" stroke-width="1.5" fill="none" opacity="0.7"/>
+  <!-- Onion rings -->
+  <circle cx="70" cy="60" r="4" stroke="#E1BEE7" stroke-width="1.5" fill="none"/>
+  <circle cx="62" cy="64" r="3" stroke="#E1BEE7" stroke-width="1" fill="none"/>
+</svg>

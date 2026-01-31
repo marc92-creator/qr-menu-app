@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Buddha Bowl -->
+  <defs>
+    <linearGradient id="buddhaBowl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037"/>
+      <stop offset="100%" style="stop-color:#3E2723"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Bowl -->
+  <ellipse cx="60" cy="82" rx="50" ry="20" fill="url(#buddhaBowl)"/>
+  <path d="M10 70 Q10 92 60 97 Q110 92 110 70" fill="url(#buddhaBowl)"/>
+  <ellipse cx="60" cy="70" rx="50" ry="20" fill="#EFEBE9"/>
+  <!-- Quinoa base (center) -->
+  <ellipse cx="60" cy="68" rx="15" ry="8" fill="#FFF8E1"/>
+  <circle cx="55" cy="66" r="1" fill="#FFFDE7"/>
+  <circle cx="62" cy="68" r="1" fill="#FFFDE7"/>
+  <circle cx="58" cy="70" r="1" fill="#FFFDE7"/>
+  <!-- Avocado (left) -->
+  <path d="M22 62 Q28 52 38 55 Q42 65 38 72 Q28 78 22 68 Z" fill="#8BC34A"/>
+  <path d="M25 64 Q30 56 36 58 Q39 66 36 70 Q30 74 25 68 Z" fill="#9CCC65"/>
+  <ellipse cx="30" cy="65" rx="4" ry="5" fill="#5D4037"/>
+  <!-- Chickpeas (top) -->
+  <circle cx="50" cy="55" r="4" fill="#E8B86D"/>
+  <circle cx="58" cy="52" r="3.5" fill="#D4A056"/>
+  <circle cx="66" cy="54" r="4" fill="#E8B86D"/>
+  <circle cx="72" cy="56" r="3.5" fill="#D4A056"/>
+  <!-- Sweet potato (right) -->
+  <ellipse cx="88" cy="62" rx="12" ry="8" fill="#FF8A65"/>
+  <ellipse cx="88" cy="60" rx="10" ry="6" fill="#FFAB91"/>
+  <!-- Red cabbage (bottom left) -->
+  <path d="M28 75 Q35 68 45 72 Q48 80 42 85 Q32 88 28 80 Z" fill="#7B1FA2"/>
+  <path d="M30 76 Q36 70 43 73" stroke="#9C27B0" stroke-width="1.5" fill="none"/>
+  <!-- Edamame (bottom) -->
+  <ellipse cx="55" cy="78" rx="5" ry="3" fill="#4CAF50"/>
+  <ellipse cx="65" cy="80" rx="5" ry="3" fill="#66BB6A"/>
+  <ellipse cx="60" cy="82" rx="4" ry="2.5" fill="#4CAF50"/>
+  <!-- Carrots (shredded) -->
+  <path d="M78 68 L82 62" stroke="#FF7043" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 70 L86 64" stroke="#FF8A65" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M86 72 L90 66" stroke="#FF7043" stroke-width="2" stroke-linecap="round"/>
+  <!-- Sesame seeds -->
+  <ellipse cx="48" cy="60" rx="1.5" ry="1" fill="#FFF8DC"/>
+  <ellipse cx="72" cy="62" rx="1.5" ry="1" fill="#FFF8DC"/>
+  <ellipse cx="60" cy="72" rx="1.5" ry="1" fill="#212121"/>
+  <!-- Tahini dressing drizzle -->
+  <path d="M40 65 Q50 58 60 65 Q70 58 80 65" stroke="#FFF8E1" stroke-width="2" fill="none" opacity="0.8"/>
+  <!-- Microgreens on top -->
+  <ellipse cx="60" cy="50" rx="4" ry="6" fill="#2E7D32" transform="rotate(-10 60 50)"/>
+  <ellipse cx="55" cy="52" rx="3" ry="5" fill="#388E3C" transform="rotate(20 55 52)"/>
+  <ellipse cx="65" cy="52" rx="3" ry="5" fill="#66BB6A" transform="rotate(-15 65 52)"/>
+</svg>

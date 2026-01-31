@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Vegetarischer Teller -->
+  <defs>
+    <linearGradient id="vegPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="75" rx="50" ry="25" fill="url(#vegPlate)"/>
+  <ellipse cx="60" cy="73" rx="45" ry="22" fill="#FFFFFF"/>
+  <!-- Hummus -->
+  <ellipse cx="35" cy="70" rx="18" ry="12" fill="#E8C47C"/>
+  <ellipse cx="35" cy="68" rx="15" ry="9" fill="#F5D89A"/>
+  <!-- Hummus swirl -->
+  <path d="M30 68 Q35 65 40 68" stroke="#E8C47C" stroke-width="2" fill="none"/>
+  <!-- Olive oil on hummus -->
+  <ellipse cx="35" cy="66" rx="5" ry="3" fill="#FFEB3B" opacity="0.5"/>
+  <!-- Chickpeas on hummus -->
+  <circle cx="32" cy="65" r="2" fill="#D4A056"/>
+  <circle cx="38" cy="64" r="2" fill="#D4A056"/>
+  <circle cx="35" cy="68" r="1.5" fill="#D4A056"/>
+  <!-- Falafel balls -->
+  <circle cx="72" cy="62" r="9" fill="#6D4C41"/>
+  <circle cx="85" cy="68" r="8" fill="#5D4037"/>
+  <circle cx="78" cy="75" r="8" fill="#6D4C41"/>
+  <!-- Falafel texture -->
+  <circle cx="70" cy="60" r="1" fill="#4E342E"/>
+  <circle cx="74" cy="63" r="1" fill="#4E342E"/>
+  <circle cx="83" cy="66" r="1" fill="#4E342E"/>
+  <circle cx="87" cy="70" r="1" fill="#4E342E"/>
+  <!-- Fresh salad/greens -->
+  <ellipse cx="55" cy="58" rx="8" ry="12" fill="#66BB6A" transform="rotate(-20 55 58)"/>
+  <ellipse cx="48" cy="62" rx="6" ry="10" fill="#4CAF50" transform="rotate(-40 48 62)"/>
+  <ellipse cx="62" cy="60" rx="6" ry="10" fill="#81C784" transform="rotate(10 62 60)"/>
+  <!-- Tomato slices -->
+  <circle cx="45" cy="80" r="6" fill="#E53935"/>
+  <circle cx="55" cy="82" r="5" fill="#EF5350"/>
+  <!-- Cucumber slices -->
+  <circle cx="68" cy="85" r="5" fill="#81C784"/>
+  <circle cx="68" cy="85" r="3" fill="#C8E6C9"/>
+  <circle cx="78" cy="82" r="4" fill="#81C784"/>
+  <circle cx="78" cy="82" r="2.5" fill="#C8E6C9"/>
+  <!-- Red onion -->
+  <path d="M25 82 Q30 78 35 82 Q30 86 25 82" fill="#E1BEE7" stroke="#CE93D8" stroke-width="1"/>
+  <!-- Olives -->
+  <ellipse cx="42" cy="72" rx="3" ry="4" fill="#1B5E20"/>
+  <ellipse cx="38" cy="76" rx="3" ry="4" fill="#2E7D32"/>
+  <!-- Pita bread -->
+  <path d="M90 78 Q92 72 98 70 L108 72 Q112 78 108 84 Q100 88 92 84 Q88 82 90 78" fill="#E8B86D"/>
+  <path d="M92 78 Q94 74 98 73 L105 74 Q108 78 105 82" stroke="#D4A056" stroke-width="1" fill="none"/>
+  <!-- Lemon wedge -->
+  <path d="M18 78 L12 73 L12 83 Z" fill="#FFF176"/>
+  <path d="M16 78 L13 75 L13 81 Z" fill="#FFEB3B"/>
+  <!-- Paprika sprinkle on hummus -->
+  <circle cx="33" cy="64" r="0.8" fill="#D32F2F"/>
+  <circle cx="37" cy="66" r="0.8" fill="#D32F2F"/>
+  <circle cx="35" cy="63" r="0.8" fill="#D32F2F"/>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Currywurst -->
+  <defs>
+    <linearGradient id="wurst" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4836D"/>
+      <stop offset="100%" style="stop-color:#A1524A"/>
+    </linearGradient>
+    <linearGradient id="currySauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E65100"/>
+      <stop offset="100%" style="stop-color:#BF360C"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="7" fill="#00000015"/>
+  <!-- Paper tray -->
+  <path d="M15 75 L20 95 L100 95 L105 75 Z" fill="#FFF8E1"/>
+  <path d="M15 75 L105 75" stroke="#E8D5A8" stroke-width="2"/>
+  <!-- Wurst slices -->
+  <ellipse cx="35" cy="78" rx="10" ry="8" fill="url(#wurst)"/>
+  <ellipse cx="50" cy="80" rx="10" ry="8" fill="url(#wurst)"/>
+  <ellipse cx="65" cy="78" rx="10" ry="8" fill="url(#wurst)"/>
+  <ellipse cx="80" cy="80" rx="10" ry="8" fill="url(#wurst)"/>
+  <!-- Wurst slice details -->
+  <ellipse cx="35" cy="78" rx="7" ry="5" fill="#C4756A" opacity="0.5"/>
+  <ellipse cx="50" cy="80" rx="7" ry="5" fill="#C4756A" opacity="0.5"/>
+  <ellipse cx="65" cy="78" rx="7" ry="5" fill="#C4756A" opacity="0.5"/>
+  <ellipse cx="80" cy="80" rx="7" ry="5" fill="#C4756A" opacity="0.5"/>
+  <!-- Curry sauce -->
+  <path d="M25 70 Q45 65 60 70 Q75 65 95 70 L95 85 Q75 80 60 85 Q45 80 25 85 Z" fill="url(#currySauce)" opacity="0.8"/>
+  <!-- Sauce drips -->
+  <ellipse cx="40" cy="82" rx="8" ry="3" fill="#E65100" opacity="0.6"/>
+  <ellipse cx="70" cy="84" rx="10" ry="4" fill="#E65100" opacity="0.6"/>
+  <!-- Curry powder sprinkle -->
+  <circle cx="35" cy="72" r="1" fill="#FFD54F" opacity="0.8"/>
+  <circle cx="50" cy="70" r="1.5" fill="#FFD54F" opacity="0.8"/>
+  <circle cx="65" cy="72" r="1" fill="#FFD54F" opacity="0.8"/>
+  <circle cx="75" cy="70" r="1.5" fill="#FFD54F" opacity="0.8"/>
+  <circle cx="45" cy="68" r="1" fill="#FFD54F" opacity="0.7"/>
+  <circle cx="60" cy="68" r="1" fill="#FFD54F" opacity="0.7"/>
+  <!-- Fries on side -->
+  <rect x="18" y="82" width="16" height="5" rx="1" fill="#FFD54F" transform="rotate(10 18 82)"/>
+  <rect x="88" y="84" width="14" height="4" rx="1" fill="#FFCA28" transform="rotate(-15 88 84)"/>
+  <rect x="85" y="78" width="12" height="4" rx="1" fill="#FFD54F" transform="rotate(-5 85 78)"/>
+  <!-- Fork -->
+  <path d="M10 55 L10 45 M8 45 L8 50 M10 45 L10 50 M12 45 L12 50" stroke="#9E9E9E" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="9" y="55" width="2" height="15" rx="0.5" fill="#BDBDBD"/>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Curry Rice -->
+  <defs>
+    <linearGradient id="curryPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="currySauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8F00"/>
+      <stop offset="100%" style="stop-color:#E65100"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="45" ry="10" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="78" rx="50" ry="22" fill="url(#curryPlate)"/>
+  <ellipse cx="60" cy="76" rx="45" ry="19" fill="#FFFFFF"/>
+  <!-- Rice (half plate) -->
+  <path d="M20 70 Q25 55 45 55 Q65 55 65 75 Q55 85 35 85 Q15 80 20 70" fill="#FFFDE7"/>
+  <path d="M22 68 Q28 55 45 56 Q62 58 63 73" fill="#FFF8E1"/>
+  <!-- Rice grain texture -->
+  <ellipse cx="35" cy="62" rx="3" ry="1.5" fill="#FFF9C4" transform="rotate(-10 35 62)"/>
+  <ellipse cx="42" cy="65" rx="3" ry="1.5" fill="#FFFDE7" transform="rotate(15 42 65)"/>
+  <ellipse cx="50" cy="62" rx="3" ry="1.5" fill="#FFF9C4" transform="rotate(-5 50 62)"/>
+  <ellipse cx="38" cy="70" rx="3" ry="1.5" fill="#FFFDE7" transform="rotate(20 38 70)"/>
+  <ellipse cx="48" cy="72" rx="3" ry="1.5" fill="#FFF9C4" transform="rotate(-15 48 72)"/>
+  <ellipse cx="30" cy="68" rx="3" ry="1.5" fill="#FFFDE7" transform="rotate(5 30 68)"/>
+  <!-- Curry sauce (other half) -->
+  <path d="M55 70 Q60 55 80 55 Q100 55 100 75 Q90 85 70 85 Q50 80 55 70" fill="url(#currySauce)"/>
+  <!-- Curry chunks (meat/vegetables) -->
+  <ellipse cx="72" cy="62" rx="6" ry="4" fill="#A1887F"/>
+  <ellipse cx="85" cy="65" rx="5" ry="3" fill="#8D6E63"/>
+  <rect x="75" y="68" width="8" height="6" rx="2" fill="#FFB74D"/>
+  <rect x="65" y="72" width="7" height="5" rx="2" fill="#FF9800"/>
+  <ellipse cx="90" cy="72" rx="5" ry="4" fill="#A1887F"/>
+  <!-- Carrots -->
+  <circle cx="78" cy="75" r="3" fill="#FF7043"/>
+  <circle cx="68" cy="65" r="2.5" fill="#FF8A65"/>
+  <!-- Potatoes -->
+  <ellipse cx="82" cy="60" rx="4" ry="3" fill="#FFE082"/>
+  <ellipse cx="92" cy="68" rx="3" ry="2.5" fill="#FFCA28"/>
+  <!-- Fukujinzuke (pickled vegetables) garnish -->
+  <ellipse cx="45" cy="58" rx="4" ry="2" fill="#E91E63"/>
+  <!-- Parsley -->
+  <ellipse cx="60" cy="55" rx="3" ry="5" fill="#66BB6A" transform="rotate(-10 60 55)"/>
+  <!-- Steam -->
+  <path d="M75 42 Q73 37 77 32" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M85 40 Q83 35 87 30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>

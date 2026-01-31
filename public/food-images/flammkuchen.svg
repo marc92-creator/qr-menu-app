@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Enhanced Ghibli-style Pizza with professional details -->
+  <defs>
+    <!-- Soft shadow filter -->
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.5"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.25"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Enhanced crust gradient (golden brown) -->
+    <linearGradient id="crust" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D4A0"/>
+      <stop offset="30%" style="stop-color:#E8B86D"/>
+      <stop offset="65%" style="stop-color:#D4A354"/>
+      <stop offset="100%" style="stop-color:#B8853D"/>
+    </linearGradient>
+
+    <!-- Enhanced cheese gradient (melted look) -->
+    <linearGradient id="cheese" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF9E6"/>
+      <stop offset="40%" style="stop-color:#FFECB3"/>
+      <stop offset="75%" style="stop-color:#FFE082"/>
+      <stop offset="100%" style="stop-color:#FFD54F"/>
+    </linearGradient>
+
+    <!-- Enhanced tomato sauce gradient -->
+    <linearGradient id="sauce" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EF5350"/>
+      <stop offset="45%" style="stop-color:#E53935"/>
+      <stop offset="100%" style="stop-color:#C62828"/>
+    </linearGradient>
+
+    <!-- Grease/oil shine effect -->
+    <radialGradient id="oilShine">
+      <stop offset="0%" style="stop-color:#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="70%" style="stop-color:#FFECB3" stop-opacity="0.1"/>
+      <stop offset="100%" style="stop-color:#FFD54F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Soft shadow layer -->
+  <ellipse cx="60" cy="108" rx="42" ry="8" fill="#000000" opacity="0.15" filter="url(#softShadow)"/>
+
+  <!-- Pizza crust base with texture -->
+  <ellipse cx="60" cy="65" rx="46" ry="36" fill="url(#crust)"/>
+  <!-- Crust texture/char marks -->
+  <ellipse cx="60" cy="65" rx="44" ry="34" fill="#C4863C" opacity="0.15"/>
+  <path d="M20 65 Q30 50 40 65" stroke="#A67C52" stroke-width="1" opacity="0.3" fill="none"/>
+  <path d="M70 40 Q80 50 90 60" stroke="#A67C52" stroke-width="1" opacity="0.3" fill="none"/>
+
+  <!-- Tomato sauce layer with texture -->
+  <ellipse cx="60" cy="63" rx="39" ry="29" fill="url(#sauce)"/>
+  <!-- Sauce texture -->
+  <ellipse cx="60" cy="62" rx="37" ry="27" fill="#D32F2F" opacity="0.2"/>
+
+  <!-- Cheese layer (melted look) -->
+  <ellipse cx="60" cy="61" rx="37" ry="27" fill="url(#cheese)"/>
+  <!-- Cheese texture/bubbles -->
+  <circle cx="45" cy="58" r="3" fill="#FFF9E6" opacity="0.6"/>
+  <circle cx="72" cy="62" r="2.5" fill="#FFF9E6" opacity="0.6"/>
+  <circle cx="58" cy="68" r="2" fill="#FFF9E6" opacity="0.5"/>
+
+  <!-- Melted cheese strings/stretches -->
+  <path d="M40 55 Q38 52 42 50" stroke="#FFECB3" stroke-width="2.5" fill="none" opacity="0.8"/>
+  <path d="M75 60 Q78 57 80 62" stroke="#FFECB3" stroke-width="2.5" fill="none" opacity="0.8"/>
+  <path d="M52 70 Q50 67 54 65" stroke="#FFE082" stroke-width="2" fill="none" opacity="0.7"/>
+
+  <!-- Enhanced pepperoni slices with realistic edges -->
+  <g id="pepperoni1">
+    <circle cx="45" cy="55" r="7.5" fill="#C62828"/>
+    <circle cx="45" cy="55" r="6" fill="#B71C1C"/>
+    <circle cx="45" cy="55" r="4.5" fill="#8B1313" opacity="0.6"/>
+    <circle cx="46" cy="54" r="2" fill="#D32F2F" opacity="0.4"/>
+    <!-- Pepperoni edge texture -->
+    <path d="M45 48 Q42 50 41 53" stroke="#9A1515" stroke-width="0.8" opacity="0.5" fill="none"/>
+  </g>
+  <g id="pepperoni2">
+    <circle cx="70" cy="58" r="6.5" fill="#C62828"/>
+    <circle cx="70" cy="58" r="5" fill="#B71C1C"/>
+    <circle cx="70" cy="58" r="3.5" fill="#8B1313" opacity="0.6"/>
+    <circle cx="71" cy="57" r="1.5" fill="#D32F2F" opacity="0.4"/>
+  </g>
+  <g id="pepperoni3">
+    <circle cx="55" cy="72" r="6.5" fill="#C62828"/>
+    <circle cx="55" cy="72" r="5" fill="#B71C1C"/>
+    <circle cx="55" cy="72" r="3.5" fill="#8B1313" opacity="0.6"/>
+    <circle cx="56" cy="71" r="1.5" fill="#D32F2F" opacity="0.4"/>
+  </g>
+  <g id="pepperoni4">
+    <circle cx="75" cy="72" r="5.5" fill="#C62828"/>
+    <circle cx="75" cy="72" r="4" fill="#B71C1C"/>
+    <circle cx="75" cy="72" r="3" fill="#8B1313" opacity="0.6"/>
+  </g>
+  <g id="pepperoni5">
+    <circle cx="40" cy="68" r="5.5" fill="#C62828"/>
+    <circle cx="40" cy="68" r="4" fill="#B71C1C"/>
+    <circle cx="40" cy="68" r="3" fill="#8B1313" opacity="0.6"/>
+  </g>
+  <g id="pepperoni6">
+    <circle cx="62" cy="58" r="5" fill="#C62828"/>
+    <circle cx="62" cy="58" r="3.5" fill="#B71C1C"/>
+    <circle cx="62" cy="58" r="2.5" fill="#8B1313" opacity="0.6"/>
+  </g>
+
+  <!-- Fresh basil leaves with details -->
+  <g id="basil1">
+    <ellipse cx="60" cy="60" rx="5" ry="7" fill="#2E7D32" transform="rotate(-20 60 60)"/>
+    <ellipse cx="60" cy="59" rx="3" ry="5" fill="#388E3C" transform="rotate(-20 60 60)"/>
+    <path d="M60 56 L60 64" stroke="#1B5E20" stroke-width="0.8" opacity="0.6"/>
+  </g>
+  <g id="basil2">
+    <ellipse cx="85" cy="65" rx="4" ry="6" fill="#2E7D32" transform="rotate(30 85 65)"/>
+    <ellipse cx="85" cy="64" rx="2.5" ry="4" fill="#388E3C" transform="rotate(30 85 65)"/>
+    <path d="M85 60 L85 68" stroke="#1B5E20" stroke-width="0.7" opacity="0.5"/>
+  </g>
+  <g id="basil3">
+    <ellipse cx="35" cy="58" rx="3.5" ry="5.5" fill="#2E7D32" transform="rotate(-15 35 58)"/>
+    <ellipse cx="35" cy="57" rx="2" ry="3.5" fill="#388E3C" transform="rotate(-15 35 58)"/>
+  </g>
+
+  <!-- Oil/grease shine effect (makes it look fresh!) -->
+  <ellipse cx="50" cy="56" rx="12" ry="8" fill="url(#oilShine)" opacity="0.6"/>
+  <ellipse cx="70" cy="64" rx="10" ry="7" fill="url(#oilShine)" opacity="0.5"/>
+
+  <!-- Steam wisps (hot pizza!) -->
+  <path d="M50 38 Q48 33 52 28" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"
+        fill="none" opacity="0.5"/>
+  <path d="M60 35 Q58 30 62 25" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"
+        fill="none" opacity="0.6"/>
+  <path d="M70 38 Q68 33 72 27" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"
+        fill="none" opacity="0.45"/>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Warm Ghibli-style Lasagne -->
+  <defs>
+    <linearGradient id="lasagnePlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFAFA"/>
+      <stop offset="100%" style="stop-color:#E0E0E0"/>
+    </linearGradient>
+    <linearGradient id="lasagneMeat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C62828"/>
+      <stop offset="100%" style="stop-color:#8B0000"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="105" rx="40" ry="8" fill="#00000015"/>
+  <!-- Plate -->
+  <ellipse cx="60" cy="85" rx="50" ry="18" fill="url(#lasagnePlate)"/>
+  <ellipse cx="60" cy="83" rx="45" ry="15" fill="#FFFFFF"/>
+  <!-- Lasagne slice -->
+  <path d="M30 50 L90 50 L85 82 L35 82 Z" fill="#E8B86D"/>
+  <!-- Layers -->
+  <!-- Top cheese layer (golden baked) -->
+  <path d="M30 50 L90 50 L88 56 L32 56 Z" fill="#FFCA28"/>
+  <path d="M32 50 L88 50 L87 54 L33 54 Z" fill="#FFB300"/>
+  <!-- Bechamel + cheese -->
+  <path d="M32 56 L88 56 L87 62 L33 62 Z" fill="#FFF8E1"/>
+  <!-- Meat sauce -->
+  <path d="M33 62 L87 62 L86 70 L34 70 Z" fill="url(#lasagneMeat)"/>
+  <!-- Meat bits -->
+  <circle cx="45" cy="66" r="2" fill="#6D4C41"/>
+  <circle cx="55" cy="65" r="2" fill="#8B4513"/>
+  <circle cx="68" cy="67" r="2" fill="#6D4C41"/>
+  <circle cx="78" cy="66" r="1.5" fill="#8B4513"/>
+  <!-- Pasta layer -->
+  <path d="M34 70 L86 70 L85 74 L35 74 Z" fill="#FFE082"/>
+  <!-- Bechamel -->
+  <path d="M35 74 L85 74 L84 78 L36 78 Z" fill="#FFFDE7"/>
+  <!-- Bottom pasta -->
+  <path d="M36 78 L84 78 L83 82 L37 82 Z" fill="#FFD54F"/>
+  <!-- Browned cheese bubbles on top -->
+  <circle cx="40" cy="52" r="3" fill="#E65100" opacity="0.4"/>
+  <circle cx="55" cy="51" r="4" fill="#E65100" opacity="0.3"/>
+  <circle cx="72" cy="52" r="3" fill="#E65100" opacity="0.4"/>
+  <circle cx="82" cy="53" r="2" fill="#E65100" opacity="0.3"/>
+  <!-- Melted cheese drip on side -->
+  <path d="M88 55 Q92 60 90 65" stroke="#FFE082" stroke-width="3" fill="none"/>
+  <path d="M32 58 Q28 62 30 68" stroke="#FFE082" stroke-width="3" fill="none"/>
+  <!-- Basil garnish -->
+  <ellipse cx="60" cy="48" rx="5" ry="8" fill="#2E7D32" transform="rotate(-10 60 48)"/>
+  <ellipse cx="54" cy="50" rx="4" ry="6" fill="#388E3C" transform="rotate(-35 54 50)"/>
+  <ellipse cx="66" cy="50" rx="4" ry="6" fill="#388E3C" transform="rotate(25 66 50)"/>
+  <!-- Steam -->
+  <path d="M50 38 Q48 33 52 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M68 36 Q66 31 70 26" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+</svg>
