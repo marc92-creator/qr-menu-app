@@ -22,8 +22,9 @@ export default function DemoPage() {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [sandboxData, setSandboxData] = useState(() => getSandboxData());
   const [sandboxRestaurant, setSandboxRestaurant] = useState(() => getSandboxData().restaurant);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Check if user is already logged in
+  // Check if user is already logged in and clear sandbox data on fresh page load
   useEffect(() => {
     const checkAuth = async () => {
       const supabase = createClient();
@@ -33,6 +34,16 @@ export default function DemoPage() {
         // User is logged in, redirect to dashboard
         router.push('/dashboard');
         return;
+      }
+
+      // Clear sandbox data on page load/refresh to prevent persistence
+      // Check if this is a fresh page load (not a navigation within the app)
+      if (typeof window !== 'undefined' && window.performance) {
+        const navType = window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        if (navType && navType.type === 'reload') {
+          // Page was refreshed - clear sandbox data
+          sessionStorage.removeItem('menuapp_sandbox_data');
+        }
       }
 
       setIsCheckingAuth(false);
@@ -138,92 +149,68 @@ export default function DemoPage() {
         )}
 
         {activeTab === 'preview' && (
-          <div className="space-y-6">
-            {/* Info Banner */}
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-6 border border-purple-100">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
-                    <span className="text-2xl">👁️</span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Live-Vorschau</h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      So sieht dein Menü für deine Gäste aus. Alle Änderungen werden hier in Echtzeit angezeigt.
-                    </p>
-                    <p className="text-xs text-purple-700 bg-white/50 rounded-lg px-3 py-2 inline-block">
-                      <strong>Sandbox-Modus:</strong> Deine Änderungen werden nur in diesem Browser gespeichert und gehen beim Schließen verloren. Registriere dich, um dein Menü dauerhaft zu veröffentlichen!
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Embedded Preview */}
-            <div className="max-w-md mx-auto">
-              <div className="bg-white rounded-3xl shadow-2xl overflow-hidden ring-1 ring-gray-200">
-                {/* Phone mockup bezel */}
-                <div className="bg-gray-900 px-6 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-gray-600 rounded-full"></div>
-                    <div className="w-20 h-1.5 bg-gray-700 rounded-full"></div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-4 h-3 border border-gray-600 rounded-sm"></div>
-                    <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                  </div>
-                </div>
-
-                {/* Menu Preview */}
-                <div
-                  className="h-[600px] overflow-y-auto overflow-x-hidden"
-                  style={{
-                    scrollBehavior: 'smooth',
-                    WebkitOverflowScrolling: 'touch',
-                    willChange: 'scroll-position'
-                  }}
+          <>
+            {/* Fullscreen overlay */}
+            {isFullscreen && (
+              <div className="fixed inset-0 z-50 bg-white">
+                {/* Close button */}
+                <button
+                  onClick={() => setIsFullscreen(false)}
+                  className="fixed top-4 left-4 z-50 bg-black/70 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-black/80 transition-colors"
+                  title="Vollbild beenden"
                 >
+                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                {/* Fullscreen menu view */}
+                <div className="h-full overflow-y-auto">
                   <MenuView
                     restaurant={sandboxRestaurant}
-                    categories={sandboxData.categories}
-                    menuItems={sandboxData.menuItems}
+                    categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
+                    menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
                     showWatermark={false}
-                    isDemo={false}
+                    isDemo={true}
                     isEmbedded={true}
                   />
                 </div>
               </div>
+            )}
 
-              {/* Stats below preview */}
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-gray-100">
-                  <div className="text-2xl font-bold text-emerald-600">{sandboxData.categories.length}</div>
-                  <div className="text-sm text-gray-500">Kategorien</div>
+            <div className="max-w-2xl mx-auto">
+              {/* Info Header */}
+              <div className="flex items-center justify-between mb-4 px-1">
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Live-Vorschau (Sandbox)
                 </div>
-                <div className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-gray-100">
-                  <div className="text-2xl font-bold text-emerald-600">{sandboxData.menuItems.length}</div>
-                  <div className="text-sm text-gray-500">Gerichte</div>
-                </div>
-              </div>
-
-              {/* Fullscreen Preview Button */}
-              <div className="mt-6">
-                <Link
-                  href="/demo/preview"
-                  target="_blank"
-                  className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-[1.02]"
+                <button
+                  onClick={() => setIsFullscreen(true)}
+                  className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  Vollbild öffnen
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                   </svg>
-                  Vorschau im Vollbild öffnen
-                </Link>
-                <p className="text-xs text-gray-500 text-center mt-3">
-                  Zeigt deine aktuellen Sandbox-Änderungen live im Vollbild-Modus!
-                </p>
+                </button>
+              </div>
+
+              {/* Responsive Menu View - wie Gäste es sehen */}
+              <div className="relative bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-x-hidden overflow-y-auto max-h-[calc(100vh-200px)]">
+                <MenuView
+                  restaurant={sandboxRestaurant}
+                  categories={sandboxData.categories.sort((a, b) => a.position - b.position)}
+                  menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
+                  showWatermark={false}
+                  isDemo={true}
+                  isEmbedded={true}
+                />
               </div>
             </div>
-          </div>
+          </>
         )}
 
         {activeTab === 'qr' && (
