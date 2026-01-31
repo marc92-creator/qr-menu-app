@@ -65,14 +65,32 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // ============================================
   {
     id: 'doener',
-    keywords: ['döner', 'doner', 'kebab', 'kebap', 'fleisch im brot', 'döner im brot', 'döner brot', 'döner sandwich', 'döner klein', 'döner groß'],
+    keywords: [
+      'döner', 'doner', 'doener', 'donner', 'dönar', 'donar',
+      'kebab', 'kebap', 'kepap', 'kabab', 'kabob',
+      'döner im brot', 'döner brot', 'dönerbrot',
+      'fleisch im brot', 'döner sandwich', 'doener sandwich',
+      'döner klein', 'döner groß', 'döner normal', 'döner maxi',
+      'shawarma', 'shawerma', 'gyros döner',
+      'kalbdöner', 'rindfleisch döner', 'lamm döner',
+      'döner klassisch', 'klassischer döner', 'original döner'
+    ],
     image: '/food-images/doener.svg',
     label: 'Döner',
     category: 'doener',
   },
   {
     id: 'dueruem',
-    keywords: ['dürüm', 'durum', 'dürum', 'wrap', 'yufka', 'rolle', 'dürüm döner', 'chicken dürüm', 'hähnchen dürüm'],
+    keywords: [
+      'dürüm', 'durum', 'dürum', 'duruem', 'durüm',
+      'wrap', 'yufka', 'lavash', 'rolle', 'wickel',
+      'dürüm döner', 'döner dürüm', 'döner wrap',
+      'chicken dürüm', 'hähnchen dürüm', 'hühnchen dürüm',
+      'kalb dürüm', 'lamm dürüm', 'falafel dürüm',
+      'gemüse dürüm', 'vegetarisch dürüm', 'vegan dürüm',
+      'türkischer wrap', 'türkische rolle',
+      'dürüm klein', 'dürüm groß', 'dürüm xxl'
+    ],
     image: '/food-images/dueruem.svg',
     label: 'Dürüm / Wrap',
     category: 'doener',
@@ -86,7 +104,16 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   },
   {
     id: 'falafel',
-    keywords: ['falafel', 'kichererbsen', 'vegetarisch'],
+    keywords: [
+      'falafel', 'felafel', 'falefel', 'falaffel',
+      'kichererbsen', 'kichererbsenbällchen',
+      'falafel bällchen', 'falafel balls',
+      'falafel teller', 'falafel plate',
+      'falafel im brot', 'falafel sandwich', 'falafel wrap',
+      'vegetarisch', 'vegan', 'veggie balls',
+      'arabische falafel', 'libanesische falafel',
+      'hummus falafel', 'tahini falafel'
+    ],
     image: '/food-images/falafel.svg',
     label: 'Falafel',
     category: 'doener',
@@ -181,21 +208,46 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // ============================================
   {
     id: 'pizza',
-    keywords: ['pizza'],
+    keywords: [
+      'pizza', 'piza', 'pizze', 'pizzen',
+      'italian pizza', 'italienische pizza',
+      'steinofen pizza', 'holzofen pizza',
+      'pizza klassisch', 'pizza normal',
+      'pizza klein', 'pizza groß', 'pizza famiglia',
+      'pizza rund', 'runde pizza',
+      'neapolitanische pizza', 'neapel pizza',
+      'pizza napoli', 'pizza napoletana'
+    ],
     image: '/food-images/pizza.svg',
     label: 'Pizza',
     category: 'pizza',
   },
   {
     id: 'pizza-margherita',
-    keywords: ['margherita', 'margarita', 'tomaten mozzarella'],
+    keywords: [
+      'margherita', 'margarita', 'margerita', 'margareta',
+      'pizza margherita', 'pizza margarita',
+      'tomaten mozzarella', 'tomate mozzarella',
+      'mozzarella pizza', 'käsepizza', 'cheese pizza',
+      'pizza mit käse', 'pizza nur käse',
+      'basilikum pizza', 'basil pizza',
+      'pizza classica', 'klassische pizza',
+      'original pizza', 'traditionelle pizza'
+    ],
     image: '/food-images/pizza-margherita.svg',
     label: 'Pizza Margherita',
     category: 'pizza',
   },
   {
     id: 'pizza-salami',
-    keywords: ['salami', 'pepperoni', 'peperoni'],
+    keywords: [
+      'salami', 'salamipizza', 'pizza salami',
+      'pepperoni', 'peperoni', 'pepperoni pizza',
+      'pizza pepperoni', 'pizza peperoni',
+      'wurst pizza', 'pizza mit wurst', 'pizza mit salami',
+      'salami classica', 'salami piccante',
+      'scharfe salami', 'mild salami'
+    ],
     image: '/food-images/pizza-salami.svg',
     label: 'Pizza Salami',
     category: 'pizza',
@@ -269,7 +321,17 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   },
   {
     id: 'spaghetti-bolognese',
-    keywords: ['bolognese', 'bolo', 'hackfleisch sauce', 'ragù'],
+    keywords: [
+      'bolognese', 'bolo', 'spag bol',
+      'spaghetti bolognese', 'spagetti bolognese', 'spaghetti bolo',
+      'spaghetti mit hackfleisch', 'spaghetti hackfleisch',
+      'hackfleisch sauce', 'hackfleischsoße', 'fleischsoße',
+      'ragù', 'ragu', 'ragout',
+      'spaghetti mit fleisch', 'spaghetti fleischsoße',
+      'pasta bolognese', 'nudeln bolognese',
+      'spaghetti tomaten hackfleisch',
+      'bolognese klassisch', 'original bolognese'
+    ],
     image: '/food-images/spaghetti-bolognese.svg',
     label: 'Spaghetti Bolognese',
     category: 'pasta',
@@ -343,7 +405,16 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // ============================================
   {
     id: 'burger',
-    keywords: ['burger', 'hamburger'],
+    keywords: [
+      'burger', 'hamburger', 'hamburguer',
+      'beefburger', 'beef burger', 'rindsburger',
+      'burger klassisch', 'klassischer burger',
+      'burger normal', 'burger classic',
+      'burger mit fleisch', 'fleischburger',
+      'american burger', 'amerikanischer burger',
+      'burger im brötchen', 'burger bun',
+      'single burger', 'einfacher burger'
+    ],
     image: '/food-images/burger.svg',
     label: 'Burger',
     category: 'burger',
@@ -732,7 +803,18 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // ============================================
   {
     id: 'pommes',
-    keywords: ['pommes', 'frites', 'fritten', 'french fries'],
+    keywords: [
+      'pommes', 'pommes frites', 'pommfrit', 'pommfritz',
+      'frites', 'fritten', 'friten',
+      'french fries', 'fries',
+      'chips', 'kartoffelstäbchen', 'kartoffelstifte',
+      'pomm', 'pom', 'pommes rot weiß',
+      'pommes klein', 'pommes groß', 'pommes mittel',
+      'pommes portion', 'fritten portion',
+      'goldene pommes', 'knusprige pommes',
+      'currywurst pommes', 'mayo pommes',
+      'ketchup pommes', 'pommes mit soße'
+    ],
     image: '/food-images/pommes.svg',
     label: 'Pommes',
     category: 'beilagen',
@@ -1045,7 +1127,15 @@ export const FOOD_IMAGE_LIBRARY: FoodImageEntry[] = [
   // ============================================
   {
     id: 'cola',
-    keywords: ['cola', 'coca', 'pepsi'],
+    keywords: [
+      'cola', 'coke', 'coca cola', 'coca-cola', 'cocacola',
+      'pepsi', 'pepsi cola',
+      'kolagetränk', 'kola', 'softdrink cola',
+      'cola 0,2', 'cola 0,33', 'cola 0,5', 'cola 1l',
+      'cola klein', 'cola groß',
+      'cola dose', 'cola flasche', 'cola glas',
+      'cola light', 'cola zero', 'diet cola'
+    ],
     image: '/food-images/cola.svg',
     label: 'Cola',
     category: 'getraenke',
