@@ -65,6 +65,14 @@ export interface ThemeStyles {
   // Decorative elements
   decorativeGradient?: string;
   decorativePattern?: string;
+
+  // Typography & Animations (NEW!)
+  fontFamily?: string;
+  fontHeading?: string;
+  transitionSpeed?: string;
+  animationStyle?: 'subtle' | 'smooth' | 'bouncy' | 'elegant';
+  cardBorderRadius?: string;
+  badgeBorderRadius?: string;
 }
 
 export interface ThemeConfig {
@@ -76,7 +84,7 @@ export interface ThemeConfig {
   styles: ThemeStyles;
 }
 
-// Classic Theme - Clean, minimalist, professional
+// Classic Theme - Clean, minimalist, professional (Enhanced!)
 const classicStyles: ThemeStyles = {
   background: '#f9fafb',
   surface: '#ffffff',
@@ -93,21 +101,21 @@ const classicStyles: ThemeStyles = {
 
   cardBg: '#ffffff',
   cardBorder: '#e5e7eb',
-  cardShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  cardHoverTransform: 'translateY(-2px)',
-  cardHoverShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+  cardShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+  cardHoverTransform: 'translateY(-4px) scale(1.01)',
+  cardHoverShadow: '0 10px 25px rgba(16, 185, 129, 0.1), 0 6px 12px rgba(0, 0, 0, 0.08)',
 
   pillBg: '#f3f4f6',
   pillText: '#6b7280',
-  pillActiveBg: '#10b981',
+  pillActiveBg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
   pillActiveText: '#ffffff',
   pillHoverBg: '#e5e7eb',
 
-  badgeVeganBg: '#d1fae5',
+  badgeVeganBg: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
   badgeVeganText: '#047857',
-  badgePopularBg: '#fee2e2',
+  badgePopularBg: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
   badgePopularText: '#dc2626',
-  badgeSpecialBg: '#fef3c7',
+  badgeSpecialBg: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
   badgeSpecialText: '#d97706',
   badgeSoldOutBg: '#fee2e2',
   badgeSoldOutText: '#991b1b',
@@ -128,12 +136,20 @@ const classicStyles: ThemeStyles = {
   footerBg: '#f9fafb',
   footerText: '#9ca3af',
   footerBorder: '#e5e7eb',
+
+  // Enhanced features
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  fontHeading: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  transitionSpeed: '200ms',
+  animationStyle: 'smooth',
+  cardBorderRadius: '12px',
+  badgeBorderRadius: '8px',
 };
 
-// Dark Theme - Elegant, modern, neon accents
+// Dark Theme - Elegant, modern, neon accents (Enhanced!)
 const darkStyles: ThemeStyles = {
   background: '#0a0a0f',
-  backgroundPattern: 'radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%)',
+  backgroundPattern: 'radial-gradient(circle at 20% 80%, rgba(34, 211, 238, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%), radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%)',
   surface: '#16162a',
   surfaceHover: '#1f1f3a',
   text: '#f1f5f9',
@@ -143,26 +159,26 @@ const darkStyles: ThemeStyles = {
   accent: '#22d3ee',
   border: '#334155',
 
-  headerBg: 'rgba(22, 22, 42, 0.95)',
-  headerBorder: '#334155',
+  headerBg: 'linear-gradient(180deg, rgba(22, 22, 42, 0.98) 0%, rgba(22, 22, 42, 0.95) 100%)',
+  headerBorder: 'linear-gradient(90deg, transparent, #22d3ee, transparent)',
 
-  cardBg: '#16162a',
-  cardBorder: '#334155',
-  cardShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
-  cardHoverTransform: 'translateY(-4px)',
-  cardHoverShadow: '0 8px 30px rgba(34, 211, 238, 0.15)',
+  cardBg: 'linear-gradient(135deg, rgba(31, 31, 58, 0.9) 0%, rgba(22, 22, 42, 0.95) 100%)',
+  cardBorder: 'linear-gradient(135deg, #334155, #22d3ee, #334155)',
+  cardShadow: '0 4px 24px rgba(0, 0, 0, 0.5), 0 0 40px rgba(34, 211, 238, 0.05)',
+  cardHoverTransform: 'translateY(-6px) scale(1.02)',
+  cardHoverShadow: '0 12px 40px rgba(34, 211, 238, 0.2), 0 0 60px rgba(34, 211, 238, 0.1), inset 0 1px 0 rgba(34, 211, 238, 0.2)',
 
-  pillBg: '#1e293b',
+  pillBg: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
   pillText: '#94a3b8',
-  pillActiveBg: 'linear-gradient(135deg, #22d3ee, #06b6d4)',
+  pillActiveBg: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%)',
   pillActiveText: '#0f172a',
-  pillHoverBg: '#334155',
+  pillHoverBg: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
 
-  badgeVeganBg: '#064e3b',
+  badgeVeganBg: 'linear-gradient(135deg, #064e3b 0%, #047857 100%)',
   badgeVeganText: '#6ee7b7',
-  badgePopularBg: '#7f1d1d',
+  badgePopularBg: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)',
   badgePopularText: '#fca5a5',
-  badgeSpecialBg: '#78350f',
+  badgeSpecialBg: 'linear-gradient(135deg, #78350f 0%, #92400e 100%)',
   badgeSpecialText: '#fcd34d',
   badgeSoldOutBg: '#7f1d1d',
   badgeSoldOutText: '#fca5a5',
@@ -170,7 +186,7 @@ const darkStyles: ThemeStyles = {
   allergenBg: '#1e293b',
   allergenText: '#94a3b8',
   allergenBorder: '#334155',
-  allergenSelectedBg: '#22d3ee',
+  allergenSelectedBg: 'linear-gradient(135deg, #22d3ee, #06b6d4)',
   allergenSelectedText: '#0f172a',
 
   statusOpenBg: '#064e3b',
@@ -180,17 +196,25 @@ const darkStyles: ThemeStyles = {
 
   priceColor: '#22d3ee',
 
-  footerBg: '#0a0a0f',
+  footerBg: 'linear-gradient(180deg, #0a0a0f 0%, #000000 100%)',
   footerText: '#64748b',
-  footerBorder: '#1e293b',
+  footerBorder: 'linear-gradient(90deg, transparent, #334155, transparent)',
 
-  decorativeGradient: 'linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, transparent 50%)',
+  decorativeGradient: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 100%)',
+
+  // Enhanced features
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
+  fontHeading: '"Inter", sans-serif',
+  transitionSpeed: '250ms',
+  animationStyle: 'elegant',
+  cardBorderRadius: '16px',
+  badgeBorderRadius: '10px',
 };
 
-// Rustic Theme - Warm earth tones, paper texture feel
+// Rustic Theme - Warm earth tones, paper texture feel (Enhanced!)
 const rusticStyles: ThemeStyles = {
   background: '#fef7ed',
-  backgroundPattern: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(180, 130, 80, 0.03) 10px, rgba(180, 130, 80, 0.03) 20px)',
+  backgroundPattern: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(180, 130, 80, 0.03) 10px, rgba(180, 130, 80, 0.03) 20px), radial-gradient(circle at 30% 70%, rgba(251, 191, 36, 0.08) 0%, transparent 50%)',
   surface: '#fffbf5',
   surfaceHover: '#fef3e2',
   text: '#451a03',
@@ -200,26 +224,26 @@ const rusticStyles: ThemeStyles = {
   accent: '#b45309',
   border: '#fcd34d',
 
-  headerBg: 'linear-gradient(180deg, #fef3c7 0%, #fef7ed 100%)',
-  headerBorder: '#fcd34d',
+  headerBg: 'linear-gradient(180deg, rgba(254, 243, 199, 0.95) 0%, rgba(254, 247, 237, 0.98) 100%)',
+  headerBorder: 'linear-gradient(90deg, transparent, #fcd34d, transparent)',
 
-  cardBg: '#fffbf5',
+  cardBg: 'linear-gradient(135deg, #fffbf5 0%, #fef9f0 100%)',
   cardBorder: '#fde68a',
-  cardShadow: '0 2px 8px rgba(180, 83, 9, 0.1)',
-  cardHoverTransform: 'translateY(-2px)',
-  cardHoverShadow: '0 6px 16px rgba(180, 83, 9, 0.15)',
+  cardShadow: '0 3px 12px rgba(180, 83, 9, 0.12), 0 1px 4px rgba(180, 83, 9, 0.08)',
+  cardHoverTransform: 'translateY(-3px) rotate(0.5deg)',
+  cardHoverShadow: '0 8px 20px rgba(180, 83, 9, 0.18), 0 3px 8px rgba(180, 83, 9, 0.12)',
 
-  pillBg: '#fef3c7',
+  pillBg: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
   pillText: '#92400e',
-  pillActiveBg: '#b45309',
+  pillActiveBg: 'linear-gradient(135deg, #b45309 0%, #92400e 100%)',
   pillActiveText: '#ffffff',
-  pillHoverBg: '#fde68a',
+  pillHoverBg: 'linear-gradient(135deg, #fde68a 0%, #fcd34d 100%)',
 
-  badgeVeganBg: '#d9f99d',
+  badgeVeganBg: 'linear-gradient(135deg, #d9f99d 0%, #bef264 100%)',
   badgeVeganText: '#3f6212',
-  badgePopularBg: '#fecaca',
+  badgePopularBg: 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)',
   badgePopularText: '#991b1b',
-  badgeSpecialBg: '#fef08a',
+  badgeSpecialBg: 'linear-gradient(135deg, #fef08a 0%, #fde047 100%)',
   badgeSpecialText: '#854d0e',
   badgeSoldOutBg: '#fecaca',
   badgeSoldOutText: '#991b1b',
@@ -227,7 +251,7 @@ const rusticStyles: ThemeStyles = {
   allergenBg: '#fef3c7',
   allergenText: '#78350f',
   allergenBorder: '#fcd34d',
-  allergenSelectedBg: '#b45309',
+  allergenSelectedBg: 'linear-gradient(135deg, #b45309, #92400e)',
   allergenSelectedText: '#ffffff',
 
   statusOpenBg: '#d9f99d',
@@ -237,17 +261,25 @@ const rusticStyles: ThemeStyles = {
 
   priceColor: '#b45309',
 
-  footerBg: '#fef3c7',
+  footerBg: 'linear-gradient(180deg, #fef3c7 0%, #fde68a 100%)',
   footerText: '#a16207',
-  footerBorder: '#fcd34d',
+  footerBorder: 'linear-gradient(90deg, transparent, #fcd34d, transparent)',
 
   decorativePattern: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h20v20H0z\' fill=\'%23b45309\' fill-opacity=\'0.02\'/%3E%3C/svg%3E")',
+
+  // Enhanced features
+  fontFamily: '"Merriweather", Georgia, serif',
+  fontHeading: '"Playfair Display", Georgia, serif',
+  transitionSpeed: '300ms',
+  animationStyle: 'bouncy',
+  cardBorderRadius: '8px',
+  badgeBorderRadius: '6px',
 };
 
-// Modern Theme - Bold, geometric, vibrant gradients
+// Modern Theme - Bold, geometric, vibrant gradients (Enhanced!)
 const modernStyles: ThemeStyles = {
   background: '#faf5ff',
-  backgroundPattern: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #ede9fe 100%)',
+  backgroundPattern: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 40%, #ede9fe 70%, #ddd6fe 100%), radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%)',
   surface: '#ffffff',
   surfaceHover: '#faf5ff',
   text: '#1e1b4b',
@@ -257,26 +289,26 @@ const modernStyles: ThemeStyles = {
   accent: '#8b5cf6',
   border: '#e9d5ff',
 
-  headerBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(250, 245, 255, 0.95))',
-  headerBorder: '#e9d5ff',
+  headerBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 245, 255, 0.96) 50%, rgba(243, 232, 255, 0.95) 100%)',
+  headerBorder: 'linear-gradient(90deg, #e9d5ff, #c4b5fd, #e9d5ff)',
 
-  cardBg: '#ffffff',
-  cardBorder: '#e9d5ff',
-  cardShadow: '0 4px 16px rgba(139, 92, 246, 0.1)',
-  cardHoverTransform: 'translateY(-4px) scale(1.01)',
-  cardHoverShadow: '0 12px 28px rgba(139, 92, 246, 0.2)',
+  cardBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 245, 255, 0.9) 100%)',
+  cardBorder: 'linear-gradient(135deg, #e9d5ff, #c4b5fd)',
+  cardShadow: '0 4px 20px rgba(139, 92, 246, 0.12), 0 2px 8px rgba(139, 92, 246, 0.08)',
+  cardHoverTransform: 'translateY(-6px) scale(1.02) rotate(-0.5deg)',
+  cardHoverShadow: '0 16px 36px rgba(139, 92, 246, 0.25), 0 8px 16px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
 
-  pillBg: '#f3e8ff',
+  pillBg: 'linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%)',
   pillText: '#7c3aed',
-  pillActiveBg: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+  pillActiveBg: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%)',
   pillActiveText: '#ffffff',
-  pillHoverBg: '#ede9fe',
+  pillHoverBg: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
 
-  badgeVeganBg: '#d1fae5',
+  badgeVeganBg: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
   badgeVeganText: '#047857',
-  badgePopularBg: '#fce7f3',
+  badgePopularBg: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
   badgePopularText: '#be185d',
-  badgeSpecialBg: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+  badgeSpecialBg: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%)',
   badgeSpecialText: '#b45309',
   badgeSoldOutBg: '#fee2e2',
   badgeSoldOutText: '#991b1b',
@@ -294,17 +326,25 @@ const modernStyles: ThemeStyles = {
 
   priceColor: '#7c3aed',
 
-  footerBg: 'linear-gradient(180deg, #faf5ff, #f3e8ff)',
+  footerBg: 'linear-gradient(180deg, #faf5ff 0%, #f3e8ff 50%, #ede9fe 100%)',
   footerText: '#a78bfa',
-  footerBorder: '#e9d5ff',
+  footerBorder: 'linear-gradient(90deg, transparent, #e9d5ff, transparent)',
 
-  decorativeGradient: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%)',
+  decorativeGradient: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(167, 139, 250, 0.06) 50%, transparent 100%)',
+
+  // Enhanced features
+  fontFamily: '"Poppins", -apple-system, BlinkMacSystemFont, sans-serif',
+  fontHeading: '"Poppins", sans-serif',
+  transitionSpeed: '250ms',
+  animationStyle: 'bouncy',
+  cardBorderRadius: '20px',
+  badgeBorderRadius: '12px',
 };
 
-// Oriental Theme - Gold accents, ornamental, luxurious
+// Oriental Theme - Gold accents, ornamental, luxurious (Enhanced!)
 const orientalStyles: ThemeStyles = {
   background: '#fffbeb',
-  backgroundPattern: 'radial-gradient(circle at 20% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 40%)',
+  backgroundPattern: 'radial-gradient(circle at 20% 80%, rgba(251, 191, 36, 0.15) 0%, transparent 45%), radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.12) 0%, transparent 45%), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(217, 119, 6, 0.02) 40px, rgba(217, 119, 6, 0.02) 80px)',
   surface: '#ffffff',
   surfaceHover: '#fef3c7',
   text: '#451a03',
@@ -314,26 +354,26 @@ const orientalStyles: ThemeStyles = {
   accent: '#d97706',
   border: '#fbbf24',
 
-  headerBg: 'linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(255, 251, 235, 0.95))',
-  headerBorder: '#fbbf24',
+  headerBg: 'linear-gradient(135deg, rgba(254, 243, 199, 0.98) 0%, rgba(253, 230, 138, 0.95) 50%, rgba(255, 251, 235, 0.96) 100%)',
+  headerBorder: 'linear-gradient(90deg, #fcd34d, #fbbf24, #f59e0b, #fbbf24, #fcd34d)',
 
-  cardBg: '#ffffff',
-  cardBorder: '#fcd34d',
-  cardShadow: '0 4px 16px rgba(217, 119, 6, 0.1)',
-  cardHoverTransform: 'translateY(-3px)',
-  cardHoverShadow: '0 8px 24px rgba(217, 119, 6, 0.2), inset 0 0 0 1px rgba(251, 191, 36, 0.3)',
+  cardBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 252, 232, 0.9) 100%)',
+  cardBorder: 'linear-gradient(135deg, #fcd34d, #fbbf24)',
+  cardShadow: '0 4px 20px rgba(217, 119, 6, 0.15), 0 2px 8px rgba(251, 191, 36, 0.1)',
+  cardHoverTransform: 'translateY(-4px) scale(1.01)',
+  cardHoverShadow: '0 12px 32px rgba(217, 119, 6, 0.25), 0 6px 16px rgba(251, 191, 36, 0.15), inset 0 1px 0 rgba(251, 191, 36, 0.4)',
 
-  pillBg: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+  pillBg: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%)',
   pillText: '#92400e',
-  pillActiveBg: 'linear-gradient(135deg, #f59e0b, #d97706)',
+  pillActiveBg: 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%)',
   pillActiveText: '#ffffff',
-  pillHoverBg: '#fde68a',
+  pillHoverBg: 'linear-gradient(135deg, #fde68a 0%, #fcd34d 100%)',
 
-  badgeVeganBg: '#d9f99d',
+  badgeVeganBg: 'linear-gradient(135deg, #d9f99d 0%, #bef264 100%)',
   badgeVeganText: '#3f6212',
-  badgePopularBg: '#fee2e2',
+  badgePopularBg: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
   badgePopularText: '#dc2626',
-  badgeSpecialBg: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+  badgeSpecialBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)',
   badgeSpecialText: '#ffffff',
   badgeSoldOutBg: '#fee2e2',
   badgeSoldOutText: '#991b1b',
@@ -351,12 +391,20 @@ const orientalStyles: ThemeStyles = {
 
   priceColor: '#d97706',
 
-  footerBg: 'linear-gradient(180deg, #fef3c7, #fffbeb)',
+  footerBg: 'linear-gradient(180deg, #fef3c7 0%, #fde68a 50%, #fffbeb 100%)',
   footerText: '#b45309',
-  footerBorder: '#fbbf24',
+  footerBorder: 'linear-gradient(90deg, transparent, #fbbf24, transparent)',
 
-  decorativeGradient: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.05) 50%, transparent 100%)',
-  decorativePattern: 'radial-gradient(circle, rgba(251, 191, 36, 0.1) 1px, transparent 1px)',
+  decorativeGradient: 'linear-gradient(135deg, rgba(251, 191, 36, 0.12) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 100%)',
+  decorativePattern: 'radial-gradient(circle, rgba(251, 191, 36, 0.12) 1px, transparent 1px)',
+
+  // Enhanced features
+  fontFamily: '"Cormorant Garamond", Georgia, serif',
+  fontHeading: '"Cinzel", serif',
+  transitionSpeed: '300ms',
+  animationStyle: 'elegant',
+  cardBorderRadius: '14px',
+  badgeBorderRadius: '10px',
 };
 
 export const THEMES: Record<MenuTheme, ThemeConfig> = {
