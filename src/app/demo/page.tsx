@@ -209,7 +209,7 @@ export default function DemoPage() {
               {/* Fullscreen Preview Button */}
               <div className="mt-6">
                 <Link
-                  href="/m/demo-doener-palace"
+                  href="/demo/preview"
                   target="_blank"
                   className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-[1.02]"
                 >
@@ -219,7 +219,7 @@ export default function DemoPage() {
                   Vorschau im Vollbild öffnen
                 </Link>
                 <p className="text-xs text-gray-500 text-center mt-3">
-                  Hinweis: Die öffentliche Demo zeigt Standard-Daten. Registriere dich für dein eigenes Menü!
+                  Zeigt deine aktuellen Sandbox-Änderungen live im Vollbild-Modus!
                 </p>
               </div>
             </div>
