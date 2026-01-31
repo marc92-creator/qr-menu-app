@@ -16,12 +16,6 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
-              href="/demo"
-              className="text-emerald-600 hover:text-emerald-700 font-medium text-sm sm:text-base px-3 sm:px-4 py-3 min-h-[44px] flex items-center rounded-xl hover:bg-emerald-50 transition-colors active:bg-emerald-100"
-            >
-              Demo
-            </Link>
-            <Link
               href="/login"
               className="text-gray-600 hover:text-gray-900 font-medium text-sm sm:text-base px-3 sm:px-4 py-3 min-h-[44px] flex items-center rounded-xl hover:bg-gray-100 transition-colors active:bg-gray-200"
             >
@@ -105,11 +99,6 @@ export default function Home() {
                     DSGVO-konform
                   </div>
                 </div>
-
-                {/* Demo hint */}
-                <p className="text-gray-500 mt-6 text-sm sm:text-base">
-                  Noch unsicher? <Link href="/demo" className="text-emerald-600 hover:text-emerald-700 hover:underline font-medium">Schau dir erst die Live-Demo an →</Link>
-                </p>
               </div>
             </div>
           </div>
@@ -394,19 +383,6 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-
-              {/* Demo hint card */}
-              <div className="text-center mt-8 p-6 bg-emerald-50 rounded-2xl ring-1 ring-emerald-100">
-                <p className="text-gray-700 mb-3">
-                  <span className="font-semibold text-gray-900">Nicht sicher?</span> Teste MenuApp jetzt ohne Registrierung.
-                </p>
-                <Link href="/demo">
-                  <button className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium text-sm hover:underline">
-                    <Play className="w-4 h-4" />
-                    Live-Demo ansehen
-                  </button>
-                </Link>
-              </div>
             </div>
           </div>
         </section>
@@ -492,79 +468,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 sm:py-24">
-          <div className="container mx-auto px-5 max-w-3xl">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-                Häufige Fragen
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              <details className="group bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden">
-                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-gray-900">Brauche ich technische Kenntnisse?</span>
-                  <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </summary>
-                <div className="px-6 pb-6 text-gray-600">
-                  Nein! Wenn du ein Smartphone bedienen kannst, kannst du auch ein Menü erstellen. Die App zeigt dir Schritt für Schritt, wie es geht.
-                </div>
-              </details>
-
-              <details className="group bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden">
-                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-gray-900">Was passiert, wenn ich Preise ändere?</span>
-                  <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </summary>
-                <div className="px-6 pb-6 text-gray-600">
-                  Änderungen sind sofort online sichtbar. Der QR-Code bleibt gleich - du musst nichts neu drucken.
-                </div>
-              </details>
-
-              <details className="group bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden">
-                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-gray-900">Ist das DSGVO-konform?</span>
-                  <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </summary>
-                <div className="px-6 pb-6 text-gray-600">
-                  Ja! Unsere Server stehen in Frankfurt am Main, Deutschland. Wir speichern keine Kundendaten und sind vollständig DSGVO-konform.
-                </div>
-              </details>
-
-              <details className="group bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden">
-                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-gray-900">Kann ich jederzeit kündigen?</span>
-                  <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </summary>
-                <div className="px-6 pb-6 text-gray-600">
-                  Ja, monatlich kündbar. Keine versteckten Kosten, keine Mindestlaufzeit. Die ersten 14 Tage sind komplett kostenlos.
-                </div>
-              </details>
-
-              <details className="group bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 overflow-hidden">
-                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-gray-900">Können Gäste über die App bestellen?</span>
-                  <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </summary>
-                <div className="px-6 pb-6 text-gray-600">
-                  Mit der WhatsApp-Funktion können Gäste dich direkt kontaktieren. Eine vollständige Bestellfunktion ist in Planung.
-                </div>
-              </details>
             </div>
           </div>
         </section>
