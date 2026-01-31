@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import Link from 'next/link';
 import { Category, MenuItem } from '@/types/database';
 import { Button } from '@/components/Button';
@@ -42,8 +42,8 @@ import {
   reorderSandboxCategories,
 } from '@/lib/sandboxStorage';
 
-// Sortable Category Header Component
-function SortableCategoryHeader({
+// Sortable Category Header Component - Memoized for performance
+const SortableCategoryHeader = memo(function SortableCategoryHeader({
   category,
   itemCount,
   onDelete,
@@ -69,6 +69,9 @@ function SortableCategoryHeader({
     zIndex: isDragging ? 50 : undefined,
   };
 
+  // Memoize category image to avoid recalculation
+  const catImage = useMemo(() => getCategoryImage(category.name), [category.name]);
+
   return (
     <div
       ref={setNodeRef}
@@ -92,15 +95,10 @@ function SortableCategoryHeader({
               <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
             </svg>
           </button>
-          {(() => {
-            const catImage = getCategoryImage(category.name);
-            return (
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md overflow-hidden bg-white ring-2 ring-emerald-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={catImage.image} alt={category.name} className="w-9 h-9 object-contain" />
-              </div>
-            );
-          })()}
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md overflow-hidden bg-white ring-2 ring-emerald-200">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={catImage.image} alt={category.name} className="w-9 h-9 object-contain" />
+          </div>
           <div>
             <h2 className="font-bold text-lg text-gray-900">{category.name}</h2>
             <p className="text-xs text-emerald-600 font-medium">{itemCount} Gericht{itemCount !== 1 ? 'e' : ''}</p>
@@ -119,15 +117,15 @@ function SortableCategoryHeader({
       {children}
     </div>
   );
-}
+});
 
 interface SandboxMenuEditorProps {
   onDataChange?: () => void;
   onUpdate?: () => void;
 }
 
-// Sortable Menu Item Component
-function SortableMenuItem({
+// Sortable Menu Item Component - Memoized for performance
+const SortableMenuItem = memo(function SortableMenuItem({
   item,
   onEdit,
   onDelete,
@@ -154,7 +152,9 @@ function SortableMenuItem({
     // NOTE: Do NOT add touchAction: 'none' here - it blocks scrolling!
   };
 
-  const itemAllergens = getAllergensByIds(item.allergens || []);
+  // Memoize expensive computations
+  const itemAllergens = useMemo(() => getAllergensByIds(item.allergens || []), [item.allergens]);
+  const imageUrl = useMemo(() => getItemImageUrl(item, true), [item]);
 
   return (
     <div
@@ -178,20 +178,16 @@ function SortableMenuItem({
       </button>
 
       {/* Thumbnail */}
-      {(() => {
-        const imageUrl = getItemImageUrl(item, true);
-        if (!imageUrl) return null;
-        return (
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={item.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        );
-      })()}
+      {imageUrl && (
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={item.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       <div className="flex-1 min-w-0">
         {/* Name + Price Row - Stack on mobile */}
@@ -278,7 +274,7 @@ function SortableMenuItem({
       </div>
     </div>
   );
-}
+});
 
 export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorProps) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -311,10 +307,8 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      // Important: sort by position to match the visual order
-      const categoryItems = menuItems
-        .filter(i => i.category_id === categoryId)
-        .sort((a, b) => a.position - b.position);
+      // Use pre-sorted items from memoized map
+      const categoryItems = itemsByCategory.get(categoryId) || [];
       const oldIndex = categoryItems.findIndex(i => i.id === active.id);
       const newIndex = categoryItems.findIndex(i => i.id === over.id);
 
@@ -331,7 +325,7 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
+      // Use pre-sorted categories from memoized array
       const oldIndex = sortedCategories.findIndex(c => c.id === active.id);
       const newIndex = sortedCategories.findIndex(c => c.id === over.id);
 
@@ -386,6 +380,24 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
     onDataChange?.();
     onUpdate?.();
   };
+
+  // Memoize sorted categories to avoid re-sorting on every render
+  const sortedCategories = useMemo(() =>
+    [...categories].sort((a, b) => a.position - b.position),
+    [categories]
+  );
+
+  // Memoize items grouped by category
+  const itemsByCategory = useMemo(() => {
+    const grouped = new Map<string, MenuItem[]>();
+    sortedCategories.forEach(cat => {
+      const items = menuItems
+        .filter(i => i.category_id === cat.id)
+        .sort((a, b) => a.position - b.position);
+      grouped.set(cat.id, items);
+    });
+    return grouped;
+  }, [menuItems, sortedCategories]);
 
   const toggleAllergen = (allergenId: string, isNewItem: boolean) => {
     if (isNewItem) {
@@ -446,6 +458,12 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       price,
       allergens: editAllergens,
       tags: editTags,
+      is_vegetarian: editTags.includes('vegetarian'),
+      is_vegan: editTags.includes('vegan'),
+      is_popular: editTags.includes('popular'),
+      is_recommended: editTags.includes('recommended'),
+      is_new: editTags.includes('new'),
+      is_special: editTags.includes('special'),
       image_mode: editImageMode,
       image_library_key: editImageMode === 'library' ? editImageLibraryKey : null,
     });
@@ -486,12 +504,12 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       position: categoryItems.length,
       allergens: newItemAllergens,
       tags: newItemTags,
-      is_vegetarian: false,
-      is_vegan: false,
-      is_popular: false,
-      is_recommended: false,
-      is_new: false,
-      is_special: false,
+      is_vegetarian: newItemTags.includes('vegetarian'),
+      is_vegan: newItemTags.includes('vegan'),
+      is_popular: newItemTags.includes('popular'),
+      is_recommended: newItemTags.includes('recommended'),
+      is_new: newItemTags.includes('new'),
+      is_special: newItemTags.includes('special'),
       is_sold_out: false,
       upsell_text: null,
     });
@@ -1173,14 +1191,12 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
           modifiers={[restrictToVerticalAxis]}
         >
           <SortableContext
-            items={categories.sort((a, b) => a.position - b.position).map(c => c.id)}
+            items={sortedCategories.map(c => c.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-6">
-              {categories.sort((a, b) => a.position - b.position).map((category) => {
-                const items = menuItems
-                  .filter((i) => i.category_id === category.id)
-                  .sort((a, b) => a.position - b.position);
+              {sortedCategories.map((category) => {
+                const items = itemsByCategory.get(category.id) || [];
 
                 return (
                   <SortableCategoryHeader
