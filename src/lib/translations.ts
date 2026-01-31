@@ -15,9 +15,12 @@ export interface MenuTranslations {
   vegan: string;
   vegetarian: string;
   popular: string;
+  recommended: string;
+  new: string;
   special: string;
   dailySpecial: string;
   soldOut: string;
+  upsellTip: string;
 
   // Filters
   filterVegetarian: string;
@@ -81,9 +84,12 @@ export const translations: Record<Language, MenuTranslations> = {
     vegan: 'Vegan',
     vegetarian: 'Vegetarisch',
     popular: 'Beliebt',
+    recommended: 'Empfehlung',
+    new: 'Neu',
     special: 'Angebot',
     dailySpecial: 'Tagesangebot',
     soldOut: 'Ausverkauft',
+    upsellTip: 'Tipp',
 
     // Filters
     filterVegetarian: 'Vegetarisch',
@@ -145,9 +151,12 @@ export const translations: Record<Language, MenuTranslations> = {
     vegan: 'Vegan',
     vegetarian: 'Vegetarian',
     popular: 'Popular',
+    recommended: 'Recommended',
+    new: 'New',
     special: 'Special',
     dailySpecial: 'Daily Special',
     soldOut: 'Sold Out',
+    upsellTip: 'Tip',
 
     // Filters
     filterVegetarian: 'Vegetarian',

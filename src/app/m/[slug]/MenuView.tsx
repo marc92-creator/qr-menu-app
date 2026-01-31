@@ -765,6 +765,20 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                           ❤️ {t.popular}
                                         </span>
                                       )}
+                                      {item.is_recommended && (
+                                        <span
+                                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-purple-100 text-purple-700"
+                                        >
+                                          👨‍🍳 {t.recommended}
+                                        </span>
+                                      )}
+                                      {item.is_new && (
+                                        <span
+                                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700"
+                                        >
+                                          ✨ {t.new}
+                                        </span>
+                                      )}
                                       {item.is_vegan && (
                                         <span
                                           className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold rounded"
@@ -831,6 +845,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
                                     </p>
                                   ) : null;
                                 })()}
+                                {/* Upsell Tip */}
+                                {item.upsell_text && (
+                                  <p className="text-sm text-emerald-600 mt-2 flex items-center gap-1">
+                                    <span className="font-medium">💡 {t.upsellTip}:</span> {item.upsell_text}
+                                  </p>
+                                )}
                                 {/* Allergen Badges */}
                                 {itemAllergens.length > 0 && (
                                   <div className="flex flex-wrap gap-1.5 mt-2">

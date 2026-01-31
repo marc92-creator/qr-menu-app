@@ -489,8 +489,11 @@ export function SandboxMenuEditor({ onDataChange, onUpdate }: SandboxMenuEditorP
       is_vegetarian: false,
       is_vegan: false,
       is_popular: false,
+      is_recommended: false,
+      is_new: false,
       is_special: false,
       is_sold_out: false,
+      upsell_text: null,
     });
 
     setNewItemName('');

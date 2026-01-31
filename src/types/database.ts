@@ -59,8 +59,11 @@ export interface MenuItem {
   is_vegetarian: boolean;
   is_vegan: boolean;
   is_popular: boolean;
+  is_recommended: boolean;
+  is_new: boolean;
   is_special: boolean;
   is_sold_out: boolean;
+  upsell_text: string | null;
   position: number;
   allergens: string[];
   tags: string[]; // New: flexible tags like 'new', 'spicy', 'chefs_choice'
