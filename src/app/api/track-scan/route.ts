@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
+import { trackScanSchema, validate } from '@/lib/validation';
 
 export async function POST(request: Request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -11,15 +13,38 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { restaurantId, language } = await request.json();
+    // Rate limiting - allow bursts for tracking (30 req/min)
+    const identifier = getIdentifier(request);
+    const rateLimit = checkRateLimit(identifier, RateLimitPresets.TRACKING);
 
-    if (!restaurantId) {
-      return NextResponse.json({ error: 'Missing restaurantId' }, { status: 400 });
+    if (!rateLimit.success) {
+      return createRateLimitResponse(rateLimit);
     }
+
+    const body = await request.json();
+
+    // Input validation with Zod
+    const validation = validate(trackScanSchema, body);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    const { restaurantId, language } = validation.data;
 
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Nur die existierenden Spalten verwenden - KEIN referrer!
+    // Verify restaurant exists before tracking
+    const { data: restaurant, error: restaurantError } = await supabase
+      .from('restaurants')
+      .select('id')
+      .eq('id', restaurantId)
+      .single();
+
+    if (restaurantError || !restaurant) {
+      return NextResponse.json({ error: 'Restaurant not found' }, { status: 404 });
+    }
+
+    // Insert scan tracking
     const { error } = await supabase.from('menu_scans').insert({
       restaurant_id: restaurantId,
       language: language || 'de',

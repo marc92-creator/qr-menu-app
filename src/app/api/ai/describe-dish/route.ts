@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
+import { aiDescribeDishSchema, validate } from '@/lib/validation';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -7,6 +9,14 @@ const anthropic = new Anthropic({
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting - very strict for AI API (10 req/min)
+    const identifier = getIdentifier(req);
+    const rateLimit = checkRateLimit(identifier, RateLimitPresets.AI_API);
+
+    if (!rateLimit.success) {
+      return createRateLimitResponse(rateLimit);
+    }
+
     // Check if API key is configured
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
@@ -15,11 +25,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { dishName, ingredients, category, language = 'de' } = await req.json();
+    const body = await req.json();
 
-    if (!dishName) {
-      return NextResponse.json({ error: 'Dish name required' }, { status: 400 });
+    // Input validation with Zod
+    const validation = validate(aiDescribeDishSchema, body);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
+
+    const { dishName, ingredients, category, language } = validation.data;
 
     const prompt = language === 'de'
       ? `Erstelle eine appetitliche, kurze Beschreibung (max. 2 Sätze, ca. 20-30 Wörter) für folgendes Gericht:

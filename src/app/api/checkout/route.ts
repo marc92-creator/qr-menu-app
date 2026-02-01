@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getStripe } from '@/lib/stripe';
+import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const stripe = getStripe();
     const supabase = await createClient();
@@ -10,6 +11,14 @@ export async function POST() {
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Rate limiting - strict for checkout (20 req/min per user)
+    const identifier = getIdentifier(request, user.id);
+    const rateLimit = checkRateLimit(identifier, RateLimitPresets.AUTH_STRICT);
+
+    if (!rateLimit.success) {
+      return createRateLimitResponse(rateLimit);
     }
 
     // Check if user already has a subscription

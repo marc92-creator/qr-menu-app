@@ -1,18 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
+import { analyticsTrackSchema, validate } from '@/lib/validation';
 
 export async function POST(req: NextRequest) {
   try {
-    const { restaurantId, dishId, eventType, eventData } = await req.json();
+    // Rate limiting - allow bursts for analytics (30 req/min)
+    const identifier = getIdentifier(req);
+    const rateLimit = checkRateLimit(identifier, RateLimitPresets.TRACKING);
 
-    if (!restaurantId || !eventType) {
-      return NextResponse.json(
-        { error: 'restaurantId and eventType are required' },
-        { status: 400 }
-      );
+    if (!rateLimit.success) {
+      return createRateLimitResponse(rateLimit);
     }
 
+    const body = await req.json();
+
+    // Input validation with Zod
+    const validation = validate(analyticsTrackSchema, body);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    const { restaurantId, dishId, eventType, eventData } = validation.data;
+
     const supabase = await createClient();
+
+    // Verify restaurant exists
+    const { data: restaurant, error: restaurantError } = await supabase
+      .from('restaurants')
+      .select('id')
+      .eq('id', restaurantId)
+      .single();
+
+    if (restaurantError || !restaurant) {
+      return NextResponse.json({ error: 'Restaurant not found' }, { status: 404 });
+    }
 
     // Parse User Agent
     const userAgent = req.headers.get('user-agent') || '';

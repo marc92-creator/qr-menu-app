@@ -1,11 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // Rate limiting - relaxed for public menu (100 req/min)
+  const identifier = getIdentifier(request);
+  const rateLimit = checkRateLimit(identifier, RateLimitPresets.PUBLIC_RELAXED);
+
+  if (!rateLimit.success) {
+    return createRateLimitResponse(rateLimit);
+  }
+
   const { slug } = await params;
+
+  // Validate slug format (alphanumeric and hyphens only)
+  if (!/^[a-z0-9-]+$/i.test(slug)) {
+    return NextResponse.json({ error: 'Invalid slug format' }, { status: 400 });
+  }
+
   const supabase = await createClient();
 
   // 1. Restaurant laden

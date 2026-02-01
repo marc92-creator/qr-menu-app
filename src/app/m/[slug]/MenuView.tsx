@@ -421,7 +421,12 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
       {/* JSON-LD Structured Data for SEO */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData)
+            .replace(/</g, '\\u003c')
+            .replace(/>/g, '\\u003e')
+            .replace(/&/g, '\\u0026')
+        }}
       />
 
       {/* Decorative gradient overlay */}

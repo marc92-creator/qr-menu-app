@@ -70,22 +70,31 @@ export async function POST(request: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Verify signature if secret is configured
+  // Verify webhook signature (REQUIRED)
   const webhookSecret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET;
-  if (webhookSecret && signature) {
-    try {
-      const isValid = verifySignature(body, signature, webhookSecret);
-      if (!isValid) {
-        console.error('[LemonSqueezy Webhook] Invalid signature');
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-      }
-    } catch (err) {
-      console.error('[LemonSqueezy Webhook] Signature verification error:', err);
-      return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
-    }
-  } else if (webhookSecret && !signature) {
+
+  if (!webhookSecret) {
+    console.error('[LemonSqueezy Webhook] CRITICAL: LEMON_SQUEEZY_WEBHOOK_SECRET not configured!');
+    return NextResponse.json(
+      { error: 'Webhook not configured' },
+      { status: 500 }
+    );
+  }
+
+  if (!signature) {
     console.error('[LemonSqueezy Webhook] Missing signature header');
     return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
+  }
+
+  try {
+    const isValid = verifySignature(body, signature, webhookSecret);
+    if (!isValid) {
+      console.error('[LemonSqueezy Webhook] Invalid signature');
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+    }
+  } catch (err) {
+    console.error('[LemonSqueezy Webhook] Signature verification error:', err);
+    return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
   }
 
   let event: LemonSqueezyWebhookEvent;
