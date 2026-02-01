@@ -34,6 +34,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { getCategoryImage, getItemImageUrl, ImageMode } from '@/lib/foodImages';
 import { getAccessStatus } from '@/hooks/useSubscription';
+import { MenuItemSwipeable } from '@/components/SwipeableItem';
+import { haptics } from '@/lib/haptics';
+import { MenuEditorFAB } from '@/components/FAB';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -160,10 +163,12 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
 
   // All features available for everyone (Trial + Pro)
   const handleAddCategoryClick = () => {
+    haptics.tap();
     setShowAddCategory(true);
   };
 
   const handleAddItemClick = () => {
+    haptics.tap();
     setShowAddItem(true);
   };
 
@@ -186,6 +191,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [newItemPopular, setNewItemPopular] = useState(false);
   const [newItemSpecial, setNewItemSpecial] = useState(false);
   const [newItemSoldOut, setNewItemSoldOut] = useState(false);
+  const [showNewItemOptionalFields, setShowNewItemOptionalFields] = useState(false);
 
   // Edit item form
   const [editName, setEditName] = useState('');
@@ -206,6 +212,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [editPopular, setEditPopular] = useState(false);
   const [editSpecial, setEditSpecial] = useState(false);
   const [editSoldOut, setEditSoldOut] = useState(false);
+  const [showEditOptionalFields, setShowEditOptionalFields] = useState(false);
 
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -368,6 +375,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   };
 
   const handleEditItem = (item: MenuItem) => {
+    haptics.tap();
     setEditingItem(item);
     setEditName(item.name);
     setEditNameEn(item.name_en || '');
@@ -447,6 +455,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
         .eq('id', editingItem.id);
 
       await updateRestaurantTimestamp();
+      haptics.success();
       setEditingItem(null);
       setEditImageFile(null);
       setEditImagePreview(null);
@@ -474,6 +483,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     });
 
     await updateRestaurantTimestamp();
+    haptics.success();
     setNewCategoryName('');
     setNewCategoryNameEn('');
     setShowAddCategory(false);
@@ -543,6 +553,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
       }
 
       await updateRestaurantTimestamp();
+      haptics.success();
       setNewItemName('');
       setNewItemNameEn('');
       setNewItemDescription('');
@@ -573,6 +584,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const handleDeleteItem = async (itemId: string) => {
     if (!confirm('Gericht wirklich löschen?')) return;
 
+    haptics.delete();
     const supabase = createClient();
     await supabase.from('menu_items').delete().eq('id', itemId);
     await updateRestaurantTimestamp();
@@ -582,6 +594,7 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const handleDeleteCategory = async (categoryId: string) => {
     if (!confirm('Kategorie und alle zugehörigen Gerichte löschen?')) return;
 
+    haptics.delete();
     const supabase = createClient();
     await supabase.from('menu_items').delete().eq('category_id', categoryId);
     await supabase.from('menu_categories').delete().eq('id', categoryId);
@@ -592,6 +605,8 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   // Quick toggle sold out status
   const handleToggleSoldOut = async (item: MenuItem) => {
     const newSoldOutStatus = !item.is_sold_out;
+
+    haptics.toggle();
 
     // Optimistic update
     setLocalMenuItems(prev =>
@@ -1018,155 +1033,213 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 placeholder="z.B. Döner im Brot"
               />
               <Input
-                id="itemDescription"
-                label="Beschreibung (optional)"
-                value={newItemDescription}
-                onChange={(e) => setNewItemDescription(e.target.value)}
-                placeholder="z.B. Mit frischem Salat und Soße"
-              />
-              {/* English Translation Section - Available for all */}
-              <div className="border-t border-gray-100 pt-4 mt-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-lg">🇬🇧</span>
-                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
-                </div>
-                <div className="space-y-3 pl-1">
-                  <Input
-                    id="itemNameEn"
-                    label="Name (English)"
-                    value={newItemNameEn}
-                    onChange={(e) => setNewItemNameEn(e.target.value)}
-                    placeholder="e.g. Döner in Bread"
-                  />
-                  <Input
-                    id="itemDescriptionEn"
-                    label="Description (English)"
-                    value={newItemDescriptionEn}
-                    onChange={(e) => setNewItemDescriptionEn(e.target.value)}
-                    placeholder="e.g. With fresh salad and sauce"
-                  />
-                </div>
-              </div>
-              <Input
                 id="itemPrice"
                 label="Preis (€)"
                 value={newItemPrice}
                 onChange={(e) => setNewItemPrice(e.target.value)}
                 placeholder="z.B. 5,50"
               />
-              {/* Image Mode Selector */}
-              <div className="space-y-3">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Gericht-Bild
-                </label>
 
-                <div className="flex items-start gap-4">
-                  {/* Preview Box */}
-                  <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
-                    {(() => {
-                      // Show custom upload preview if available
-                      if (newItemImagePreview) {
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        return <img src={newItemImagePreview} alt="Vorschau" className="w-full h-full object-cover" />;
-                      }
-                      const previewUrl = newItemImageMode === 'auto'
-                        ? getItemImageUrl({ name: newItemName, image_mode: 'auto' }, true)
-                        : newItemImageMode === 'library' && newItemImageLibraryKey
-                          ? getItemImageUrl({ name: newItemName, image_mode: 'library', image_library_key: newItemImageLibraryKey }, true)
-                          : null;
-                      return previewUrl ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
-                      ) : (
-                        <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      );
-                    })()}
-                  </div>
-
-                  {/* Mode Buttons */}
-                  <div className="flex-1 space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewItemImageMode('auto');
-                          setNewItemImageLibraryKey(null);
-                          setNewItemImagePreview(null);
-                          setNewItemImageFile(null);
-                        }}
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                          newItemImageMode === 'auto' && !newItemImagePreview
-                            ? 'bg-emerald-500 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        🪄 Auto
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowNewItemImageGallery(true)}
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                          newItemImageMode === 'library'
-                            ? 'bg-emerald-500 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        📚 Bibliothek
-                      </button>
-                      <label
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all cursor-pointer ${
-                          newItemImagePreview
-                            ? 'bg-emerald-500 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        📷 Hochladen
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                setNewItemImagePreview(reader.result as string);
-                                setNewItemImageFile(file);
-                                setNewItemImageMode('custom');
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewItemImageMode('none');
-                          setNewItemImageLibraryKey(null);
-                          setNewItemImagePreview(null);
-                          setNewItemImageFile(null);
-                        }}
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                          newItemImageMode === 'none'
-                            ? 'bg-gray-800 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        Keins
-                      </button>
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      {newItemImageMode === 'auto' && !newItemImagePreview && 'Bild wird automatisch basierend auf dem Namen gewählt'}
-                      {newItemImageMode === 'library' && (newItemImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Bibliothek"')}
-                      {newItemImagePreview && 'Eigenes Bild ausgewählt'}
-                      {newItemImageMode === 'none' && 'Kein Bild wird angezeigt'}
-                    </p>
-                  </div>
+              {/* Optional Fields Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  haptics.tap();
+                  setShowNewItemOptionalFields(!showNewItemOptionalFields);
+                }}
+                className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all text-left touch-manipulation min-h-[52px]"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">
+                    {showNewItemOptionalFields ? '📋' : '✨'}
+                  </span>
+                  <span className="font-medium text-gray-700">
+                    {showNewItemOptionalFields ? 'Weniger Optionen' : 'Mehr Optionen'}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    (Beschreibung, Bild, Allergene...)
+                  </span>
                 </div>
-              </div>
+                <svg
+                  className={`w-5 h-5 text-gray-400 transition-transform ${
+                    showNewItemOptionalFields ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Optional Fields */}
+              {showNewItemOptionalFields && (
+                <div className="space-y-5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <Input
+                    id="itemDescription"
+                    label="Beschreibung (optional)"
+                    value={newItemDescription}
+                    onChange={(e) => setNewItemDescription(e.target.value)}
+                    placeholder="z.B. Mit frischem Salat und Soße"
+                  />
+                  {/* English Translation Section - Available for all */}
+                  <div className="border-t border-gray-100 pt-4 mt-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-lg">🇬🇧</span>
+                      <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+                    </div>
+                    <div className="space-y-3 pl-1">
+                      <Input
+                        id="itemNameEn"
+                        label="Name (English)"
+                        value={newItemNameEn}
+                        onChange={(e) => setNewItemNameEn(e.target.value)}
+                        placeholder="e.g. Döner in Bread"
+                      />
+                      <Input
+                        id="itemDescriptionEn"
+                        label="Description (English)"
+                        value={newItemDescriptionEn}
+                        onChange={(e) => setNewItemDescriptionEn(e.target.value)}
+                        placeholder="e.g. With fresh salad and sauce"
+                      />
+                    </div>
+                  </div>
+                  {/* Image Mode Selector */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      Gericht-Bild
+                    </label>
+
+                    <div className="flex items-start gap-4">
+                      {/* Preview Box */}
+                      <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
+                        {(() => {
+                          // Show custom upload preview if available
+                          if (newItemImagePreview) {
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            return <img src={newItemImagePreview} alt="Vorschau" className="w-full h-full object-cover" />;
+                          }
+                          const previewUrl = newItemImageMode === 'auto'
+                            ? getItemImageUrl({ name: newItemName, image_mode: 'auto' }, true)
+                            : newItemImageMode === 'library' && newItemImageLibraryKey
+                              ? getItemImageUrl({ name: newItemName, image_mode: 'library', image_library_key: newItemImageLibraryKey }, true)
+                              : null;
+                          return previewUrl ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
+                          ) : (
+                            <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          );
+                        })()}
+                      </div>
+
+                      {/* Mode Buttons */}
+                      <div className="flex-1 space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setNewItemImageMode('auto');
+                              setNewItemImageLibraryKey(null);
+                              setNewItemImagePreview(null);
+                              setNewItemImageFile(null);
+                            }}
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                              newItemImageMode === 'auto' && !newItemImagePreview
+                                ? 'bg-emerald-500 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            🪄 Auto
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowNewItemImageGallery(true)}
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                              newItemImageMode === 'library'
+                                ? 'bg-emerald-500 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            📚 Bibliothek
+                          </button>
+                          <label
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all cursor-pointer ${
+                              newItemImagePreview
+                                ? 'bg-emerald-500 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            📷 Hochladen
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    setNewItemImagePreview(reader.result as string);
+                                    setNewItemImageFile(file);
+                                    setNewItemImageMode('custom');
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setNewItemImageMode('none');
+                              setNewItemImageLibraryKey(null);
+                              setNewItemImagePreview(null);
+                              setNewItemImageFile(null);
+                            }}
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                              newItemImageMode === 'none'
+                                ? 'bg-gray-800 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            Keins
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          {newItemImageMode === 'auto' && !newItemImagePreview && 'Bild wird automatisch basierend auf dem Namen gewählt'}
+                          {newItemImageMode === 'library' && (newItemImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Bibliothek"')}
+                          {newItemImagePreview && 'Eigenes Bild ausgewählt'}
+                          {newItemImageMode === 'none' && 'Kein Bild wird angezeigt'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <AllergenSelector
+                    selected={newItemAllergens}
+                    onToggle={(id) => toggleAllergen(id, true)}
+                  />
+                  <BadgeSelector
+                    vegetarian={newItemVegetarian}
+                    vegan={newItemVegan}
+                    popular={newItemPopular}
+                    special={newItemSpecial}
+                    soldOut={newItemSoldOut}
+                    onVegetarianChange={setNewItemVegetarian}
+                    onVeganChange={setNewItemVegan}
+                    onPopularChange={setNewItemPopular}
+                    onSpecialChange={setNewItemSpecial}
+                    onSoldOutChange={setNewItemSoldOut}
+                  />
+                  <TagSelector
+                    selected={newItemTags}
+                    onToggle={(id) => toggleTag(id, true)}
+                  />
+                </div>
+              )}
 
               {/* Image Gallery Modal for New Item */}
               {showNewItemImageGallery && (
@@ -1182,26 +1255,6 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                   onClose={() => setShowNewItemImageGallery(false)}
                 />
               )}
-              <AllergenSelector
-                selected={newItemAllergens}
-                onToggle={(id) => toggleAllergen(id, true)}
-              />
-              <BadgeSelector
-                vegetarian={newItemVegetarian}
-                vegan={newItemVegan}
-                popular={newItemPopular}
-                special={newItemSpecial}
-                soldOut={newItemSoldOut}
-                onVegetarianChange={setNewItemVegetarian}
-                onVeganChange={setNewItemVegan}
-                onPopularChange={setNewItemPopular}
-                onSpecialChange={setNewItemSpecial}
-                onSoldOutChange={setNewItemSoldOut}
-              />
-              <TagSelector
-                selected={newItemTags}
-                onToggle={(id) => toggleTag(id, true)}
-              />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setShowAddItem(false);
@@ -1272,13 +1325,6 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 placeholder="z.B. Döner im Brot"
               />
               <Input
-                id="editDescription"
-                label="Beschreibung (optional)"
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-                placeholder="z.B. Mit frischem Salat und Soße"
-              />
-              <Input
                 id="editPrice"
                 label="Preis (€)"
                 value={editPrice}
@@ -1286,147 +1332,212 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                 placeholder="z.B. 5,50"
               />
 
-              {/* English Translation Section - Available for all */}
-              <div className="border-t border-gray-100 pt-4 mt-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-lg">🇬🇧</span>
-                  <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
+              {/* Optional Fields Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  haptics.tap();
+                  setShowEditOptionalFields(!showEditOptionalFields);
+                }}
+                className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all text-left touch-manipulation min-h-[52px]"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">
+                    {showEditOptionalFields ? '📋' : '✨'}
+                  </span>
+                  <span className="font-medium text-gray-700">
+                    {showEditOptionalFields ? 'Weniger Optionen' : 'Mehr Optionen'}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    (Beschreibung, Bild, Allergene...)
+                  </span>
                 </div>
-                <div className="space-y-3 pl-1">
-                  <Input
-                    id="editNameEn"
-                    label="Name (English)"
-                    value={editNameEn}
-                    onChange={(e) => setEditNameEn(e.target.value)}
-                    placeholder="e.g. Döner in Bread"
-                  />
-                  <Input
-                    id="editDescriptionEn"
-                    label="Description (English)"
-                    value={editDescriptionEn}
-                    onChange={(e) => setEditDescriptionEn(e.target.value)}
-                    placeholder="e.g. With fresh salad and sauce"
-                  />
-                </div>
-              </div>
-              {/* Image Mode Selector for Edit */}
-              <div className="space-y-3">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Gericht-Bild
-                </label>
+                <svg
+                  className={`w-5 h-5 text-gray-400 transition-transform ${
+                    showEditOptionalFields ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
 
-                <div className="flex items-start gap-4">
-                  {/* Preview Box */}
-                  <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
-                    {(() => {
-                      // Show custom upload preview if available
-                      if (editImagePreview) {
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        return <img src={editImagePreview} alt="Vorschau" className="w-full h-full object-cover" />;
-                      }
-                      const previewUrl = editImageMode === 'auto'
-                        ? getItemImageUrl({ name: editName, image_mode: 'auto' }, true)
-                        : editImageMode === 'library' && editImageLibraryKey
-                          ? getItemImageUrl({ name: editName, image_mode: 'library', image_library_key: editImageLibraryKey }, true)
-                          : editImageMode === 'custom' && editingItem?.image_url
-                            ? editingItem.image_url
-                            : null;
-                      return previewUrl ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
-                      ) : (
-                        <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      );
-                    })()}
-                  </div>
+              {/* Optional Fields */}
+              {showEditOptionalFields && (
+                <div className="space-y-5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <Input
+                    id="editDescription"
+                    label="Beschreibung (optional)"
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="z.B. Mit frischem Salat und Soße"
+                  />
 
-                  {/* Mode Buttons */}
-                  <div className="flex-1 space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditImageMode('auto');
-                          setEditImageLibraryKey(null);
-                          setEditImagePreview(null);
-                          setEditImageFile(null);
-                          setEditImageRemoved(true);
-                        }}
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                          editImageMode === 'auto' && !editImagePreview
-                            ? 'bg-emerald-500 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        🪄 Auto
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowEditImageGallery(true)}
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                          editImageMode === 'library'
-                            ? 'bg-emerald-500 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        📚 Bibliothek
-                      </button>
-                      <label
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all cursor-pointer ${
-                          editImagePreview || (editImageMode === 'custom' && editingItem?.image_url)
-                            ? 'bg-emerald-500 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        📷 Hochladen
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                setEditImagePreview(reader.result as string);
-                                setEditImageFile(file);
-                                setEditImageMode('custom');
-                                setEditImageRemoved(false);
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditImageMode('none');
-                          setEditImageLibraryKey(null);
-                          setEditImagePreview(null);
-                          setEditImageFile(null);
-                          setEditImageRemoved(true);
-                        }}
-                        className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                          editImageMode === 'none'
-                            ? 'bg-gray-800 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        Keins
-                      </button>
+                  {/* English Translation Section - Available for all */}
+                  <div className="border-t border-gray-100 pt-4 mt-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-lg">🇬🇧</span>
+                      <span className="font-medium text-gray-700">Englische Übersetzung (optional)</span>
                     </div>
-                    <p className="text-xs text-gray-500">
-                      {editImageMode === 'auto' && !editImagePreview && 'Bild wird automatisch basierend auf dem Namen gewählt'}
-                      {editImageMode === 'library' && (editImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Bibliothek"')}
-                      {(editImagePreview || (editImageMode === 'custom' && editingItem?.image_url)) && 'Eigenes Bild'}
-                      {editImageMode === 'none' && 'Kein Bild wird angezeigt'}
-                    </p>
+                    <div className="space-y-3 pl-1">
+                      <Input
+                        id="editNameEn"
+                        label="Name (English)"
+                        value={editNameEn}
+                        onChange={(e) => setEditNameEn(e.target.value)}
+                        placeholder="e.g. Döner in Bread"
+                      />
+                      <Input
+                        id="editDescriptionEn"
+                        label="Description (English)"
+                        value={editDescriptionEn}
+                        onChange={(e) => setEditDescriptionEn(e.target.value)}
+                        placeholder="e.g. With fresh salad and sauce"
+                      />
+                    </div>
                   </div>
+                  {/* Image Mode Selector for Edit */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      Gericht-Bild
+                    </label>
+
+                    <div className="flex items-start gap-4">
+                      {/* Preview Box */}
+                      <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 flex-shrink-0">
+                        {(() => {
+                          // Show custom upload preview if available
+                          if (editImagePreview) {
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            return <img src={editImagePreview} alt="Vorschau" className="w-full h-full object-cover" />;
+                          }
+                          const previewUrl = editImageMode === 'auto'
+                            ? getItemImageUrl({ name: editName, image_mode: 'auto' }, true)
+                            : editImageMode === 'library' && editImageLibraryKey
+                              ? getItemImageUrl({ name: editName, image_mode: 'library', image_library_key: editImageLibraryKey }, true)
+                              : editImageMode === 'custom' && editingItem?.image_url
+                                ? editingItem.image_url
+                                : null;
+                          return previewUrl ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src={previewUrl} alt="Vorschau" className="w-full h-full object-cover" />
+                          ) : (
+                            <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          );
+                        })()}
+                      </div>
+
+                      {/* Mode Buttons */}
+                      <div className="flex-1 space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditImageMode('auto');
+                              setEditImageLibraryKey(null);
+                              setEditImagePreview(null);
+                              setEditImageFile(null);
+                              setEditImageRemoved(true);
+                            }}
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                              editImageMode === 'auto' && !editImagePreview
+                                ? 'bg-emerald-500 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            🪄 Auto
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowEditImageGallery(true)}
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                              editImageMode === 'library'
+                                ? 'bg-emerald-500 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            📚 Bibliothek
+                          </button>
+                          <label
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all cursor-pointer ${
+                              editImagePreview || (editImageMode === 'custom' && editingItem?.image_url)
+                                ? 'bg-emerald-500 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            📷 Hochladen
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    setEditImagePreview(reader.result as string);
+                                    setEditImageFile(file);
+                                    setEditImageMode('custom');
+                                    setEditImageRemoved(false);
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditImageMode('none');
+                              setEditImageLibraryKey(null);
+                              setEditImagePreview(null);
+                              setEditImageFile(null);
+                              setEditImageRemoved(true);
+                            }}
+                            className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                              editImageMode === 'none'
+                                ? 'bg-gray-800 text-white shadow-md'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            Keins
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          {editImageMode === 'auto' && !editImagePreview && 'Bild wird automatisch basierend auf dem Namen gewählt'}
+                          {editImageMode === 'library' && (editImageLibraryKey ? 'Bild aus Bibliothek ausgewählt' : 'Klicke auf "Bibliothek"')}
+                          {(editImagePreview || (editImageMode === 'custom' && editingItem?.image_url)) && 'Eigenes Bild'}
+                          {editImageMode === 'none' && 'Kein Bild wird angezeigt'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <AllergenSelector
+                    selected={editAllergens}
+                    onToggle={(id) => toggleAllergen(id, false)}
+                  />
+                  <BadgeSelector
+                    vegetarian={editVegetarian}
+                    vegan={editVegan}
+                    popular={editPopular}
+                    special={editSpecial}
+                    soldOut={editSoldOut}
+                    onVegetarianChange={setEditVegetarian}
+                    onVeganChange={setEditVegan}
+                    onPopularChange={setEditPopular}
+                    onSpecialChange={setEditSpecial}
+                    onSoldOutChange={setEditSoldOut}
+                  />
+                  <TagSelector
+                    selected={editTags}
+                    onToggle={(id) => toggleTag(id, false)}
+                  />
                 </div>
-              </div>
+              )}
 
               {/* Image Gallery Modal for Edit */}
               {showEditImageGallery && (
@@ -1443,26 +1554,6 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                   onClose={() => setShowEditImageGallery(false)}
                 />
               )}
-              <AllergenSelector
-                selected={editAllergens}
-                onToggle={(id) => toggleAllergen(id, false)}
-              />
-              <BadgeSelector
-                vegetarian={editVegetarian}
-                vegan={editVegan}
-                popular={editPopular}
-                special={editSpecial}
-                soldOut={editSoldOut}
-                onVegetarianChange={setEditVegetarian}
-                onVeganChange={setEditVegan}
-                onPopularChange={setEditPopular}
-                onSpecialChange={setEditSpecial}
-                onSoldOutChange={setEditSoldOut}
-              />
-              <TagSelector
-                selected={editTags}
-                onToggle={(id) => toggleTag(id, false)}
-              />
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 min-h-[52px] rounded-xl" onClick={() => {
                   setEditingItem(null);
@@ -1639,9 +1730,16 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
 
                                 return (
                                   <SortableMenuItem key={item.id} item={item} isDragDisabled={isEditingDisabled}>
-                                    <div
-                                      className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-10 sm:pl-12' : ''}`}
+                                    <MenuItemSwipeable
+                                      onEdit={() => handleEditItem(item)}
+                                      onSoldOut={() => handleToggleSoldOut(item)}
+                                      onDelete={() => handleDeleteItem(item.id)}
+                                      isSoldOut={item.is_sold_out}
+                                      disabled={isEditingDisabled}
                                     >
+                                      <div
+                                        className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-10 sm:pl-12' : ''}`}
+                                      >
                           {/* Thumbnail */}
                           {(() => {
                             const imageUrl = getItemImageUrl(item, true);
@@ -1754,7 +1852,8 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                               </>
                             )}
                           </div>
-                                  </div>
+                                      </div>
+                                    </MenuItemSwipeable>
                                 </SortableMenuItem>
                               );
                             })}
@@ -1828,6 +1927,13 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           )}
         </>
       )}
+
+      {/* Floating Action Button - Mobile-optimized quick actions */}
+      <MenuEditorFAB
+        onAddItem={handleAddItemClick}
+        onAddCategory={handleAddCategoryClick}
+        isDisabled={isEditingDisabled}
+      />
 
     </div>
   );
