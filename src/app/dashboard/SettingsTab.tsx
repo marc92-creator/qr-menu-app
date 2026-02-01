@@ -155,6 +155,48 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
     onUpdate();
   };
 
+  const handleDeleteRestaurant = async () => {
+    const confirmText = prompt(
+      'Bist du sicher? Dies wird ALLE Daten unwiderruflich löschen.\n\n' +
+      'Gib zur Bestätigung den Namen deines Restaurants ein:\n' +
+      `"${restaurant.name}"`
+    );
+
+    if (confirmText !== restaurant.name) {
+      if (confirmText !== null) {
+        alert('Restaurant-Name stimmt nicht überein. Löschung abgebrochen.');
+      }
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const supabase = createClient();
+
+      // Delete will cascade to menu_categories, menu_items, menu_scans due to FK constraints
+      const { error } = await supabase
+        .from('restaurants')
+        .delete()
+        .eq('id', restaurant.id);
+
+      if (error) {
+        console.error('Delete restaurant error:', error);
+        alert('Fehler beim Löschen des Restaurants: ' + error.message);
+        setLoading(false);
+        return;
+      }
+
+      // Redirect to home page after successful deletion
+      alert('Restaurant wurde erfolgreich gelöscht.');
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Delete restaurant error:', error);
+      alert('Fehler beim Löschen des Restaurants.');
+      setLoading(false);
+    }
+  };
+
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Lemon Squeezy Checkout URL (hardcoded as fallback)
@@ -949,9 +991,10 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
         <Button
           variant="outline"
           className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl"
-          onClick={() => alert('Diese Funktion ist noch nicht verfügbar.')}
+          onClick={handleDeleteRestaurant}
+          disabled={loading}
         >
-          Restaurant löschen
+          {loading ? 'Wird gelöscht...' : 'Restaurant löschen'}
         </Button>
       </div>
 

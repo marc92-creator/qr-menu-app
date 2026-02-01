@@ -171,7 +171,7 @@ export default function DemoPage() {
                     menuItems={sandboxData.menuItems.sort((a, b) => a.position - b.position)}
                     showWatermark={false}
                     isDemo={true}
-                    isEmbedded={true}
+                    isEmbedded={false}
                   />
                 </div>
               </div>
