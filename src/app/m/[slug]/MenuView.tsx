@@ -8,6 +8,8 @@ import { getTheme, isGradient } from '@/lib/themes';
 import { getItemImageUrl } from '@/lib/foodImages';
 import { getTranslation, formatRelativeTime, Language, autoTranslate, getAllergenName, getAllergenDescription } from '@/lib/translations';
 import { getTagsByIds, getLocalizedTagName } from '@/lib/itemTags';
+import { getTemplate } from '@/lib/templates';
+import { MinimalistLayout } from '@/components/MenuView/MinimalistLayout';
 
 // Premium Image Component with loading state and blur effect
 function MenuImage({ src, alt, className, style }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
@@ -139,6 +141,11 @@ const getLocalizedCategoryName = (category: Category, lang: Language): string =>
 };
 
 export function MenuView({ restaurant, categories, menuItems, showWatermark, isDemo = false, isEmbedded = false }: MenuViewProps) {
+  // Get template configuration
+  const templateId = restaurant.template_id || 'traditional';
+  const theme = getTheme(restaurant.theme);
+
+  // All hooks must be called unconditionally
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id || '');
   const [showAllergenLegend, setShowAllergenLegend] = useState(false);
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
@@ -154,8 +161,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
   const isScrollingProgrammatically = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Get theme configuration
-  const theme = getTheme(restaurant.theme || 'classic');
+  // theme already defined at top of function
   const styles = theme.styles;
 
   // Auto-detect language on mount
@@ -409,6 +415,69 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     }
   };
 
+  // Conditional rendering based on template
+  if (templateId === 'minimalist') {
+    return (
+      <div style={{ backgroundColor: theme.styles.background, color: theme.styles.text }} className="min-h-screen">
+        {/* Language Toggle for Minimalist */}
+        <div className="fixed top-4 right-4 z-50">
+          <button
+            onClick={() => {
+              const newLang = currentLang === 'de' ? 'en' : 'de';
+              setCurrentLang(newLang);
+              saveLanguage(restaurant.id, newLang);
+            }}
+            className="px-3 py-2 bg-white rounded-full shadow-lg text-sm font-medium hover:shadow-xl transition-shadow"
+          >
+            {currentLang === 'de' ? '🇬🇧 EN' : '🇩🇪 DE'}
+          </button>
+        </div>
+
+        {/* Restaurant Header */}
+        <div className="text-center pt-12 pb-8 px-4">
+          {restaurant.logo_url && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={restaurant.logo_url}
+              alt={restaurant.name}
+              className="w-24 h-24 mx-auto mb-4 rounded-2xl object-cover"
+            />
+          )}
+          <h1 className="text-4xl font-bold mb-2" style={{ color: theme.styles.primary }}>
+            {restaurant.name}
+          </h1>
+          {restaurant.address && (
+            <p className="text-gray-600">{restaurant.address}</p>
+          )}
+        </div>
+
+        {/* Minimalist Layout */}
+        <MinimalistLayout
+          categories={categories}
+          items={menuItems}
+          template={getTemplate(templateId)}
+          language={currentLang}
+          theme={theme}
+        />
+
+        {/* Watermark */}
+        {showWatermark && (
+          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 px-4 text-center text-sm z-50">
+            <a
+              href="https://www.mymenuapp.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Erstellt mit MyMenuApp.de
+            </a>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Traditional layout
   return (
     <div
       ref={scrollContainerRef}

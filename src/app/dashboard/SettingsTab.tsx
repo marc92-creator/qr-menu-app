@@ -10,6 +10,7 @@ import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
 import { uploadRestaurantLogo, validateImageFile } from '@/lib/imageUpload';
 import { isInTrial, getTrialDaysRemaining, getAccessStatus } from '@/hooks/useSubscription';
+import { TemplateSelector } from '@/components/TemplateSelector';
 
 interface SettingsTabProps {
   restaurant: Restaurant;
@@ -47,6 +48,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
     restaurant.opening_hours || DEFAULT_HOURS
   );
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
+  const [templateId, setTemplateId] = useState<string>(restaurant.template_id || 'traditional');
   const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
   const [wifiName, setWifiName] = useState(restaurant.wifi_name || '');
@@ -143,6 +145,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
         logo_url: logoUrl || null,
         opening_hours: openingHours,
         theme,
+        template_id: templateId,
         menu_language: menuLanguage,
         auto_images: autoImages,
         wifi_name: wifiName || null,
@@ -613,6 +616,15 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
             <p className="text-xs text-gray-500 mt-2">
               Wähle ein Design für deine öffentliche Speisekarte
             </p>
+          </div>
+
+          {/* Template Selection */}
+          <div>
+            <TemplateSelector
+              currentTemplateId={templateId}
+              onSelect={setTemplateId}
+              disabled={isDemo}
+            />
           </div>
 
           {/* Menu Language Selection */}

@@ -21,6 +21,7 @@ export interface Restaurant {
   whatsapp_number: string | null;
   opening_hours: OpeningHours | null;
   theme: MenuTheme;
+  template_id?: string; // Menu template (minimalist, traditional, premium, etc.)
   menu_language: MenuLanguage;
   logo_url: string | null;
   wifi_name: string | null;
