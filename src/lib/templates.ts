@@ -260,6 +260,144 @@ export const TEMPLATES: Record<string, MenuTemplate> = {
       recommended: ['Döner', 'Pizza', 'Burger', 'Restaurant'],
     },
   },
+
+  'modern-grid': {
+    id: 'modern-grid',
+    name: 'Modern Grid',
+    description: 'Instagram-style 2-column grid with large hero images',
+    preview: '/templates/modern-grid-preview.png',
+
+    layout: {
+      type: 'grid',
+      columns: 2,
+      gap: 'compact',
+    },
+
+    images: {
+      strategy: 'item-hero',
+      categoryIcons: false,
+      itemImages: true,
+      imageSize: 'large',
+      position: 'top',
+    },
+
+    density: {
+      level: 'minimal',
+      showDescription: true,
+      showAllergens: false,
+      showBadges: true,
+      showTags: false,
+    },
+
+    language: {
+      mode: 'primary',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'base',
+      priceSize: 'base',
+      descriptionSize: 'sm',
+    },
+
+    defaultTheme: 'modern',
+
+    metadata: {
+      category: 'cafe',
+      complexity: 'simple',
+      recommended: ['Café', 'Breakfast', 'Bakery', 'Juice Bar'],
+    },
+  },
+
+  compact: {
+    id: 'compact',
+    name: 'Compact',
+    description: 'Dense table layout for large menus',
+    preview: '/templates/compact-preview.png',
+
+    layout: {
+      type: 'table',
+      gap: 'compact',
+    },
+
+    images: {
+      strategy: 'none',
+      categoryIcons: true,
+      itemImages: false,
+    },
+
+    density: {
+      level: 'detailed',
+      showDescription: true,
+      showAllergens: true,
+      showBadges: true,
+      showTags: false,
+    },
+
+    language: {
+      mode: 'primary',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'sm',
+      priceSize: 'sm',
+      descriptionSize: 'xs',
+    },
+
+    defaultTheme: 'classic',
+
+    metadata: {
+      category: 'fast-food',
+      complexity: 'simple',
+      recommended: ['Döner', 'Pizza', 'Fast Food', 'Große Menüs'],
+    },
+  },
+
+  'fine-dining': {
+    id: 'fine-dining',
+    name: 'Fine Dining',
+    description: 'Elegant upscale design with serif typography',
+    preview: '/templates/fine-dining-preview.png',
+
+    layout: {
+      type: 'single-column',
+      gap: 'spacious',
+    },
+
+    images: {
+      strategy: 'none',
+      categoryIcons: false,
+      itemImages: false,
+    },
+
+    density: {
+      level: 'verbose',
+      showDescription: true,
+      showAllergens: false,
+      showBadges: true,
+      showTags: false,
+    },
+
+    language: {
+      mode: 'side-by-side',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'xl',
+      priceSize: 'lg',
+      descriptionSize: 'base',
+    },
+
+    defaultTheme: 'finedining',
+
+    metadata: {
+      category: 'fine-dining',
+      complexity: 'simple',
+      recommended: ['Fine Dining', 'Wine Bar', 'Gourmet', 'Michelin'],
+    },
+  },
 };
 
 /**
@@ -287,8 +425,23 @@ export function recommendTemplate(data: {
 }): string {
   const { itemCount, categoryCount, hasImages } = data;
 
-  // Simple menu with few items → Minimalist
-  if (itemCount <= 20 && categoryCount <= 5 && hasImages < 0.3) {
+  // Fine dining: small menu (< 15 items), no images
+  if (itemCount < 15 && hasImages < 0.2) {
+    return 'fine-dining';
+  }
+
+  // Modern grid: high image percentage (> 70%)
+  if (hasImages > 0.7) {
+    return 'modern-grid';
+  }
+
+  // Compact: large menu (> 40 items)
+  if (itemCount > 40) {
+    return 'compact';
+  }
+
+  // Minimalist: small menu (< 20 items), few categories
+  if (itemCount <= 20 && categoryCount <= 5) {
     return 'minimalist';
   }
 

@@ -1,10 +1,11 @@
 'use client';
 
 import { Category, MenuItem as MenuItemType, Restaurant } from '@/types/database';
-import { getCategoryIcon, MenuTemplate } from '@/lib/templates';
+import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
+import { getItemImageUrl } from '@/lib/foodImages';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
@@ -14,7 +15,7 @@ import { MenuItem } from './shared/MenuItem';
 import { AllergenLegend } from './shared/AllergenLegend';
 import { useState } from 'react';
 
-interface MinimalistLayoutProps {
+interface TraditionalLayoutProps {
   restaurant: Restaurant;
   categories: Category[];
   items: MenuItemType[];
@@ -61,7 +62,7 @@ const getLocalizedDescription = (item: MenuItemType, lang: Language): string | n
   return item.description;
 };
 
-export function MinimalistLayout({
+export function TraditionalLayout({
   restaurant,
   categories,
   items,
@@ -72,7 +73,7 @@ export function MinimalistLayout({
   onLanguageChange,
   isDemo = false,
   isEmbedded = false,
-}: MinimalistLayoutProps) {
+}: TraditionalLayoutProps) {
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
   const t = getTranslation(language);
 
@@ -121,7 +122,7 @@ export function MinimalistLayout({
           language={language}
           currentLang={currentLang}
           onLanguageChange={onLanguageChange}
-          variant="minimal"
+          variant="card"
           isDemo={isDemo}
         />
 
@@ -153,86 +154,104 @@ export function MinimalistLayout({
       </header>
 
       {/* Menu Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        {displayedCategories.map((category) => {
-          const categoryItems = items
-            .filter((item) => item.category_id === category.id)
-            .filter(filterItem)
-            .sort((a, b) => a.position - b.position);
+      <main className="max-w-2xl mx-auto px-4 py-4 md:px-6">
+        {sortedCategories.length === 0 ? (
+          <div className="text-center py-16 px-4">
+            <div className="text-5xl mb-4">🍽️</div>
+            <p style={{ color: theme.styles.textMuted }}>{t.noMenuAvailable}</p>
+          </div>
+        ) : (
+          <div className="space-y-6 pt-4">
+            {displayedCategories.map((category) => {
+              const categoryItems = items
+                .filter((item) => item.category_id === category.id)
+                .filter(filterItem)
+                .sort((a, b) => {
+                  // Sort: specials first, then by position
+                  if (a.is_special && !b.is_special) return -1;
+                  if (!a.is_special && b.is_special) return 1;
+                  return a.position - b.position;
+                });
 
-          if (categoryItems.length === 0 && activeFilters.size === 0) return null;
+              if (categoryItems.length === 0 && activeFilters.size === 0) return null;
 
-          const categoryIcon = getCategoryIcon(category.name);
-          const categoryName = getLocalizedCategoryName(category, language);
+              const categoryName = getLocalizedCategoryName(category, language);
 
-          return (
-            <div
-              key={category.id}
-              id={`category-${category.id}`}
-              ref={(el) => {
-                if (el) categoryRefs.current.set(category.id, el);
-              }}
-              className="mb-12 scroll-mt-40"
-            >
-              {/* Category Header with Icon */}
-              <div className="mb-6 pb-3 border-b-2" style={{ borderColor: theme.styles.primary }}>
-                <div className="flex items-center gap-3">
-                  <span className="text-4xl">{categoryIcon}</span>
-                  <h2
-                    className="text-3xl font-bold tracking-tight"
-                    style={{ color: theme.styles.primary }}
-                  >
-                    {categoryName}
-                  </h2>
-                </div>
+              return (
+                <section
+                  key={category.id}
+                  id={`category-${category.id}`}
+                  ref={(el) => {
+                    if (el) categoryRefs.current.set(category.id, el);
+                  }}
+                  className="scroll-mt-40"
+                >
+                  {/* Category Header */}
+                  <div className="py-3 -mx-4 px-4 md:-mx-6 md:px-6">
+                    <h2
+                      className="text-lg font-bold flex items-center gap-2"
+                      style={{ color: theme.styles.text }}
+                    >
+                      <span
+                        className="w-1 h-5 rounded-full"
+                        style={{ backgroundColor: theme.styles.primary }}
+                      />
+                      {categoryName}
+                    </h2>
+                  </div>
+
+                  {/* Items */}
+                  {categoryItems.length === 0 && activeFilters.size > 0 ? (
+                    <div className="py-8 text-center text-sm" style={{ color: theme.styles.textMuted }}>
+                      <p>{t.noMatchingItems}</p>
+                      <button
+                        onClick={clearFilters}
+                        className="mt-2 text-sm font-medium hover:underline"
+                        style={{ color: theme.styles.primary }}
+                      >
+                        {t.clearFilters}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {categoryItems.map((item) => {
+                        const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                        return (
+                          <MenuItem
+                            key={item.id}
+                            item={item}
+                            theme={theme}
+                            language={language}
+                            variant="card"
+                            imageUrl={imageUrl}
+                            showDescription={template.density.showDescription}
+                            showAllergens={template.density.showAllergens}
+                            showBadges={template.density.showBadges}
+                            selectedAllergen={selectedAllergen}
+                            onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
+                            getLocalizedName={getLocalizedName}
+                            getLocalizedDescription={getLocalizedDescription}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
+
+            {/* Allergen Legend */}
+            {usedAllergens.length > 0 && (
+              <div className="mt-8">
+                <AllergenLegend
+                  allergens={usedAllergens}
+                  theme={theme}
+                  language={language}
+                  variant="collapsible"
+                  selectedAllergen={selectedAllergen}
+                />
               </div>
-
-              {/* Menu Items - Enhanced with hover effects */}
-              {categoryItems.length === 0 && activeFilters.size > 0 ? (
-                <div className="py-8 text-center text-sm" style={{ color: theme.styles.textMuted }}>
-                  <p>{t.noMatchingItems}</p>
-                  <button
-                    onClick={clearFilters}
-                    className="mt-2 text-sm font-medium hover:underline"
-                    style={{ color: theme.styles.primary }}
-                  >
-                    {t.clearFilters}
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {categoryItems.map((item) => (
-                    <MenuItem
-                      key={item.id}
-                      item={item}
-                      theme={theme}
-                      language={language}
-                      variant="minimal"
-                      showDescription={template.density.showDescription}
-                      showAllergens={template.density.showAllergens}
-                      showBadges={template.density.showBadges}
-                      selectedAllergen={selectedAllergen}
-                      onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
-                      getLocalizedName={getLocalizedName}
-                      getLocalizedDescription={getLocalizedDescription}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        {/* Allergen Legend */}
-        {usedAllergens.length > 0 && (
-          <div className="mt-8">
-            <AllergenLegend
-              allergens={usedAllergens}
-              theme={theme}
-              language={language}
-              variant="collapsible"
-              selectedAllergen={selectedAllergen}
-            />
+            )}
           </div>
         )}
       </main>

@@ -1,20 +1,20 @@
 'use client';
 
 import { Category, MenuItem as MenuItemType, Restaurant } from '@/types/database';
-import { getCategoryIcon, MenuTemplate } from '@/lib/templates';
+import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
+import { formatPrice } from '@/lib/utils';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
 import { RestaurantHeader } from './shared/RestaurantHeader';
 import { DietaryFilters } from './shared/DietaryFilters';
-import { MenuItem } from './shared/MenuItem';
 import { AllergenLegend } from './shared/AllergenLegend';
 import { useState } from 'react';
 
-interface MinimalistLayoutProps {
+interface FineDiningLayoutProps {
   restaurant: Restaurant;
   categories: Category[];
   items: MenuItemType[];
@@ -61,7 +61,7 @@ const getLocalizedDescription = (item: MenuItemType, lang: Language): string | n
   return item.description;
 };
 
-export function MinimalistLayout({
+export function FineDiningLayout({
   restaurant,
   categories,
   items,
@@ -72,7 +72,7 @@ export function MinimalistLayout({
   onLanguageChange,
   isDemo = false,
   isEmbedded = false,
-}: MinimalistLayoutProps) {
+}: FineDiningLayoutProps) {
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
   const t = getTranslation(language);
 
@@ -93,7 +93,7 @@ export function MinimalistLayout({
     filterItem,
   } = useMenuFilters();
 
-  const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
+  const [selectedAllergen] = useState<string | null>(null);
 
   // Get all unique allergens used in the menu
   const usedAllergenIds = Array.from(new Set(items.flatMap(item => item.allergens || [])));
@@ -114,14 +114,14 @@ export function MinimalistLayout({
           borderBottom: `1px solid ${theme.styles.headerBorder}`,
         }}
       >
-        {/* Restaurant Header Card */}
+        {/* Restaurant Header Hero */}
         <RestaurantHeader
           restaurant={restaurant}
           theme={theme}
           language={language}
           currentLang={currentLang}
           onLanguageChange={onLanguageChange}
-          variant="minimal"
+          variant="hero"
           isDemo={isDemo}
         />
 
@@ -152,8 +152,8 @@ export function MinimalistLayout({
         />
       </header>
 
-      {/* Menu Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      {/* Menu Content - Elegant Centered Layout */}
+      <main className="max-w-3xl mx-auto px-6 py-12">
         {displayedCategories.map((category) => {
           const categoryItems = items
             .filter((item) => item.category_id === category.id)
@@ -162,7 +162,6 @@ export function MinimalistLayout({
 
           if (categoryItems.length === 0 && activeFilters.size === 0) return null;
 
-          const categoryIcon = getCategoryIcon(category.name);
           const categoryName = getLocalizedCategoryName(category, language);
 
           return (
@@ -172,22 +171,33 @@ export function MinimalistLayout({
               ref={(el) => {
                 if (el) categoryRefs.current.set(category.id, el);
               }}
-              className="mb-12 scroll-mt-40"
+              className="mb-16 scroll-mt-40"
             >
-              {/* Category Header with Icon */}
-              <div className="mb-6 pb-3 border-b-2" style={{ borderColor: theme.styles.primary }}>
-                <div className="flex items-center gap-3">
-                  <span className="text-4xl">{categoryIcon}</span>
-                  <h2
-                    className="text-3xl font-bold tracking-tight"
-                    style={{ color: theme.styles.primary }}
-                  >
-                    {categoryName}
-                  </h2>
+              {/* Category Header - Elegant Centered with Decorative Divider */}
+              <div className="text-center mb-10">
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
+                  <span className="text-xs tracking-widest uppercase" style={{ color: theme.styles.textMuted }}>
+                    ✦
+                  </span>
+                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
+                </div>
+                <h2
+                  className="text-3xl font-serif tracking-wide"
+                  style={{ color: theme.styles.primary, fontFamily: '"Playfair Display", "Cormorant", serif' }}
+                >
+                  {categoryName}
+                </h2>
+                <div className="flex items-center justify-center gap-4 mt-4">
+                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
+                  <span className="text-xs tracking-widest uppercase" style={{ color: theme.styles.textMuted }}>
+                    ✦
+                  </span>
+                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
                 </div>
               </div>
 
-              {/* Menu Items - Enhanced with hover effects */}
+              {/* Menu Items - Elegant Single Column */}
               {categoryItems.length === 0 && activeFilters.size > 0 ? (
                 <div className="py-8 text-center text-sm" style={{ color: theme.styles.textMuted }}>
                   <p>{t.noMatchingItems}</p>
@@ -200,23 +210,71 @@ export function MinimalistLayout({
                   </button>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {categoryItems.map((item) => (
-                    <MenuItem
-                      key={item.id}
-                      item={item}
-                      theme={theme}
-                      language={language}
-                      variant="minimal"
-                      showDescription={template.density.showDescription}
-                      showAllergens={template.density.showAllergens}
-                      showBadges={template.density.showBadges}
-                      selectedAllergen={selectedAllergen}
-                      onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
-                      getLocalizedName={getLocalizedName}
-                      getLocalizedDescription={getLocalizedDescription}
-                    />
-                  ))}
+                <div className="space-y-10">
+                  {categoryItems.map((item) => {
+                    const itemName = getLocalizedName(item, language);
+                    const itemDescription = getLocalizedDescription(item, language);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className="text-center"
+                      >
+                        {/* Item Name - Large Serif */}
+                        <h3
+                          className="text-2xl font-serif mb-3"
+                          style={{
+                            color: theme.styles.text,
+                            fontFamily: '"Playfair Display", "Cormorant", serif',
+                          }}
+                        >
+                          {itemName}
+                        </h3>
+
+                        {/* Description - Generous Line Height */}
+                        {template.density.showDescription && itemDescription && (
+                          <p
+                            className="text-base leading-relaxed mb-4 max-w-2xl mx-auto"
+                            style={{
+                              color: theme.styles.textMuted,
+                              fontStyle: 'italic',
+                            }}
+                          >
+                            {itemDescription}
+                          </p>
+                        )}
+
+                        {/* Price - Elegant Typography */}
+                        <div
+                          className="text-xl font-medium tracking-wider"
+                          style={{ color: theme.styles.primary }}
+                        >
+                          {formatPrice(item.price)}
+                        </div>
+
+                        {/* Subtle badges (minimal, no hover effects) */}
+                        {template.density.showBadges && (
+                          <div className="flex items-center justify-center gap-3 mt-3">
+                            {item.is_vegan && (
+                              <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
+                                🌱 Vegan
+                              </span>
+                            )}
+                            {item.is_vegetarian && !item.is_vegan && (
+                              <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
+                                🥬 Vegetarian
+                              </span>
+                            )}
+                            {item.is_special && (
+                              <span className="text-xs tracking-wide" style={{ color: theme.styles.primary }}>
+                                ✦ Chef&apos;s Special
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -225,7 +283,7 @@ export function MinimalistLayout({
 
         {/* Allergen Legend */}
         {usedAllergens.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-16">
             <AllergenLegend
               allergens={usedAllergens}
               theme={theme}

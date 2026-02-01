@@ -1,10 +1,11 @@
 'use client';
 
 import { Category, MenuItem as MenuItemType, Restaurant } from '@/types/database';
-import { getCategoryIcon, MenuTemplate } from '@/lib/templates';
+import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
+import { getItemImageUrl } from '@/lib/foodImages';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
@@ -14,7 +15,7 @@ import { MenuItem } from './shared/MenuItem';
 import { AllergenLegend } from './shared/AllergenLegend';
 import { useState } from 'react';
 
-interface MinimalistLayoutProps {
+interface ModernGridLayoutProps {
   restaurant: Restaurant;
   categories: Category[];
   items: MenuItemType[];
@@ -61,7 +62,7 @@ const getLocalizedDescription = (item: MenuItemType, lang: Language): string | n
   return item.description;
 };
 
-export function MinimalistLayout({
+export function ModernGridLayout({
   restaurant,
   categories,
   items,
@@ -72,7 +73,7 @@ export function MinimalistLayout({
   onLanguageChange,
   isDemo = false,
   isEmbedded = false,
-}: MinimalistLayoutProps) {
+}: ModernGridLayoutProps) {
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
   const t = getTranslation(language);
 
@@ -121,7 +122,7 @@ export function MinimalistLayout({
           language={language}
           currentLang={currentLang}
           onLanguageChange={onLanguageChange}
-          variant="minimal"
+          variant="card"
           isDemo={isDemo}
         />
 
@@ -152,8 +153,8 @@ export function MinimalistLayout({
         />
       </header>
 
-      {/* Menu Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      {/* Menu Content - 2 Column Grid */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
         {displayedCategories.map((category) => {
           const categoryItems = items
             .filter((item) => item.category_id === category.id)
@@ -162,7 +163,6 @@ export function MinimalistLayout({
 
           if (categoryItems.length === 0 && activeFilters.size === 0) return null;
 
-          const categoryIcon = getCategoryIcon(category.name);
           const categoryName = getLocalizedCategoryName(category, language);
 
           return (
@@ -174,22 +174,23 @@ export function MinimalistLayout({
               }}
               className="mb-12 scroll-mt-40"
             >
-              {/* Category Header with Icon */}
-              <div className="mb-6 pb-3 border-b-2" style={{ borderColor: theme.styles.primary }}>
-                <div className="flex items-center gap-3">
-                  <span className="text-4xl">{categoryIcon}</span>
-                  <h2
-                    className="text-3xl font-bold tracking-tight"
-                    style={{ color: theme.styles.primary }}
-                  >
-                    {categoryName}
-                  </h2>
-                </div>
+              {/* Category Header */}
+              <div className="mb-6">
+                <h2
+                  className="text-2xl font-bold flex items-center gap-2"
+                  style={{ color: theme.styles.primary }}
+                >
+                  <span
+                    className="w-1 h-6 rounded-full"
+                    style={{ backgroundColor: theme.styles.primary }}
+                  />
+                  {categoryName}
+                </h2>
               </div>
 
-              {/* Menu Items - Enhanced with hover effects */}
+              {/* Menu Items - 2 Column Grid */}
               {categoryItems.length === 0 && activeFilters.size > 0 ? (
-                <div className="py-8 text-center text-sm" style={{ color: theme.styles.textMuted }}>
+                <div className="py-8 text-center text-sm col-span-full" style={{ color: theme.styles.textMuted }}>
                   <p>{t.noMatchingItems}</p>
                   <button
                     onClick={clearFilters}
@@ -200,23 +201,27 @@ export function MinimalistLayout({
                   </button>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {categoryItems.map((item) => (
-                    <MenuItem
-                      key={item.id}
-                      item={item}
-                      theme={theme}
-                      language={language}
-                      variant="minimal"
-                      showDescription={template.density.showDescription}
-                      showAllergens={template.density.showAllergens}
-                      showBadges={template.density.showBadges}
-                      selectedAllergen={selectedAllergen}
-                      onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
-                      getLocalizedName={getLocalizedName}
-                      getLocalizedDescription={getLocalizedDescription}
-                    />
-                  ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {categoryItems.map((item) => {
+                    const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                    return (
+                      <MenuItem
+                        key={item.id}
+                        item={item}
+                        theme={theme}
+                        language={language}
+                        variant="grid"
+                        imageUrl={imageUrl}
+                        showDescription={template.density.showDescription}
+                        showAllergens={template.density.showAllergens}
+                        showBadges={template.density.showBadges}
+                        selectedAllergen={selectedAllergen}
+                        onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
+                        getLocalizedName={getLocalizedName}
+                        getLocalizedDescription={getLocalizedDescription}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>
