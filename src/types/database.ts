@@ -10,6 +10,36 @@ export interface OpeningHours {
 
 export type MenuTheme = 'classic' | 'dark' | 'rustic' | 'modern' | 'oriental' | 'italian' | 'japanese' | 'cafe' | 'finedining';
 export type MenuLanguage = 'de' | 'en';
+export type ImageStrategy = 'ghibli' | 'real' | 'professional' | 'mixed' | 'none';
+export type CourseType = 'amuse' | 'starter' | 'main' | 'dessert' | 'cheese';
+export type PhotoStyle = 'ghibli' | 'real' | 'professional' | 'user';
+export type Season = 'spring' | 'summer' | 'fall' | 'winter' | 'year-round';
+
+// Template-specific configuration
+export interface TemplateConfig {
+  // Fine Dining
+  showWinePairings?: boolean;
+  showChefNotes?: boolean;
+  showCourseTypes?: boolean;
+
+  // Modern Grid
+  enableInstagram?: boolean;
+  showPhotoCredits?: boolean;
+
+  // Compact
+  showItemNumbers?: boolean;
+  showSizes?: boolean;
+  enableQuickOrder?: boolean;
+
+  // Traditional
+  showNutritionalInfo?: boolean;
+  showSpiceLevel?: boolean;
+  showPortionSizes?: boolean;
+
+  // Minimalist
+  enableFocusMode?: boolean;
+  showReadingTime?: boolean;
+}
 
 export interface Restaurant {
   id: string;
@@ -21,7 +51,7 @@ export interface Restaurant {
   whatsapp_number: string | null;
   opening_hours: OpeningHours | null;
   theme: MenuTheme;
-  template_id?: string; // Menu template (minimalist, traditional, premium, etc.)
+  template_id?: string;
   menu_language: MenuLanguage;
   logo_url: string | null;
   wifi_name: string | null;
@@ -29,9 +59,35 @@ export interface Restaurant {
   is_active: boolean;
   is_demo: boolean;
   auto_images: boolean;
-  trial_ends_at: string | null; // When 14-day trial expires
+  trial_ends_at: string | null;
   created_at: string;
   updated_at: string;
+
+  // Template configuration
+  template_config?: TemplateConfig;
+  image_strategy?: ImageStrategy;
+
+  // Fine Dining specific
+  chef_message?: string | null;
+  philosophy?: string | null;
+  awards?: string[] | null;
+  dresscode?: string | null;
+  reservation_required?: boolean;
+  sommelier_available?: boolean;
+
+  // Modern Grid specific
+  instagram_handle?: string | null;
+  instagram_hashtag?: string | null;
+  photo_credits?: boolean;
+
+  // Compact specific
+  enable_search?: boolean;
+  number_shortcuts?: boolean;
+  quick_order?: boolean;
+
+  // Minimalist specific
+  focus_mode?: boolean;
+  minimalist_quote?: string | null;
 }
 
 export interface Category {
@@ -44,6 +100,21 @@ export interface Category {
 }
 
 export type ImageMode = 'auto' | 'library' | 'custom' | 'none';
+
+// Size options for items (e.g., pizza sizes)
+export interface ItemSize {
+  small?: number;
+  medium?: number;
+  large?: number;
+  [key: string]: number | undefined;
+}
+
+// Addon options (e.g., extra cheese)
+export interface ItemAddon {
+  name: string;
+  price: number;
+  name_en?: string;
+}
 
 export interface MenuItem {
   id: string;
@@ -67,8 +138,42 @@ export interface MenuItem {
   upsell_text: string | null;
   position: number;
   allergens: string[];
-  tags: string[]; // New: flexible tags like 'new', 'spicy', 'chefs_choice'
+  tags: string[];
   created_at: string;
+
+  // Universal new fields
+  preparation_time?: number | null;
+  spice_level?: number | null;
+  item_number?: number | null;
+  seasonal?: boolean;
+  season?: Season | null;
+
+  // Fine Dining specific
+  wine_pairings?: string[] | null;
+  course_type?: CourseType | null;
+  chef_note?: string | null;
+  origin_region?: string | null;
+
+  // Nutritional information
+  calories?: number | null;
+  protein?: number | null;
+  carbs?: number | null;
+  fat?: number | null;
+  portion_size?: string | null;
+
+  // Image management
+  image_custom_url?: string | null;
+  image_professional_url?: string | null;
+  image_credit?: string | null;
+  photo_style?: PhotoStyle;
+
+  // Modern Grid specific
+  instagram_url?: string | null;
+  hashtags?: string[] | null;
+
+  // Compact specific
+  sizes?: ItemSize | null;
+  addons?: ItemAddon[] | null;
 }
 
 export interface Subscription {
@@ -100,49 +205,9 @@ export interface RestaurantStats {
   scanStats?: ScanStats;
 }
 
-export interface RestaurantWithStats extends Restaurant {
-  stats: RestaurantStats;
-}
-
-export interface MenuScan {
-  id: string;
-  restaurant_id: string;
-  scanned_at: string;
-  user_agent: string | null;
-  referrer: string | null;
-  language: string | null;
-}
-
 export interface ScanStats {
-  totalScans: number;
-  scansToday: number;
-  scansThisWeek: number;
-  scansThisMonth: number;
-}
-
-export interface Database {
-  public: {
-    Tables: {
-      restaurants: {
-        Row: Restaurant;
-        Insert: Omit<Restaurant, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Restaurant, 'id' | 'created_at' | 'updated_at'>>;
-      };
-      menu_categories: {
-        Row: Category;
-        Insert: Omit<Category, 'id' | 'created_at'>;
-        Update: Partial<Omit<Category, 'id' | 'created_at'>>;
-      };
-      menu_items: {
-        Row: MenuItem;
-        Insert: Omit<MenuItem, 'id' | 'created_at'>;
-        Update: Partial<Omit<MenuItem, 'id' | 'created_at'>>;
-      };
-      subscriptions: {
-        Row: Subscription;
-        Insert: Omit<Subscription, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Subscription, 'id' | 'created_at' | 'updated_at'>>;
-      };
-    };
-  };
+  today: number;
+  thisWeek: number;
+  thisMonth: number;
+  total: number;
 }
