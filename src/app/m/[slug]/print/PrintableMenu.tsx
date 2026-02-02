@@ -4,7 +4,6 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getTheme, ThemeStyles } from '@/lib/themes';
 import { formatPrice, getMenuUrl } from '@/lib/utils';
 import { getAllergensByIds } from '@/lib/allergens';
-import { getItemImageUrl } from '@/lib/foodImages';
 import { QRCodeSVG } from 'qrcode.react';
 
 interface PrintableMenuProps {
@@ -24,11 +23,7 @@ export function PrintableMenu({
 }: PrintableMenuProps) {
   const theme = getTheme(restaurant.theme);
   const styles = theme.styles;
-  const templateId = restaurant.template_id || 'traditional';
   const menuUrl = getMenuUrl(restaurant.slug);
-
-  // QR Code size based on format
-  const qrSize = format === 'a6' ? 150 : 200;
 
   // Sort categories by position
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
@@ -36,7 +31,7 @@ export function PrintableMenu({
   // Get items for a category
   const getItemsForCategory = (categoryId: string) => {
     return menuItems
-      .filter((item) => item.category_id === categoryId)
+      .filter((item) => item.category_id === categoryId && item.is_available !== false)
       .sort((a, b) => {
         if (a.is_special && !b.is_special) return -1;
         if (!a.is_special && b.is_special) return 1;
@@ -44,53 +39,101 @@ export function PrintableMenu({
       });
   };
 
-  // Table Tent View
+  // Table Tent / QR Code View
   if (type === 'tent') {
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-8"
-        style={{ backgroundColor: styles.background }}
+        style={{
+          width: format === 'a6' ? '105mm' : '210mm',
+          height: format === 'a6' ? '148mm' : '297mm',
+          backgroundColor: styles.background,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20mm',
+          boxSizing: 'border-box',
+        }}
       >
         <div
-          className="text-center p-12 rounded-2xl shadow-xl max-w-md w-full"
           style={{
             backgroundColor: styles.surface,
             border: `3px solid ${styles.primary}`,
+            borderRadius: '16px',
+            padding: format === 'a6' ? '24px' : '40px',
+            textAlign: 'center',
+            width: '100%',
+            maxWidth: format === 'a6' ? '70mm' : '140mm',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
           }}
         >
           {/* Restaurant Name */}
           <h1
-            className="text-3xl font-bold mb-8"
-            style={{ color: styles.text, fontFamily: styles.fontHeading }}
+            style={{
+              fontSize: format === 'a6' ? '18px' : '28px',
+              fontWeight: 'bold',
+              color: styles.text,
+              marginBottom: format === 'a6' ? '16px' : '24px',
+              fontFamily: styles.fontHeading || 'Georgia, serif',
+              lineHeight: 1.2,
+            }}
           >
             {restaurant.name}
           </h1>
 
           {/* QR Code */}
-          <div className="flex justify-center mb-8">
-            <div className="p-4 bg-white rounded-xl shadow-lg">
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: format === 'a6' ? '16px' : '24px',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: 'white',
+                padding: format === 'a6' ? '12px' : '16px',
+                borderRadius: '12px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              }}
+            >
               <QRCodeSVG
                 value={menuUrl}
-                size={qrSize}
+                size={format === 'a6' ? 100 : 160}
                 level="H"
-                includeMargin={true}
+                includeMargin={false}
               />
             </div>
           </div>
 
           {/* Call to Action */}
           <p
-            className="text-xl font-semibold mb-2"
-            style={{ color: styles.primary }}
+            style={{
+              fontSize: format === 'a6' ? '14px' : '20px',
+              fontWeight: '600',
+              color: styles.primary,
+              marginBottom: '4px',
+            }}
           >
             Speisekarte scannen
           </p>
-          <p className="text-sm" style={{ color: styles.textMuted }}>
+          <p
+            style={{
+              fontSize: format === 'a6' ? '11px' : '14px',
+              color: styles.textMuted,
+            }}
+          >
             Einfach mit dem Handy scannen
           </p>
 
           {/* URL */}
-          <p className="mt-6 text-xs" style={{ color: styles.textMuted }}>
+          <p
+            style={{
+              fontSize: format === 'a6' ? '8px' : '10px',
+              color: styles.textMuted,
+              marginTop: format === 'a6' ? '12px' : '20px',
+              wordBreak: 'break-all',
+            }}
+          >
             {menuUrl}
           </p>
         </div>
@@ -98,59 +141,77 @@ export function PrintableMenu({
     );
   }
 
-  // Menu PDF View - Different layouts based on template
+  // Menu PDF View
   return (
     <div
-      className="min-h-screen print-container"
       style={{
         backgroundColor: styles.background,
-        fontFamily: styles.fontFamily,
+        fontFamily: styles.fontFamily || 'system-ui, -apple-system, sans-serif',
+        color: styles.text,
+        padding: '0',
+        minHeight: '100vh',
       }}
     >
-      <style jsx global>{`
-        @media print {
-          body {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .print-container {
-            padding: 0 !important;
-          }
-          .page-break {
-            page-break-before: always;
-          }
-          .no-break {
-            page-break-inside: avoid;
-          }
+      <style>{`
+        @page {
+          margin: 15mm;
+          size: A4;
         }
 
-        /* Print-optimized styles */
-        .print-container {
-          padding: 20px;
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        .page-break {
+          page-break-before: always;
+        }
+
+        .no-break {
+          page-break-inside: avoid;
+        }
+
+        .category-section {
+          page-break-inside: avoid;
+        }
+
+        .menu-item {
+          page-break-inside: avoid;
         }
       `}</style>
 
       {/* Header */}
       <header
-        className="py-8 px-6 mb-8 rounded-xl"
         style={{
-          background: styles.headerBg,
-          borderBottom: `2px solid ${styles.primary}`,
+          background: `linear-gradient(135deg, ${styles.primary}, ${styles.primaryLight || styles.primary})`,
+          padding: '32px 40px',
+          marginBottom: '32px',
+          borderRadius: '0 0 20px 20px',
         }}
       >
-        <div className="flex items-center justify-between">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <h1
-              className="text-4xl font-bold"
               style={{
-                color: styles.text,
-                fontFamily: styles.fontHeading,
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: 'white',
+                margin: 0,
+                fontFamily: styles.fontHeading || 'Georgia, serif',
+                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
               }}
             >
               {restaurant.name}
             </h1>
             {restaurant.address && (
-              <p className="mt-2 text-lg" style={{ color: styles.textMuted }}>
+              <p
+                style={{
+                  fontSize: '14px',
+                  color: 'rgba(255,255,255,0.9)',
+                  marginTop: '8px',
+                  margin: '8px 0 0 0',
+                }}
+              >
                 {restaurant.address}
               </p>
             )}
@@ -159,48 +220,66 @@ export function PrintableMenu({
             <img
               src={restaurant.logo_url}
               alt={restaurant.name}
-              className="w-20 h-20 object-contain rounded-lg"
+              style={{
+                width: '70px',
+                height: '70px',
+                objectFit: 'contain',
+                borderRadius: '12px',
+                backgroundColor: 'white',
+                padding: '8px',
+              }}
             />
           )}
         </div>
       </header>
 
       {/* Categories and Items */}
-      <main className="space-y-8">
+      <main style={{ padding: '0 24px' }}>
         {sortedCategories.map((category) => {
           const items = getItemsForCategory(category.id);
           if (items.length === 0) return null;
 
           return (
-            <section key={category.id} className="no-break">
+            <section
+              key={category.id}
+              className="category-section"
+              style={{
+                marginBottom: '32px',
+              }}
+            >
               {/* Category Header */}
               <div
-                className="py-4 px-6 mb-4 rounded-lg"
                 style={{
-                  background: `linear-gradient(135deg, ${styles.primary}15, ${styles.primary}05)`,
-                  borderLeft: `4px solid ${styles.primary}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '20px',
+                  paddingBottom: '12px',
+                  borderBottom: `2px solid ${styles.primary}`,
                 }}
               >
                 <h2
-                  className="text-2xl font-bold"
                   style={{
+                    fontSize: '24px',
+                    fontWeight: 'bold',
                     color: styles.primary,
-                    fontFamily: styles.fontHeading,
+                    margin: 0,
+                    fontFamily: styles.fontHeading || 'Georgia, serif',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
                   }}
                 >
                   {category.name}
                 </h2>
               </div>
 
-              {/* Items */}
-              <div className="space-y-4 px-2">
-                {items.map((item) => (
-                  <MenuItemCard
+              {/* Menu Items */}
+              <div>
+                {items.map((item, index) => (
+                  <MenuItemRow
                     key={item.id}
                     item={item}
                     styles={styles}
-                    templateId={templateId}
-                    autoImages={restaurant.auto_images}
+                    isLast={index === items.length - 1}
                   />
                 ))}
               </div>
@@ -211,137 +290,200 @@ export function PrintableMenu({
 
       {/* Footer */}
       <footer
-        className="mt-12 py-6 text-center border-t"
-        style={{ borderColor: styles.border }}
+        style={{
+          marginTop: '40px',
+          padding: '24px 40px',
+          borderTop: `2px solid ${styles.border}`,
+          textAlign: 'center',
+        }}
       >
-        <p className="text-sm" style={{ color: styles.textMuted }}>
-          Alle Preise in Euro inkl. MwSt.
+        <p
+          style={{
+            fontSize: '11px',
+            color: styles.textMuted,
+            margin: 0,
+          }}
+        >
+          Alle Preise in Euro inkl. MwSt. | Allergene und Zusatzstoffe erfragen Sie bitte bei unserem Personal.
+        </p>
+        <p
+          style={{
+            fontSize: '10px',
+            color: styles.textMuted,
+            marginTop: '8px',
+            opacity: 0.7,
+          }}
+        >
+          {menuUrl}
         </p>
       </footer>
     </div>
   );
 }
 
-// Menu Item Card Component
-function MenuItemCard({
+// Professional Menu Item Row Component
+function MenuItemRow({
   item,
   styles,
-  templateId,
-  autoImages,
+  isLast,
 }: {
   item: MenuItem;
   styles: ThemeStyles;
-  templateId: string;
-  autoImages: boolean;
+  isLast: boolean;
 }) {
-  const imageUrl = getItemImageUrl(item, autoImages);
   const allergens = item.allergens ? getAllergensByIds(item.allergens) : [];
+  const allergenNames = allergens.map(a => a.name).join(', ');
 
   return (
     <div
-      className="flex gap-4 p-4 rounded-xl no-break"
+      className="menu-item no-break"
       style={{
-        backgroundColor: styles.surface,
-        border: `1px solid ${styles.border}`,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        padding: '14px 0',
+        borderBottom: isLast ? 'none' : `1px solid ${styles.border}`,
       }}
     >
-      {/* Image (if available and template supports it) */}
-      {imageUrl && templateId !== 'minimalist' && templateId !== 'fine-dining' && (
-        <div className="flex-shrink-0">
-          <img
-            src={imageUrl}
-            alt={item.name}
-            className="w-20 h-20 object-cover rounded-lg"
-          />
-        </div>
-      )}
-
-      {/* Content */}
-      <div className="flex-grow min-w-0">
-        <div className="flex justify-between items-start gap-4">
-          {/* Name and badges */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: styles.text }}
-              >
-                {item.name}
-              </h3>
-
-              {/* Badges */}
-              {item.is_special && (
-                <span
-                  className="px-2 py-0.5 text-xs font-medium rounded-full"
-                  style={{
-                    backgroundColor: styles.badgeSpecialBg,
-                    color: styles.badgeSpecialText,
-                  }}
-                >
-                  Tagesempfehlung
-                </span>
-              )}
-              {item.is_popular && (
-                <span
-                  className="px-2 py-0.5 text-xs font-medium rounded-full"
-                  style={{
-                    backgroundColor: styles.badgePopularBg,
-                    color: styles.badgePopularText,
-                  }}
-                >
-                  Beliebt
-                </span>
-              )}
-              {item.is_vegan && (
-                <span
-                  className="px-2 py-0.5 text-xs font-medium rounded-full"
-                  style={{
-                    backgroundColor: styles.badgeVeganBg,
-                    color: styles.badgeVeganText,
-                  }}
-                >
-                  Vegan
-                </span>
-              )}
-              {item.is_vegetarian && !item.is_vegan && (
-                <span
-                  className="px-2 py-0.5 text-xs font-medium rounded-full"
-                  style={{
-                    backgroundColor: styles.badgeVeganBg,
-                    color: styles.badgeVeganText,
-                  }}
-                >
-                  Vegetarisch
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Price */}
-          <p
-            className="text-lg font-bold whitespace-nowrap"
-            style={{ color: styles.priceColor }}
+      {/* Left side - Name, Description, Badges */}
+      <div style={{ flex: 1, paddingRight: '20px' }}>
+        {/* Item Name and Badges */}
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+          <h3
+            style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: styles.text,
+              margin: 0,
+            }}
           >
-            {formatPrice(item.price)}
-          </p>
+            {item.item_number ? `${item.item_number}. ` : ''}{item.name}
+          </h3>
+
+          {/* Badges */}
+          {item.is_special && (
+            <span
+              style={{
+                fontSize: '9px',
+                fontWeight: '600',
+                color: '#92400e',
+                backgroundColor: '#fef3c7',
+                padding: '2px 8px',
+                borderRadius: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}
+            >
+              Empfehlung
+            </span>
+          )}
+          {item.is_popular && (
+            <span
+              style={{
+                fontSize: '9px',
+                fontWeight: '600',
+                color: '#dc2626',
+                backgroundColor: '#fee2e2',
+                padding: '2px 8px',
+                borderRadius: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}
+            >
+              Beliebt
+            </span>
+          )}
+          {item.is_vegan && (
+            <span
+              style={{
+                fontSize: '9px',
+                fontWeight: '600',
+                color: '#15803d',
+                backgroundColor: '#dcfce7',
+                padding: '2px 8px',
+                borderRadius: '10px',
+                textTransform: 'uppercase',
+              }}
+            >
+              Vegan
+            </span>
+          )}
+          {item.is_vegetarian && !item.is_vegan && (
+            <span
+              style={{
+                fontSize: '9px',
+                fontWeight: '600',
+                color: '#15803d',
+                backgroundColor: '#dcfce7',
+                padding: '2px 8px',
+                borderRadius: '10px',
+                textTransform: 'uppercase',
+              }}
+            >
+              Vegetarisch
+            </span>
+          )}
         </div>
 
         {/* Description */}
         {item.description && (
           <p
-            className="mt-1 text-sm"
-            style={{ color: styles.textMuted }}
+            style={{
+              fontSize: '13px',
+              color: styles.textMuted,
+              margin: '6px 0 0 0',
+              lineHeight: 1.4,
+            }}
           >
             {item.description}
           </p>
         )}
 
-        {/* Allergens */}
-        {allergens.length > 0 && (
-          <p className="mt-2 text-xs" style={{ color: styles.textMuted }}>
-            Allergene: {allergens.map((a) => a.name).join(', ')}
+        {/* Allergen codes - small and subtle */}
+        {allergenNames && (
+          <p
+            style={{
+              fontSize: '10px',
+              color: styles.textMuted,
+              margin: '4px 0 0 0',
+              opacity: 0.7,
+            }}
+          >
+            Allergene: {allergenNames}
           </p>
         )}
+      </div>
+
+      {/* Right side - Price */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          flexShrink: 0,
+        }}
+      >
+        {/* Dotted line filler */}
+        <div
+          style={{
+            borderBottom: `1px dotted ${styles.border}`,
+            flex: 1,
+            minWidth: '30px',
+            marginRight: '12px',
+            marginTop: '10px',
+          }}
+        />
+
+        {/* Price */}
+        <span
+          style={{
+            fontSize: '16px',
+            fontWeight: 'bold',
+            color: styles.priceColor,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {formatPrice(item.price)}
+        </span>
       </div>
     </div>
   );
