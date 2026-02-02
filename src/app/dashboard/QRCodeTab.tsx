@@ -36,6 +36,7 @@ export function QRCodeTab({ restaurant, categories = [], menuItems = [] }: QRCod
       includeQRCode: true,
       qrCanvas: canvas,
       theme,
+      templateId: restaurant.template_id,
     });
   };
 
@@ -106,6 +107,7 @@ export function QRCodeTab({ restaurant, categories = [], menuItems = [] }: QRCod
       slug: restaurant.slug,
       qrCanvas: canvas,
       theme,
+      templateId: restaurant.template_id,
     };
 
     if (format === 'a6') {

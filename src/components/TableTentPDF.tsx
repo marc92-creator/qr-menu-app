@@ -4,12 +4,14 @@ import { jsPDF } from 'jspdf';
 import { getMenuUrl } from '@/lib/utils';
 import { ThemeConfig } from '@/lib/themes';
 import { getPDFColorsFromTheme, getDefaultPDFColors, PDFColors } from '@/lib/pdfUtils';
+import { generateTemplateTableTentPDF } from '@/lib/pdf';
 
 interface TableTentOptions {
   restaurantName: string;
   slug: string;
   qrCanvas: HTMLCanvasElement;
   theme?: ThemeConfig;
+  templateId?: string;
 }
 
 // Default color constants (RGB values) - fallback if no theme
@@ -41,8 +43,22 @@ function getColors(theme?: ThemeConfig): PDFColors & {
 /**
  * Generate a print-ready PDF table tent (Tischaufsteller)
  * A4 format, portrait orientation, with QR code and restaurant branding
+ * Uses template-specific styling when templateId is provided
  */
-export function generateTableTentPDF({ restaurantName, slug, qrCanvas, theme }: TableTentOptions) {
+export function generateTableTentPDF({ restaurantName, slug, qrCanvas, theme, templateId }: TableTentOptions) {
+  // If templateId is provided, use template-specific strategy
+  if (templateId) {
+    generateTemplateTableTentPDF({
+      restaurantName,
+      slug,
+      qrCanvas,
+      theme,
+      templateId,
+    });
+    return;
+  }
+
+  // Legacy behavior for backwards compatibility
   const menuUrl = getMenuUrl(slug);
   const colors = getColors(theme);
 

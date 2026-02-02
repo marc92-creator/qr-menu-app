@@ -1,14 +1,26 @@
 'use client';
 
-import { jsPDF } from 'jspdf';
 import { Restaurant, Category, MenuItem } from '@/types/database';
-import { formatPrice } from '@/lib/utils';
-import { getAllergenById } from '@/lib/allergens';
-import { getTranslation, getAllergenName, Language } from '@/lib/translations';
 import { ThemeConfig } from '@/lib/themes';
-import { getPDFColorsFromTheme, getDefaultPDFColors } from '@/lib/pdfUtils';
+import { generateTemplateMenuPDF, MenuPDFOptions } from '@/lib/pdf';
 
-interface MenuPDFOptions {
+// Re-export MenuPDFOptions for backwards compatibility
+export type { MenuPDFOptions };
+
+/**
+ * Generate menu PDF using template-specific strategy
+ *
+ * @param options - Menu PDF generation options
+ * @param options.restaurant - Restaurant data including template_id
+ * @param options.categories - Menu categories
+ * @param options.menuItems - Menu items
+ * @param options.includeAllergens - Whether to include allergen information
+ * @param options.includeQRCode - Whether to include QR code in header
+ * @param options.qrCanvas - QR code canvas element
+ * @param options.theme - Theme configuration
+ * @param options.templateId - Template ID (overrides restaurant.template_id)
+ */
+export function generateMenuPDF(options: {
   restaurant: Restaurant;
   categories: Category[];
   menuItems: MenuItem[];
@@ -16,241 +28,15 @@ interface MenuPDFOptions {
   includeQRCode?: boolean;
   qrCanvas?: HTMLCanvasElement | null;
   theme?: ThemeConfig;
-}
+  templateId?: string;
+}): void {
+  // Use templateId from options or fall back to restaurant.template_id
+  const templateId = options.templateId || options.restaurant.template_id;
 
-export function generateMenuPDF({
-  restaurant,
-  categories,
-  menuItems,
-  includeAllergens = true,
-  includeQRCode = false,
-  qrCanvas,
-  theme,
-}: MenuPDFOptions): void {
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
+  generateTemplateMenuPDF({
+    ...options,
+    templateId,
   });
-
-  // Get translations
-  const lang = (restaurant.menu_language || 'de') as Language;
-  const t = getTranslation(lang);
-
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 20;
-  const contentWidth = pageWidth - 2 * margin;
-  let currentY = margin;
-
-  // Get theme colors or use defaults
-  const pdfColors = theme ? getPDFColorsFromTheme(theme) : getDefaultPDFColors();
-  const primaryColor = pdfColors.primary;
-  const textColor = pdfColors.text;
-  const mutedColor = pdfColors.textMuted;
-  const priceColor = pdfColors.priceColor;
-
-  // Helper function to check page break
-  const checkPageBreak = (neededHeight: number): void => {
-    if (currentY + neededHeight > pageHeight - margin) {
-      doc.addPage();
-      currentY = margin;
-    }
-  };
-
-  // Header
-  doc.setFillColor(...primaryColor);
-  doc.rect(0, 0, pageWidth, 35, 'F');
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24);
-  doc.setFont('helvetica', 'bold');
-  doc.text(restaurant.name, margin, 20);
-
-  if (restaurant.address) {
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(restaurant.address, margin, 28);
-  }
-
-  // QR Code in header if provided
-  if (includeQRCode && qrCanvas) {
-    try {
-      const qrDataUrl = qrCanvas.toDataURL('image/png');
-      doc.addImage(qrDataUrl, 'PNG', pageWidth - margin - 25, 5, 25, 25);
-    } catch (e) {
-      console.error('Error adding QR code to PDF:', e);
-    }
-  }
-
-  currentY = 45;
-
-  // Sort categories by position
-  const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
-
-  // Render each category
-  sortedCategories.forEach((category) => {
-    const items = menuItems
-      .filter((item) => item.category_id === category.id && item.is_available !== false)
-      .sort((a, b) => {
-        if (a.is_special && !b.is_special) return -1;
-        if (!a.is_special && b.is_special) return 1;
-        return a.position - b.position;
-      });
-
-    if (items.length === 0) return;
-
-    // Category header (needs ~12mm)
-    checkPageBreak(15);
-
-    // Category name with line
-    doc.setTextColor(...primaryColor);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text(category.name, margin, currentY);
-
-    const categoryNameWidth = doc.getTextWidth(category.name);
-    doc.setDrawColor(...primaryColor);
-    doc.setLineWidth(0.5);
-    doc.line(margin + categoryNameWidth + 5, currentY - 2, pageWidth - margin, currentY - 2);
-
-    currentY += 8;
-
-    // Render items
-    items.forEach((item) => {
-      // Estimate item height
-      let itemHeight = 10; // Base height for name + price
-      if (item.description) {
-        const descLines = doc.splitTextToSize(item.description, contentWidth - 30);
-        itemHeight += descLines.length * 4;
-      }
-      if (includeAllergens && item.allergens && item.allergens.length > 0) {
-        itemHeight += 5;
-      }
-      if (item.is_vegetarian || item.is_vegan || item.is_special || item.is_popular) {
-        itemHeight += 5;
-      }
-
-      checkPageBreak(itemHeight + 5);
-
-      // Item name and price on same line
-      doc.setTextColor(...textColor);
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-
-      const itemName = item.name;
-      const priceText = formatPrice(item.price);
-      const priceWidth = doc.getTextWidth(priceText);
-
-      // Badges before name
-      let nameX = margin;
-      if (item.is_special) {
-        doc.setFillColor(251, 191, 36); // amber-400
-        doc.setTextColor(120, 53, 15); // amber-900
-        doc.setFontSize(7);
-        const badgeText = t.dailySpecial.toUpperCase();
-        const badgeWidth = doc.getTextWidth(badgeText) + 4;
-        doc.roundedRect(nameX, currentY - 4, badgeWidth, 5, 1, 1, 'F');
-        doc.text(badgeText, nameX + 2, currentY - 0.5);
-        nameX += badgeWidth + 3;
-      }
-      if (item.is_popular) {
-        doc.setFillColor(254, 202, 202); // red-200
-        doc.setTextColor(153, 27, 27); // red-800
-        doc.setFontSize(7);
-        const badgeText = t.popular.toUpperCase();
-        const badgeWidth = doc.getTextWidth(badgeText) + 4;
-        doc.roundedRect(nameX, currentY - 4, badgeWidth, 5, 1, 1, 'F');
-        doc.text(badgeText, nameX + 2, currentY - 0.5);
-        nameX += badgeWidth + 3;
-      }
-
-      // Item name
-      doc.setTextColor(...textColor);
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.text(itemName, nameX, currentY);
-
-      // Price aligned right
-      doc.setTextColor(...priceColor);
-      doc.text(priceText, pageWidth - margin - priceWidth, currentY);
-
-      currentY += 5;
-
-      // Diet badges
-      if (item.is_vegan || item.is_vegetarian) {
-        doc.setFontSize(8);
-        if (item.is_vegan) {
-          doc.setFillColor(209, 250, 229); // emerald-100
-          doc.setTextColor(4, 120, 87); // emerald-700
-          const badge = t.vegan;
-          const badgeWidth = doc.getTextWidth(badge) + 4;
-          doc.roundedRect(margin, currentY - 3, badgeWidth, 4.5, 1, 1, 'F');
-          doc.text(badge, margin + 2, currentY);
-        } else if (item.is_vegetarian) {
-          doc.setFillColor(220, 252, 231); // green-100
-          doc.setTextColor(21, 128, 61); // green-700
-          const badge = t.vegetarian;
-          const badgeWidth = doc.getTextWidth(badge) + 4;
-          doc.roundedRect(margin, currentY - 3, badgeWidth, 4.5, 1, 1, 'F');
-          doc.text(badge, margin + 2, currentY);
-        }
-        currentY += 4;
-      }
-
-      // Description
-      if (item.description) {
-        doc.setTextColor(...mutedColor);
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-        const descLines = doc.splitTextToSize(item.description, contentWidth - 10);
-        descLines.forEach((line: string) => {
-          doc.text(line, margin, currentY);
-          currentY += 4;
-        });
-      }
-
-      // Allergens
-      if (includeAllergens && item.allergens && item.allergens.length > 0) {
-        doc.setTextColor(...mutedColor);
-        doc.setFontSize(7);
-        const allergenText = item.allergens
-          .map((a) => {
-            const allergen = getAllergenById(a);
-            return allergen ? `${allergen.icon} ${getAllergenName(a, lang)}` : a;
-          })
-          .join('  ');
-        const allergenLines = doc.splitTextToSize(`${t.allergens}: ${allergenText}`, contentWidth - 10);
-        allergenLines.forEach((line: string) => {
-          doc.text(line, margin, currentY);
-          currentY += 3;
-        });
-      }
-
-      currentY += 3; // Space between items
-    });
-
-    currentY += 5; // Extra space after category
-  });
-
-  // Footer with allergen legend
-  if (includeAllergens) {
-    checkPageBreak(25);
-    currentY += 5;
-    doc.setDrawColor(...mutedColor);
-    doc.setLineWidth(0.2);
-    doc.line(margin, currentY, pageWidth - margin, currentY);
-    currentY += 5;
-
-    doc.setTextColor(...mutedColor);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`${t.allergens}: ${t.allergenInfo}`, margin, currentY);
-  }
-
-  // Save PDF
-  const sanitizedName = restaurant.name.replace(/[^a-zA-Z0-9äöüÄÖÜß\s]/g, '').replace(/\s+/g, '-');
-  doc.save(`speisekarte-${sanitizedName}.pdf`);
 }
 
 interface MenuPDFButtonProps {
@@ -258,6 +44,7 @@ interface MenuPDFButtonProps {
   categories: Category[];
   menuItems: MenuItem[];
   qrCanvas?: HTMLCanvasElement | null;
+  theme?: ThemeConfig;
   className?: string;
 }
 
@@ -266,6 +53,7 @@ export function MenuPDFButton({
   categories,
   menuItems,
   qrCanvas,
+  theme,
   className = '',
 }: MenuPDFButtonProps) {
   const handleDownload = () => {
@@ -276,6 +64,8 @@ export function MenuPDFButton({
       includeAllergens: true,
       includeQRCode: !!qrCanvas,
       qrCanvas,
+      theme,
+      templateId: restaurant.template_id,
     });
   };
 
