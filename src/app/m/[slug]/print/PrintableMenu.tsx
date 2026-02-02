@@ -214,7 +214,7 @@ export function PrintableMenu({
     >
       <style>{`
         @page {
-          margin: 15mm;
+          margin: 0;
           size: A4;
         }
 
@@ -240,25 +240,26 @@ export function PrintableMenu({
         }
       `}</style>
 
-      {/* Header */}
+      {/* Header - Compact for mobile */}
       <header
         style={{
           background: `linear-gradient(135deg, ${styles.primary}, ${styles.primaryLight || styles.primary})`,
-          padding: '32px 40px',
-          marginBottom: '32px',
-          borderRadius: '0 0 20px 20px',
+          padding: '16px 20px',
+          marginBottom: '20px',
+          borderRadius: '0 0 12px 12px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <h1
               style={{
-                fontSize: '36px',
+                fontSize: '22px',
                 fontWeight: 'bold',
                 color: 'white',
                 margin: 0,
                 fontFamily: styles.fontHeading || 'Georgia, serif',
-                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                textShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                lineHeight: 1.2,
               }}
             >
               {restaurant.name}
@@ -266,10 +267,10 @@ export function PrintableMenu({
             {restaurant.address && (
               <p
                 style={{
-                  fontSize: '14px',
-                  color: 'rgba(255,255,255,0.9)',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0',
+                  fontSize: '11px',
+                  color: 'rgba(255,255,255,0.85)',
+                  margin: '4px 0 0 0',
+                  lineHeight: 1.3,
                 }}
               >
                 {restaurant.address}
@@ -281,12 +282,13 @@ export function PrintableMenu({
               src={restaurant.logo_url}
               alt={restaurant.name}
               style={{
-                width: '70px',
-                height: '70px',
+                width: '48px',
+                height: '48px',
                 objectFit: 'contain',
-                borderRadius: '12px',
+                borderRadius: '8px',
                 backgroundColor: 'white',
-                padding: '8px',
+                padding: '4px',
+                flexShrink: 0,
               }}
             />
           )}
@@ -294,7 +296,7 @@ export function PrintableMenu({
       </header>
 
       {/* Categories and Items */}
-      <main style={{ padding: '0 24px' }}>
+      <main style={{ padding: '0 16px' }}>
         {sortedCategories.map((category) => {
           const items = getItemsForCategory(category.id);
           if (items.length === 0) return null;
@@ -313,11 +315,11 @@ export function PrintableMenu({
               {showCategoryImages && categoryImage ? (
                 <div
                   style={{
-                    marginBottom: '24px',
-                    borderRadius: '12px',
+                    marginBottom: '16px',
+                    borderRadius: '8px',
                     overflow: 'hidden',
                     position: 'relative',
-                    height: '120px',
+                    height: '70px',
                   }}
                 >
                   {/* Background Image */}
@@ -328,7 +330,7 @@ export function PrintableMenu({
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      filter: 'brightness(0.6)',
+                      filter: 'brightness(0.55)',
                     }}
                   />
                   {/* Overlay with Category Name */}
@@ -342,19 +344,19 @@ export function PrintableMenu({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      background: 'linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.5))',
+                      background: 'linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4))',
                     }}
                   >
                     <h2
                       style={{
-                        fontSize: '32px',
+                        fontSize: '18px',
                         fontWeight: 'bold',
                         color: 'white',
                         margin: 0,
                         fontFamily: 'Georgia, "Times New Roman", serif',
                         textTransform: 'uppercase',
-                        letterSpacing: '4px',
-                        textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                        letterSpacing: '3px',
+                        textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                       }}
                     >
                       {category.name}
@@ -408,9 +410,9 @@ export function PrintableMenu({
       {/* Footer */}
       <footer
         style={{
-          marginTop: '40px',
-          padding: '24px 40px',
-          borderTop: `2px solid ${styles.border}`,
+          marginTop: '24px',
+          padding: '16px',
+          borderTop: `1px solid ${styles.border}`,
           textAlign: 'center',
         }}
       >
