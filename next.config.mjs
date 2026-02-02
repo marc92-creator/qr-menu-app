@@ -2,6 +2,11 @@
 const nextConfig = {
   experimental: {
     instrumentationHook: true,
+    serverComponentsExternalPackages: ['@sparticuz/chromium', 'puppeteer-core'],
+  },
+  // Include chromium binary files in the serverless function
+  outputFileTracingIncludes: {
+    '/api/pdf/menu': ['./node_modules/@sparticuz/chromium/**/*'],
   },
   images: {
     remotePatterns: [
