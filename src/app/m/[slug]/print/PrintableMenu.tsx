@@ -240,58 +240,44 @@ export function PrintableMenu({
         }
       `}</style>
 
-      {/* Header - Compact for mobile */}
+      {/* Header - Ultra compact */}
       <header
         style={{
-          background: `linear-gradient(135deg, ${styles.primary}, ${styles.primaryLight || styles.primary})`,
-          padding: '16px 20px',
-          marginBottom: '20px',
-          borderRadius: '0 0 12px 12px',
+          background: styles.primary,
+          padding: '8px 12px',
+          marginBottom: '12px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1
-              style={{
-                fontSize: '22px',
-                fontWeight: 'bold',
-                color: 'white',
-                margin: 0,
-                fontFamily: styles.fontHeading || 'Georgia, serif',
-                textShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                lineHeight: 1.2,
-              }}
-            >
-              {restaurant.name}
-            </h1>
-            {restaurant.address && (
-              <p
-                style={{
-                  fontSize: '11px',
-                  color: 'rgba(255,255,255,0.85)',
-                  margin: '4px 0 0 0',
-                  lineHeight: 1.3,
-                }}
-              >
-                {restaurant.address}
-              </p>
-            )}
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {restaurant.logo_url && (
             <img
               src={restaurant.logo_url}
               alt={restaurant.name}
               style={{
-                width: '48px',
-                height: '48px',
+                width: '32px',
+                height: '32px',
                 objectFit: 'contain',
-                borderRadius: '8px',
+                borderRadius: '4px',
                 backgroundColor: 'white',
-                padding: '4px',
+                padding: '2px',
                 flexShrink: 0,
               }}
             />
           )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1
+              style={{
+                fontSize: '16px',
+                fontWeight: 'bold',
+                color: 'white',
+                margin: 0,
+                fontFamily: styles.fontHeading || 'Georgia, serif',
+                lineHeight: 1.2,
+              }}
+            >
+              {restaurant.name}
+            </h1>
+          </div>
         </div>
       </header>
 
