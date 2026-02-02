@@ -4,7 +4,63 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getTheme, ThemeStyles } from '@/lib/themes';
 import { formatPrice, getMenuUrl } from '@/lib/utils';
 import { getAllergensByIds } from '@/lib/allergens';
+import { getItemImageUrl } from '@/lib/foodImages';
 import { QRCodeSVG } from 'qrcode.react';
+
+// Category header images for fine dining / premium templates
+// High-quality Unsplash photos mapped to common category keywords
+const CATEGORY_HEADER_IMAGES: Record<string, string> = {
+  // German category names
+  'vorspeisen': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80',
+  'hauptgerichte': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
+  'hauptgericht': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
+  'desserts': 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=80',
+  'dessert': 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=80',
+  'nachspeisen': 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=80',
+  'getränke': 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80',
+  'getranke': 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80',
+  'weine': 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80',
+  'wein': 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80',
+  'salate': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
+  'salat': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
+  'suppen': 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
+  'suppe': 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
+  'fisch': 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&q=80',
+  'meeresfrüchte': 'https://images.unsplash.com/photo-1565680018093-ebb6b9abcf95?w=800&q=80',
+  'fleisch': 'https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80',
+  'steak': 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&q=80',
+  'pasta': 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=800&q=80',
+  'pizza': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80',
+  'burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80',
+  'frühstück': 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=800&q=80',
+  'brunch': 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=800&q=80',
+  'aperitif': 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80',
+  'cocktails': 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80',
+  'beilagen': 'https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=800&q=80',
+  'vegetarisch': 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?w=800&q=80',
+  'vegan': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
+  // Default elegant food image
+  'default': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
+};
+
+// Get category header image based on category name
+function getCategoryHeaderImage(categoryName: string): string {
+  const normalizedName = categoryName.toLowerCase().trim();
+
+  // Check for exact match
+  if (CATEGORY_HEADER_IMAGES[normalizedName]) {
+    return CATEGORY_HEADER_IMAGES[normalizedName];
+  }
+
+  // Check for partial match
+  for (const [keyword, imageUrl] of Object.entries(CATEGORY_HEADER_IMAGES)) {
+    if (normalizedName.includes(keyword) || keyword.includes(normalizedName)) {
+      return imageUrl;
+    }
+  }
+
+  return CATEGORY_HEADER_IMAGES['default'];
+}
 
 interface PrintableMenuProps {
   restaurant: Restaurant;
@@ -24,6 +80,10 @@ export function PrintableMenu({
   const theme = getTheme(restaurant.theme);
   const styles = theme.styles;
   const menuUrl = getMenuUrl(restaurant.slug);
+  const templateId = restaurant.template_id || 'traditional';
+  const showImages = restaurant.auto_images && templateId !== 'minimalist' && templateId !== 'fine-dining';
+  const isFineDining = templateId === 'fine-dining';
+  const showCategoryImages = isFineDining; // Show elegant category header images for fine dining
 
   // Sort categories by position
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
@@ -239,38 +299,94 @@ export function PrintableMenu({
           const items = getItemsForCategory(category.id);
           if (items.length === 0) return null;
 
+          const categoryImage = showCategoryImages ? getCategoryHeaderImage(category.name) : null;
+
           return (
             <section
               key={category.id}
               className="category-section"
               style={{
-                marginBottom: '32px',
+                marginBottom: '40px',
               }}
             >
-              {/* Category Header */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '20px',
-                  paddingBottom: '12px',
-                  borderBottom: `2px solid ${styles.primary}`,
-                }}
-              >
-                <h2
+              {/* Category Header - Fine Dining with Image */}
+              {showCategoryImages && categoryImage ? (
+                <div
                   style={{
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                    color: styles.primary,
-                    margin: 0,
-                    fontFamily: styles.fontHeading || 'Georgia, serif',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
+                    marginBottom: '24px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    height: '120px',
                   }}
                 >
-                  {category.name}
-                </h2>
-              </div>
+                  {/* Background Image */}
+                  <img
+                    src={categoryImage}
+                    alt={category.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      filter: 'brightness(0.6)',
+                    }}
+                  />
+                  {/* Overlay with Category Name */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.5))',
+                    }}
+                  >
+                    <h2
+                      style={{
+                        fontSize: '32px',
+                        fontWeight: 'bold',
+                        color: 'white',
+                        margin: 0,
+                        fontFamily: 'Georgia, "Times New Roman", serif',
+                        textTransform: 'uppercase',
+                        letterSpacing: '4px',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                      }}
+                    >
+                      {category.name}
+                    </h2>
+                  </div>
+                </div>
+              ) : (
+                /* Standard Category Header */
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '20px',
+                    paddingBottom: '12px',
+                    borderBottom: `2px solid ${styles.primary}`,
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      color: styles.primary,
+                      margin: 0,
+                      fontFamily: styles.fontHeading || 'Georgia, serif',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                    }}
+                  >
+                    {category.name}
+                  </h2>
+                </div>
+              )}
 
               {/* Menu Items */}
               <div>
@@ -280,6 +396,7 @@ export function PrintableMenu({
                     item={item}
                     styles={styles}
                     isLast={index === items.length - 1}
+                    showImage={showImages}
                   />
                 ))}
               </div>
@@ -326,27 +443,55 @@ function MenuItemRow({
   item,
   styles,
   isLast,
+  showImage,
 }: {
   item: MenuItem;
   styles: ThemeStyles;
   isLast: boolean;
+  showImage: boolean;
 }) {
   const allergens = item.allergens ? getAllergensByIds(item.allergens) : [];
   const allergenNames = allergens.map(a => a.name).join(', ');
+  const imageUrl = showImage ? getItemImageUrl(item, true) : null;
 
   return (
     <div
       className="menu-item no-break"
       style={{
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'flex-start',
         padding: '14px 0',
         borderBottom: isLast ? 'none' : `1px solid ${styles.border}`,
+        gap: '16px',
       }}
     >
-      {/* Left side - Name, Description, Badges */}
-      <div style={{ flex: 1, paddingRight: '20px' }}>
+      {/* Food Image */}
+      {imageUrl && (
+        <div
+          style={{
+            flexShrink: 0,
+            width: '60px',
+            height: '60px',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            backgroundColor: styles.surface,
+            border: `1px solid ${styles.border}`,
+          }}
+        >
+          <img
+            src={imageUrl}
+            alt={item.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </div>
+      )}
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
         {/* Item Name and Badges */}
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <h3
