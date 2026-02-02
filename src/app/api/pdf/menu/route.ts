@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import puppeteer from 'puppeteer-core';
+import puppeteerCore from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 
 // Configure for Vercel Serverless
 export const maxDuration = 30; // 30 seconds timeout
 export const dynamic = 'force-dynamic';
+
+// Check if running on Vercel
+const isVercel = !!process.env.VERCEL;
 
 /**
  * Generate PDF from menu page using Puppeteer
@@ -29,13 +32,26 @@ export async function GET(request: NextRequest) {
     // Use the dedicated print page
     const pageUrl = `${baseUrl}/m/${slug}/print?type=${type}&format=${format}`;
 
-    // Launch browser
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: { width: 794, height: 1123 },
-      executablePath: await chromium.executablePath(),
-      headless: true,
-    });
+    // Launch browser - different config for local vs Vercel
+    let browser;
+    if (isVercel) {
+      // Vercel/Production: use @sparticuz/chromium with puppeteer-core
+      browser = await puppeteerCore.launch({
+        args: chromium.args,
+        defaultViewport: { width: 794, height: 1123 },
+        executablePath: await chromium.executablePath(),
+        headless: true,
+      });
+    } else {
+      // Local development: use full puppeteer with bundled Chromium
+      // Dynamic import to avoid bundling issues on Vercel
+      const puppeteer = await import('puppeteer');
+      browser = await puppeteer.default.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        defaultViewport: { width: 794, height: 1123 },
+        headless: true,
+      });
+    }
 
     const page = await browser.newPage();
 
