@@ -32,10 +32,10 @@ interface LanguageStats {
 
 // Demo data for sandbox mode
 const DEMO_STATS: ScanStats = {
-  scansToday: 12,
-  scansThisWeek: 87,
-  scansThisMonth: 342,
-  totalScans: 1247,
+  today: 12,
+  thisWeek: 87,
+  thisMonth: 342,
+  total: 1247,
 };
 
 const DEMO_LANGUAGE_STATS: LanguageStats = {
@@ -107,7 +107,7 @@ export function AnalyticsTab({ restaurant, isSandboxMode = false }: AnalyticsTab
     const scansThisWeek = scans.filter(s => new Date(s.scanned_at) >= weekAgo).length;
     const scansThisMonth = scans.filter(s => new Date(s.scanned_at) >= monthAgo).length;
 
-    setStats({ totalScans, scansToday, scansThisWeek, scansThisMonth });
+    setStats({ total: totalScans, today: scansToday, thisWeek: scansThisWeek, thisMonth: scansThisMonth });
 
     // Calculate daily stats
     const dailyMap = new Map<string, number>();
@@ -219,7 +219,7 @@ export function AnalyticsTab({ restaurant, isSandboxMode = false }: AnalyticsTab
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-100 text-sm font-medium">Heute</p>
-              <p className="text-3xl font-bold mt-1">{stats?.scansToday || 0}</p>
+              <p className="text-3xl font-bold mt-1">{stats?.today || 0}</p>
             </div>
             <div className="bg-white/20 rounded-xl p-3">
               <Calendar className="w-6 h-6" />
@@ -238,7 +238,7 @@ export function AnalyticsTab({ restaurant, isSandboxMode = false }: AnalyticsTab
           <div className="flex items-center justify-between">
             <div>
               <p className="text-emerald-100 text-sm font-medium">Diese Woche</p>
-              <p className="text-3xl font-bold mt-1">{stats?.scansThisWeek || 0}</p>
+              <p className="text-3xl font-bold mt-1">{stats?.thisWeek || 0}</p>
             </div>
             <div className="bg-white/20 rounded-xl p-3">
               <BarChart3 className="w-6 h-6" />
@@ -251,7 +251,7 @@ export function AnalyticsTab({ restaurant, isSandboxMode = false }: AnalyticsTab
           <div className="flex items-center justify-between">
             <div>
               <p className="text-purple-100 text-sm font-medium">Dieser Monat</p>
-              <p className="text-3xl font-bold mt-1">{stats?.scansThisMonth || 0}</p>
+              <p className="text-3xl font-bold mt-1">{stats?.thisMonth || 0}</p>
             </div>
             <div className="bg-white/20 rounded-xl p-3">
               <CalendarDays className="w-6 h-6" />
@@ -264,7 +264,7 @@ export function AnalyticsTab({ restaurant, isSandboxMode = false }: AnalyticsTab
           <div className="flex items-center justify-between">
             <div>
               <p className="text-amber-100 text-sm font-medium">Gesamt</p>
-              <p className="text-3xl font-bold mt-1">{stats?.totalScans || 0}</p>
+              <p className="text-3xl font-bold mt-1">{stats?.total || 0}</p>
             </div>
             <div className="bg-white/20 rounded-xl p-3">
               <Flame className="w-6 h-6" />

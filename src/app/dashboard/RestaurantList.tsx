@@ -261,13 +261,13 @@ export function RestaurantList({
                             </div>
                           </div>
                           {/* Scan Stats */}
-                          {stats?.scanStats && stats.scanStats.totalScans > 0 && (
+                          {stats?.scanStats && stats.scanStats.total > 0 && (
                             <div className="flex items-center gap-1.5">
                               <div className="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center">
                                 <span className="text-sm">👁️</span>
                               </div>
                               <div>
-                                <span className="font-semibold text-gray-900">{stats.scanStats.totalScans}</span>
+                                <span className="font-semibold text-gray-900">{stats.scanStats.total}</span>
                                 <span className="text-gray-500 text-sm ml-1 hidden sm:inline">Scans</span>
                               </div>
                             </div>

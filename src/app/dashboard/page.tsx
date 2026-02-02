@@ -148,10 +148,10 @@ export default function DashboardPage() {
               const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
               scanStats = {
-                totalScans: scanData.length,
-                scansToday: scanData.filter(s => new Date(s.scanned_at) > oneDayAgo).length,
-                scansThisWeek: scanData.filter(s => new Date(s.scanned_at) > oneWeekAgo).length,
-                scansThisMonth: scanData.filter(s => new Date(s.scanned_at) > oneMonthAgo).length,
+                total: scanData.length,
+                today: scanData.filter(s => new Date(s.scanned_at) > oneDayAgo).length,
+                thisWeek: scanData.filter(s => new Date(s.scanned_at) > oneWeekAgo).length,
+                thisMonth: scanData.filter(s => new Date(s.scanned_at) > oneMonthAgo).length,
               };
             }
           } catch {
