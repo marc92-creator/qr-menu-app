@@ -4,7 +4,6 @@ import { getMenuUrl } from '@/lib/utils';
 import { MenuPDFOptions, TableTentPDFOptions } from '../types';
 import { BasePDFStrategy } from './BasePDFStrategy';
 import { drawCircleBadge, drawLeaderDots, drawPillBadge } from '../pdfDrawingHelpers';
-import { getCategoryIcon } from '@/lib/templates';
 
 /**
  * Compact Table PDF Strategy
@@ -65,13 +64,11 @@ export class CompactTablePDF extends BasePDFStrategy {
     categoriesWithItems.forEach(({ category, items }) => {
       this.checkPageBreak(15);
 
-      // Category header with icon
-      const icon = getCategoryIcon(category.name);
-
+      // Category header (ohne Emojis - jsPDF unterstützt keine Emojis)
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(...this.colors.primary);
-      doc.text(`${icon} ${this.getDisplayName(category, lang).toUpperCase()}`, this.margin, this.currentY);
+      doc.text(this.getDisplayName(category, lang).toUpperCase(), this.margin, this.currentY);
 
       // Separator line
       doc.setDrawColor(...this.colors.lightGray);
@@ -143,14 +140,14 @@ export class CompactTablePDF extends BasePDFStrategy {
     const itemName = this.getDisplayName(item, lang);
     doc.text(itemName, nameX, this.currentY);
 
-    // Special/Popular badges
+    // Special/Popular badges (Text statt Emojis)
     let badgeX = nameX + doc.getTextWidth(itemName) + 2;
     if (item.is_special) {
-      const width = drawPillBadge(doc, '★', badgeX, this.currentY, [251, 191, 36], [120, 53, 15], 6);
+      const width = drawPillBadge(doc, 'TOP', badgeX, this.currentY, [251, 191, 36], [120, 53, 15], 6);
       badgeX += width + 2;
     }
     if (item.is_popular) {
-      drawPillBadge(doc, '♥', badgeX, this.currentY, [254, 202, 202], [153, 27, 27], 6);
+      drawPillBadge(doc, 'HIT', badgeX, this.currentY, [254, 202, 202], [153, 27, 27], 6);
     }
 
     // Leader dots to price

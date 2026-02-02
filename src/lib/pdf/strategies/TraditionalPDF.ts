@@ -1,6 +1,5 @@
 import { jsPDF } from 'jspdf';
 import { getTranslation, getAllergenName, Language } from '@/lib/translations';
-import { getAllergenById } from '@/lib/allergens';
 import { getMenuUrl } from '@/lib/utils';
 import { MenuPDFOptions, TableTentPDFOptions } from '../types';
 import { BasePDFStrategy } from './BasePDFStrategy';
@@ -230,16 +229,13 @@ export class TraditionalPDF extends BasePDFStrategy {
       });
     }
 
-    // Allergens
+    // Allergens (ohne Emojis - jsPDF unterstützt keine Emojis)
     if (includeAllergens && item.allergens && item.allergens.length > 0) {
       doc.setTextColor(...this.colors.textMuted);
       doc.setFontSize(7);
       const allergenText = item.allergens
-        .map((a) => {
-          const allergen = getAllergenById(a);
-          return allergen ? `${allergen.icon} ${getAllergenName(a, lang as Language)}` : a;
-        })
-        .join('  ');
+        .map((a) => getAllergenName(a, lang as Language))
+        .join(', ');
       const allergenLines = doc.splitTextToSize(`${this.t.allergens}: ${allergenText}`, this.contentWidth - 10);
       allergenLines.forEach((line: string) => {
         doc.text(line, this.margin, this.currentY);
