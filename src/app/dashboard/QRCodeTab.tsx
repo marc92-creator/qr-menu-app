@@ -100,10 +100,12 @@ export function QRCodeTab({ restaurant, categories = [], menuItems = [] }: QRCod
     const canvas = qrContainerRef.current?.querySelector('canvas');
     if (!canvas) return;
 
+    const theme = getTheme(restaurant.theme);
     const options = {
       restaurantName: restaurant.name,
       slug: restaurant.slug,
       qrCanvas: canvas,
+      theme,
     };
 
     if (format === 'a6') {

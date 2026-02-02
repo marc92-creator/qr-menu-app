@@ -2,32 +2,49 @@
 
 import { jsPDF } from 'jspdf';
 import { getMenuUrl } from '@/lib/utils';
+import { ThemeConfig } from '@/lib/themes';
+import { getPDFColorsFromTheme, getDefaultPDFColors, PDFColors } from '@/lib/pdfUtils';
 
 interface TableTentOptions {
   restaurantName: string;
   slug: string;
   qrCanvas: HTMLCanvasElement;
+  theme?: ThemeConfig;
 }
 
-// Color constants (RGB values)
-const EMERALD_R = 16;
-const EMERALD_G = 185;
-const EMERALD_B = 129;
+// Default color constants (RGB values) - fallback if no theme
+const DEFAULT_COLORS = getDefaultPDFColors();
 
-const DARK_GRAY_R = 17;
-const DARK_GRAY_G = 24;
-const DARK_GRAY_B = 39;
+// Helper to get colors from theme or defaults
+function getColors(theme?: ThemeConfig): PDFColors & {
+  darkGray: [number, number, number];
+  lightGray: [number, number, number];
+  lightPrimaryBg: [number, number, number];
+} {
+  const pdfColors = theme ? getPDFColorsFromTheme(theme) : DEFAULT_COLORS;
 
-const LIGHT_GRAY_R = 107;
-const LIGHT_GRAY_G = 114;
-const LIGHT_GRAY_B = 128;
+  // Calculate a lighter version of primary for backgrounds
+  const lightPrimaryBg: [number, number, number] = [
+    Math.min(255, pdfColors.primary[0] + 200),
+    Math.min(255, pdfColors.primary[1] + 60),
+    Math.min(255, pdfColors.primary[2] + 100),
+  ];
+
+  return {
+    ...pdfColors,
+    darkGray: [17, 24, 39],
+    lightGray: [107, 114, 128],
+    lightPrimaryBg,
+  };
+}
 
 /**
  * Generate a print-ready PDF table tent (Tischaufsteller)
  * A4 format, portrait orientation, with QR code and restaurant branding
  */
-export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTentOptions) {
+export function generateTableTentPDF({ restaurantName, slug, qrCanvas, theme }: TableTentOptions) {
   const menuUrl = getMenuUrl(slug);
+  const colors = getColors(theme);
 
   // Create PDF - A4 format
   const pdf = new jsPDF({
@@ -46,14 +63,14 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
   pdf.setFillColor(245, 245, 245);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Header decorative bar
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Header decorative bar - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, 0, pageWidth, 8, 'F');
 
   // Restaurant name
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(28);
-  pdf.setTextColor(DARK_GRAY_R, DARK_GRAY_G, DARK_GRAY_B);
+  pdf.setTextColor(...colors.darkGray);
 
   // Handle long restaurant names
   const maxNameWidth = pageWidth - 40;
@@ -69,8 +86,8 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
   pdf.setFillColor(255, 255, 255);
   pdf.roundedRect(centerX - qrSize/2 - 10, qrY - 10, qrSize + 20, qrSize + 20, 5, 5, 'F');
 
-  // Border around QR code
-  pdf.setDrawColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Border around QR code - uses theme primary color
+  pdf.setDrawColor(...colors.primary);
   pdf.setLineWidth(1);
   pdf.roundedRect(centerX - qrSize/2 - 10, qrY - 10, qrSize + 20, qrSize + 20, 5, 5, 'S');
 
@@ -78,50 +95,50 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
   const qrDataUrl = qrCanvas.toDataURL('image/png');
   pdf.addImage(qrDataUrl, 'PNG', centerX - qrSize/2, qrY, qrSize, qrSize);
 
-  // "Scan for menu" text with icon
+  // "Scan for menu" text with icon - uses theme primary color
   const scanTextY = qrY + qrSize + 30;
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(20);
-  pdf.setTextColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.setTextColor(...colors.primary);
   pdf.text('Speisekarte scannen', centerX, scanTextY, { align: 'center' });
 
   // Phone icon indicator (simple text)
   pdf.setFontSize(14);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text('Einfach mit dem Handy scannen', centerX, scanTextY + 10, { align: 'center' });
 
   // URL display
   const urlY = scanTextY + 28;
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(11);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text(menuUrl, centerX, urlY, { align: 'center' });
 
-  // Instructions box
+  // Instructions box - uses light version of theme primary
   const instructionY = urlY + 20;
-  pdf.setFillColor(240, 253, 244); // Light emerald background
+  pdf.setFillColor(...colors.lightPrimaryBg);
   pdf.roundedRect(20, instructionY, pageWidth - 40, 35, 3, 3, 'F');
 
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(11);
-  pdf.setTextColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.setTextColor(...colors.primary);
   pdf.text('So funktioniert\'s:', 30, instructionY + 10);
 
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(10);
-  pdf.setTextColor(DARK_GRAY_R, DARK_GRAY_G, DARK_GRAY_B);
+  pdf.setTextColor(...colors.darkGray);
   pdf.text('1. Kamera-App oder QR-Scanner öffnen', 30, instructionY + 18);
   pdf.text('2. QR-Code scannen', 30, instructionY + 25);
   pdf.text('3. Speisekarte direkt auf dem Handy ansehen', 30, instructionY + 32);
 
-  // Footer
+  // Footer - uses theme primary color
   const footerY = pageHeight - 15;
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, pageHeight - 8, pageWidth, 8, 'F');
 
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(8);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text('Powered by QR-Menü App', centerX, footerY - 5, { align: 'center' });
 
   // ===== PAGE 2: Back side (optional - folding instructions) =====
@@ -131,20 +148,20 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
   pdf.setFillColor(245, 245, 245);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Header bar
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Header bar - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, 0, pageWidth, 8, 'F');
 
   // Folding guide title
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(18);
-  pdf.setTextColor(DARK_GRAY_R, DARK_GRAY_G, DARK_GRAY_B);
+  pdf.setTextColor(...colors.darkGray);
   pdf.text('Tischaufsteller - Faltanleitung', centerX, 30, { align: 'center' });
 
   // Instructions
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(12);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
 
   const foldInstructions = [
     '1. Seite 1 ausdrucken (Vorderseite mit QR-Code)',
@@ -165,7 +182,7 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
   const diagramY = yPos + 20;
 
   // Paper outline
-  pdf.setDrawColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setDrawColor(...colors.lightGray);
   pdf.setLineWidth(0.5);
   pdf.rect(centerX - 30, diagramY, 60, 80);
 
@@ -174,23 +191,23 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
   pdf.line(centerX - 30, diagramY + 40, centerX + 30, diagramY + 40);
   pdf.setLineDashPattern([], 0);
 
-  // QR symbol on top half
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // QR symbol on top half - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(centerX - 10, diagramY + 10, 20, 20, 'F');
 
   pdf.setFontSize(9);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text('Falzlinie', centerX, diagramY + 45, { align: 'center' });
   pdf.text('QR-Code', centerX, diagramY + 23, { align: 'center' });
 
   // Additional tip
   pdf.setFont('helvetica', 'italic');
   pdf.setFontSize(10);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text('Diese Seite muss nicht gedruckt werden.', centerX, pageHeight - 30, { align: 'center' });
 
-  // Footer
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Footer - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, pageHeight - 8, pageWidth, 8, 'F');
 
   // Download the PDF
@@ -200,8 +217,9 @@ export function generateTableTentPDF({ restaurantName, slug, qrCanvas }: TableTe
 /**
  * Alternative: Generate a simpler single-page table tent
  */
-export function generateSimpleTableTent({ restaurantName, slug, qrCanvas }: TableTentOptions) {
+export function generateSimpleTableTent({ restaurantName, slug, qrCanvas, theme }: TableTentOptions) {
   const menuUrl = getMenuUrl(slug);
+  const colors = getColors(theme);
 
   // Create PDF - A5 landscape (ideal for table tent)
   const pdf = new jsPDF({
@@ -218,15 +236,15 @@ export function generateSimpleTableTent({ restaurantName, slug, qrCanvas }: Tabl
   pdf.setFillColor(255, 255, 255);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Border
-  pdf.setDrawColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Border - uses theme primary color
+  pdf.setDrawColor(...colors.primary);
   pdf.setLineWidth(2);
   pdf.rect(5, 5, pageWidth - 10, pageHeight - 10, 'S');
 
   // Restaurant name
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(22);
-  pdf.setTextColor(DARK_GRAY_R, DARK_GRAY_G, DARK_GRAY_B);
+  pdf.setTextColor(...colors.darkGray);
   pdf.text(restaurantName, centerX, 25, { align: 'center' });
 
   // QR Code
@@ -237,16 +255,16 @@ export function generateSimpleTableTent({ restaurantName, slug, qrCanvas }: Tabl
   const qrDataUrl = qrCanvas.toDataURL('image/png');
   pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
-  // Text below QR
+  // Text below QR - uses theme primary color
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(16);
-  pdf.setTextColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.setTextColor(...colors.primary);
   pdf.text('Speisekarte scannen', centerX, qrY + qrSize + 12, { align: 'center' });
 
   // URL
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(9);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text(menuUrl, centerX, qrY + qrSize + 20, { align: 'center' });
 
   pdf.save(`tischaufsteller-simple-${slug}.pdf`);
@@ -256,8 +274,9 @@ export function generateSimpleTableTent({ restaurantName, slug, qrCanvas }: Tabl
  * Generate a compact A6 table tent (ideal for small tables)
  * A6 format: 105mm x 148mm
  */
-export function generateA6TableTent({ restaurantName, slug, qrCanvas }: TableTentOptions) {
+export function generateA6TableTent({ restaurantName, slug, qrCanvas, theme }: TableTentOptions) {
   const menuUrl = getMenuUrl(slug);
+  const colors = getColors(theme);
 
   // Create PDF - A6 portrait format
   const pdf = new jsPDF({
@@ -276,14 +295,14 @@ export function generateA6TableTent({ restaurantName, slug, qrCanvas }: TableTen
   pdf.setFillColor(255, 255, 255);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Top accent bar
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Top accent bar - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, 0, pageWidth, 4, 'F');
 
   // Restaurant name
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(14);
-  pdf.setTextColor(DARK_GRAY_R, DARK_GRAY_G, DARK_GRAY_B);
+  pdf.setTextColor(...colors.darkGray);
 
   // Handle long restaurant names
   const maxNameWidth = pageWidth - 16;
@@ -302,26 +321,26 @@ export function generateA6TableTent({ restaurantName, slug, qrCanvas }: TableTen
   const qrDataUrl = qrCanvas.toDataURL('image/png');
   pdf.addImage(qrDataUrl, 'PNG', centerX - qrSize/2, qrY, qrSize, qrSize);
 
-  // "Scan for menu" text
+  // "Scan for menu" text - uses theme primary color
   const scanTextY = qrY + qrSize + 12;
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(12);
-  pdf.setTextColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  pdf.setTextColor(...colors.primary);
   pdf.text('Speisekarte', centerX, scanTextY, { align: 'center' });
   pdf.text('scannen', centerX, scanTextY + 6, { align: 'center' });
 
   // Phone icon hint
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(8);
-  pdf.setTextColor(LIGHT_GRAY_R, LIGHT_GRAY_G, LIGHT_GRAY_B);
+  pdf.setTextColor(...colors.lightGray);
   pdf.text('Mit Handy-Kamera scannen', centerX, scanTextY + 16, { align: 'center' });
 
   // URL display (small)
   pdf.setFontSize(6);
   pdf.text(menuUrl, centerX, pageHeight - 8, { align: 'center' });
 
-  // Bottom accent bar
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Bottom accent bar - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, pageHeight - 4, pageWidth, 4, 'F');
 
   // ===== BACK SIDE (optional - for double-sided printing) =====
@@ -331,8 +350,8 @@ export function generateA6TableTent({ restaurantName, slug, qrCanvas }: TableTen
   pdf.setFillColor(255, 255, 255);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Top accent bar
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Top accent bar - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, 0, pageWidth, 4, 'F');
 
   // Fold line in middle (dashed)
@@ -347,8 +366,8 @@ export function generateA6TableTent({ restaurantName, slug, qrCanvas }: TableTen
   pdf.setTextColor(180, 180, 180);
   pdf.text('Hier falten', centerX, pageHeight / 2 - 3, { align: 'center' });
 
-  // Bottom accent bar
-  pdf.setFillColor(EMERALD_R, EMERALD_G, EMERALD_B);
+  // Bottom accent bar - uses theme primary color
+  pdf.setFillColor(...colors.primary);
   pdf.rect(0, pageHeight - 4, pageWidth, 4, 'F');
 
   pdf.save(`tischaufsteller-a6-${slug}.pdf`);
