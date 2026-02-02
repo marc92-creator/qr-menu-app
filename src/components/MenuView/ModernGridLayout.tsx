@@ -16,6 +16,8 @@ import { EnhancedFilterBar } from './EnhancedFilterBar';
 import { InstagramIntegration } from './ModernGrid/InstagramIntegration';
 import { HashtagDisplay } from './ModernGrid/HashtagDisplay';
 import { ScheduleIndicator } from './shared/ScheduleIndicator';
+import { FilterFAB } from './filters/FilterFAB';
+import { FilterBottomSheet } from './filters/FilterBottomSheet';
 import { useState, useCallback } from 'react';
 
 interface ModernGridLayoutProps {
@@ -130,6 +132,7 @@ export function ModernGridLayout({
 
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
   const [fullscreenImage, setFullscreenImage] = useState<{ url: string; name: string } | null>(null);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const { likedItems, toggleLike } = useLikedItems(restaurant.slug);
 
   // Get all unique allergens used in the menu
@@ -189,14 +192,14 @@ export function ModernGridLayout({
           />
         )}
 
-        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
+        {/* Dietary Pills Only - Search and Allergens via FAB */}
         <EnhancedFilterBar
           filters={filters}
           theme={theme}
           language={language}
-          showSearch={true}
+          showSearch={false}
           showDietaryFilters={true}
-          showAllergenButton={true}
+          showAllergenButton={false}
         />
       </header>
 
@@ -319,6 +322,24 @@ export function ModernGridLayout({
           </p>
         </div>
       )}
+
+      {/* Filter FAB - Bottom Right */}
+      <FilterFAB
+        filters={filters}
+        theme={theme}
+        language={language}
+        onOpenSheet={() => setIsFilterSheetOpen(true)}
+        hideOnScroll
+      />
+
+      {/* Filter Bottom Sheet */}
+      <FilterBottomSheet
+        isOpen={isFilterSheetOpen}
+        onClose={() => setIsFilterSheetOpen(false)}
+        filters={filters}
+        theme={theme}
+        language={language}
+      />
     </div>
   );
 }

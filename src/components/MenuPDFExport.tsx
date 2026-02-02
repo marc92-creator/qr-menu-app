@@ -5,6 +5,8 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { formatPrice } from '@/lib/utils';
 import { getAllergenById } from '@/lib/allergens';
 import { getTranslation, getAllergenName, Language } from '@/lib/translations';
+import { ThemeConfig } from '@/lib/themes';
+import { getPDFColorsFromTheme, getDefaultPDFColors } from '@/lib/pdfUtils';
 
 interface MenuPDFOptions {
   restaurant: Restaurant;
@@ -13,6 +15,7 @@ interface MenuPDFOptions {
   includeAllergens?: boolean;
   includeQRCode?: boolean;
   qrCanvas?: HTMLCanvasElement | null;
+  theme?: ThemeConfig;
 }
 
 export function generateMenuPDF({
@@ -22,6 +25,7 @@ export function generateMenuPDF({
   includeAllergens = true,
   includeQRCode = false,
   qrCanvas,
+  theme,
 }: MenuPDFOptions): void {
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -39,10 +43,12 @@ export function generateMenuPDF({
   const contentWidth = pageWidth - 2 * margin;
   let currentY = margin;
 
-  // Colors
-  const primaryColor: [number, number, number] = [16, 185, 129]; // emerald-500
-  const textColor: [number, number, number] = [31, 41, 55]; // gray-800
-  const mutedColor: [number, number, number] = [107, 114, 128]; // gray-500
+  // Get theme colors or use defaults
+  const pdfColors = theme ? getPDFColorsFromTheme(theme) : getDefaultPDFColors();
+  const primaryColor = pdfColors.primary;
+  const textColor = pdfColors.text;
+  const mutedColor = pdfColors.textMuted;
+  const priceColor = pdfColors.priceColor;
 
   // Helper function to check page break
   const checkPageBreak = (neededHeight: number): void => {
@@ -166,7 +172,7 @@ export function generateMenuPDF({
       doc.text(itemName, nameX, currentY);
 
       // Price aligned right
-      doc.setTextColor(...primaryColor);
+      doc.setTextColor(...priceColor);
       doc.text(priceText, pageWidth - margin - priceWidth, currentY);
 
       currentY += 5;

@@ -8,6 +8,7 @@ import { getMenuUrl } from '@/lib/utils';
 import { generateTableTentPDF, generateA6TableTent } from '@/components/TableTentPDF';
 import { markQrStepCompleted } from '@/components/OnboardingChecklist';
 import { generateMenuPDF } from '@/components/MenuPDFExport';
+import { getTheme } from '@/lib/themes';
 
 interface QRCodeTabProps {
   restaurant: Restaurant;
@@ -26,6 +27,7 @@ export function QRCodeTab({ restaurant, categories = [], menuItems = [] }: QRCod
 
   const handleDownloadMenuPDF = () => {
     const canvas = qrContainerRef.current?.querySelector('canvas');
+    const theme = getTheme(restaurant.theme);
     generateMenuPDF({
       restaurant,
       categories,
@@ -33,6 +35,7 @@ export function QRCodeTab({ restaurant, categories = [], menuItems = [] }: QRCod
       includeAllergens: true,
       includeQRCode: true,
       qrCanvas: canvas,
+      theme,
     });
   };
 

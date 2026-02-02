@@ -12,10 +12,10 @@ import { CategoryNavigation } from './shared/CategoryNavigation';
 import { RestaurantHeader } from './shared/RestaurantHeader';
 import { MenuItem } from './shared/MenuItem';
 import { AllergenLegend } from './shared/AllergenLegend';
-import { EnhancedFilterBar } from './EnhancedFilterBar';
 import { FocusModeToggle } from './Minimalist/FocusModeToggle';
 import { PhilosophyCard } from './Minimalist/PhilosophyCard';
 import { ScheduleIndicator } from './shared/ScheduleIndicator';
+import { HiddenFilterTrigger } from './filters/HiddenFilterTrigger';
 import { useState } from 'react';
 
 interface MinimalistLayoutProps {
@@ -157,14 +157,11 @@ export function MinimalistLayout({
           />
         )}
 
-        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
-        <EnhancedFilterBar
+        {/* Hidden Filter Trigger - Expandable Filter Bar */}
+        <HiddenFilterTrigger
           filters={filters}
           theme={theme}
           language={language}
-          showSearch={true}
-          showDietaryFilters={true}
-          showAllergenButton={true}
         />
       </header>
 

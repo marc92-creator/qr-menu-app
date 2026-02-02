@@ -11,10 +11,10 @@ import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
 import { RestaurantHeader } from './shared/RestaurantHeader';
 import { AllergenLegend } from './shared/AllergenLegend';
-import { EnhancedFilterBar } from './EnhancedFilterBar';
 import { NumberBadge } from './Compact/NumberBadge';
 import { SizeSelector } from './Compact/SizeSelector';
 import { ScheduleIndicator } from './shared/ScheduleIndicator';
+import { ThumbZoneFilterBar } from './filters/ThumbZoneFilterBar';
 import { useState } from 'react';
 
 interface CompactTableLayoutProps {
@@ -156,20 +156,10 @@ export function CompactTableLayout({
             getCategoryName={getLocalizedCategoryName}
           />
         )}
-
-        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
-        <EnhancedFilterBar
-          filters={filters}
-          theme={theme}
-          language={language}
-          showSearch={true}
-          showDietaryFilters={true}
-          showAllergenButton={true}
-        />
       </header>
 
       {/* Menu Content - Compact Table Style */}
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
         {displayedCategories.map((category) => {
           const categoryName = getLocalizedCategoryName(category, language);
           const categoryItems = items
@@ -359,6 +349,13 @@ export function CompactTableLayout({
           </div>
         )}
       </main>
+
+      {/* Thumb Zone Filter Bar - Fixed at Bottom */}
+      <ThumbZoneFilterBar
+        filters={filters}
+        theme={theme}
+        language={language}
+      />
     </div>
   );
 }

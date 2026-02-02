@@ -11,12 +11,14 @@ import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
 import { RestaurantHeader } from './shared/RestaurantHeader';
 import { AllergenLegend } from './shared/AllergenLegend';
-import { EnhancedFilterBar } from './EnhancedFilterBar';
 import { ChefMessageCard } from './FineDining/ChefMessageCard';
 import { WinePairingSection } from './FineDining/WinePairingSection';
 import { CourseIndicator } from './FineDining/CourseIndicator';
 import { AwardsDisplay } from './FineDining/AwardsDisplay';
+import { CategoryHeader } from './FineDining/CategoryHeader';
 import { ScheduleIndicator } from './shared/ScheduleIndicator';
+import { FilterFAB } from './filters/FilterFAB';
+import { FilterBottomSheet } from './filters/FilterBottomSheet';
 import { useState } from 'react';
 
 interface FineDiningLayoutProps {
@@ -121,6 +123,7 @@ export function FineDiningLayout({
   const { filterItem, hasActiveFilters, clearAll } = filters;
 
   const [selectedAllergen] = useState<string | null>(null);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
 
   // Get all unique allergens used in the menu
   const usedAllergenIds = Array.from(new Set(items.flatMap(item => item.allergens || [])));
@@ -180,16 +183,6 @@ export function FineDiningLayout({
             getCategoryName={getLocalizedCategoryName}
           />
         )}
-
-        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
-        <EnhancedFilterBar
-          filters={filters}
-          theme={theme}
-          language={language}
-          showSearch={true}
-          showDietaryFilters={true}
-          showAllergenButton={true}
-        />
       </header>
 
       {/* Chef Message Card - Elegant introduction */}
@@ -225,29 +218,8 @@ export function FineDiningLayout({
               }}
               className="mb-16 scroll-mt-40"
             >
-              {/* Category Header - Elegant Centered with Decorative Divider */}
-              <div className="text-center mb-10">
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
-                  <span className="text-xs tracking-widest uppercase" style={{ color: theme.styles.textMuted }}>
-                    ✦
-                  </span>
-                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
-                </div>
-                <h2
-                  className="text-3xl font-serif tracking-wide"
-                  style={{ color: theme.styles.primary, fontFamily: '"Playfair Display", "Cormorant", serif' }}
-                >
-                  {categoryName}
-                </h2>
-                <div className="flex items-center justify-center gap-4 mt-4">
-                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
-                  <span className="text-xs tracking-widest uppercase" style={{ color: theme.styles.textMuted }}>
-                    ✦
-                  </span>
-                  <div className="h-px flex-1 max-w-20" style={{ backgroundColor: theme.styles.border }} />
-                </div>
-              </div>
+              {/* Category Header - Elegant with SVG Ornaments */}
+              <CategoryHeader categoryName={categoryName} theme={theme} />
 
               {/* Menu Items - Elegant Single Column */}
               {categoryItems.length === 0 && hasActiveFilters ? (
@@ -347,6 +319,24 @@ export function FineDiningLayout({
           </div>
         )}
       </main>
+
+      {/* Filter FAB - Bottom Right */}
+      <FilterFAB
+        filters={filters}
+        theme={theme}
+        language={language}
+        onOpenSheet={() => setIsFilterSheetOpen(true)}
+        hideOnScroll
+      />
+
+      {/* Filter Bottom Sheet */}
+      <FilterBottomSheet
+        isOpen={isFilterSheetOpen}
+        onClose={() => setIsFilterSheetOpen(false)}
+        filters={filters}
+        theme={theme}
+        language={language}
+      />
     </div>
   );
 }

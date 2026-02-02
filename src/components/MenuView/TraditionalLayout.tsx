@@ -18,6 +18,7 @@ import { SpiceLevelIndicator } from './Traditional/SpiceLevelIndicator';
 import { PortionSizeDisplay } from './Traditional/PortionSizeDisplay';
 import { PrepTimeBadge } from './Traditional/PrepTimeBadge';
 import { ScheduleIndicator } from './shared/ScheduleIndicator';
+import { useHeaderVisibility } from '@/hooks/useHeaderVisibility';
 import { useState } from 'react';
 
 interface TraditionalLayoutProps {
@@ -98,6 +99,7 @@ export function TraditionalLayout({
   const { filterItem, hasActiveFilters, clearAll } = filters;
 
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
+  const isFilterBarVisible = useHeaderVisibility(100);
 
   // Get all unique allergens used in the menu
   const usedAllergenIds = Array.from(new Set(items.flatMap(item => item.allergens || [])));
@@ -158,15 +160,21 @@ export function TraditionalLayout({
           />
         )}
 
-        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
-        <EnhancedFilterBar
-          filters={filters}
-          theme={theme}
-          language={language}
-          showSearch={true}
-          showDietaryFilters={true}
-          showAllergenButton={true}
-        />
+        {/* Enhanced Filters with Search, Dietary, and Allergen Filters - Hide on Scroll */}
+        <div
+          className={`transition-all duration-300 ease-out overflow-hidden ${
+            isFilterBarVisible ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <EnhancedFilterBar
+            filters={filters}
+            theme={theme}
+            language={language}
+            showSearch={true}
+            showDietaryFilters={true}
+            showAllergenButton={true}
+          />
+        </div>
       </header>
 
       {/* Menu Content */}
