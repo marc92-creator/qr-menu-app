@@ -74,38 +74,38 @@ export function RestaurantHeader({
 
   if (variant === 'hero') {
     return (
-      <div className="relative py-16 px-4 text-center">
+      <div className="relative py-4 sm:py-8 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           {restaurant.logo_url && (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={restaurant.logo_url}
               alt={restaurant.name}
-              className="w-32 h-32 mx-auto mb-6 rounded-3xl object-cover shadow-lg"
+              className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4 rounded-2xl object-cover shadow-lg"
               style={{ borderColor: styles.primary + '40' }}
             />
           )}
-          <h1 className="text-5xl font-bold mb-4" style={{ color: styles.primary }}>
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2" style={{ color: styles.primary }}>
             {restaurant.name}
           </h1>
           {restaurant.address && (
-            <p className="text-lg mb-2" style={{ color: styles.text }}>
+            <p className="text-sm sm:text-base mb-1" style={{ color: styles.text }}>
               📍 {restaurant.address}
             </p>
           )}
           {restaurant.opening_hours && (() => {
             const { isOpen, todayHours, isClosed } = getOpenStatus(restaurant.opening_hours);
             return (
-              <div className="flex items-center justify-center gap-3 mt-4">
+              <div className="flex items-center justify-center gap-2 mt-2">
                 <span
-                  className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full"
                   style={{
                     backgroundColor: isOpen ? styles.statusOpenBg : styles.statusClosedBg,
                     color: isOpen ? styles.statusOpenText : styles.statusClosedText,
                   }}
                 >
                   <span
-                    className="w-2.5 h-2.5 rounded-full animate-pulse"
+                    className="w-2 h-2 rounded-full animate-pulse"
                     style={{
                       backgroundColor: isOpen ? styles.statusOpenText : styles.statusClosedText,
                     }}
@@ -113,7 +113,7 @@ export function RestaurantHeader({
                   {isOpen ? t.openNow : (isClosed ? t.closedToday : t.closedNow)}
                 </span>
                 {todayHours && (
-                  <span className="text-sm" style={{ color: styles.textMuted }}>
+                  <span className="text-xs sm:text-sm" style={{ color: styles.textMuted }}>
                     {todayHours}
                   </span>
                 )}
