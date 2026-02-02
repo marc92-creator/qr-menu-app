@@ -1,6 +1,6 @@
 'use client';
 
-import { Category, MenuItem as MenuItemType, Restaurant } from '@/types/database';
+import { Category, MenuItem as MenuItemType, Restaurant, MenuSchedule } from '@/types/database';
 import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
@@ -10,9 +10,14 @@ import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
 import { RestaurantHeader } from './shared/RestaurantHeader';
-import { DietaryFilters } from './shared/DietaryFilters';
 import { MenuItem } from './shared/MenuItem';
 import { AllergenLegend } from './shared/AllergenLegend';
+import { EnhancedFilterBar } from './EnhancedFilterBar';
+import { NutritionalInfo } from './Traditional/NutritionalInfo';
+import { SpiceLevelIndicator } from './Traditional/SpiceLevelIndicator';
+import { PortionSizeDisplay } from './Traditional/PortionSizeDisplay';
+import { PrepTimeBadge } from './Traditional/PrepTimeBadge';
+import { ScheduleIndicator } from './shared/ScheduleIndicator';
 import { useState } from 'react';
 
 interface TraditionalLayoutProps {
@@ -26,6 +31,7 @@ interface TraditionalLayoutProps {
   onLanguageChange: (lang: Language) => void;
   isDemo?: boolean;
   isEmbedded?: boolean;
+  activeSchedule?: MenuSchedule | null;
 }
 
 // Get localized category name
@@ -73,6 +79,7 @@ export function TraditionalLayout({
   onLanguageChange,
   isDemo = false,
   isEmbedded = false,
+  activeSchedule,
 }: TraditionalLayoutProps) {
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
   const t = getTranslation(language);
@@ -87,12 +94,8 @@ export function TraditionalLayout({
     scrollToCategory,
   } = useMenuNavigation(sortedCategories, isEmbedded);
 
-  const {
-    activeFilters,
-    toggleFilter,
-    clearFilters,
-    filterItem,
-  } = useMenuFilters();
+  const filters = useMenuFilters({ restaurantSlug: restaurant.slug });
+  const { filterItem, hasActiveFilters, clearAll } = filters;
 
   const [selectedAllergen, setSelectedAllergen] = useState<string | null>(null);
 
@@ -104,6 +107,11 @@ export function TraditionalLayout({
   const displayedCategories = isEmbedded && filterCategory
     ? sortedCategories.filter(cat => cat.id === filterCategory)
     : sortedCategories;
+
+  // Template config flags for Traditional layout
+  const showNutritionalInfo = restaurant.template_config?.showNutritionalInfo !== false;
+  const showSpiceLevel = restaurant.template_config?.showSpiceLevel !== false;
+  const showPortionSizes = restaurant.template_config?.showPortionSizes !== false;
 
   return (
     <div style={{ backgroundColor: theme.styles.background, color: theme.styles.text }} className="min-h-screen">
@@ -126,6 +134,13 @@ export function TraditionalLayout({
           isDemo={isDemo}
         />
 
+        {/* Active Schedule Indicator */}
+        {activeSchedule && (
+          <div className="px-4 py-2">
+            <ScheduleIndicator schedule={activeSchedule} theme={theme} />
+          </div>
+        )}
+
         {/* Category Navigation Pills */}
         {sortedCategories.length > 0 && (
           <CategoryNavigation
@@ -143,13 +158,14 @@ export function TraditionalLayout({
           />
         )}
 
-        {/* Dietary Filters */}
-        <DietaryFilters
-          activeFilters={activeFilters}
-          onFilterToggle={toggleFilter}
+        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
+        <EnhancedFilterBar
+          filters={filters}
           theme={theme}
           language={language}
-          variant="chips"
+          showSearch={true}
+          showDietaryFilters={true}
+          showAllergenButton={true}
         />
       </header>
 
@@ -163,9 +179,10 @@ export function TraditionalLayout({
         ) : (
           <div className="space-y-6 pt-4">
             {displayedCategories.map((category) => {
+              const categoryName = getLocalizedCategoryName(category, language);
               const categoryItems = items
                 .filter((item) => item.category_id === category.id)
-                .filter(filterItem)
+                .filter((item) => filterItem(item, categoryName))
                 .sort((a, b) => {
                   // Sort: specials first, then by position
                   if (a.is_special && !b.is_special) return -1;
@@ -173,9 +190,7 @@ export function TraditionalLayout({
                   return a.position - b.position;
                 });
 
-              if (categoryItems.length === 0 && activeFilters.size === 0) return null;
-
-              const categoryName = getLocalizedCategoryName(category, language);
+              if (categoryItems.length === 0 && !hasActiveFilters) return null;
 
               return (
                 <section
@@ -201,11 +216,11 @@ export function TraditionalLayout({
                   </div>
 
                   {/* Items */}
-                  {categoryItems.length === 0 && activeFilters.size > 0 ? (
+                  {categoryItems.length === 0 && hasActiveFilters ? (
                     <div className="py-8 text-center text-sm" style={{ color: theme.styles.textMuted }}>
                       <p>{t.noMatchingItems}</p>
                       <button
-                        onClick={clearFilters}
+                        onClick={clearAll}
                         className="mt-2 text-sm font-medium hover:underline"
                         style={{ color: theme.styles.primary }}
                       >
@@ -216,22 +231,65 @@ export function TraditionalLayout({
                     <div className="space-y-3">
                       {categoryItems.map((item) => {
                         const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                        const hasExtras = (showSpiceLevel && item.spice_level) ||
+                                         (showPortionSizes && item.portion_size) ||
+                                         item.preparation_time;
+
                         return (
-                          <MenuItem
-                            key={item.id}
-                            item={item}
-                            theme={theme}
-                            language={language}
-                            variant="card"
-                            imageUrl={imageUrl}
-                            showDescription={template.density.showDescription}
-                            showAllergens={template.density.showAllergens}
-                            showBadges={template.density.showBadges}
-                            selectedAllergen={selectedAllergen}
-                            onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
-                            getLocalizedName={getLocalizedName}
-                            getLocalizedDescription={getLocalizedDescription}
-                          />
+                          <div key={item.id} className="space-y-0">
+                            <MenuItem
+                              item={item}
+                              theme={theme}
+                              language={language}
+                              variant="card"
+                              imageUrl={imageUrl}
+                              showDescription={template.density.showDescription}
+                              showAllergens={template.density.showAllergens}
+                              showBadges={template.density.showBadges}
+                              selectedAllergen={selectedAllergen}
+                              onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
+                              getLocalizedName={getLocalizedName}
+                              getLocalizedDescription={getLocalizedDescription}
+                            />
+
+                            {/* Traditional Template Extras */}
+                            {hasExtras && (
+                              <div
+                                className="flex flex-wrap items-center gap-2 px-3 pb-3 -mt-1 rounded-b-lg"
+                                style={{ backgroundColor: theme.styles.cardBg }}
+                              >
+                                {showSpiceLevel && item.spice_level && item.spice_level > 0 && (
+                                  <SpiceLevelIndicator
+                                    level={item.spice_level}
+                                    theme={theme}
+                                  />
+                                )}
+                                {showPortionSizes && item.portion_size && (
+                                  <PortionSizeDisplay
+                                    portionSize={item.portion_size}
+                                    theme={theme}
+                                  />
+                                )}
+                                {item.preparation_time && item.preparation_time > 0 && (
+                                  <PrepTimeBadge
+                                    minutes={item.preparation_time}
+                                    theme={theme}
+                                    language={language}
+                                  />
+                                )}
+                              </div>
+                            )}
+
+                            {/* Nutritional Info */}
+                            {showNutritionalInfo && item.calories && (
+                              <div
+                                className="px-3 pb-3 -mt-1 rounded-b-lg"
+                                style={{ backgroundColor: theme.styles.cardBg }}
+                              >
+                                <NutritionalInfo item={item} theme={theme} />
+                              </div>
+                            )}
+                          </div>
                         );
                       })}
                     </div>

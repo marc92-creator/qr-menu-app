@@ -37,6 +37,7 @@ import { getAccessStatus } from '@/hooks/useSubscription';
 import { MenuItemSwipeable } from '@/components/SwipeableItem';
 import { haptics } from '@/lib/haptics';
 import { MenuEditorFAB } from '@/components/FAB';
+import { BulkEditPanel } from '@/components/Dashboard/BulkEditPanel';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -160,6 +161,37 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Bulk edit / Selection mode state
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(new Set());
+  const [showBulkEditPanel, setShowBulkEditPanel] = useState(false);
+
+  // Get selected items as array
+  const selectedItems = localMenuItems.filter(item => selectedItemIds.has(item.id));
+
+  // Toggle item selection
+  const toggleItemSelection = (itemId: string) => {
+    const newSet = new Set(selectedItemIds);
+    if (newSet.has(itemId)) {
+      newSet.delete(itemId);
+    } else {
+      newSet.add(itemId);
+    }
+    setSelectedItemIds(newSet);
+  };
+
+  // Deselect all
+  const deselectAll = () => {
+    setSelectedItemIds(new Set());
+  };
+
+  // Exit selection mode
+  const exitSelectionMode = () => {
+    setSelectionMode(false);
+    setSelectedItemIds(new Set());
+    setShowBulkEditPanel(false);
+  };
 
   // All features available for everyone (Trial + Pro)
   const handleAddCategoryClick = () => {
@@ -631,6 +663,204 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
     }
   };
 
+  // === BULK EDIT HANDLERS ===
+
+  // Bulk price change
+  const handleBulkPriceChange = async (mode: 'percent' | 'absolute', value: number) => {
+    if (selectedItemIds.size === 0) return;
+
+    haptics.tap();
+    const supabase = createClient();
+
+    // Calculate new prices
+    const updates = selectedItems.map(item => {
+      let newPrice: number;
+      if (mode === 'percent') {
+        newPrice = item.price * (1 + value / 100);
+      } else {
+        newPrice = item.price + value;
+      }
+      // Round to 2 decimal places and ensure positive
+      newPrice = Math.max(0, Math.round(newPrice * 100) / 100);
+      return { id: item.id, price: newPrice };
+    });
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.map(item => {
+        const update = updates.find(u => u.id === item.id);
+        return update ? { ...item, price: update.price } : item;
+      })
+    );
+
+    // Update database
+    for (const update of updates) {
+      await supabase
+        .from('menu_items')
+        .update({ price: update.price })
+        .eq('id', update.id);
+    }
+
+    await updateRestaurantTimestamp();
+    onUpdate();
+    setShowBulkEditPanel(false);
+  };
+
+  // Bulk toggle flag
+  const handleBulkToggleFlag = async (
+    flag: 'is_sold_out' | 'is_vegetarian' | 'is_vegan' | 'is_special' | 'is_popular',
+    value: boolean
+  ) => {
+    if (selectedItemIds.size === 0) return;
+
+    haptics.toggle();
+    const supabase = createClient();
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.map(item =>
+        selectedItemIds.has(item.id) ? { ...item, [flag]: value } : item
+      )
+    );
+
+    // Update database
+    for (const itemId of Array.from(selectedItemIds)) {
+      await supabase
+        .from('menu_items')
+        .update({ [flag]: value })
+        .eq('id', itemId);
+    }
+
+    await updateRestaurantTimestamp();
+    onUpdate();
+  };
+
+  // Bulk add allergens
+  const handleBulkAddAllergens = async (allergenIds: string[]) => {
+    if (selectedItemIds.size === 0 || allergenIds.length === 0) return;
+
+    haptics.tap();
+    const supabase = createClient();
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.map(item => {
+        if (!selectedItemIds.has(item.id)) return item;
+        const existingAllergens = item.allergens || [];
+        const newAllergens = Array.from(new Set([...existingAllergens, ...allergenIds]));
+        return { ...item, allergens: newAllergens };
+      })
+    );
+
+    // Update database
+    for (const item of selectedItems) {
+      const existingAllergens = item.allergens || [];
+      const newAllergens = Array.from(new Set([...existingAllergens, ...allergenIds]));
+      await supabase
+        .from('menu_items')
+        .update({ allergens: newAllergens })
+        .eq('id', item.id);
+    }
+
+    await updateRestaurantTimestamp();
+    onUpdate();
+    setShowBulkEditPanel(false);
+  };
+
+  // Bulk remove allergens
+  const handleBulkRemoveAllergens = async (allergenIds: string[]) => {
+    if (selectedItemIds.size === 0 || allergenIds.length === 0) return;
+
+    haptics.tap();
+    const supabase = createClient();
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.map(item => {
+        if (!selectedItemIds.has(item.id)) return item;
+        const existingAllergens = item.allergens || [];
+        const newAllergens = existingAllergens.filter(a => !allergenIds.includes(a));
+        return { ...item, allergens: newAllergens };
+      })
+    );
+
+    // Update database
+    for (const item of selectedItems) {
+      const existingAllergens = item.allergens || [];
+      const newAllergens = existingAllergens.filter(a => !allergenIds.includes(a));
+      await supabase
+        .from('menu_items')
+        .update({ allergens: newAllergens })
+        .eq('id', item.id);
+    }
+
+    await updateRestaurantTimestamp();
+    onUpdate();
+    setShowBulkEditPanel(false);
+  };
+
+  // Bulk move to category
+  const handleBulkMoveToCategory = async (categoryId: string) => {
+    if (selectedItemIds.size === 0) return;
+
+    haptics.tap();
+    const supabase = createClient();
+
+    // Get position for new items in target category
+    const targetCategoryItems = localMenuItems.filter(i => i.category_id === categoryId);
+    let position = targetCategoryItems.length > 0
+      ? Math.max(...targetCategoryItems.map(i => i.position)) + 1
+      : 0;
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.map(item => {
+        if (!selectedItemIds.has(item.id)) return item;
+        return { ...item, category_id: categoryId, position: position++ };
+      })
+    );
+
+    // Update database
+    position = targetCategoryItems.length > 0
+      ? Math.max(...targetCategoryItems.map(i => i.position)) + 1
+      : 0;
+    for (const itemId of Array.from(selectedItemIds)) {
+      await supabase
+        .from('menu_items')
+        .update({ category_id: categoryId, position: position++ })
+        .eq('id', itemId);
+    }
+
+    await updateRestaurantTimestamp();
+    onUpdate();
+    exitSelectionMode();
+  };
+
+  // Bulk delete
+  const handleBulkDelete = async () => {
+    if (selectedItemIds.size === 0) return;
+
+    haptics.delete();
+    const supabase = createClient();
+
+    // Optimistic update
+    setLocalMenuItems(prev =>
+      prev.filter(item => !selectedItemIds.has(item.id))
+    );
+
+    // Delete from database
+    for (const itemId of Array.from(selectedItemIds)) {
+      await supabase
+        .from('menu_items')
+        .delete()
+        .eq('id', itemId);
+    }
+
+    await updateRestaurantTimestamp();
+    onUpdate();
+    exitSelectionMode();
+  };
+
   // Badge Selector Component
   const BadgeSelector = ({
     vegetarian,
@@ -883,31 +1113,70 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           </p>
         </div>
         <div className="flex gap-2 sm:gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleAddCategoryClick}
-            disabled={isEditingDisabled}
-            className="text-sm rounded-xl hover:bg-gray-50 transition-all"
-          >
-            <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="hidden sm:inline">Kategorie</span>
-            <span className="sm:hidden">Kat.</span>
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleAddItemClick}
-            disabled={categories.length === 0 || isEditingDisabled}
-            className="text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
-          >
-            <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="hidden sm:inline">Neues Gericht</span>
-            <span className="sm:hidden">Gericht</span>
-          </Button>
+          {/* Selection Mode Toggle */}
+          {!isEditingDisabled && localMenuItems.length > 0 && (
+            <Button
+              variant={selectionMode ? 'primary' : 'outline'}
+              size="sm"
+              onClick={() => {
+                if (selectionMode) {
+                  exitSelectionMode();
+                } else {
+                  setSelectionMode(true);
+                }
+              }}
+              className={`text-sm rounded-xl transition-all ${
+                selectionMode ? 'bg-emerald-500 text-white' : ''
+              }`}
+            >
+              {selectionMode ? (
+                <>
+                  <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="hidden sm:inline">Abbrechen</span>
+                  <span className="sm:hidden">X</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                  <span className="hidden sm:inline">Mehrfachauswahl</span>
+                  <span className="sm:hidden">Auswahl</span>
+                </>
+              )}
+            </Button>
+          )}
+          {!selectionMode && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddCategoryClick}
+                disabled={isEditingDisabled}
+                className="text-sm rounded-xl hover:bg-gray-50 transition-all"
+              >
+                <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="hidden sm:inline">Kategorie</span>
+                <span className="sm:hidden">Kat.</span>
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleAddItemClick}
+                disabled={categories.length === 0 || isEditingDisabled}
+                className="text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all"
+              >
+                <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="hidden sm:inline">Neues Gericht</span>
+                <span className="sm:hidden">Gericht</span>
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -1728,135 +1997,167 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                               {items.map((item) => {
                                 const itemAllergens = getAllergensByIds(item.allergens || []);
 
-                                return (
-                                  <SortableMenuItem key={item.id} item={item} isDragDisabled={isEditingDisabled}>
-                                    <MenuItemSwipeable
-                                      onEdit={() => handleEditItem(item)}
-                                      onSoldOut={() => handleToggleSoldOut(item)}
-                                      onDelete={() => handleDeleteItem(item.id)}
-                                      isSoldOut={item.is_sold_out}
-                                      disabled={isEditingDisabled}
-                                    >
-                                      <div
-                                        className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-10 sm:pl-12' : ''}`}
-                                      >
-                          {/* Thumbnail */}
-                          {(() => {
-                            const imageUrl = getItemImageUrl(item, true);
-                            if (!imageUrl) return null;
-                            return (
-                              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={imageUrl}
-                                  alt={item.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            );
-                          })()}
-                          <div className="flex-1 min-w-0">
-                            {/* Name + Price Row - Stack on mobile */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2">
-                              <h4 className="font-semibold text-gray-900 truncate text-sm sm:text-base">{item.name}</h4>
-                              <span className="text-sm sm:text-lg font-bold text-emerald-600 whitespace-nowrap">
-                                {formatPrice(item.price)}
-                              </span>
-                            </div>
-                            {item.description && (
-                              <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
-                                {item.description}
-                              </div>
-                            )}
-                            {/* Badges Row */}
-                            <div className="flex flex-wrap gap-1 mt-1.5">
-                              {item.is_special && (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
-                                  <span>⭐</span>
-                                  <span className="hidden sm:inline">Tagesangebot</span>
-                                </span>
-                              )}
-                              {item.is_popular && !item.is_special && (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
-                                  <span>❤️</span>
-                                  <span className="hidden sm:inline">Beliebt</span>
-                                </span>
-                              )}
-                              {item.is_vegan && (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
-                                  <span>🌱</span>
-                                  <span className="hidden sm:inline">Vegan</span>
-                                </span>
-                              )}
-                              {item.is_vegetarian && !item.is_vegan && (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
-                                  <span>🥬</span>
-                                  <span className="hidden sm:inline">Vegetarisch</span>
-                                </span>
-                              )}
-                              {item.is_sold_out && (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
-                                  <span>🚫</span>
-                                  <span className="hidden sm:inline">Ausverkauft</span>
-                                </span>
-                              )}
-                              {/* Allergen Badges - inline with other badges */}
-                              {itemAllergens.map((allergen) => (
-                                <span
-                                  key={allergen.id}
-                                  title={allergen.name}
-                                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
-                                >
-                                  <span>{allergen.icon}</span>
-                                  <span className="hidden sm:inline">{allergen.name}</span>
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          {/* Action Buttons - Compact on mobile */}
-                          <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
-                            {!isEditingDisabled && (
-                              <>
-                                {/* Quick Sold Out Toggle */}
-                                <button
-                                  onClick={() => handleToggleSoldOut(item)}
-                                  className={`p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl transition-colors ${
-                                    item.is_sold_out
-                                      ? 'text-red-600 bg-red-50 hover:bg-red-100'
-                                      : 'text-gray-300 group-hover:text-gray-400 hover:text-red-500 hover:bg-red-50'
-                                  }`}
-                                  title={item.is_sold_out ? 'Als verfügbar markieren' : 'Als ausverkauft markieren'}
-                                >
-                                  <span className="text-sm sm:text-base">{item.is_sold_out ? '🚫' : '✅'}</span>
-                                </button>
-                                {/* Edit Button */}
-                                <button
-                                  onClick={() => handleEditItem(item)}
-                                  className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl hover:bg-emerald-50"
-                                  title="Bearbeiten"
-                                >
-                                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
-                                </button>
-                                {/* Delete Button */}
-                                <button
-                                  onClick={() => handleDeleteItem(item.id)}
-                                  className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl hover:bg-red-50"
-                                  title="Löschen"
-                                >
-                                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
-                                </button>
-                              </>
-                            )}
-                          </div>
+                                // Define common item content renderer
+                                const renderItemContent = (showActionButtons: boolean) => (
+                                  <>
+                                    {/* Thumbnail */}
+                                    {(() => {
+                                      const imageUrl = getItemImageUrl(item, true);
+                                      if (!imageUrl) return null;
+                                      return (
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200 bg-gray-50">
+                                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                                          <img
+                                            src={imageUrl}
+                                            alt={item.name}
+                                            className="w-full h-full object-cover"
+                                          />
+                                        </div>
+                                      );
+                                    })()}
+                                    <div className="flex-1 min-w-0">
+                                      {/* Name + Price Row */}
+                                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2">
+                                        <h4 className="font-semibold text-gray-900 truncate text-sm sm:text-base">{item.name}</h4>
+                                        <span className="text-sm sm:text-lg font-bold text-emerald-600 whitespace-nowrap">
+                                          {formatPrice(item.price)}
+                                        </span>
                                       </div>
-                                    </MenuItemSwipeable>
-                                </SortableMenuItem>
-                              );
-                            })}
+                                      {item.description && (
+                                        <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-1">
+                                          {item.description}
+                                        </div>
+                                      )}
+                                      {/* Badges Row */}
+                                      <div className="flex flex-wrap gap-1 mt-1.5">
+                                        {item.is_special && (
+                                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 rounded-full text-xs text-amber-700 font-medium">
+                                            <span>⭐</span>
+                                            <span className="hidden sm:inline">Tagesangebot</span>
+                                          </span>
+                                        )}
+                                        {item.is_popular && !item.is_special && (
+                                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                                            <span>❤️</span>
+                                            <span className="hidden sm:inline">Beliebt</span>
+                                          </span>
+                                        )}
+                                        {item.is_vegan && (
+                                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+                                            <span>🌱</span>
+                                            <span className="hidden sm:inline">Vegan</span>
+                                          </span>
+                                        )}
+                                        {item.is_vegetarian && !item.is_vegan && (
+                                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-100 rounded-full text-xs text-green-700 font-medium">
+                                            <span>🥬</span>
+                                            <span className="hidden sm:inline">Vegetarisch</span>
+                                          </span>
+                                        )}
+                                        {item.is_sold_out && (
+                                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-100 rounded-full text-xs text-red-700 font-medium">
+                                            <span>🚫</span>
+                                            <span className="hidden sm:inline">Ausverkauft</span>
+                                          </span>
+                                        )}
+                                        {itemAllergens.map((allergen) => (
+                                          <span
+                                            key={allergen.id}
+                                            title={allergen.name}
+                                            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 rounded-full text-xs text-gray-600"
+                                          >
+                                            <span>{allergen.icon}</span>
+                                            <span className="hidden sm:inline">{allergen.name}</span>
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    {/* Action Buttons - Only in normal mode */}
+                                    {showActionButtons && !isEditingDisabled && (
+                                      <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+                                        <button
+                                          onClick={() => handleToggleSoldOut(item)}
+                                          className={`p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl transition-colors ${
+                                            item.is_sold_out
+                                              ? 'text-red-600 bg-red-50 hover:bg-red-100'
+                                              : 'text-gray-300 group-hover:text-gray-400 hover:text-red-500 hover:bg-red-50'
+                                          }`}
+                                          title={item.is_sold_out ? 'Als verfügbar markieren' : 'Als ausverkauft markieren'}
+                                        >
+                                          <span className="text-sm sm:text-base">{item.is_sold_out ? '🚫' : '✅'}</span>
+                                        </button>
+                                        <button
+                                          onClick={() => handleEditItem(item)}
+                                          className="text-gray-300 group-hover:text-emerald-600 hover:text-emerald-700 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl hover:bg-emerald-50"
+                                          title="Bearbeiten"
+                                        >
+                                          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                          </svg>
+                                        </button>
+                                        <button
+                                          onClick={() => handleDeleteItem(item.id)}
+                                          className="text-gray-300 group-hover:text-gray-400 hover:text-red-500 transition-colors p-1.5 sm:p-2 touch-manipulation min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-lg sm:rounded-xl hover:bg-red-50"
+                                          title="Löschen"
+                                        >
+                                          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                          </svg>
+                                        </button>
+                                      </div>
+                                    )}
+                                  </>
+                                );
+
+                                return (
+                                  <SortableMenuItem key={item.id} item={item} isDragDisabled={isEditingDisabled || selectionMode}>
+                                    {selectionMode ? (
+                                      /* Selection Mode - Checkbox with item content */
+                                      <div
+                                        onClick={() => toggleItemSelection(item.id)}
+                                        className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 cursor-pointer transition-colors ${
+                                          selectedItemIds.has(item.id)
+                                            ? 'bg-emerald-50'
+                                            : 'hover:bg-gray-50/50'
+                                        }`}
+                                      >
+                                        {/* Checkbox */}
+                                        <div className="flex items-center justify-center w-6 h-6 mt-1 flex-shrink-0">
+                                          <div
+                                            className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                                              selectedItemIds.has(item.id)
+                                                ? 'bg-emerald-500 border-emerald-500'
+                                                : 'border-gray-300'
+                                            }`}
+                                          >
+                                            {selectedItemIds.has(item.id) && (
+                                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                              </svg>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {renderItemContent(false)}
+                                      </div>
+                                    ) : (
+                                      /* Normal Mode - Swipeable with action buttons */
+                                      <MenuItemSwipeable
+                                        onEdit={() => handleEditItem(item)}
+                                        onSoldOut={() => handleToggleSoldOut(item)}
+                                        onDelete={() => handleDeleteItem(item.id)}
+                                        isSoldOut={item.is_sold_out}
+                                        disabled={isEditingDisabled}
+                                      >
+                                        <div
+                                          className={`px-3 sm:px-6 py-3 sm:py-4 flex items-start gap-2 sm:gap-3 hover:bg-gray-50/50 transition-colors group ${!isDemo ? 'pl-10 sm:pl-12' : ''}`}
+                                        >
+                                          {renderItemContent(true)}
+                                        </div>
+                                      </MenuItemSwipeable>
+                                    )}
+                                  </SortableMenuItem>
+                                );
+                              })}
                           </div>
                         </SortableContext>
                       </DndContext>
@@ -1929,11 +2230,53 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
       )}
 
       {/* Floating Action Button - Mobile-optimized quick actions */}
-      <MenuEditorFAB
-        onAddItem={handleAddItemClick}
-        onAddCategory={handleAddCategoryClick}
-        isDisabled={isEditingDisabled}
-      />
+      {!selectionMode && (
+        <MenuEditorFAB
+          onAddItem={handleAddItemClick}
+          onAddCategory={handleAddCategoryClick}
+          isDisabled={isEditingDisabled}
+        />
+      )}
+
+      {/* Selection Mode Action Bar */}
+      {selectionMode && selectedItemIds.size > 0 && !showBulkEditPanel && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg safe-area-bottom">
+          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600">
+                <span className="font-bold text-emerald-600">{selectedItemIds.size}</span> ausgewählt
+              </span>
+              <button
+                onClick={deselectAll}
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
+                Alle abwählen
+              </button>
+            </div>
+            <Button
+              onClick={() => setShowBulkEditPanel(true)}
+              className="rounded-xl shadow-lg shadow-emerald-500/20"
+            >
+              Bearbeiten
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Edit Panel */}
+      {showBulkEditPanel && (
+        <BulkEditPanel
+          selectedItems={selectedItems}
+          categories={categories}
+          onClose={() => setShowBulkEditPanel(false)}
+          onPriceChange={handleBulkPriceChange}
+          onToggleFlag={handleBulkToggleFlag}
+          onAddAllergens={handleBulkAddAllergens}
+          onRemoveAllergens={handleBulkRemoveAllergens}
+          onMoveToCategory={handleBulkMoveToCategory}
+          onDelete={handleBulkDelete}
+        />
+      )}
 
     </div>
   );

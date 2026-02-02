@@ -69,6 +69,15 @@ export interface MenuTranslations {
   autoScrollActive: string;
   autoScrollPaused: string;
   keyboardHint: string;
+
+  // Enhanced Filters (Phase 1)
+  myAllergies: string;
+  excludeAllergens: string;
+  searchPlaceholder: string;
+  searchTip: string;
+  apply: string;
+  close: string;
+  activeFilters: string;
 }
 
 export const translations: Record<Language, MenuTranslations> = {
@@ -138,6 +147,15 @@ export const translations: Record<Language, MenuTranslations> = {
     autoScrollActive: 'Auto-Scroll aktiv',
     autoScrollPaused: 'Auto-Scroll pausiert',
     keyboardHint: 'Tastatur: ← → Navigation | P = Pause | Leertaste = Weiter',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'Meine Allergien',
+    excludeAllergens: 'Allergene ausschließen',
+    searchPlaceholder: 'Gerichte suchen...',
+    searchTip: 'Tipp: Suche nach Name, Beschreibung oder Nummer',
+    apply: 'Anwenden',
+    close: 'Schließen',
+    activeFilters: 'Aktive Filter',
   },
   en: {
     // Header
@@ -205,6 +223,15 @@ export const translations: Record<Language, MenuTranslations> = {
     autoScrollActive: 'Auto-scroll active',
     autoScrollPaused: 'Auto-scroll paused',
     keyboardHint: 'Keyboard: ← → Navigate | P = Pause | Space = Next',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'My Allergies',
+    excludeAllergens: 'Exclude allergens',
+    searchPlaceholder: 'Search dishes...',
+    searchTip: 'Tip: Search by name, description, or number',
+    apply: 'Apply',
+    close: 'Close',
+    activeFilters: 'Active filters',
   },
 };
 

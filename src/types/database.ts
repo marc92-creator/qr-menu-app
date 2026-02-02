@@ -15,6 +15,17 @@ export type CourseType = 'amuse' | 'starter' | 'main' | 'dessert' | 'cheese';
 export type PhotoStyle = 'ghibli' | 'real' | 'professional' | 'user';
 export type Season = 'spring' | 'summer' | 'fall' | 'winter' | 'year-round';
 
+// Menu Schedule for time-based category switching
+export interface MenuSchedule {
+  id: string;
+  name: string; // "Frühstück", "Mittagstisch", "Abendkarte"
+  categoryIds: string[];
+  startTime: string; // "06:00"
+  endTime: string; // "11:00"
+  daysOfWeek: number[]; // 0=Sunday, 1=Monday, ..., 6=Saturday
+  isActive: boolean;
+}
+
 // Template-specific configuration
 export interface TemplateConfig {
   // Fine Dining
@@ -88,6 +99,9 @@ export interface Restaurant {
   // Minimalist specific
   focus_mode?: boolean;
   minimalist_quote?: string | null;
+
+  // Menu Scheduling
+  menu_schedules?: MenuSchedule[] | null;
 }
 
 export interface Category {

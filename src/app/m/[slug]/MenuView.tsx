@@ -5,6 +5,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getTheme } from '@/lib/themes';
 import { getTranslation, Language } from '@/lib/translations';
 import { getTemplate } from '@/lib/templates';
+import { filterCategoriesBySchedule } from '@/lib/schedules';
 import { MinimalistLayout } from '@/components/MenuView/MinimalistLayout';
 import { TraditionalLayout } from '@/components/MenuView/TraditionalLayout';
 import { ModernGridLayout } from '@/components/MenuView/ModernGridLayout';
@@ -137,10 +138,16 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     saveLanguage(restaurant.id, lang);
   };
 
+  // Filter categories based on active schedule
+  const { filteredCategories, activeSchedule } = filterCategoriesBySchedule(
+    categories,
+    restaurant.menu_schedules
+  );
+
   // Common props for all layouts
   const layoutProps = {
     restaurant,
-    categories,
+    categories: filteredCategories,
     items: menuItems,
     template,
     language: currentLang,
@@ -149,6 +156,7 @@ export function MenuView({ restaurant, categories, menuItems, showWatermark, isD
     onLanguageChange: handleLanguageChange,
     isDemo,
     isEmbedded,
+    activeSchedule,
   };
 
   // Render the appropriate template layout

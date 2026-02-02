@@ -1,6 +1,6 @@
 'use client';
 
-import { Category, MenuItem as MenuItemType, Restaurant } from '@/types/database';
+import { Category, MenuItem as MenuItemType, Restaurant, CourseType, MenuSchedule } from '@/types/database';
 import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
@@ -10,8 +10,13 @@ import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
 import { RestaurantHeader } from './shared/RestaurantHeader';
-import { DietaryFilters } from './shared/DietaryFilters';
 import { AllergenLegend } from './shared/AllergenLegend';
+import { EnhancedFilterBar } from './EnhancedFilterBar';
+import { ChefMessageCard } from './FineDining/ChefMessageCard';
+import { WinePairingSection } from './FineDining/WinePairingSection';
+import { CourseIndicator } from './FineDining/CourseIndicator';
+import { AwardsDisplay } from './FineDining/AwardsDisplay';
+import { ScheduleIndicator } from './shared/ScheduleIndicator';
 import { useState } from 'react';
 
 interface FineDiningLayoutProps {
@@ -25,6 +30,7 @@ interface FineDiningLayoutProps {
   onLanguageChange: (lang: Language) => void;
   isDemo?: boolean;
   isEmbedded?: boolean;
+  activeSchedule?: MenuSchedule | null;
 }
 
 // Get localized category name
@@ -61,6 +67,30 @@ const getLocalizedDescription = (item: MenuItemType, lang: Language): string | n
   return item.description;
 };
 
+// Group items by course type for elegant presentation
+const groupItemsByCourse = (items: MenuItemType[]): Map<CourseType | 'none', MenuItemType[]> => {
+  const groups = new Map<CourseType | 'none', MenuItemType[]>();
+
+  items.forEach(item => {
+    const course = item.course_type || 'none';
+    if (!groups.has(course)) {
+      groups.set(course, []);
+    }
+    groups.get(course)!.push(item);
+  });
+
+  // Sort by course order
+  const courseOrder: (CourseType | 'none')[] = ['amuse', 'starter', 'main', 'cheese', 'dessert', 'none'];
+  const sorted = new Map<CourseType | 'none', MenuItemType[]>();
+  courseOrder.forEach(course => {
+    if (groups.has(course)) {
+      sorted.set(course, groups.get(course)!);
+    }
+  });
+
+  return sorted;
+};
+
 export function FineDiningLayout({
   restaurant,
   categories,
@@ -72,6 +102,7 @@ export function FineDiningLayout({
   onLanguageChange,
   isDemo = false,
   isEmbedded = false,
+  activeSchedule,
 }: FineDiningLayoutProps) {
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
   const t = getTranslation(language);
@@ -86,12 +117,8 @@ export function FineDiningLayout({
     scrollToCategory,
   } = useMenuNavigation(sortedCategories, isEmbedded);
 
-  const {
-    activeFilters,
-    toggleFilter,
-    clearFilters,
-    filterItem,
-  } = useMenuFilters();
+  const filters = useMenuFilters({ restaurantSlug: restaurant.slug });
+  const { filterItem, hasActiveFilters, clearAll } = filters;
 
   const [selectedAllergen] = useState<string | null>(null);
 
@@ -103,6 +130,11 @@ export function FineDiningLayout({
   const displayedCategories = isEmbedded && filterCategory
     ? sortedCategories.filter(cat => cat.id === filterCategory)
     : sortedCategories;
+
+  // Check if we should show course grouping
+  const showCourseTypes = restaurant.template_config?.showCourseTypes !== false;
+  const showWinePairings = restaurant.template_config?.showWinePairings !== false;
+  const showChefNotes = restaurant.template_config?.showChefNotes !== false;
 
   return (
     <div style={{ backgroundColor: theme.styles.background, color: theme.styles.text }} className="min-h-screen">
@@ -125,6 +157,13 @@ export function FineDiningLayout({
           isDemo={isDemo}
         />
 
+        {/* Active Schedule Indicator */}
+        {activeSchedule && (
+          <div className="px-4 py-2">
+            <ScheduleIndicator schedule={activeSchedule} theme={theme} />
+          </div>
+        )}
+
         {/* Category Navigation Pills */}
         {sortedCategories.length > 0 && (
           <CategoryNavigation
@@ -142,27 +181,40 @@ export function FineDiningLayout({
           />
         )}
 
-        {/* Dietary Filters */}
-        <DietaryFilters
-          activeFilters={activeFilters}
-          onFilterToggle={toggleFilter}
+        {/* Enhanced Filters with Search, Dietary, and Allergen Filters */}
+        <EnhancedFilterBar
+          filters={filters}
           theme={theme}
           language={language}
-          variant="chips"
+          showSearch={true}
+          showDietaryFilters={true}
+          showAllergenButton={true}
         />
       </header>
+
+      {/* Chef Message Card - Elegant introduction */}
+      {showChefNotes && (restaurant.chef_message || restaurant.philosophy) && (
+        <ChefMessageCard restaurant={restaurant} theme={theme} />
+      )}
+
+      {/* Awards Display */}
+      {(restaurant.awards && restaurant.awards.length > 0) && (
+        <AwardsDisplay restaurant={restaurant} theme={theme} />
+      )}
 
       {/* Menu Content - Elegant Centered Layout */}
       <main className="max-w-3xl mx-auto px-6 py-12">
         {displayedCategories.map((category) => {
+          const categoryName = getLocalizedCategoryName(category, language);
           const categoryItems = items
             .filter((item) => item.category_id === category.id)
-            .filter(filterItem)
+            .filter((item) => filterItem(item, categoryName))
             .sort((a, b) => a.position - b.position);
 
-          if (categoryItems.length === 0 && activeFilters.size === 0) return null;
+          if (categoryItems.length === 0 && !hasActiveFilters) return null;
 
-          const categoryName = getLocalizedCategoryName(category, language);
+          // Group items by course type if enabled
+          const courseGroups = showCourseTypes ? groupItemsByCourse(categoryItems) : null;
 
           return (
             <div
@@ -198,83 +250,58 @@ export function FineDiningLayout({
               </div>
 
               {/* Menu Items - Elegant Single Column */}
-              {categoryItems.length === 0 && activeFilters.size > 0 ? (
+              {categoryItems.length === 0 && hasActiveFilters ? (
                 <div className="py-8 text-center text-sm" style={{ color: theme.styles.textMuted }}>
                   <p>{t.noMatchingItems}</p>
                   <button
-                    onClick={clearFilters}
+                    onClick={clearAll}
                     className="mt-2 text-sm font-medium hover:underline"
                     style={{ color: theme.styles.primary }}
                   >
                     {t.clearFilters}
                   </button>
                 </div>
+              ) : courseGroups ? (
+                // Render with course grouping
+                <div className="space-y-12">
+                  {Array.from(courseGroups.entries()).map(([courseType, courseItems]) => (
+                    <div key={courseType} className="space-y-10">
+                      {/* Course indicator */}
+                      {courseType !== 'none' && (
+                        <CourseIndicator courseType={courseType as CourseType} theme={theme} />
+                      )}
+
+                      {/* Items in this course */}
+                      {courseItems.map((item) => (
+                        <FineDiningMenuItem
+                          key={item.id}
+                          item={item}
+                          language={language}
+                          theme={theme}
+                          template={template}
+                          showWinePairings={showWinePairings}
+                          getLocalizedName={getLocalizedName}
+                          getLocalizedDescription={getLocalizedDescription}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
               ) : (
+                // Render without course grouping
                 <div className="space-y-10">
-                  {categoryItems.map((item) => {
-                    const itemName = getLocalizedName(item, language);
-                    const itemDescription = getLocalizedDescription(item, language);
-
-                    return (
-                      <article
-                        key={item.id}
-                        className="text-center"
-                      >
-                        {/* Item Name - Large Serif */}
-                        <h3
-                          className="text-2xl font-serif mb-3"
-                          style={{
-                            color: theme.styles.text,
-                            fontFamily: '"Playfair Display", "Cormorant", serif',
-                          }}
-                        >
-                          {itemName}
-                        </h3>
-
-                        {/* Description - Generous Line Height */}
-                        {template.density.showDescription && itemDescription && (
-                          <p
-                            className="text-base leading-relaxed mb-4 max-w-2xl mx-auto"
-                            style={{
-                              color: theme.styles.textMuted,
-                              fontStyle: 'italic',
-                            }}
-                          >
-                            {itemDescription}
-                          </p>
-                        )}
-
-                        {/* Price - Elegant Typography */}
-                        <div
-                          className="text-xl font-medium tracking-wider"
-                          style={{ color: theme.styles.primary }}
-                        >
-                          {formatPrice(item.price)}
-                        </div>
-
-                        {/* Subtle badges (minimal, no hover effects) */}
-                        {template.density.showBadges && (
-                          <div className="flex items-center justify-center gap-3 mt-3">
-                            {item.is_vegan && (
-                              <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
-                                🌱 Vegan
-                              </span>
-                            )}
-                            {item.is_vegetarian && !item.is_vegan && (
-                              <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
-                                🥬 Vegetarian
-                              </span>
-                            )}
-                            {item.is_special && (
-                              <span className="text-xs tracking-wide" style={{ color: theme.styles.primary }}>
-                                ✦ Chef&apos;s Special
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </article>
-                    );
-                  })}
+                  {categoryItems.map((item) => (
+                    <FineDiningMenuItem
+                      key={item.id}
+                      item={item}
+                      language={language}
+                      theme={theme}
+                      template={template}
+                      showWinePairings={showWinePairings}
+                      getLocalizedName={getLocalizedName}
+                      getLocalizedDescription={getLocalizedDescription}
+                    />
+                  ))}
                 </div>
               )}
             </div>
@@ -293,7 +320,144 @@ export function FineDiningLayout({
             />
           </div>
         )}
+
+        {/* Reservation CTA */}
+        {restaurant.reservation_required && (
+          <div className="mt-16 text-center">
+            <div
+              className="inline-block px-8 py-4 rounded-lg"
+              style={{
+                backgroundColor: theme.styles.primaryLight,
+                border: `1px solid ${theme.styles.primary}`,
+              }}
+            >
+              <p className="text-sm font-medium mb-2" style={{ color: theme.styles.primary }}>
+                {language === 'de' ? 'Reservierung erforderlich' : 'Reservation Required'}
+              </p>
+              {restaurant.phone && (
+                <a
+                  href={`tel:${restaurant.phone}`}
+                  className="text-lg font-serif"
+                  style={{ color: theme.styles.text, fontFamily: '"Playfair Display", serif' }}
+                >
+                  {restaurant.phone}
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </main>
     </div>
+  );
+}
+
+// Extracted MenuItem component for Fine Dining
+interface FineDiningMenuItemProps {
+  item: MenuItemType;
+  language: Language;
+  theme: ThemeConfig;
+  template: MenuTemplate;
+  showWinePairings: boolean;
+  getLocalizedName: (item: MenuItemType, lang: Language) => string;
+  getLocalizedDescription: (item: MenuItemType, lang: Language) => string | null;
+}
+
+function FineDiningMenuItem({
+  item,
+  language,
+  theme,
+  template,
+  showWinePairings,
+  getLocalizedName,
+  getLocalizedDescription,
+}: FineDiningMenuItemProps) {
+  const itemName = getLocalizedName(item, language);
+  const itemDescription = getLocalizedDescription(item, language);
+
+  return (
+    <article className="text-center animate-fadeIn">
+      {/* Chef's Note */}
+      {item.chef_note && (
+        <div className="mb-3">
+          <span
+            className="inline-block text-xs italic px-3 py-1 rounded-full"
+            style={{
+              backgroundColor: theme.styles.primaryLight,
+              color: theme.styles.primary,
+            }}
+          >
+            👨‍🍳 {item.chef_note}
+          </span>
+        </div>
+      )}
+
+      {/* Item Name - Large Serif */}
+      <h3
+        className="text-2xl font-serif mb-3"
+        style={{
+          color: theme.styles.text,
+          fontFamily: '"Playfair Display", "Cormorant", serif',
+        }}
+      >
+        {itemName}
+      </h3>
+
+      {/* Origin Region */}
+      {item.origin_region && (
+        <p
+          className="text-xs tracking-wide mb-2"
+          style={{ color: theme.styles.textMuted }}
+        >
+          {item.origin_region}
+        </p>
+      )}
+
+      {/* Description - Generous Line Height */}
+      {template.density.showDescription && itemDescription && (
+        <p
+          className="text-base leading-relaxed mb-4 max-w-2xl mx-auto"
+          style={{
+            color: theme.styles.textMuted,
+            fontStyle: 'italic',
+          }}
+        >
+          {itemDescription}
+        </p>
+      )}
+
+      {/* Price - Elegant Typography */}
+      <div
+        className="text-xl font-medium tracking-wider"
+        style={{ color: theme.styles.primary }}
+      >
+        {formatPrice(item.price)}
+      </div>
+
+      {/* Subtle badges (minimal, no hover effects) */}
+      {template.density.showBadges && (
+        <div className="flex items-center justify-center gap-3 mt-3">
+          {item.is_vegan && (
+            <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
+              🌱 Vegan
+            </span>
+          )}
+          {item.is_vegetarian && !item.is_vegan && (
+            <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
+              🥬 Vegetarian
+            </span>
+          )}
+          {item.is_special && (
+            <span className="text-xs tracking-wide" style={{ color: theme.styles.primary }}>
+              ✦ Chef&apos;s Special
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Wine Pairings */}
+      {showWinePairings && item.wine_pairings && item.wine_pairings.length > 0 && (
+        <WinePairingSection winePairings={item.wine_pairings} theme={theme} />
+      )}
+    </article>
   );
 }
