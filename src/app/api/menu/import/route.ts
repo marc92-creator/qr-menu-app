@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' });
 
     const prompt = language === 'de'
       ? `Analysiere dieses Speisekartenbild und extrahiere alle Gerichte in folgendem JSON-Format:
