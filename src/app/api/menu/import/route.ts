@@ -217,9 +217,9 @@ Reply ONLY with the JSON, no explanations.`;
       );
     }
 
-    if (errorMessage.includes('quota exceeded') || errorMessage.includes('rate limit') || errorMessage.includes('RATE_LIMIT') || errorString.includes('429')) {
+    if (errorMessage.includes('quota exceeded') || errorMessage.includes('RATE_LIMIT') || errorString.includes('429')) {
       return NextResponse.json(
-        { error: 'Zu viele Anfragen. Bitte warten Sie einen Moment.' },
+        { error: `Rate Limit: ${errorMessage}` },
         { status: 429 }
       );
     }
