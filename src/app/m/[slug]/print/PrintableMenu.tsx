@@ -218,6 +218,13 @@ export function PrintableMenu({
           size: A4;
         }
 
+        html, body {
+          background-color: ${styles.background} !important;
+          margin: 0;
+          padding: 0;
+          min-height: 100%;
+        }
+
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
