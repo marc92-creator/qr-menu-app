@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
 import { ExtractedMenuCategory } from '@/types/database';
 
@@ -11,7 +10,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export async function POST(req: NextRequest) {
   try {
-    // Rate limiting - very strict for AI API (10 req/min)
+    // Rate limiting
     const identifier = getIdentifier(req);
     const rateLimit = checkRateLimit(identifier, RateLimitPresets.AI_API);
 
@@ -19,11 +18,13 @@ export async function POST(req: NextRequest) {
       return createRateLimitResponse(rateLimit);
     }
 
-    // Check if API key is configured
-    const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-    if (!apiKey) {
+    // Check for API keys - try Gemini first, then Anthropic
+    const geminiKey = process.env.GOOGLE_GEMINI_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!geminiKey && !anthropicKey) {
       return NextResponse.json(
-        { error: 'AI-Feature nicht konfiguriert. Bitte GOOGLE_GEMINI_API_KEY hinzufuegen.' },
+        { error: 'AI-Feature nicht konfiguriert.' },
         { status: 503 }
       );
     }
@@ -60,22 +61,18 @@ export async function POST(req: NextRequest) {
     const buffer = await file.arrayBuffer();
     const base64 = Buffer.from(buffer).toString('base64');
 
-    // Initialize Gemini - use models/gemini-1.5-flash for vision tasks
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
-
     const prompt = language === 'de'
       ? `Analysiere dieses Speisekartenbild und extrahiere alle Gerichte in folgendem JSON-Format:
 
 {
   "categories": [
     {
-      "name": "Kategoriename (z.B. Vorspeisen, Hauptgerichte, Desserts)",
+      "name": "Kategoriename",
       "items": [
         {
           "name": "Gerichtname",
           "price": 12.50,
-          "description": "Kurze Beschreibung wenn vorhanden",
+          "description": "Kurze Beschreibung",
           "isVegetarian": false,
           "isVegan": false,
           "confidence": 0.95
@@ -87,25 +84,18 @@ export async function POST(req: NextRequest) {
   "confidence": 0.85
 }
 
-Wichtige Hinweise:
-- Preise als Zahlen (ohne Euro-Zeichen), z.B. 12.50 statt "12,50 EUR"
-- isVegetarian/isVegan basierend auf Gerichtname/Beschreibung erkennen
-- confidence: Wie sicher du bei der Erkennung bist (0-1)
-- Wenn keine Kategorie erkennbar, nutze "Speisen" als Standard
-- Extrahiere alle sichtbaren Gerichte mit Preisen
-
-Antworte NUR mit dem JSON, keine Erklaerungen.`
-      : `Analyze this menu image and extract all dishes in the following JSON format:
+Preise als Zahlen ohne Euro-Zeichen. Antworte NUR mit JSON.`
+      : `Analyze this menu image and extract all dishes as JSON:
 
 {
   "categories": [
     {
-      "name": "Category Name (e.g. Starters, Main Courses, Desserts)",
+      "name": "Category Name",
       "items": [
         {
           "name": "Dish Name",
           "price": 12.50,
-          "description": "Short description if available",
+          "description": "Short description",
           "isVegetarian": false,
           "isVegan": false,
           "confidence": 0.95
@@ -117,28 +107,105 @@ Antworte NUR mit dem JSON, keine Erklaerungen.`
   "confidence": 0.85
 }
 
-Important notes:
-- Prices as numbers (without currency symbol), e.g. 12.50
-- Detect isVegetarian/isVegan based on dish name/description
-- confidence: How certain you are about the extraction (0-1)
-- If no category is visible, use "Dishes" as default
-- Extract all visible dishes with prices
+Prices as numbers. Reply ONLY with JSON.`;
 
-Reply ONLY with the JSON, no explanations.`;
+    let responseText: string;
 
-    // Call Gemini with image
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          mimeType: file.type,
-          data: base64,
-        },
-      },
-      prompt,
-    ]);
+    // Try Gemini first
+    if (geminiKey) {
+      try {
+        const geminiResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  { text: prompt },
+                  {
+                    inline_data: {
+                      mime_type: file.type,
+                      data: base64
+                    }
+                  }
+                ]
+              }]
+            })
+          }
+        );
 
-    const response = await result.response;
-    const text = response.text();
+        if (geminiResponse.ok) {
+          const data = await geminiResponse.json();
+          responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        } else {
+          const errorData = await geminiResponse.json();
+          console.error('Gemini error:', errorData);
+          throw new Error(errorData.error?.message || 'Gemini API error');
+        }
+      } catch (geminiError) {
+        console.error('Gemini failed:', geminiError);
+
+        // Fallback to Anthropic if available
+        if (anthropicKey) {
+          const Anthropic = (await import('@anthropic-ai/sdk')).default;
+          const anthropic = new Anthropic({ apiKey: anthropicKey });
+
+          const message = await anthropic.messages.create({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 4096,
+            messages: [{
+              role: 'user',
+              content: [
+                {
+                  type: 'image',
+                  source: {
+                    type: 'base64',
+                    media_type: file.type as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif',
+                    data: base64,
+                  },
+                },
+                { type: 'text', text: prompt }
+              ]
+            }],
+          });
+
+          responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+        } else {
+          throw geminiError;
+        }
+      }
+    } else if (anthropicKey) {
+      // Only Anthropic available
+      const Anthropic = (await import('@anthropic-ai/sdk')).default;
+      const anthropic = new Anthropic({ apiKey: anthropicKey });
+
+      const message = await anthropic.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 4096,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: file.type as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif',
+                data: base64,
+              },
+            },
+            { type: 'text', text: prompt }
+          ]
+        }],
+      });
+
+      responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    } else {
+      return NextResponse.json(
+        { error: 'Kein AI-Provider verfuegbar' },
+        { status: 503 }
+      );
+    }
 
     // Parse JSON response
     let extractedData: {
@@ -148,42 +215,37 @@ Reply ONLY with the JSON, no explanations.`;
     };
 
     try {
-      // Try to extract JSON from the response (in case there's extra text)
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('No JSON found in response');
+        throw new Error('No JSON found');
       }
       extractedData = JSON.parse(jsonMatch[0]);
     } catch {
-      console.error('Failed to parse AI response:', text);
+      console.error('Failed to parse response:', responseText);
       return NextResponse.json(
-        { error: 'Konnte Speisekarte nicht analysieren. Bitte versuchen Sie es mit einem klareren Foto.' },
+        { error: 'Konnte Speisekarte nicht analysieren. Bitte klareres Foto versuchen.' },
         { status: 422 }
       );
     }
 
-    // Validate and clean the data
     if (!extractedData.categories || !Array.isArray(extractedData.categories)) {
       return NextResponse.json(
-        { error: 'Keine Gerichte erkannt. Bitte versuchen Sie es mit einem klareren Foto.' },
+        { error: 'Keine Gerichte erkannt.' },
         { status: 422 }
       );
     }
 
-    // Clean up categories and items
+    // Clean up data
     const cleanedCategories: ExtractedMenuCategory[] = extractedData.categories.map(category => ({
       name: String(category.name || 'Speisen').trim(),
-      nameEn: category.nameEn ? String(category.nameEn).trim() : undefined,
       items: (category.items || []).map(item => ({
         name: String(item.name || '').trim(),
-        nameEn: item.nameEn ? String(item.nameEn).trim() : undefined,
         price: typeof item.price === 'number' ? Math.round(item.price * 100) / 100 : 0,
         description: item.description ? String(item.description).trim() : undefined,
-        descriptionEn: item.descriptionEn ? String(item.descriptionEn).trim() : undefined,
         isVegetarian: Boolean(item.isVegetarian),
         isVegan: Boolean(item.isVegan),
-        allergens: Array.isArray(item.allergens) ? item.allergens.filter(a => typeof a === 'string') : [],
-        tags: Array.isArray(item.tags) ? item.tags.filter(t => typeof t === 'string') : [],
+        allergens: [],
+        tags: [],
         confidence: typeof item.confidence === 'number' ? item.confidence : 0.8,
       })).filter(item => item.name.length > 0 && item.price > 0),
     })).filter(category => category.items.length > 0);
@@ -192,7 +254,7 @@ Reply ONLY with the JSON, no explanations.`;
 
     if (totalItems === 0) {
       return NextResponse.json(
-        { error: 'Keine Gerichte erkannt. Bitte versuchen Sie es mit einem klareren Foto.' },
+        { error: 'Keine Gerichte erkannt.' },
         { status: 422 }
       );
     }
@@ -205,31 +267,7 @@ Reply ONLY with the JSON, no explanations.`;
     });
   } catch (error) {
     console.error('Menu import error:', error);
-
-    // Provide more specific error messages
     const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
-    const errorString = String(error);
-
-    if (errorMessage.includes('API_KEY') || errorMessage.includes('authentication') || errorString.includes('401') || errorMessage.includes('API key not valid')) {
-      return NextResponse.json(
-        { error: 'API-Key ungueltig. Bitte GOOGLE_GEMINI_API_KEY pruefen.' },
-        { status: 401 }
-      );
-    }
-
-    if (errorMessage.includes('quota exceeded') || errorMessage.includes('RATE_LIMIT') || errorString.includes('429')) {
-      return NextResponse.json(
-        { error: `Rate Limit: ${errorMessage}` },
-        { status: 429 }
-      );
-    }
-
-    if (errorMessage.includes('SAFETY') || errorMessage.includes('blocked')) {
-      return NextResponse.json(
-        { error: 'Bild konnte nicht verarbeitet werden. Bitte ein anderes Foto versuchen.' },
-        { status: 422 }
-      );
-    }
 
     return NextResponse.json(
       { error: `Fehler: ${errorMessage}` },
