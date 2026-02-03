@@ -2,12 +2,13 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { Restaurant, OpeningHours, MenuTheme, MenuLanguage } from '@/types/database';
+import { Restaurant, OpeningHours, MenuTheme, MenuLanguage, ImageStrategy } from '@/types/database';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { THEME_LIST, isGradient } from '@/lib/themes';
 import { updateSandboxRestaurant } from '@/lib/sandboxStorage';
 import { LANGUAGE_OPTIONS } from '@/lib/translations';
+import { IMAGE_STRATEGY_LABELS } from '@/lib/imageService';
 
 interface SandboxSettingsTabProps {
   restaurant: Restaurant;
@@ -45,6 +46,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
   const [theme, setTheme] = useState<MenuTheme>(restaurant.theme || 'classic');
   const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
+  const [imageStrategy, setImageStrategy] = useState<ImageStrategy>(restaurant.image_strategy || 'ghibli');
   const [wifiName, setWifiName] = useState(restaurant.wifi_name || '');
   const [wifiPassword, setWifiPassword] = useState(restaurant.wifi_password || '');
   const [success, setSuccess] = useState(false);
@@ -101,6 +103,7 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
       theme,
       menu_language: menuLanguage,
       auto_images: autoImages,
+      image_strategy: imageStrategy,
       wifi_name: wifiName || null,
       wifi_password: wifiPassword || null,
     });
@@ -469,12 +472,62 @@ export function SandboxSettingsTab({ restaurant, onUpdate }: SandboxSettingsTabP
           <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/food-images/doener.svg"
+              src={imageStrategy === 'real' ? 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&h=80&fit=crop' : '/food-images/doener.svg'}
               alt="Beispiel"
-              className="w-12 h-12"
+              className="w-12 h-12 rounded object-cover"
             />
           </div>
         </div>
+
+        {/* Image Strategy Selector */}
+        {autoImages && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Bildstil wählen
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {(['ghibli', 'real'] as ImageStrategy[]).map((strategy) => (
+                <button
+                  key={strategy}
+                  type="button"
+                  onClick={() => setImageStrategy(strategy)}
+                  className={`relative p-4 rounded-xl border-2 transition-all text-left ${
+                    imageStrategy === strategy
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={strategy === 'real'
+                        ? 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=60&h=60&fit=crop'
+                        : '/food-images/burger.svg'
+                      }
+                      alt={IMAGE_STRATEGY_LABELS[strategy].label}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        {IMAGE_STRATEGY_LABELS[strategy].label}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {IMAGE_STRATEGY_LABELS[strategy].description}
+                      </div>
+                    </div>
+                  </div>
+                  {imageStrategy === strategy && (
+                    <div className="absolute top-2 right-2">
+                      <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Register CTA */}

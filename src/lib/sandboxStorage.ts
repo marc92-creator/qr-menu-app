@@ -2,7 +2,7 @@ import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getDemoData, DEMO_RESTAURANT, DEMO_CATEGORIES, DEMO_MENU_ITEMS } from './demoData';
 
 const SANDBOX_STORAGE_KEY = 'menuapp_sandbox_data';
-const SANDBOX_DATA_VERSION = 7; // Increment when demo data structure changes
+const SANDBOX_DATA_VERSION = 8; // Increment when demo data structure changes
 
 // Use sessionStorage for demo mode - data is cleared when browser tab closes
 // This prevents users from leaving messy data that persists
@@ -145,6 +145,18 @@ function migrateSandboxData(data: SandboxData): SandboxData {
       },
       menuItems: migratedItems,
       version: 7,
+    };
+  }
+
+  if (currentVersion < 8) {
+    // Migration v8: Add image_strategy to restaurant
+    data = {
+      ...data,
+      restaurant: {
+        ...data.restaurant,
+        image_strategy: data.restaurant.image_strategy || 'ghibli',
+      },
+      version: 8,
     };
   }
 

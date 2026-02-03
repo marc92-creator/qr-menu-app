@@ -738,7 +738,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
                         <img
                           src={strategy === 'real'
                             ? 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=60&h=60&fit=crop'
-                            : '/food-images/burger-classic.svg'
+                            : '/food-images/burger.svg'
                           }
                           alt={IMAGE_STRATEGY_LABELS[strategy].label}
                           className="w-12 h-12 rounded-lg object-cover"
