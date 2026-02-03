@@ -173,8 +173,10 @@ export function MenuImportModal({
 
           if (existingCategory) {
             categoryId = existingCategory.id;
+            console.log('Using existing category:', categoryId, extractedCategory.name);
           } else {
             // Create new category
+            console.log('Creating new category:', extractedCategory.name, 'for restaurant:', restaurantId);
             const { data: newCategory, error: catError } = await supabase
               .from('menu_categories')
               .insert({
@@ -186,8 +188,12 @@ export function MenuImportModal({
               .select()
               .single();
 
-            if (catError) throw catError;
+            if (catError) {
+              console.error('Failed to create category:', catError.message, catError.details, catError.hint);
+              throw catError;
+            }
             categoryId = newCategory.id;
+            console.log('Created category:', categoryId);
           }
         } else {
           // Use selected target category
@@ -206,32 +212,32 @@ export function MenuImportModal({
 
         // Insert items
         for (const item of items) {
-          const { error: itemError } = await supabase
+          // Use only essential fields that are known to work
+          const insertData = {
+            category_id: categoryId,
+            name: item.name,
+            name_en: item.nameEn || null,
+            description: item.description || null,
+            description_en: item.descriptionEn || null,
+            price: item.price,
+            position: position++,
+            is_vegetarian: item.isVegetarian || false,
+            is_vegan: item.isVegan || false,
+            tags: item.tags || [],
+          };
+
+          console.log('Inserting item:', insertData);
+
+          const { data: insertedItem, error: itemError } = await supabase
             .from('menu_items')
-            .insert({
-              category_id: categoryId,
-              name: item.name,
-              name_en: item.nameEn || null,
-              description: item.description || null,
-              description_en: item.descriptionEn || null,
-              price: item.price,
-              position: position++,
-              is_vegetarian: item.isVegetarian || false,
-              is_vegan: item.isVegan || false,
-              allergens: item.allergens || [],
-              tags: item.tags || [],
-              is_available: true,
-              is_popular: false,
-              is_recommended: false,
-              is_new: true, // Mark imported items as new
-              is_special: false,
-              is_sold_out: false,
-              image_mode: 'auto',
-            });
+            .insert(insertData)
+            .select()
+            .single();
 
           if (itemError) {
-            console.error('Failed to insert item:', item.name, itemError);
+            console.error('Failed to insert item:', item.name, itemError.message, itemError.details, itemError.hint);
           } else {
+            console.log('Successfully inserted:', insertedItem?.id);
             imported++;
             setImportedCount(imported);
             setImportProgress(Math.round((imported / totalToImport) * 100));
