@@ -60,9 +60,9 @@ export async function POST(req: NextRequest) {
     const buffer = await file.arrayBuffer();
     const base64 = Buffer.from(buffer).toString('base64');
 
-    // Initialize Gemini
+    // Initialize Gemini - use models/gemini-1.5-flash for vision tasks
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' });
+    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
 
     const prompt = language === 'de'
       ? `Analysiere dieses Speisekartenbild und extrahiere alle Gerichte in folgendem JSON-Format:
