@@ -47,7 +47,7 @@ export default function Home() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  14 Tage kostenlos testen
+                  Nur 9,99€/Monat · 50% günstiger als andere
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-[1.1] tracking-tight">
@@ -59,7 +59,7 @@ export default function Home() {
 
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
                   Erstelle deine digitale Speisekarte mit QR-Code.
-                  <span className="hidden sm:inline"> Kostenlos starten, keine technischen Kenntnisse erforderlich.</span>
+                  <span className="hidden sm:inline"> Mit automatischen Food-Bildern & Fine Dining Templates.</span>
                 </p>
 
                 {/* CTAs */}
@@ -83,6 +83,57 @@ export default function Home() {
         </section>
 
         <TrustBar />
+
+        {/* USP Section - Unique Selling Points */}
+        <section className="py-12 sm:py-16 bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
+          <div className="container mx-auto px-5 max-w-6xl">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+                Warum mymenuapp?
+              </h2>
+              <p className="text-emerald-100">
+                Das bietet kein anderer Anbieter
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* USP 1: Price */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-3">💰</div>
+                <h3 className="text-lg font-bold mb-2">50% günstiger</h3>
+                <p className="text-emerald-100 text-sm">
+                  Nur 9,99€/Monat statt 25-60€ bei anderen Anbietern
+                </p>
+              </div>
+              {/* USP 2: Auto Images */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center relative overflow-hidden">
+                <div className="absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl">
+                  EINZIGARTIG
+                </div>
+                <div className="text-4xl mb-3">🎨</div>
+                <h3 className="text-lg font-bold mb-2">Auto-Food-Bilder</h3>
+                <p className="text-emerald-100 text-sm">
+                  235+ Ghibli-Illustrationen automatisch zu deinen Gerichten
+                </p>
+              </div>
+              {/* USP 3: Fine Dining */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-3">🍷</div>
+                <h3 className="text-lg font-bold mb-2">Fine Dining Templates</h3>
+                <p className="text-emerald-100 text-sm">
+                  Elegante Designs für gehobene Gastronomie
+                </p>
+              </div>
+              {/* USP 4: PDF Export */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-3">📄</div>
+                <h3 className="text-lg font-bold mb-2">PDF-Export</h3>
+                <p className="text-emerald-100 text-sm">
+                  Digital + Print aus einer Quelle - perfekt für gehobene Gäste
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* How it Works */}
         <section className="py-16 sm:py-24 bg-[#FAFAFA]">
@@ -311,7 +362,7 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <span>100+ Ghibli-Illustrationen</span>
+                      <span>235+ Auto-Food-Bilder</span>
                     </li>
                     <li className="flex items-center gap-3">
                       <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -485,6 +536,78 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Competitor Comparison */}
+        <section className="py-16 sm:py-24">
+          <div className="container mx-auto px-5 max-w-4xl">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-2 rounded-full mb-4">
+                Preisvergleich
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+                Spare bis zu 80% im Vergleich
+              </h2>
+              <p className="text-lg text-gray-600">
+                Premium-Funktionen zum fairen Preis
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-100">
+                      <th className="text-left p-4 font-semibold text-gray-900">Anbieter</th>
+                      <th className="text-center p-4 font-semibold text-gray-900">Preis/Monat</th>
+                      <th className="text-center p-4 font-semibold text-gray-900 hidden sm:table-cell">Auto-Bilder</th>
+                      <th className="text-center p-4 font-semibold text-gray-900 hidden sm:table-cell">PDF-Export</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-emerald-50 border-b border-emerald-100">
+                      <td className="p-4 font-bold text-emerald-700">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">⭐</span>
+                          mymenuapp
+                        </div>
+                      </td>
+                      <td className="p-4 text-center font-bold text-emerald-600">9,99€</td>
+                      <td className="p-4 text-center hidden sm:table-cell">✅ 235+</td>
+                      <td className="p-4 text-center hidden sm:table-cell">✅</td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="p-4 text-gray-700">Codezwerg</td>
+                      <td className="p-4 text-center text-gray-900">24€</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="p-4 text-gray-700">Loyal App</td>
+                      <td className="p-4 text-center text-gray-900">30€</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="p-4 text-gray-700">resmio</td>
+                      <td className="p-4 text-center text-gray-900">59,90€</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 text-gray-700">orderbird</td>
+                      <td className="p-4 text-center text-gray-900">59,99€</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                      <td className="p-4 text-center hidden sm:table-cell">❌</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="p-4 bg-gray-50 text-center text-sm text-gray-500">
+                Stand: Februar 2026 · Preise können variieren
+              </div>
+            </div>
+          </div>
+        </section>
+
         <FAQSection />
       </main>
 
@@ -504,7 +627,7 @@ export default function Home() {
               </Link>
             </div>
             <p className="text-gray-500 text-sm">
-              © 2025 MenuApp
+              © 2026 mymenuapp
             </p>
           </div>
           <div className="flex items-center justify-center gap-2 text-gray-400 text-sm mt-6 pt-6 border-t border-gray-100">
