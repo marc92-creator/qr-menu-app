@@ -2,6 +2,10 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { TVMenuView } from './TVMenuView';
 
+// Disable caching for this page - always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

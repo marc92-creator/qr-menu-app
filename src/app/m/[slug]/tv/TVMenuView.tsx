@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Restaurant, Category, MenuItem } from '@/types/database';
 import { getTheme } from '@/lib/themes';
 import { formatPrice } from '@/lib/utils';
-import { getItemImageUrl } from '@/lib/foodImages';
+import { getItemImageByStrategy } from '@/lib/imageService';
 import { getTranslation, Language, autoTranslate } from '@/lib/translations';
 
 interface TVMenuViewProps {
@@ -204,7 +204,8 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
       <main className="flex-1 p-8 overflow-hidden">
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1920px] mx-auto h-full auto-rows-max">
           {categoryItems.map((item) => {
-            const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+            const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
+            const imageUrl = imageResult?.url || null;
             const isSvgImage = imageUrl?.endsWith('.svg');
 
             return (
