@@ -101,19 +101,21 @@ export function getItemImageByStrategy(
     name: string;
     image_url?: string | null;
     image_library_key?: string | null;
-    image_mode?: 'auto' | 'library' | 'custom' | 'none';
+    image_mode?: 'auto' | 'library' | 'custom' | 'none' | null;
   },
   imageStrategy: ImageStrategy = 'ghibli',
   autoImagesEnabled: boolean = true
 ): ImageResult | null {
-  const mode = item.image_mode || 'auto';
+  // Handle null, undefined, or empty string as 'auto'
+  const mode = (item.image_mode && item.image_mode !== '') ? item.image_mode : 'auto';
 
   // Debug logging
   console.log('[getItemImageByStrategy]', {
     itemName: item.name,
+    rawImageMode: item.image_mode,
+    resolvedMode: mode,
     imageStrategy,
     autoImagesEnabled,
-    mode,
   });
 
   // If restaurant has disabled auto images, only show custom images

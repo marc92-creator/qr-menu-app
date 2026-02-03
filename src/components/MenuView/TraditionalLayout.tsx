@@ -241,8 +241,8 @@ export function TraditionalLayout({
                         const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
                         const imageUrl = imageResult?.url || null;
 
-                        // DEBUG: Log every item's image URL
-                        console.log(`[TraditionalLayout] Item: "${item.name}" | Strategy: ${restaurant.image_strategy} | URL: ${imageUrl || 'NULL'}`);
+                        // DEBUG: Log every item's details
+                        console.log(`[TraditionalLayout] Item: "${item.name}" | image_mode: ${item.image_mode} | image_url: ${item.image_url} | Strategy: ${restaurant.image_strategy} | Generated URL: ${imageUrl || 'NULL'}`);
 
                         const hasExtras = (showSpiceLevel && item.spice_level) ||
                                          (showPortionSizes && item.portion_size) ||
