@@ -23,20 +23,28 @@ interface MenuItemProps {
   getLocalizedDescription: (item: MenuItemType, lang: Language) => string | null;
 }
 
-// Simple Image Component - external URLs load directly
-function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
+// Image Component for external URLs (Unsplash etc.)
+function MenuImage({ src, alt, className, style }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
+  const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
 
   if (failed) return null;
 
   return (
-    /* eslint-disable-next-line @next/next/no-img-element */
-    <img
-      src={src}
-      alt={alt}
-      className={`${className} object-cover`}
-      onError={() => setFailed(true)}
-    />
+    <div className={`relative overflow-hidden ${className || ''}`} style={style}>
+      {/* Loading placeholder */}
+      {!loaded && (
+        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        onLoad={() => setLoaded(true)}
+        onError={() => setFailed(true)}
+      />
+    </div>
   );
 }
 
