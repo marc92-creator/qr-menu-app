@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { checkRateLimit, getIdentifier, createRateLimitResponse, RateLimitPresets } from '@/lib/rateLimit';
 import { ExtractedMenuCategory } from '@/types/database';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
 
 // Maximum file size: 10MB
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 // Allowed MIME types
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,9 +20,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if API key is configured
-    if (!process.env.ANTHROPIC_API_KEY) {
+    const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+    if (!apiKey) {
       return NextResponse.json(
-        { error: 'AI-Feature nicht konfiguriert. Bitte ANTHROPIC_API_KEY in .env.local hinzufuegen.' },
+        { error: 'AI-Feature nicht konfiguriert. Bitte GOOGLE_GEMINI_API_KEY hinzufuegen.' },
         { status: 503 }
       );
     }
@@ -54,7 +51,7 @@ export async function POST(req: NextRequest) {
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Ungueltiger Dateityp. Erlaubt: JPG, PNG, WebP, PDF' },
+        { error: 'Ungueltiger Dateityp. Erlaubt: JPG, PNG, WebP' },
         { status: 400 }
       );
     }
@@ -63,18 +60,9 @@ export async function POST(req: NextRequest) {
     const buffer = await file.arrayBuffer();
     const base64 = Buffer.from(buffer).toString('base64');
 
-    // Determine media type for Claude
-    let mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg';
-    if (file.type === 'image/png') mediaType = 'image/png';
-    else if (file.type === 'image/webp') mediaType = 'image/webp';
-    else if (file.type === 'application/pdf') {
-      // PDF files need to be processed differently
-      // For now, return an error suggesting image upload
-      return NextResponse.json(
-        { error: 'PDF-Support kommt bald. Bitte laden Sie ein Foto der Speisekarte hoch.' },
-        { status: 400 }
-      );
-    }
+    // Initialize Gemini
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = language === 'de'
       ? `Analysiere dieses Speisekartenbild und extrahiere alle Gerichte in folgendem JSON-Format:
@@ -90,7 +78,6 @@ export async function POST(req: NextRequest) {
           "description": "Kurze Beschreibung wenn vorhanden",
           "isVegetarian": false,
           "isVegan": false,
-          "allergens": ["gluten", "milk"],
           "confidence": 0.95
         }
       ]
@@ -103,10 +90,9 @@ export async function POST(req: NextRequest) {
 Wichtige Hinweise:
 - Preise als Zahlen (ohne Euro-Zeichen), z.B. 12.50 statt "12,50 EUR"
 - isVegetarian/isVegan basierend auf Gerichtname/Beschreibung erkennen
-- Allergene aus der Liste: gluten, crustaceans, eggs, fish, peanuts, soy, milk, nuts, celery, mustard, sesame, sulfites, lupin, molluscs
 - confidence: Wie sicher du bei der Erkennung bist (0-1)
 - Wenn keine Kategorie erkennbar, nutze "Speisen" als Standard
-- Nur Gerichte extrahieren, keine Getraenke oder Extras (ausser sie sind klar als Kategorie)
+- Extrahiere alle sichtbaren Gerichte mit Preisen
 
 Antworte NUR mit dem JSON, keine Erklaerungen.`
       : `Analyze this menu image and extract all dishes in the following JSON format:
@@ -122,7 +108,6 @@ Antworte NUR mit dem JSON, keine Erklaerungen.`
           "description": "Short description if available",
           "isVegetarian": false,
           "isVegan": false,
-          "allergens": ["gluten", "milk"],
           "confidence": 0.95
         }
       ]
@@ -135,43 +120,25 @@ Antworte NUR mit dem JSON, keine Erklaerungen.`
 Important notes:
 - Prices as numbers (without currency symbol), e.g. 12.50
 - Detect isVegetarian/isVegan based on dish name/description
-- Allergens from list: gluten, crustaceans, eggs, fish, peanuts, soy, milk, nuts, celery, mustard, sesame, sulfites, lupin, molluscs
 - confidence: How certain you are about the extraction (0-1)
 - If no category is visible, use "Dishes" as default
-- Only extract food items, no drinks or extras (unless clearly categorized)
+- Extract all visible dishes with prices
 
 Reply ONLY with the JSON, no explanations.`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: {
-              type: 'base64',
-              media_type: mediaType,
-              data: base64,
-            },
-          },
-          {
-            type: 'text',
-            text: prompt,
-          }
-        ]
-      }],
-    });
+    // Call Gemini with image
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          mimeType: file.type,
+          data: base64,
+        },
+      },
+      prompt,
+    ]);
 
-    // Extract text content
-    const content = message.content[0];
-    if (content.type !== 'text') {
-      return NextResponse.json(
-        { error: 'Unerwartete KI-Antwort' },
-        { status: 500 }
-      );
-    }
+    const response = await result.response;
+    const text = response.text();
 
     // Parse JSON response
     let extractedData: {
@@ -182,13 +149,13 @@ Reply ONLY with the JSON, no explanations.`;
 
     try {
       // Try to extract JSON from the response (in case there's extra text)
-      const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error('No JSON found in response');
       }
       extractedData = JSON.parse(jsonMatch[0]);
     } catch {
-      console.error('Failed to parse AI response:', content.text);
+      console.error('Failed to parse AI response:', text);
       return NextResponse.json(
         { error: 'Konnte Speisekarte nicht analysieren. Bitte versuchen Sie es mit einem klareren Foto.' },
         { status: 422 }
@@ -242,24 +209,17 @@ Reply ONLY with the JSON, no explanations.`;
     // Provide more specific error messages
     const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
 
-    if (errorMessage.includes('invalid_api_key') || errorMessage.includes('authentication')) {
+    if (errorMessage.includes('API_KEY') || errorMessage.includes('authentication') || errorMessage.includes('401')) {
       return NextResponse.json(
-        { error: 'API-Key ungueltig. Bitte ANTHROPIC_API_KEY pruefen.' },
+        { error: 'API-Key ungueltig. Bitte GOOGLE_GEMINI_API_KEY pruefen.' },
         { status: 401 }
       );
     }
 
-    if (errorMessage.includes('rate_limit')) {
+    if (errorMessage.includes('quota') || errorMessage.includes('rate')) {
       return NextResponse.json(
         { error: 'Zu viele Anfragen. Bitte warten Sie einen Moment.' },
         { status: 429 }
-      );
-    }
-
-    if (errorMessage.includes('model')) {
-      return NextResponse.json(
-        { error: 'KI-Modell nicht verfuegbar. Bitte spaeter erneut versuchen.' },
-        { status: 503 }
       );
     }
 
