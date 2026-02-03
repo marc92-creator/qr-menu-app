@@ -145,68 +145,12 @@ Prices as numbers. Reply ONLY with JSON.`;
         }
       } catch (geminiError) {
         console.error('Gemini failed:', geminiError);
-
-        // Show Gemini error instead of silent fallback
         const geminiErrorMsg = geminiError instanceof Error ? geminiError.message : 'Gemini Fehler';
-
-        // Only fallback to Anthropic if it has credits
-        if (anthropicKey && !geminiErrorMsg.includes('quota')) {
-          const Anthropic = (await import('@anthropic-ai/sdk')).default;
-          const anthropic = new Anthropic({ apiKey: anthropicKey });
-
-          const message = await anthropic.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 4096,
-            messages: [{
-              role: 'user',
-              content: [
-                {
-                  type: 'image',
-                  source: {
-                    type: 'base64',
-                    media_type: file.type as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif',
-                    data: base64,
-                  },
-                },
-                { type: 'text', text: prompt }
-              ]
-            }],
-          });
-
-          responseText = message.content[0].type === 'text' ? message.content[0].text : '';
-        } else {
-          // Return Gemini error directly
-          return NextResponse.json(
-            { error: `Gemini: ${geminiErrorMsg}` },
-            { status: 500 }
-          );
-        }
+        return NextResponse.json(
+          { error: `Gemini: ${geminiErrorMsg}` },
+          { status: 500 }
+        );
       }
-    } else if (anthropicKey) {
-      // Only Anthropic available
-      const Anthropic = (await import('@anthropic-ai/sdk')).default;
-      const anthropic = new Anthropic({ apiKey: anthropicKey });
-
-      const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 4096,
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: file.type as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif',
-                data: base64,
-              },
-            },
-            { type: 'text', text: prompt }
-          ]
-        }],
-      });
-
-      responseText = message.content[0].type === 'text' ? message.content[0].text : '';
     } else {
       return NextResponse.json(
         { error: 'Kein AI-Provider verfuegbar' },
