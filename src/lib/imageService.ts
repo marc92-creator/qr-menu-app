@@ -36,8 +36,11 @@ export function getAutoImageByStrategy(
 
     case 'real':
     case 'professional': {
+      console.log('[getAutoImageByStrategy] Looking for realistic image for:', dishName);
       const realisticImage = getRealisticFoodImage(dishName);
+      console.log('[getAutoImageByStrategy] Found realistic image:', realisticImage?.label || 'NONE');
       if (realisticImage) {
+        console.log('[getAutoImageByStrategy] Returning URL:', realisticImage.imageUrl);
         return {
           url: realisticImage.imageUrl,
           style: 'real',
@@ -45,6 +48,7 @@ export function getAutoImageByStrategy(
         };
       }
       // No fallback to Ghibli - if user wants realistic, don't show illustrations
+      console.log('[getAutoImageByStrategy] No realistic image found, returning null');
       return null;
     }
 
@@ -104,41 +108,57 @@ export function getItemImageByStrategy(
 ): ImageResult | null {
   const mode = item.image_mode || 'auto';
 
+  // Debug logging
+  console.log('[getItemImageByStrategy]', {
+    itemName: item.name,
+    imageStrategy,
+    autoImagesEnabled,
+    mode,
+  });
+
   // If restaurant has disabled auto images, only show custom images
   if (!autoImagesEnabled && mode !== 'custom') {
+    console.log('[getItemImageByStrategy] Auto images disabled, returning null');
     return null;
   }
 
+  let result: ImageResult | null = null;
+
   switch (mode) {
     case 'none':
-      return null;
+      result = null;
+      break;
 
     case 'custom':
       if (item.image_url) {
-        return {
+        result = {
           url: item.image_url,
           style: 'custom',
         };
       }
-      return null;
+      break;
 
     case 'library':
       if (item.image_library_key) {
         const entry = getImageById(item.image_library_key);
         if (entry) {
-          return {
+          result = {
             url: entry.image,
             style: 'ghibli',
             label: entry.label,
           };
         }
       }
-      return null;
+      break;
 
     case 'auto':
     default:
-      return getAutoImageByStrategy(item.name, imageStrategy);
+      result = getAutoImageByStrategy(item.name, imageStrategy);
+      break;
   }
+
+  console.log('[getItemImageByStrategy] Result:', result?.url?.substring(0, 60) || 'null');
+  return result;
 }
 
 /**
