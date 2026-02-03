@@ -138,26 +138,33 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
     setSuccess(false);
 
     const supabase = createClient();
+    const updatedData = {
+      name,
+      address: address || null,
+      whatsapp_number: whatsappNumber || null,
+      logo_url: logoUrl || null,
+      opening_hours: openingHours,
+      theme,
+      template_id: templateId,
+      menu_language: menuLanguage,
+      auto_images: autoImages,
+      image_strategy: imageStrategy,
+      wifi_name: wifiName || null,
+      wifi_password: wifiPassword || null,
+    };
+
     await supabase
       .from('restaurants')
-      .update({
-        name,
-        address: address || null,
-        whatsapp_number: whatsappNumber || null,
-        logo_url: logoUrl || null,
-        opening_hours: openingHours,
-        theme,
-        template_id: templateId,
-        menu_language: menuLanguage,
-        auto_images: autoImages,
-        image_strategy: imageStrategy,
-        wifi_name: wifiName || null,
-        wifi_password: wifiPassword || null,
-      })
+      .update(updatedData)
       .eq('id', restaurant.id);
 
     setLoading(false);
     setSuccess(true);
+
+    // Update parent state immediately for instant preview update
+    if (onRestaurantUpdate) {
+      onRestaurantUpdate({ ...restaurant, ...updatedData });
+    }
     onUpdate();
   };
 

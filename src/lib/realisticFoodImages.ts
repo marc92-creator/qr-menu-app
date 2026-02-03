@@ -631,6 +631,389 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
     label: 'Spare Ribs',
     category: 'andere',
   },
+
+  // ============================================
+  // INDIAN FOOD
+  // ============================================
+  {
+    id: 'real-butter-chicken',
+    keywords: ['butter chicken', 'murgh makhani', 'hähnchen curry', 'indian chicken'],
+    imageUrl: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=300&fit=crop',
+    label: 'Butter Chicken',
+    category: 'indisch',
+  },
+  {
+    id: 'real-tikka-masala',
+    keywords: ['tikka masala', 'chicken tikka', 'masala', 'indisches curry'],
+    imageUrl: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop',
+    label: 'Tikka Masala',
+    category: 'indisch',
+  },
+  {
+    id: 'real-biryani',
+    keywords: ['biryani', 'biriyani', 'indischer reis', 'gewürzreis'],
+    imageUrl: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=300&fit=crop',
+    label: 'Biryani',
+    category: 'indisch',
+  },
+  {
+    id: 'real-naan',
+    keywords: ['naan', 'naan brot', 'indisches brot', 'fladenbrot'],
+    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&h=300&fit=crop',
+    label: 'Naan Brot',
+    category: 'indisch',
+  },
+  {
+    id: 'real-samosa',
+    keywords: ['samosa', 'samosas', 'indische teigtaschen'],
+    imageUrl: 'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?w=400&h=300&fit=crop',
+    label: 'Samosa',
+    category: 'indisch',
+  },
+  {
+    id: 'real-tandoori',
+    keywords: ['tandoori', 'tandoori chicken', 'tanduri', 'lehmofen'],
+    imageUrl: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=300&fit=crop',
+    label: 'Tandoori Chicken',
+    category: 'indisch',
+  },
+  {
+    id: 'real-dal',
+    keywords: ['dal', 'dhal', 'linsen', 'indische linsen'],
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop',
+    label: 'Dal',
+    category: 'indisch',
+  },
+
+  // ============================================
+  // KOREAN FOOD
+  // ============================================
+  {
+    id: 'real-bibimbap',
+    keywords: ['bibimbap', 'korean rice bowl', 'koreanische reisschale'],
+    imageUrl: 'https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=400&h=300&fit=crop',
+    label: 'Bibimbap',
+    category: 'koreanisch',
+  },
+  {
+    id: 'real-bulgogi',
+    keywords: ['bulgogi', 'korean bbq', 'koreanisches bbq'],
+    imageUrl: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=300&fit=crop',
+    label: 'Bulgogi',
+    category: 'koreanisch',
+  },
+  {
+    id: 'real-kimchi',
+    keywords: ['kimchi', 'korean fermented', 'koreanisch'],
+    imageUrl: 'https://images.unsplash.com/photo-1583224964978-2257b960c3d3?w=400&h=300&fit=crop',
+    label: 'Kimchi',
+    category: 'koreanisch',
+  },
+  {
+    id: 'real-korean-fried-chicken',
+    keywords: ['korean fried chicken', 'koreanisches hähnchen', 'chicken wings korean'],
+    imageUrl: 'https://images.unsplash.com/photo-1575932444877-5106bee2a599?w=400&h=300&fit=crop',
+    label: 'Korean Fried Chicken',
+    category: 'koreanisch',
+  },
+
+  // ============================================
+  // VIETNAMESE FOOD
+  // ============================================
+  {
+    id: 'real-banh-mi',
+    keywords: ['banh mi', 'vietnamesisches sandwich', 'baguette vietnam'],
+    imageUrl: 'https://images.unsplash.com/photo-1600454021293-1dd37c782d9b?w=400&h=300&fit=crop',
+    label: 'Bánh Mì',
+    category: 'vietnamesisch',
+  },
+  {
+    id: 'real-bun-bo',
+    keywords: ['bun bo', 'vietnamesische nudeln', 'reisnudeln'],
+    imageUrl: 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=400&h=300&fit=crop',
+    label: 'Bún Bò',
+    category: 'vietnamesisch',
+  },
+
+  // ============================================
+  // DEUTSCHE SPEZIALITÄTEN (erweitert)
+  // ============================================
+  {
+    id: 'real-kaesespaetzle',
+    keywords: ['käsespätzle', 'spätzle', 'schwäbisch', 'allgäuer'],
+    imageUrl: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?w=400&h=300&fit=crop',
+    label: 'Käsespätzle',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-maultaschen',
+    keywords: ['maultaschen', 'schwäbische maultaschen', 'teigtaschen'],
+    imageUrl: 'https://images.unsplash.com/photo-1587740908075-9e245070dfaa?w=400&h=300&fit=crop',
+    label: 'Maultaschen',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-flammkuchen',
+    keywords: ['flammkuchen', 'tarte flambée', 'elsässer'],
+    imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop',
+    label: 'Flammkuchen',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-weisswurst',
+    keywords: ['weißwurst', 'weisswurst', 'bayerisch', 'münchner'],
+    imageUrl: 'https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=400&h=300&fit=crop',
+    label: 'Weißwurst',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-leberkaese',
+    keywords: ['leberkäse', 'fleischkäse', 'bayerisch'],
+    imageUrl: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&h=300&fit=crop',
+    label: 'Leberkäse',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-sauerbraten',
+    keywords: ['sauerbraten', 'rheinischer', 'braten'],
+    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop',
+    label: 'Sauerbraten',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-knoedel',
+    keywords: ['knödel', 'klöße', 'semmelknödel', 'kartoffelknödel'],
+    imageUrl: 'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400&h=300&fit=crop',
+    label: 'Knödel',
+    category: 'deutsch',
+  },
+  {
+    id: 'real-sauerkraut',
+    keywords: ['sauerkraut', 'kraut', 'fermentiert'],
+    imageUrl: 'https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=400&h=300&fit=crop',
+    label: 'Sauerkraut',
+    category: 'deutsch',
+  },
+
+  // ============================================
+  // MIDDLE EASTERN / ORIENTALISCH
+  // ============================================
+  {
+    id: 'real-shakshuka',
+    keywords: ['shakshuka', 'schakschuka', 'eier in tomatensoße'],
+    imageUrl: 'https://images.unsplash.com/photo-1590412200988-a436970781fa?w=400&h=300&fit=crop',
+    label: 'Shakshuka',
+    category: 'orientalisch',
+  },
+  {
+    id: 'real-baba-ganoush',
+    keywords: ['baba ganoush', 'auberginenpüree', 'auberginendip'],
+    imageUrl: 'https://images.unsplash.com/photo-1577805947697-89e18249d767?w=400&h=300&fit=crop',
+    label: 'Baba Ganoush',
+    category: 'orientalisch',
+  },
+  {
+    id: 'real-tabbouleh',
+    keywords: ['tabbouleh', 'tabouleh', 'petersiliensalat'],
+    imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop',
+    label: 'Tabbouleh',
+    category: 'orientalisch',
+  },
+
+  // ============================================
+  // MEHR FRÜHSTÜCK
+  // ============================================
+  {
+    id: 'real-waffeln',
+    keywords: ['waffeln', 'waffel', 'belgian waffle'],
+    imageUrl: 'https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=400&h=300&fit=crop',
+    label: 'Waffeln',
+    category: 'fruehstueck',
+  },
+  {
+    id: 'real-french-toast',
+    keywords: ['french toast', 'arme ritter', 'pain perdu'],
+    imageUrl: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400&h=300&fit=crop',
+    label: 'French Toast',
+    category: 'fruehstueck',
+  },
+  {
+    id: 'real-omelette',
+    keywords: ['omelette', 'omelett', 'eier'],
+    imageUrl: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?w=400&h=300&fit=crop',
+    label: 'Omelette',
+    category: 'fruehstueck',
+  },
+  {
+    id: 'real-bagel',
+    keywords: ['bagel', 'bagels', 'lachs bagel'],
+    imageUrl: 'https://images.unsplash.com/photo-1585837146751-a44427b54bc0?w=400&h=300&fit=crop',
+    label: 'Bagel',
+    category: 'fruehstueck',
+  },
+  {
+    id: 'real-porridge',
+    keywords: ['porridge', 'haferbrei', 'oatmeal'],
+    imageUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&h=300&fit=crop',
+    label: 'Porridge',
+    category: 'fruehstueck',
+  },
+
+  // ============================================
+  // MEHR GETRÄNKE
+  // ============================================
+  {
+    id: 'real-milkshake',
+    keywords: ['milkshake', 'shake', 'milch shake'],
+    imageUrl: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop',
+    label: 'Milkshake',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-chai-latte',
+    keywords: ['chai latte', 'chai', 'gewürztee'],
+    imageUrl: 'https://images.unsplash.com/photo-1578899952107-9c390f1af1c7?w=400&h=300&fit=crop',
+    label: 'Chai Latte',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-matcha-latte',
+    keywords: ['matcha', 'matcha latte', 'grüntee'],
+    imageUrl: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&h=300&fit=crop',
+    label: 'Matcha Latte',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-mojito',
+    keywords: ['mojito', 'cocktail', 'minze'],
+    imageUrl: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop',
+    label: 'Mojito',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-aperol-spritz',
+    keywords: ['aperol', 'aperol spritz', 'spritz'],
+    imageUrl: 'https://images.unsplash.com/photo-1560508179-b2c9a3f8e92b?w=400&h=300&fit=crop',
+    label: 'Aperol Spritz',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-eiskaffee',
+    keywords: ['eiskaffee', 'iced coffee', 'kalter kaffee'],
+    imageUrl: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop',
+    label: 'Eiskaffee',
+    category: 'getraenke',
+  },
+
+  // ============================================
+  // MEHR DESSERTS
+  // ============================================
+  {
+    id: 'real-creme-brulee',
+    keywords: ['crème brûlée', 'creme brulee', 'karamell'],
+    imageUrl: 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=400&h=300&fit=crop',
+    label: 'Crème Brûlée',
+    category: 'desserts',
+  },
+  {
+    id: 'real-mousse-chocolat',
+    keywords: ['mousse au chocolat', 'schokomousse', 'chocolate mousse'],
+    imageUrl: 'https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=400&h=300&fit=crop',
+    label: 'Mousse au Chocolat',
+    category: 'desserts',
+  },
+  {
+    id: 'real-apfelstrudel',
+    keywords: ['apfelstrudel', 'strudel', 'apple strudel'],
+    imageUrl: 'https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=400&h=300&fit=crop',
+    label: 'Apfelstrudel',
+    category: 'desserts',
+  },
+  {
+    id: 'real-muffin',
+    keywords: ['muffin', 'muffins', 'cupcake'],
+    imageUrl: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400&h=300&fit=crop',
+    label: 'Muffin',
+    category: 'desserts',
+  },
+  {
+    id: 'real-waffel-eis',
+    keywords: ['waffel mit eis', 'ice cream waffle', 'eiscreme waffel'],
+    imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop',
+    label: 'Waffel mit Eis',
+    category: 'desserts',
+  },
+  {
+    id: 'real-donut',
+    keywords: ['donut', 'doughnut', 'krapfen'],
+    imageUrl: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=300&fit=crop',
+    label: 'Donut',
+    category: 'desserts',
+  },
+  {
+    id: 'real-baklava',
+    keywords: ['baklava', 'türkisches gebäck', 'griechisches gebäck'],
+    imageUrl: 'https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=400&h=300&fit=crop',
+    label: 'Baklava',
+    category: 'desserts',
+  },
+
+  // ============================================
+  // MEHR SNACKS
+  // ============================================
+  {
+    id: 'real-mozzarella-sticks',
+    keywords: ['mozzarella sticks', 'käse sticks', 'cheese sticks'],
+    imageUrl: 'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?w=400&h=300&fit=crop',
+    label: 'Mozzarella Sticks',
+    category: 'snacks',
+  },
+  {
+    id: 'real-jalapeno-poppers',
+    keywords: ['jalapeño poppers', 'jalapeno', 'gefüllte paprika'],
+    imageUrl: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=300&fit=crop',
+    label: 'Jalapeño Poppers',
+    category: 'snacks',
+  },
+  {
+    id: 'real-bruschetta',
+    keywords: ['bruschetta', 'tomaten brot', 'italienische vorspeise'],
+    imageUrl: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+    label: 'Bruschetta',
+    category: 'snacks',
+  },
+  {
+    id: 'real-garlic-bread',
+    keywords: ['knoblauchbrot', 'garlic bread', 'knoblauch baguette'],
+    imageUrl: 'https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=400&h=300&fit=crop',
+    label: 'Knoblauchbrot',
+    category: 'snacks',
+  },
+
+  // ============================================
+  // SANDWICHES & WRAPS
+  // ============================================
+  {
+    id: 'real-club-sandwich',
+    keywords: ['club sandwich', 'sandwich', 'toast sandwich'],
+    imageUrl: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=300&fit=crop',
+    label: 'Club Sandwich',
+    category: 'sandwiches',
+  },
+  {
+    id: 'real-wrap',
+    keywords: ['wrap', 'tortilla wrap', 'chicken wrap'],
+    imageUrl: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&h=300&fit=crop',
+    label: 'Wrap',
+    category: 'sandwiches',
+  },
+  {
+    id: 'real-belegtes-broetchen',
+    keywords: ['belegtes brötchen', 'sandwich', 'brötchen'],
+    imageUrl: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&h=300&fit=crop',
+    label: 'Belegtes Brötchen',
+    category: 'sandwiches',
+  },
 ];
 
 /**
