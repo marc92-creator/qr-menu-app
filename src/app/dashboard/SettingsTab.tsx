@@ -137,35 +137,47 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
     setLoading(true);
     setSuccess(false);
 
-    const supabase = createClient();
-    const updatedData = {
-      name,
-      address: address || null,
-      whatsapp_number: whatsappNumber || null,
-      logo_url: logoUrl || null,
-      opening_hours: openingHours,
-      theme,
-      template_id: templateId,
-      menu_language: menuLanguage,
-      auto_images: autoImages,
-      image_strategy: imageStrategy,
-      wifi_name: wifiName || null,
-      wifi_password: wifiPassword || null,
-    };
+    try {
+      const supabase = createClient();
+      const updatedData = {
+        name,
+        address: address || null,
+        whatsapp_number: whatsappNumber || null,
+        logo_url: logoUrl || null,
+        opening_hours: openingHours,
+        theme,
+        template_id: templateId,
+        menu_language: menuLanguage,
+        auto_images: autoImages,
+        image_strategy: imageStrategy,
+        wifi_name: wifiName || null,
+        wifi_password: wifiPassword || null,
+      };
 
-    await supabase
-      .from('restaurants')
-      .update(updatedData)
-      .eq('id', restaurant.id);
+      const { error } = await supabase
+        .from('restaurants')
+        .update(updatedData)
+        .eq('id', restaurant.id);
 
-    setLoading(false);
-    setSuccess(true);
+      if (error) {
+        console.error('Error saving restaurant settings:', error);
+        alert(`Fehler beim Speichern: ${error.message}`);
+        return;
+      }
 
-    // Update parent state immediately for instant preview update
-    if (onRestaurantUpdate) {
-      onRestaurantUpdate({ ...restaurant, ...updatedData });
+      setSuccess(true);
+
+      // Update parent state immediately for instant preview update
+      if (onRestaurantUpdate) {
+        onRestaurantUpdate({ ...restaurant, ...updatedData });
+      }
+      onUpdate();
+    } catch (error) {
+      console.error('Error saving restaurant settings:', error);
+      alert('Fehler beim Speichern der Einstellungen');
+    } finally {
+      setLoading(false);
     }
-    onUpdate();
   };
 
   const handleDeleteRestaurant = async () => {
