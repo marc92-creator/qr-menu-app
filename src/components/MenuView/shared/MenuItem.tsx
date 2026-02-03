@@ -23,34 +23,20 @@ interface MenuItemProps {
   getLocalizedDescription: (item: MenuItemType, lang: Language) => string | null;
 }
 
-// Premium Image Component with loading state and blur effect
-function MenuImage({ src, alt, className, style }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
+// Simple Image Component - external URLs load directly
+function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
+  const [failed, setFailed] = useState(false);
 
-  if (hasError) {
-    // Don't show placeholder for external images that fail - just hide
-    return null;
-  }
+  if (failed) return null;
 
   return (
-    <div className={`relative overflow-hidden ${className}`} style={style}>
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-      )}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
-        className={`w-full h-full object-cover transition-all duration-500 ${
-          isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-        }`}
-        style={style}
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setHasError(true)}
-        loading="lazy"
-      />
-    </div>
+    /* eslint-disable-next-line @next/next/no-img-element */
+    <img
+      src={src}
+      alt={alt}
+      className={`${className} object-cover`}
+      onError={() => setFailed(true)}
+    />
   );
 }
 
