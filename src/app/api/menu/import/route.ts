@@ -208,23 +208,31 @@ Reply ONLY with the JSON, no explanations.`;
 
     // Provide more specific error messages
     const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
+    const errorString = String(error);
 
-    if (errorMessage.includes('API_KEY') || errorMessage.includes('authentication') || errorMessage.includes('401')) {
+    if (errorMessage.includes('API_KEY') || errorMessage.includes('authentication') || errorString.includes('401') || errorMessage.includes('API key not valid')) {
       return NextResponse.json(
         { error: 'API-Key ungueltig. Bitte GOOGLE_GEMINI_API_KEY pruefen.' },
         { status: 401 }
       );
     }
 
-    if (errorMessage.includes('quota') || errorMessage.includes('rate')) {
+    if (errorMessage.includes('quota exceeded') || errorMessage.includes('rate limit') || errorMessage.includes('RATE_LIMIT') || errorString.includes('429')) {
       return NextResponse.json(
         { error: 'Zu viele Anfragen. Bitte warten Sie einen Moment.' },
         { status: 429 }
       );
     }
 
+    if (errorMessage.includes('SAFETY') || errorMessage.includes('blocked')) {
+      return NextResponse.json(
+        { error: 'Bild konnte nicht verarbeitet werden. Bitte ein anderes Foto versuchen.' },
+        { status: 422 }
+      );
+    }
+
     return NextResponse.json(
-      { error: `Fehler beim Importieren: ${errorMessage}` },
+      { error: `Fehler: ${errorMessage}` },
       { status: 500 }
     );
   }
