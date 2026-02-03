@@ -146,8 +146,11 @@ Prices as numbers. Reply ONLY with JSON.`;
       } catch (geminiError) {
         console.error('Gemini failed:', geminiError);
 
-        // Fallback to Anthropic if available
-        if (anthropicKey) {
+        // Show Gemini error instead of silent fallback
+        const geminiErrorMsg = geminiError instanceof Error ? geminiError.message : 'Gemini Fehler';
+
+        // Only fallback to Anthropic if it has credits
+        if (anthropicKey && !geminiErrorMsg.includes('quota')) {
           const Anthropic = (await import('@anthropic-ai/sdk')).default;
           const anthropic = new Anthropic({ apiKey: anthropicKey });
 
@@ -172,7 +175,11 @@ Prices as numbers. Reply ONLY with JSON.`;
 
           responseText = message.content[0].type === 'text' ? message.content[0].text : '';
         } else {
-          throw geminiError;
+          // Return Gemini error directly
+          return NextResponse.json(
+            { error: `Gemini: ${geminiErrorMsg}` },
+            { status: 500 }
+          );
         }
       }
     } else if (anthropicKey) {
