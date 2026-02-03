@@ -183,9 +183,16 @@ function parseMenuText(ocrText: string): ExtractedMenuCategory[] {
 async function extractWithOCR(imageBuffer: Buffer, language: string): Promise<ExtractedMenuCategory[]> {
   const ocrLanguage = language === 'de' ? 'deu+eng' : 'eng+deu';
 
-  const ocrResult = await Tesseract.recognize(imageBuffer, ocrLanguage, {
+  // Add timeout for OCR (60 seconds max)
+  const ocrPromise = Tesseract.recognize(imageBuffer, ocrLanguage, {
     logger: () => {}
   });
+
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('OCR Timeout (60s)')), 60000);
+  });
+
+  const ocrResult = await Promise.race([ocrPromise, timeoutPromise]);
 
   const extractedText = ocrResult.data.text;
   if (!extractedText || extractedText.trim().length < 10) {
@@ -323,7 +330,7 @@ export async function POST(req: NextRequest) {
     let method: 'gemini' | 'ocr';
     let confidence: number;
 
-    // Try Gemini first, fallback to OCR only in development
+    // Try Gemini first, fallback to OCR if Gemini fails
     try {
       console.log('Attempting Gemini extraction...');
       categories = await extractWithGemini(base64Image, file.type);
@@ -331,28 +338,20 @@ export async function POST(req: NextRequest) {
       confidence = 0.9;
       console.log('Gemini extraction successful');
     } catch (geminiError) {
-      console.error('Gemini failed:', geminiError);
-      const errorMsg = geminiError instanceof Error ? geminiError.message : 'Unbekannter Fehler';
+      console.warn('Gemini failed, trying OCR fallback:', geminiError);
 
-      // OCR is too slow on Vercel, only use as last resort in dev
-      if (process.env.NODE_ENV === 'development') {
-        try {
-          console.log('Attempting OCR extraction (dev only)...');
-          categories = await extractWithOCR(imageBuffer, language);
-          method = 'ocr';
-          confidence = 0.7;
-          console.log('OCR extraction successful');
-        } catch (ocrError) {
-          console.error('OCR also failed:', ocrError);
-          return NextResponse.json(
-            { error: `Gemini: ${errorMsg}` },
-            { status: 422 }
-          );
-        }
-      } else {
-        // In production, return Gemini error directly
+      // Fallback to OCR (works but slower)
+      try {
+        console.log('Attempting OCR extraction...');
+        categories = await extractWithOCR(imageBuffer, language);
+        method = 'ocr';
+        confidence = 0.7;
+        console.log('OCR extraction successful');
+      } catch (ocrError) {
+        console.error('OCR also failed:', ocrError);
+        const geminiMsg = geminiError instanceof Error ? geminiError.message : 'Unbekannter Fehler';
         return NextResponse.json(
-          { error: `KI-Analyse fehlgeschlagen: ${errorMsg}` },
+          { error: `Analyse fehlgeschlagen. Bitte spaeter erneut versuchen. (${geminiMsg})` },
           { status: 422 }
         );
       }

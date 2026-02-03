@@ -5,7 +5,7 @@ import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
-import { getItemImageUrl } from '@/lib/foodImages';
+import { getItemImageByStrategy } from '@/lib/imageService';
 import { formatPrice } from '@/lib/utils';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
@@ -252,7 +252,8 @@ export function ModernGridLayout({
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {categoryItems.map((item) => {
-                    const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                    const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
+                    const imageUrl = imageResult?.url || null;
                     const isLiked = likedItems.has(item.id);
                     return (
                       <ModernGridItem

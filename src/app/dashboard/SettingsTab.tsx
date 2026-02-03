@@ -3,7 +3,8 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { Restaurant, Subscription, OpeningHours, MenuTheme, MenuLanguage } from '@/types/database';
+import { Restaurant, Subscription, OpeningHours, MenuTheme, MenuLanguage, ImageStrategy } from '@/types/database';
+import { IMAGE_STRATEGY_LABELS } from '@/lib/imageService';
 import { LANGUAGE_OPTIONS } from '@/lib/translations';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -51,6 +52,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
   const [templateId, setTemplateId] = useState<string>(restaurant.template_id || 'traditional');
   const [menuLanguage, setMenuLanguage] = useState<MenuLanguage>(restaurant.menu_language || 'de');
   const [autoImages, setAutoImages] = useState(restaurant.auto_images !== false);
+  const [imageStrategy, setImageStrategy] = useState<ImageStrategy>(restaurant.image_strategy || 'ghibli');
   const [wifiName, setWifiName] = useState(restaurant.wifi_name || '');
   const [wifiPassword, setWifiPassword] = useState(restaurant.wifi_password || '');
   const [loading, setLoading] = useState(false);
@@ -148,6 +150,7 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
         template_id: templateId,
         menu_language: menuLanguage,
         auto_images: autoImages,
+        image_strategy: imageStrategy,
         wifi_name: wifiName || null,
         wifi_password: wifiPassword || null,
       })
@@ -697,12 +700,63 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
               <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/food-images/doener.svg"
+                  src={imageStrategy === 'real' ? 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&h=80&fit=crop' : '/food-images/doener.svg'}
                   alt="Beispiel"
-                  className="w-10 h-10"
+                  className="w-10 h-10 rounded"
                 />
               </div>
             </div>
+
+            {/* Image Strategy Selector */}
+            {autoImages && (
+              <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Bildstil wählen
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(['ghibli', 'real'] as ImageStrategy[]).map((strategy) => (
+                    <button
+                      key={strategy}
+                      type="button"
+                      onClick={() => !isDemo && setImageStrategy(strategy)}
+                      disabled={isDemo}
+                      className={`relative p-4 rounded-xl border-2 transition-all text-left ${
+                        imageStrategy === strategy
+                          ? 'border-emerald-500 bg-emerald-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      } ${isDemo ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={strategy === 'real'
+                            ? 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=60&h=60&fit=crop'
+                            : '/food-images/burger-classic.svg'
+                          }
+                          alt={IMAGE_STRATEGY_LABELS[strategy].label}
+                          className="w-12 h-12 rounded-lg object-cover"
+                        />
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {IMAGE_STRATEGY_LABELS[strategy].label}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {IMAGE_STRATEGY_LABELS[strategy].description}
+                          </div>
+                        </div>
+                      </div>
+                      {imageStrategy === strategy && (
+                        <div className="absolute top-2 right-2">
+                          <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {success && !isDemo && (

@@ -5,7 +5,7 @@ import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
-import { getItemImageUrl } from '@/lib/foodImages';
+import { getItemImageByStrategy } from '@/lib/imageService';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
 import { useMenuFilters } from '@/hooks/useMenuFilters';
 import { CategoryNavigation } from './shared/CategoryNavigation';
@@ -238,7 +238,8 @@ export function TraditionalLayout({
                   ) : (
                     <div className="space-y-3">
                       {categoryItems.map((item) => {
-                        const imageUrl = getItemImageUrl(item, restaurant.auto_images !== false);
+                        const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
+                        const imageUrl = imageResult?.url || null;
                         const hasExtras = (showSpiceLevel && item.spice_level) ||
                                          (showPortionSizes && item.portion_size) ||
                                          item.preparation_time;
