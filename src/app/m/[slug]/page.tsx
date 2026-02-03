@@ -4,6 +4,10 @@ import { MenuView } from './MenuView';
 import { getFixedDemoData } from '@/lib/sandboxStorage';
 import { Subscription, Restaurant } from '@/types/database';
 
+// Disable caching for this page - always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Trial duration in days (duplicated from useSubscription.ts for server-side use)
 const TRIAL_DURATION_DAYS = 14;
 

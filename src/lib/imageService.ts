@@ -44,14 +44,7 @@ export function getAutoImageByStrategy(
           label: realisticImage.label,
         };
       }
-      // Fallback to Ghibli if no realistic image found
-      const ghibliUrl = getAutoImage(dishName);
-      if (ghibliUrl && ghibliUrl !== '/food-images/default-food.svg') {
-        return {
-          url: ghibliUrl,
-          style: 'ghibli',
-        };
-      }
+      // No fallback to Ghibli - if user wants realistic, don't show illustrations
       return null;
     }
 
