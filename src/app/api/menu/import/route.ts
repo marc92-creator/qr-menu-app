@@ -143,7 +143,7 @@ Important notes:
 Reply ONLY with the JSON, no explanations.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
       messages: [{
         role: 'user',
@@ -238,8 +238,33 @@ Reply ONLY with the JSON, no explanations.`;
     });
   } catch (error) {
     console.error('Menu import error:', error);
+
+    // Provide more specific error messages
+    const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
+
+    if (errorMessage.includes('invalid_api_key') || errorMessage.includes('authentication')) {
+      return NextResponse.json(
+        { error: 'API-Key ungueltig. Bitte ANTHROPIC_API_KEY pruefen.' },
+        { status: 401 }
+      );
+    }
+
+    if (errorMessage.includes('rate_limit')) {
+      return NextResponse.json(
+        { error: 'Zu viele Anfragen. Bitte warten Sie einen Moment.' },
+        { status: 429 }
+      );
+    }
+
+    if (errorMessage.includes('model')) {
+      return NextResponse.json(
+        { error: 'KI-Modell nicht verfuegbar. Bitte spaeter erneut versuchen.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Fehler beim Importieren. Bitte versuchen Sie es erneut.' },
+      { error: `Fehler beim Importieren: ${errorMessage}` },
       { status: 500 }
     );
   }
