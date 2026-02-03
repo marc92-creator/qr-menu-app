@@ -36,11 +36,8 @@ export function getAutoImageByStrategy(
 
     case 'real':
     case 'professional': {
-      console.log('[getAutoImageByStrategy] Looking for realistic image for:', dishName);
       const realisticImage = getRealisticFoodImage(dishName);
-      console.log('[getAutoImageByStrategy] Found realistic image:', realisticImage?.label || 'NONE');
       if (realisticImage) {
-        console.log('[getAutoImageByStrategy] Returning URL:', realisticImage.imageUrl);
         return {
           url: realisticImage.imageUrl,
           style: 'real',
@@ -48,7 +45,6 @@ export function getAutoImageByStrategy(
         };
       }
       // No fallback to Ghibli - if user wants realistic, don't show illustrations
-      console.log('[getAutoImageByStrategy] No realistic image found, returning null');
       return null;
     }
 
@@ -106,61 +102,44 @@ export function getItemImageByStrategy(
   imageStrategy: ImageStrategy = 'ghibli',
   autoImagesEnabled: boolean = true
 ): ImageResult | null {
-  // Handle null, undefined, or empty string as 'auto'
-  const mode = (item.image_mode && item.image_mode !== '') ? item.image_mode : 'auto';
-
-  // Debug logging
-  console.log('[getItemImageByStrategy]', {
-    itemName: item.name,
-    rawImageMode: item.image_mode,
-    resolvedMode: mode,
-    imageStrategy,
-    autoImagesEnabled,
-  });
+  // Handle null or undefined as 'auto'
+  const mode = item.image_mode || 'auto';
 
   // If restaurant has disabled auto images, only show custom images
   if (!autoImagesEnabled && mode !== 'custom') {
-    console.log('[getItemImageByStrategy] Auto images disabled, returning null');
     return null;
   }
 
-  let result: ImageResult | null = null;
-
   switch (mode) {
     case 'none':
-      result = null;
-      break;
+      return null;
 
     case 'custom':
       if (item.image_url) {
-        result = {
+        return {
           url: item.image_url,
           style: 'custom',
         };
       }
-      break;
+      return null;
 
     case 'library':
       if (item.image_library_key) {
         const entry = getImageById(item.image_library_key);
         if (entry) {
-          result = {
+          return {
             url: entry.image,
             style: 'ghibli',
             label: entry.label,
           };
         }
       }
-      break;
+      return null;
 
     case 'auto':
     default:
-      result = getAutoImageByStrategy(item.name, imageStrategy);
-      break;
+      return getAutoImageByStrategy(item.name, imageStrategy);
   }
-
-  console.log('[getItemImageByStrategy] Result:', result?.url?.substring(0, 60) || 'null');
-  return result;
 }
 
 /**
