@@ -28,7 +28,11 @@ function MenuImage({ src, alt, className, style }: { src: string; alt: string; c
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
+  // Debug: Log image loading
+  console.log('[MenuImage] Loading:', src?.substring(0, 50) + '...');
+
   if (hasError) {
+    console.error('[MenuImage] Failed to load:', src);
     return (
       <div className={`bg-gray-100 flex items-center justify-center ${className}`}>
         <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,9 +55,16 @@ function MenuImage({ src, alt, className, style }: { src: string; alt: string; c
           isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
         }`}
         style={style}
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setHasError(true)}
+        onLoad={() => {
+          console.log('[MenuImage] Loaded successfully:', src?.substring(0, 50) + '...');
+          setIsLoaded(true);
+        }}
+        onError={(e) => {
+          console.error('[MenuImage] Error loading image:', src, e);
+          setHasError(true);
+        }}
         loading="lazy"
+        referrerPolicy="no-referrer"
       />
     </div>
   );

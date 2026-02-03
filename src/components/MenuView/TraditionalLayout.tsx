@@ -85,9 +85,6 @@ export function TraditionalLayout({
   const sortedCategories = [...categories].sort((a, b) => a.position - b.position);
   const t = getTranslation(language);
 
-  // Debug: Log image strategy
-  console.log('[TraditionalLayout] image_strategy:', restaurant.image_strategy, '| auto_images:', restaurant.auto_images);
-
   // Use our custom hooks
   const {
     activeCategory,
