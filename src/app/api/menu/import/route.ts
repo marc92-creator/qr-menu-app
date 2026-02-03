@@ -207,54 +207,69 @@ async function extractWithGemini(base64Image: string, mimeType: string): Promise
     throw new Error('GOOGLE_GEMINI_API_KEY nicht konfiguriert');
   }
 
-  const response = await fetch(`${GEMINI_API_URL}?key=${geminiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { text: GEMINI_PROMPT },
-          {
-            inline_data: {
-              mime_type: mimeType,
-              data: base64Image
+  // Add timeout of 30 seconds for Gemini
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const response = await fetch(`${GEMINI_API_URL}?key=${geminiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: GEMINI_PROMPT },
+            {
+              inline_data: {
+                mime_type: mimeType,
+                data: base64Image
+              }
             }
-          }
-        ]
-      }],
-      generationConfig: {
-        temperature: 0.1,
-        maxOutputTokens: 8192,
-      }
-    })
-  });
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 8192,
+        }
+      })
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error('Gemini API error:', errorData);
-    throw new Error(errorData.error?.message || `Gemini API Fehler: ${response.status}`);
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Gemini API error:', errorData);
+      throw new Error(errorData.error?.message || `Gemini API Fehler: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    if (!responseText) {
+      throw new Error('Keine Antwort von Gemini');
+    }
+
+    // Extract JSON from response
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Kein JSON in Gemini-Antwort gefunden');
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    if (!parsed.categories || !Array.isArray(parsed.categories)) {
+      throw new Error('Ungültiges JSON-Format');
+    }
+
+    return parsed.categories;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Gemini Timeout (30s)');
+    }
+    throw error;
   }
-
-  const data = await response.json();
-  const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-  if (!responseText) {
-    throw new Error('Keine Antwort von Gemini');
-  }
-
-  // Extract JSON from response
-  const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('Kein JSON in Gemini-Antwort gefunden');
-  }
-
-  const parsed = JSON.parse(jsonMatch[0]);
-
-  if (!parsed.categories || !Array.isArray(parsed.categories)) {
-    throw new Error('Ungültiges JSON-Format');
-  }
-
-  return parsed.categories;
 }
 
 // ============================================
@@ -308,7 +323,7 @@ export async function POST(req: NextRequest) {
     let method: 'gemini' | 'ocr';
     let confidence: number;
 
-    // Try Gemini first, fallback to OCR
+    // Try Gemini first, fallback to OCR only in development
     try {
       console.log('Attempting Gemini extraction...');
       categories = await extractWithGemini(base64Image, file.type);
@@ -316,18 +331,28 @@ export async function POST(req: NextRequest) {
       confidence = 0.9;
       console.log('Gemini extraction successful');
     } catch (geminiError) {
-      console.warn('Gemini failed, falling back to OCR:', geminiError);
+      console.error('Gemini failed:', geminiError);
+      const errorMsg = geminiError instanceof Error ? geminiError.message : 'Unbekannter Fehler';
 
-      try {
-        console.log('Attempting OCR extraction...');
-        categories = await extractWithOCR(imageBuffer, language);
-        method = 'ocr';
-        confidence = 0.7;
-        console.log('OCR extraction successful');
-      } catch (ocrError) {
-        console.error('OCR also failed:', ocrError);
+      // OCR is too slow on Vercel, only use as last resort in dev
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          console.log('Attempting OCR extraction (dev only)...');
+          categories = await extractWithOCR(imageBuffer, language);
+          method = 'ocr';
+          confidence = 0.7;
+          console.log('OCR extraction successful');
+        } catch (ocrError) {
+          console.error('OCR also failed:', ocrError);
+          return NextResponse.json(
+            { error: `Gemini: ${errorMsg}` },
+            { status: 422 }
+          );
+        }
+      } else {
+        // In production, return Gemini error directly
         return NextResponse.json(
-          { error: 'Konnte Speisekarte nicht analysieren. Bitte ein klareres Foto versuchen.' },
+          { error: `KI-Analyse fehlgeschlagen: ${errorMsg}` },
           { status: 422 }
         );
       }
