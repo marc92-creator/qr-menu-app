@@ -38,6 +38,7 @@ import { MenuItemSwipeable } from '@/components/SwipeableItem';
 import { haptics } from '@/lib/haptics';
 import { MenuEditorFAB } from '@/components/FAB';
 import { BulkEditPanel } from '@/components/Dashboard/BulkEditPanel';
+import { MenuImportModal } from '@/components/Dashboard/MenuImportModal';
 
 // Sortable Category Wrapper
 function SortableCategory({
@@ -249,6 +250,9 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
   // New category form
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryNameEn, setNewCategoryNameEn] = useState('');
+
+  // Import modal
+  const [showImportModal, setShowImportModal] = useState(false);
 
   // Drag & Drop sensors with touch support
   const sensors = useSensors(
@@ -2188,7 +2192,22 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      haptics.tap();
+                      setShowImportModal(true);
+                    }}
+                    disabled={isEditingDisabled}
+                    className="rounded-xl border-blue-200 text-blue-700 hover:bg-blue-100"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    KI-Import
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
@@ -2275,6 +2294,19 @@ export function MenuEditor({ restaurant, categories, menuItems, subscription, on
           onRemoveAllergens={handleBulkRemoveAllergens}
           onMoveToCategory={handleBulkMoveToCategory}
           onDelete={handleBulkDelete}
+        />
+      )}
+
+      {/* Menu Import Modal */}
+      {showImportModal && (
+        <MenuImportModal
+          categories={categories}
+          restaurantId={restaurant.id}
+          onClose={() => setShowImportModal(false)}
+          onImportComplete={() => {
+            setShowImportModal(false);
+            onUpdate();
+          }}
         />
       )}
 

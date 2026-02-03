@@ -1,8 +1,9 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import { Restaurant, OpeningHours } from '@/types/database';
 import { ThemeConfig } from '@/lib/themes';
-import { Language, getTranslation } from '@/lib/translations';
+import { Language, getTranslation, LANGUAGE_OPTIONS } from '@/lib/translations';
 
 interface RestaurantHeaderProps {
   restaurant: Restaurant;
@@ -38,6 +39,97 @@ const getOpenStatus = (openingHours: OpeningHours | null): { isOpen: boolean; to
     isClosed: false
   };
 };
+
+// Language Dropdown Component
+function LanguageDropdown({
+  currentLang,
+  onLanguageChange,
+  styles,
+}: {
+  currentLang: Language;
+  onLanguageChange: (lang: Language) => void;
+  styles: ThemeConfig['styles'];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const currentOption = LANGUAGE_OPTIONS.find(opt => opt.id === currentLang) || LANGUAGE_OPTIONS[0];
+
+  return (
+    <div className="absolute top-3 right-3" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 hover:opacity-90"
+        style={{
+          backgroundColor: styles.surfaceHover || styles.cardBg,
+          border: `1px solid ${styles.border}`,
+          color: styles.text,
+        }}
+      >
+        <span>{currentOption.flag}</span>
+        <span className="uppercase">{currentLang}</span>
+        <svg
+          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div
+          className="absolute right-0 mt-1 py-1 rounded-lg shadow-lg z-50 min-w-[120px]"
+          style={{
+            backgroundColor: styles.cardBg,
+            border: `1px solid ${styles.border}`,
+          }}
+        >
+          {LANGUAGE_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              onClick={() => {
+                onLanguageChange(option.id);
+                setIsOpen(false);
+              }}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-xs transition-colors ${
+                option.id === currentLang ? 'font-semibold' : ''
+              }`}
+              style={{
+                backgroundColor: option.id === currentLang ? styles.primaryLight : 'transparent',
+                color: styles.text,
+              }}
+              onMouseEnter={(e) => {
+                if (option.id !== currentLang) {
+                  e.currentTarget.style.backgroundColor = styles.surfaceHover || styles.primaryLight;
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = option.id === currentLang ? styles.primaryLight : 'transparent';
+              }}
+            >
+              <span>{option.flag}</span>
+              <span>{option.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function RestaurantHeader({
   restaurant,
@@ -157,39 +249,12 @@ export function RestaurantHeader({
               </span>
             </div>
           )}
-          {/* Language Toggle - Clean DE/EN Switcher */}
-          <div
-            className="absolute top-3 right-3 flex items-center gap-0.5 p-0.5 rounded-lg text-xs font-medium"
-            style={{
-              backgroundColor: styles.surfaceHover || styles.cardBg,
-              border: `1px solid ${styles.border}`,
-            }}
-          >
-            <button
-              onClick={() => onLanguageChange('de')}
-              className={`px-2 py-1 rounded-md transition-all duration-200 ${
-                currentLang === 'de' ? 'font-semibold' : 'opacity-60 hover:opacity-100'
-              }`}
-              style={{
-                backgroundColor: currentLang === 'de' ? styles.primary : 'transparent',
-                color: currentLang === 'de' ? '#fff' : styles.textMuted,
-              }}
-            >
-              DE
-            </button>
-            <button
-              onClick={() => onLanguageChange('en')}
-              className={`px-2 py-1 rounded-md transition-all duration-200 ${
-                currentLang === 'en' ? 'font-semibold' : 'opacity-60 hover:opacity-100'
-              }`}
-              style={{
-                backgroundColor: currentLang === 'en' ? styles.primary : 'transparent',
-                color: currentLang === 'en' ? '#fff' : styles.textMuted,
-              }}
-            >
-              EN
-            </button>
-          </div>
+          {/* Language Selector Dropdown */}
+          <LanguageDropdown
+            currentLang={currentLang}
+            onLanguageChange={onLanguageChange}
+            styles={styles}
+          />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-bold truncate" style={{ color: styles.text }}>

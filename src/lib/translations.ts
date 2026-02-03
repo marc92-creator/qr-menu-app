@@ -1,7 +1,7 @@
 // Translation system for menu display
-// Supports German (de) and English (en)
+// Supports German (de), English (en), French (fr), Italian (it), Spanish (es), Turkish (tr), Polish (pl)
 
-export type Language = 'de' | 'en';
+export type Language = 'de' | 'en' | 'fr' | 'it' | 'es' | 'tr' | 'pl';
 
 export interface MenuTranslations {
   // Header
@@ -233,6 +233,386 @@ export const translations: Record<Language, MenuTranslations> = {
     close: 'Close',
     activeFilters: 'Active filters',
   },
+  fr: {
+    // Header
+    openNow: 'Ouvert',
+    closedNow: 'Fermé',
+    closedToday: 'Fermé aujourd\'hui',
+    opens: 'Ouvre',
+    closes: 'Ferme',
+
+    // Badges
+    vegan: 'Végan',
+    vegetarian: 'Végétarien',
+    popular: 'Populaire',
+    recommended: 'Recommandé',
+    new: 'Nouveau',
+    special: 'Offre',
+    dailySpecial: 'Plat du jour',
+    soldOut: 'Épuisé',
+    upsellTip: 'Astuce',
+
+    // Filters
+    filterVegetarian: 'Végétarien',
+    filterVegan: 'Végan',
+    filterGlutenFree: 'Sans gluten',
+    filterNoNuts: 'Sans noix',
+    noMatchingItems: 'Aucun plat correspondant',
+    clearFilters: 'Effacer les filtres',
+
+    // Allergens
+    allergens: 'Allergènes',
+    allergenInfo: 'Veuillez consulter notre personnel pour les allergies ou intolérances.',
+
+    // Categories
+    allCategories: 'Tous',
+
+    // Menu items
+    notAvailable: 'Non disponible',
+
+    // Footer
+    poweredBy: 'Créé avec',
+    lastUpdated: 'Mis à jour',
+    free: 'Gratuit',
+    createdWith: 'Créé avec MenuApp',
+
+    // Contact
+    contactViaWhatsApp: 'Contact via WhatsApp',
+    orderViaWhatsApp: 'Commander via WhatsApp',
+
+    // Empty states
+    noMenuAvailable: 'Aucun menu disponible.',
+    noItemsInCategory: 'Aucun plat dans cette catégorie',
+
+    // Time relative
+    justNow: 'À l\'instant',
+    minuteAgo: 'Il y a 1 minute',
+    minutesAgo: 'Il y a {n} minutes',
+    hourAgo: 'Il y a 1 heure',
+    hoursAgo: 'Il y a {n} heures',
+    yesterday: 'Hier',
+    daysAgo: 'Il y a {n} jours',
+
+    // TV Mode
+    category: 'Catégorie',
+    of: 'sur',
+    autoScrollActive: 'Défilement auto actif',
+    autoScrollPaused: 'Défilement auto en pause',
+    keyboardHint: 'Clavier: ← → Naviguer | P = Pause | Espace = Suivant',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'Mes allergies',
+    excludeAllergens: 'Exclure les allergènes',
+    searchPlaceholder: 'Rechercher des plats...',
+    searchTip: 'Astuce: Recherchez par nom, description ou numéro',
+    apply: 'Appliquer',
+    close: 'Fermer',
+    activeFilters: 'Filtres actifs',
+  },
+  it: {
+    // Header
+    openNow: 'Aperto',
+    closedNow: 'Chiuso',
+    closedToday: 'Chiuso oggi',
+    opens: 'Apre',
+    closes: 'Chiude',
+
+    // Badges
+    vegan: 'Vegano',
+    vegetarian: 'Vegetariano',
+    popular: 'Popolare',
+    recommended: 'Consigliato',
+    new: 'Nuovo',
+    special: 'Offerta',
+    dailySpecial: 'Piatto del giorno',
+    soldOut: 'Esaurito',
+    upsellTip: 'Consiglio',
+
+    // Filters
+    filterVegetarian: 'Vegetariano',
+    filterVegan: 'Vegano',
+    filterGlutenFree: 'Senza glutine',
+    filterNoNuts: 'Senza noci',
+    noMatchingItems: 'Nessun piatto trovato',
+    clearFilters: 'Cancella filtri',
+
+    // Allergens
+    allergens: 'Allergeni',
+    allergenInfo: 'Si prega di chiedere al personale per allergie o intolleranze.',
+
+    // Categories
+    allCategories: 'Tutti',
+
+    // Menu items
+    notAvailable: 'Non disponibile',
+
+    // Footer
+    poweredBy: 'Creato con',
+    lastUpdated: 'Aggiornato',
+    free: 'Gratis',
+    createdWith: 'Creato con MenuApp',
+
+    // Contact
+    contactViaWhatsApp: 'Contatta via WhatsApp',
+    orderViaWhatsApp: 'Ordina via WhatsApp',
+
+    // Empty states
+    noMenuAvailable: 'Nessun menu disponibile.',
+    noItemsInCategory: 'Nessun piatto in questa categoria',
+
+    // Time relative
+    justNow: 'Proprio ora',
+    minuteAgo: '1 minuto fa',
+    minutesAgo: '{n} minuti fa',
+    hourAgo: '1 ora fa',
+    hoursAgo: '{n} ore fa',
+    yesterday: 'Ieri',
+    daysAgo: '{n} giorni fa',
+
+    // TV Mode
+    category: 'Categoria',
+    of: 'di',
+    autoScrollActive: 'Scorrimento automatico attivo',
+    autoScrollPaused: 'Scorrimento automatico in pausa',
+    keyboardHint: 'Tastiera: ← → Naviga | P = Pausa | Spazio = Avanti',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'Le mie allergie',
+    excludeAllergens: 'Escludi allergeni',
+    searchPlaceholder: 'Cerca piatti...',
+    searchTip: 'Consiglio: Cerca per nome, descrizione o numero',
+    apply: 'Applica',
+    close: 'Chiudi',
+    activeFilters: 'Filtri attivi',
+  },
+  es: {
+    // Header
+    openNow: 'Abierto',
+    closedNow: 'Cerrado',
+    closedToday: 'Cerrado hoy',
+    opens: 'Abre',
+    closes: 'Cierra',
+
+    // Badges
+    vegan: 'Vegano',
+    vegetarian: 'Vegetariano',
+    popular: 'Popular',
+    recommended: 'Recomendado',
+    new: 'Nuevo',
+    special: 'Oferta',
+    dailySpecial: 'Plato del día',
+    soldOut: 'Agotado',
+    upsellTip: 'Consejo',
+
+    // Filters
+    filterVegetarian: 'Vegetariano',
+    filterVegan: 'Vegano',
+    filterGlutenFree: 'Sin gluten',
+    filterNoNuts: 'Sin frutos secos',
+    noMatchingItems: 'No se encontraron platos',
+    clearFilters: 'Borrar filtros',
+
+    // Allergens
+    allergens: 'Alérgenos',
+    allergenInfo: 'Por favor consulte al personal sobre alergias o intolerancias.',
+
+    // Categories
+    allCategories: 'Todos',
+
+    // Menu items
+    notAvailable: 'No disponible',
+
+    // Footer
+    poweredBy: 'Creado con',
+    lastUpdated: 'Actualizado',
+    free: 'Gratis',
+    createdWith: 'Creado con MenuApp',
+
+    // Contact
+    contactViaWhatsApp: 'Contactar por WhatsApp',
+    orderViaWhatsApp: 'Pedir por WhatsApp',
+
+    // Empty states
+    noMenuAvailable: 'No hay menú disponible.',
+    noItemsInCategory: 'No hay platos en esta categoría',
+
+    // Time relative
+    justNow: 'Ahora mismo',
+    minuteAgo: 'Hace 1 minuto',
+    minutesAgo: 'Hace {n} minutos',
+    hourAgo: 'Hace 1 hora',
+    hoursAgo: 'Hace {n} horas',
+    yesterday: 'Ayer',
+    daysAgo: 'Hace {n} días',
+
+    // TV Mode
+    category: 'Categoría',
+    of: 'de',
+    autoScrollActive: 'Desplazamiento automático activo',
+    autoScrollPaused: 'Desplazamiento automático en pausa',
+    keyboardHint: 'Teclado: ← → Navegar | P = Pausa | Espacio = Siguiente',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'Mis alergias',
+    excludeAllergens: 'Excluir alérgenos',
+    searchPlaceholder: 'Buscar platos...',
+    searchTip: 'Consejo: Busca por nombre, descripción o número',
+    apply: 'Aplicar',
+    close: 'Cerrar',
+    activeFilters: 'Filtros activos',
+  },
+  tr: {
+    // Header
+    openNow: 'Açık',
+    closedNow: 'Kapalı',
+    closedToday: 'Bugün kapalı',
+    opens: 'Açılış',
+    closes: 'Kapanış',
+
+    // Badges
+    vegan: 'Vegan',
+    vegetarian: 'Vejetaryen',
+    popular: 'Popüler',
+    recommended: 'Tavsiye',
+    new: 'Yeni',
+    special: 'Teklif',
+    dailySpecial: 'Günün Yemeği',
+    soldOut: 'Tükendi',
+    upsellTip: 'İpucu',
+
+    // Filters
+    filterVegetarian: 'Vejetaryen',
+    filterVegan: 'Vegan',
+    filterGlutenFree: 'Glutensiz',
+    filterNoNuts: 'Fındıksız',
+    noMatchingItems: 'Eşleşen yemek bulunamadı',
+    clearFilters: 'Filtreleri temizle',
+
+    // Allergens
+    allergens: 'Alerjenler',
+    allergenInfo: 'Alerji veya intolerans için lütfen personelimize danışın.',
+
+    // Categories
+    allCategories: 'Tümü',
+
+    // Menu items
+    notAvailable: 'Mevcut değil',
+
+    // Footer
+    poweredBy: 'Tarafından oluşturuldu',
+    lastUpdated: 'Güncellendi',
+    free: 'Ücretsiz',
+    createdWith: 'MenuApp ile oluşturuldu',
+
+    // Contact
+    contactViaWhatsApp: 'WhatsApp ile iletişim',
+    orderViaWhatsApp: 'WhatsApp ile sipariş',
+
+    // Empty states
+    noMenuAvailable: 'Menü mevcut değil.',
+    noItemsInCategory: 'Bu kategoride yemek yok',
+
+    // Time relative
+    justNow: 'Az önce',
+    minuteAgo: '1 dakika önce',
+    minutesAgo: '{n} dakika önce',
+    hourAgo: '1 saat önce',
+    hoursAgo: '{n} saat önce',
+    yesterday: 'Dün',
+    daysAgo: '{n} gün önce',
+
+    // TV Mode
+    category: 'Kategori',
+    of: '/',
+    autoScrollActive: 'Otomatik kaydırma aktif',
+    autoScrollPaused: 'Otomatik kaydırma duraklatıldı',
+    keyboardHint: 'Klavye: ← → Gezinme | P = Duraklat | Boşluk = İleri',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'Alerjilerim',
+    excludeAllergens: 'Alerjenleri hariç tut',
+    searchPlaceholder: 'Yemek ara...',
+    searchTip: 'İpucu: İsim, açıklama veya numara ile arayın',
+    apply: 'Uygula',
+    close: 'Kapat',
+    activeFilters: 'Aktif filtreler',
+  },
+  pl: {
+    // Header
+    openNow: 'Otwarte',
+    closedNow: 'Zamknięte',
+    closedToday: 'Dziś zamknięte',
+    opens: 'Otwiera',
+    closes: 'Zamyka',
+
+    // Badges
+    vegan: 'Wegańskie',
+    vegetarian: 'Wegetariańskie',
+    popular: 'Popularne',
+    recommended: 'Polecane',
+    new: 'Nowość',
+    special: 'Promocja',
+    dailySpecial: 'Danie dnia',
+    soldOut: 'Wyprzedane',
+    upsellTip: 'Wskazówka',
+
+    // Filters
+    filterVegetarian: 'Wegetariańskie',
+    filterVegan: 'Wegańskie',
+    filterGlutenFree: 'Bezglutenowe',
+    filterNoNuts: 'Bez orzechów',
+    noMatchingItems: 'Nie znaleziono pasujących dań',
+    clearFilters: 'Wyczyść filtry',
+
+    // Allergens
+    allergens: 'Alergeny',
+    allergenInfo: 'W przypadku alergii lub nietolerancji prosimy o kontakt z personelem.',
+
+    // Categories
+    allCategories: 'Wszystkie',
+
+    // Menu items
+    notAvailable: 'Niedostępne',
+
+    // Footer
+    poweredBy: 'Utworzone z',
+    lastUpdated: 'Zaktualizowano',
+    free: 'Bezpłatnie',
+    createdWith: 'Utworzone z MenuApp',
+
+    // Contact
+    contactViaWhatsApp: 'Kontakt przez WhatsApp',
+    orderViaWhatsApp: 'Zamów przez WhatsApp',
+
+    // Empty states
+    noMenuAvailable: 'Brak dostępnego menu.',
+    noItemsInCategory: 'Brak dań w tej kategorii',
+
+    // Time relative
+    justNow: 'Właśnie teraz',
+    minuteAgo: '1 minutę temu',
+    minutesAgo: '{n} minut temu',
+    hourAgo: '1 godzinę temu',
+    hoursAgo: '{n} godzin temu',
+    yesterday: 'Wczoraj',
+    daysAgo: '{n} dni temu',
+
+    // TV Mode
+    category: 'Kategoria',
+    of: 'z',
+    autoScrollActive: 'Automatyczne przewijanie aktywne',
+    autoScrollPaused: 'Automatyczne przewijanie wstrzymane',
+    keyboardHint: 'Klawiatura: ← → Nawigacja | P = Pauza | Spacja = Dalej',
+
+    // Enhanced Filters (Phase 1)
+    myAllergies: 'Moje alergie',
+    excludeAllergens: 'Wyklucz alergeny',
+    searchPlaceholder: 'Szukaj dań...',
+    searchTip: 'Wskazówka: Szukaj po nazwie, opisie lub numerze',
+    apply: 'Zastosuj',
+    close: 'Zamknij',
+    activeFilters: 'Aktywne filtry',
+  },
 };
 
 // Allergen name translations (by ID)
@@ -268,6 +648,86 @@ export const allergenTranslations: Record<Language, Record<string, string>> = {
     sulfites: 'Sulfites',
     lupin: 'Lupin',
     molluscs: 'Molluscs',
+  },
+  fr: {
+    gluten: 'Gluten',
+    crustaceans: 'Crustacés',
+    eggs: 'Œufs',
+    fish: 'Poisson',
+    peanuts: 'Arachides',
+    soy: 'Soja',
+    milk: 'Lait',
+    nuts: 'Fruits à coque',
+    celery: 'Céleri',
+    mustard: 'Moutarde',
+    sesame: 'Sésame',
+    sulfites: 'Sulfites',
+    lupin: 'Lupin',
+    molluscs: 'Mollusques',
+  },
+  it: {
+    gluten: 'Glutine',
+    crustaceans: 'Crostacei',
+    eggs: 'Uova',
+    fish: 'Pesce',
+    peanuts: 'Arachidi',
+    soy: 'Soia',
+    milk: 'Latte',
+    nuts: 'Frutta a guscio',
+    celery: 'Sedano',
+    mustard: 'Senape',
+    sesame: 'Sesamo',
+    sulfites: 'Solfiti',
+    lupin: 'Lupini',
+    molluscs: 'Molluschi',
+  },
+  es: {
+    gluten: 'Gluten',
+    crustaceans: 'Crustáceos',
+    eggs: 'Huevos',
+    fish: 'Pescado',
+    peanuts: 'Cacahuetes',
+    soy: 'Soja',
+    milk: 'Leche',
+    nuts: 'Frutos secos',
+    celery: 'Apio',
+    mustard: 'Mostaza',
+    sesame: 'Sésamo',
+    sulfites: 'Sulfitos',
+    lupin: 'Altramuces',
+    molluscs: 'Moluscos',
+  },
+  tr: {
+    gluten: 'Gluten',
+    crustaceans: 'Kabuklu deniz hayvanları',
+    eggs: 'Yumurta',
+    fish: 'Balık',
+    peanuts: 'Yer fıstığı',
+    soy: 'Soya',
+    milk: 'Süt',
+    nuts: 'Kabuklu yemişler',
+    celery: 'Kereviz',
+    mustard: 'Hardal',
+    sesame: 'Susam',
+    sulfites: 'Sülfitler',
+    lupin: 'Acı bakla',
+    molluscs: 'Yumuşakçalar',
+  },
+  pl: {
+    gluten: 'Gluten',
+    crustaceans: 'Skorupiaki',
+    eggs: 'Jaja',
+    fish: 'Ryby',
+    peanuts: 'Orzeszki ziemne',
+    soy: 'Soja',
+    milk: 'Mleko',
+    nuts: 'Orzechy',
+    celery: 'Seler',
+    mustard: 'Gorczyca',
+    sesame: 'Sezam',
+    sulfites: 'Siarczyny',
+    lupin: 'Łubin',
+    molluscs: 'Mięczaki',
   },
 };
 
@@ -305,6 +765,86 @@ export const allergenDescriptions: Record<Language, Record<string, string>> = {
     lupin: 'Lupin and lupin products',
     molluscs: 'Mussels, snails, squid',
   },
+  fr: {
+    gluten: 'Blé, seigle, orge, avoine',
+    crustaceans: 'Crabes, crevettes, homard',
+    eggs: 'Œufs et produits à base d\'œufs',
+    fish: 'Poisson et produits à base de poisson',
+    peanuts: 'Arachides et produits à base d\'arachides',
+    soy: 'Soja et produits à base de soja',
+    milk: 'Lait et produits laitiers (lactose)',
+    nuts: 'Amandes, noisettes, noix, etc.',
+    celery: 'Céleri et produits à base de céleri',
+    mustard: 'Moutarde et produits à base de moutarde',
+    sesame: 'Graines de sésame et produits au sésame',
+    sulfites: 'Dioxyde de soufre et sulfites (>10mg/kg)',
+    lupin: 'Lupin et produits à base de lupin',
+    molluscs: 'Moules, escargots, calamars',
+  },
+  it: {
+    gluten: 'Grano, segale, orzo, avena',
+    crustaceans: 'Granchi, gamberi, aragosta',
+    eggs: 'Uova e prodotti a base di uova',
+    fish: 'Pesce e prodotti a base di pesce',
+    peanuts: 'Arachidi e prodotti a base di arachidi',
+    soy: 'Soia e prodotti a base di soia',
+    milk: 'Latte e latticini (lattosio)',
+    nuts: 'Mandorle, nocciole, noci, ecc.',
+    celery: 'Sedano e prodotti a base di sedano',
+    mustard: 'Senape e prodotti a base di senape',
+    sesame: 'Semi di sesamo e prodotti al sesamo',
+    sulfites: 'Anidride solforosa e solfiti (>10mg/kg)',
+    lupin: 'Lupini e prodotti a base di lupini',
+    molluscs: 'Cozze, lumache, calamari',
+  },
+  es: {
+    gluten: 'Trigo, centeno, cebada, avena',
+    crustaceans: 'Cangrejos, gambas, langosta',
+    eggs: 'Huevos y productos a base de huevo',
+    fish: 'Pescado y productos a base de pescado',
+    peanuts: 'Cacahuetes y productos a base de cacahuete',
+    soy: 'Soja y productos a base de soja',
+    milk: 'Leche y productos lácteos (lactosa)',
+    nuts: 'Almendras, avellanas, nueces, etc.',
+    celery: 'Apio y productos a base de apio',
+    mustard: 'Mostaza y productos a base de mostaza',
+    sesame: 'Semillas de sésamo y productos de sésamo',
+    sulfites: 'Dióxido de azufre y sulfitos (>10mg/kg)',
+    lupin: 'Altramuces y productos a base de altramuz',
+    molluscs: 'Mejillones, caracoles, calamares',
+  },
+  tr: {
+    gluten: 'Buğday, çavdar, arpa, yulaf',
+    crustaceans: 'Yengeç, karides, ıstakoz',
+    eggs: 'Yumurta ve yumurta ürünleri',
+    fish: 'Balık ve balık ürünleri',
+    peanuts: 'Yer fıstığı ve yer fıstığı ürünleri',
+    soy: 'Soya fasulyesi ve soya ürünleri',
+    milk: 'Süt ve süt ürünleri (laktoz)',
+    nuts: 'Badem, fındık, ceviz, vb.',
+    celery: 'Kereviz ve kereviz ürünleri',
+    mustard: 'Hardal ve hardal ürünleri',
+    sesame: 'Susam tohumu ve susam ürünleri',
+    sulfites: 'Kükürt dioksit ve sülfitler (>10mg/kg)',
+    lupin: 'Acı bakla ve acı bakla ürünleri',
+    molluscs: 'Midye, salyangoz, kalamar',
+  },
+  pl: {
+    gluten: 'Pszenica, żyto, jęczmień, owies',
+    crustaceans: 'Kraby, krewetki, homary',
+    eggs: 'Jaja i produkty z jaj',
+    fish: 'Ryby i produkty rybne',
+    peanuts: 'Orzeszki ziemne i produkty z orzeszków',
+    soy: 'Soja i produkty sojowe',
+    milk: 'Mleko i produkty mleczne (laktoza)',
+    nuts: 'Migdały, orzechy laskowe, włoskie, itp.',
+    celery: 'Seler i produkty z selera',
+    mustard: 'Gorczyca i produkty z gorczycy',
+    sesame: 'Nasiona sezamu i produkty sezamowe',
+    sulfites: 'Dwutlenek siarki i siarczyny (>10mg/kg)',
+    lupin: 'Łubin i produkty z łubinu',
+    molluscs: 'Małże, ślimaki, kalmary',
+  },
 };
 
 // Get translation helper
@@ -340,7 +880,17 @@ export function formatRelativeTime(dateString: string, lang: Language): string {
   if (diffDays === 1) return t.yesterday;
   if (diffDays < 7) return t.daysAgo.replace('{n}', String(diffDays));
 
-  return date.toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-US', {
+  const localeMap: Record<Language, string> = {
+    de: 'de-DE',
+    en: 'en-US',
+    fr: 'fr-FR',
+    it: 'it-IT',
+    es: 'es-ES',
+    tr: 'tr-TR',
+    pl: 'pl-PL',
+  };
+
+  return date.toLocaleDateString(localeMap[lang] || 'de-DE', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
@@ -354,6 +904,11 @@ export const DEFAULT_LANGUAGE: Language = 'de';
 export const LANGUAGE_OPTIONS: { id: Language; label: string; flag: string }[] = [
   { id: 'de', label: 'Deutsch', flag: '🇩🇪' },
   { id: 'en', label: 'English', flag: '🇬🇧' },
+  { id: 'fr', label: 'Français', flag: '🇫🇷' },
+  { id: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { id: 'es', label: 'Español', flag: '🇪🇸' },
+  { id: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+  { id: 'pl', label: 'Polski', flag: '🇵🇱' },
 ];
 
 // ===========================================

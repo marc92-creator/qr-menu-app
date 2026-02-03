@@ -9,7 +9,7 @@ export interface OpeningHours {
 }
 
 export type MenuTheme = 'classic' | 'dark' | 'rustic' | 'modern' | 'oriental' | 'italian' | 'japanese' | 'cafe' | 'finedining';
-export type MenuLanguage = 'de' | 'en';
+export type MenuLanguage = 'de' | 'en' | 'fr' | 'it' | 'es' | 'tr' | 'pl';
 export type ImageStrategy = 'ghibli' | 'real' | 'professional' | 'mixed' | 'none';
 export type CourseType = 'amuse' | 'starter' | 'main' | 'dessert' | 'cheese';
 export type PhotoStyle = 'ghibli' | 'real' | 'professional' | 'user';
@@ -224,4 +224,31 @@ export interface ScanStats {
   thisWeek: number;
   thisMonth: number;
   total: number;
+}
+
+// AI Menu Import Types
+export interface ExtractedMenuItem {
+  name: string;
+  nameEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  price: number;
+  isVegetarian?: boolean;
+  isVegan?: boolean;
+  allergens?: string[];
+  tags?: string[];
+  confidence?: number; // AI confidence 0-1
+}
+
+export interface ExtractedMenuCategory {
+  name: string;
+  nameEn?: string;
+  items: ExtractedMenuItem[];
+}
+
+export interface MenuImportResult {
+  categories: ExtractedMenuCategory[];
+  totalItems: number;
+  language: MenuLanguage;
+  confidence: number;
 }

@@ -398,6 +398,330 @@ export const TEMPLATES: Record<string, MenuTemplate> = {
       recommended: ['Fine Dining', 'Wine Bar', 'Gourmet', 'Michelin'],
     },
   },
+
+  cafe: {
+    id: 'cafe',
+    name: 'Cafe & Bakery',
+    description: 'Cozy cafe style with warm colors and pastry icons',
+    preview: '/templates/cafe-preview.png',
+
+    layout: {
+      type: 'single-column',
+      gap: 'standard',
+    },
+
+    images: {
+      strategy: 'category-headers',
+      categoryIcons: true,
+      itemImages: true,
+      imageSize: 'small',
+      position: 'left',
+    },
+
+    density: {
+      level: 'standard',
+      showDescription: true,
+      showAllergens: true,
+      showBadges: true,
+      showTags: true,
+    },
+
+    language: {
+      mode: 'primary',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'base',
+      priceSize: 'base',
+      descriptionSize: 'sm',
+    },
+
+    defaultTheme: 'cafe',
+
+    metadata: {
+      category: 'cafe',
+      complexity: 'simple',
+      recommended: ['Cafe', 'Bakery', 'Coffee Shop', 'Patisserie'],
+    },
+  },
+
+  asian: {
+    id: 'asian',
+    name: 'Asian Fusion',
+    description: 'Modern Asian style with elegant typography',
+    preview: '/templates/asian-preview.png',
+
+    layout: {
+      type: 'single-column',
+      gap: 'standard',
+    },
+
+    images: {
+      strategy: 'item-thumbnails',
+      categoryIcons: true,
+      itemImages: true,
+      imageSize: 'medium',
+      position: 'left',
+    },
+
+    density: {
+      level: 'detailed',
+      showDescription: true,
+      showAllergens: true,
+      showBadges: true,
+      showTags: true,
+    },
+
+    language: {
+      mode: 'toggle',
+      showFlags: true,
+    },
+
+    typography: {
+      nameSize: 'lg',
+      priceSize: 'base',
+      descriptionSize: 'sm',
+    },
+
+    defaultTheme: 'japanese',
+
+    metadata: {
+      category: 'casual',
+      complexity: 'moderate',
+      recommended: ['Sushi', 'Ramen', 'Thai', 'Chinese', 'Vietnamese'],
+    },
+  },
+
+  mexican: {
+    id: 'mexican',
+    name: 'Mexican Fiesta',
+    description: 'Vibrant and colorful with festive design',
+    preview: '/templates/mexican-preview.png',
+
+    layout: {
+      type: 'single-column',
+      gap: 'standard',
+    },
+
+    images: {
+      strategy: 'item-thumbnails',
+      categoryIcons: true,
+      itemImages: true,
+      imageSize: 'medium',
+      position: 'left',
+    },
+
+    density: {
+      level: 'standard',
+      showDescription: true,
+      showAllergens: true,
+      showBadges: true,
+      showTags: true,
+    },
+
+    language: {
+      mode: 'primary',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'lg',
+      priceSize: 'base',
+      descriptionSize: 'sm',
+    },
+
+    defaultTheme: 'oriental',
+
+    metadata: {
+      category: 'casual',
+      complexity: 'moderate',
+      recommended: ['Mexican', 'Taco', 'Burrito', 'Tex-Mex'],
+    },
+  },
+
+  burger: {
+    id: 'burger',
+    name: 'Burger Joint',
+    description: 'Bold and appetizing for burger restaurants',
+    preview: '/templates/burger-preview.png',
+
+    layout: {
+      type: 'grid',
+      columns: 2,
+      gap: 'standard',
+    },
+
+    images: {
+      strategy: 'item-hero',
+      categoryIcons: true,
+      itemImages: true,
+      imageSize: 'large',
+      position: 'top',
+    },
+
+    density: {
+      level: 'standard',
+      showDescription: true,
+      showAllergens: true,
+      showBadges: true,
+      showTags: true,
+    },
+
+    language: {
+      mode: 'primary',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'lg',
+      priceSize: 'lg',
+      descriptionSize: 'sm',
+    },
+
+    defaultTheme: 'dark',
+
+    metadata: {
+      category: 'fast-food',
+      complexity: 'simple',
+      recommended: ['Burger', 'BBQ', 'Steakhouse', 'American'],
+    },
+  },
+
+  luxury: {
+    id: 'luxury',
+    name: 'Luxury Gold',
+    description: 'Premium design with gold accents and elegant spacing',
+    preview: '/templates/luxury-preview.png',
+
+    layout: {
+      type: 'single-column',
+      gap: 'spacious',
+    },
+
+    images: {
+      strategy: 'category-headers',
+      categoryIcons: false,
+      itemImages: false,
+    },
+
+    density: {
+      level: 'detailed',
+      showDescription: true,
+      showAllergens: false,
+      showBadges: true,
+      showTags: false,
+    },
+
+    language: {
+      mode: 'side-by-side',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'xl',
+      priceSize: 'lg',
+      descriptionSize: 'base',
+    },
+
+    defaultTheme: 'finedining',
+
+    metadata: {
+      category: 'fine-dining',
+      complexity: 'simple',
+      recommended: ['Luxury Hotel', 'Michelin', 'Fine Wine', 'Gourmet'],
+    },
+  },
+
+  'fast-casual': {
+    id: 'fast-casual',
+    name: 'Fast Casual',
+    description: 'Quick service with numbered items and clear pricing',
+    preview: '/templates/fast-casual-preview.png',
+
+    layout: {
+      type: 'table',
+      gap: 'compact',
+    },
+
+    images: {
+      strategy: 'none',
+      categoryIcons: true,
+      itemImages: false,
+    },
+
+    density: {
+      level: 'detailed',
+      showDescription: true,
+      showAllergens: true,
+      showBadges: true,
+      showTags: false,
+    },
+
+    language: {
+      mode: 'primary',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'base',
+      priceSize: 'base',
+      descriptionSize: 'xs',
+    },
+
+    defaultTheme: 'classic',
+
+    metadata: {
+      category: 'fast-food',
+      complexity: 'simple',
+      recommended: ['Doner', 'Pizza', 'Imbiss', 'Schnellrestaurant'],
+    },
+  },
+
+  bistro: {
+    id: 'bistro',
+    name: 'French Bistro',
+    description: 'Classic French bistro style with elegant typography',
+    preview: '/templates/bistro-preview.png',
+
+    layout: {
+      type: 'single-column',
+      gap: 'spacious',
+    },
+
+    images: {
+      strategy: 'category-headers',
+      categoryIcons: false,
+      itemImages: false,
+    },
+
+    density: {
+      level: 'standard',
+      showDescription: true,
+      showAllergens: false,
+      showBadges: true,
+      showTags: false,
+    },
+
+    language: {
+      mode: 'side-by-side',
+      showFlags: false,
+    },
+
+    typography: {
+      nameSize: 'lg',
+      priceSize: 'base',
+      descriptionSize: 'sm',
+    },
+
+    defaultTheme: 'rustic',
+
+    metadata: {
+      category: 'casual',
+      complexity: 'simple',
+      recommended: ['Bistro', 'French', 'Wine Bar', 'European'],
+    },
+  },
 };
 
 /**
