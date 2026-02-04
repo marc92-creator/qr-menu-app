@@ -453,7 +453,7 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
     label: 'Smoothie',
     category: 'getraenke',
   },
-  // ROTWEIN - spezifisch, muss VOR allgemeinem "wein" kommen!
+  // ROTWEIN - spezifisch, dunkler Rotwein im Glas
   {
     id: 'real-rotwein',
     keywords: ['rotwein', 'red wine', 'vino rosso', 'wine red', 'vin rouge', 'cabernet', 'merlot', 'chianti'],
@@ -461,19 +461,19 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
     label: 'Rotwein',
     category: 'getraenke',
   },
-  // WEISSWEIN - spezifisch
+  // WEISSWEIN - spezifisch, heller Weißwein im Glas (anderes Bild!)
   {
     id: 'real-weisswein',
     keywords: ['weißwein', 'weisswein', 'white wine', 'vino bianco', 'wine white', 'vin blanc', 'chardonnay', 'riesling', 'pinot grigio'],
-    imageUrl: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1558001373-7b93ee48ffa0?w=400&h=300&fit=crop',
     label: 'Weißwein',
     category: 'getraenke',
   },
-  // WEIN allgemein - Fallback für "House Wine" etc.
+  // WEIN allgemein - Fallback für unspezifische Wein-Bestellungen
   {
     id: 'real-wein',
     keywords: ['wein', 'wine', 'rosé', 'prosecco', 'sekt', 'champagner'],
-    imageUrl: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop',
     label: 'Wein',
     category: 'getraenke',
   },
