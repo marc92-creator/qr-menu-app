@@ -158,12 +158,10 @@ export function FilterBottomSheet({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold" style={{ color: styles.text }}>
-                {language === 'de' ? 'Filter' : 'Filters'}
+                {t.filters}
               </h2>
               <p className="text-sm mt-1" style={{ color: styles.textMuted }}>
-                {language === 'de'
-                  ? 'Finde genau das Richtige'
-                  : 'Find exactly what you need'}
+                {t.searchTip}
               </p>
             </div>
             <button
@@ -183,7 +181,7 @@ export function FilterBottomSheet({
           {/* Search */}
           <div className="mb-6">
             <label className="text-sm font-medium mb-2 block" style={{ color: styles.text }}>
-              {language === 'de' ? 'Suche' : 'Search'}
+              {t.search}
             </label>
             <UniversalSearchBar
               value={searchQuery}
@@ -197,7 +195,7 @@ export function FilterBottomSheet({
           {/* Dietary Filters */}
           <div className="mb-6">
             <label className="text-sm font-medium mb-3 block" style={{ color: styles.text }}>
-              {language === 'de' ? 'Ernährung' : 'Dietary'}
+              {t.dietary}
             </label>
             <div className="flex flex-wrap gap-2">
               {DIETARY_FILTERS.map((filter) => (
@@ -221,7 +219,7 @@ export function FilterBottomSheet({
           {/* Allergen Button */}
           <div className="mb-4">
             <label className="text-sm font-medium mb-3 block" style={{ color: styles.text }}>
-              {language === 'de' ? 'Allergene ausschließen' : 'Exclude Allergens'}
+              {t.excludeAllergens}
             </label>
             <button
               onClick={() => setIsAllergenModalOpen(true)}
@@ -235,12 +233,8 @@ export function FilterBottomSheet({
                 <span>⚠️</span>
                 <span>
                   {excludeAllergens.size > 0
-                    ? language === 'de'
-                      ? `${excludeAllergens.size} Allergene ausgewählt`
-                      : `${excludeAllergens.size} allergens selected`
-                    : language === 'de'
-                    ? 'Allergene auswählen'
-                    : 'Select allergens'}
+                    ? t.nFilters.replace('{n}', String(excludeAllergens.size))
+                    : t.allergens}
                 </span>
               </span>
               <svg className="w-5 h-5" style={{ color: styles.textMuted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -279,10 +273,10 @@ export function FilterBottomSheet({
           >
             {activeFilterCount > 0 ? (
               <>
-                {language === 'de' ? 'Anwenden' : 'Apply'} ({activeFilterCount})
+                {t.apply} ({activeFilterCount})
               </>
             ) : (
-              language === 'de' ? 'Schließen' : 'Close'
+              t.close
             )}
           </button>
         </div>

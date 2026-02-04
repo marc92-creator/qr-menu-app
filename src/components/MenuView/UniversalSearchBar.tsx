@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ThemeConfig } from '@/lib/themes';
-import { Language } from '@/lib/translations';
+import { Language, getTranslation } from '@/lib/translations';
 
 interface UniversalSearchBarProps {
   value: string;
@@ -28,9 +28,10 @@ export function UniversalSearchBar({
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const t = getTranslation(language);
 
   const styles = theme.styles;
-  const defaultPlaceholder = placeholder || (language === 'de' ? 'Gerichte suchen...' : 'Search dishes...');
+  const defaultPlaceholder = placeholder || t.searchPlaceholder;
 
   // Sync external value changes
   useEffect(() => {
@@ -90,7 +91,7 @@ export function UniversalSearchBar({
           color: styles.textMuted,
           border: `1px solid ${styles.border}`,
         }}
-        aria-label={language === 'de' ? 'Suche öffnen' : 'Open search'}
+        aria-label={t.openSearch}
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -144,7 +145,7 @@ export function UniversalSearchBar({
             onClick={handleClear}
             className="absolute right-3 p-1 rounded-full hover:bg-black/5 transition-colors touch-manipulation"
             style={{ color: styles.textMuted }}
-            aria-label={language === 'de' ? 'Suche leeren' : 'Clear search'}
+            aria-label={t.clearSearch}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -155,7 +156,7 @@ export function UniversalSearchBar({
             onClick={handleToggle}
             className="absolute right-3 p-1 rounded-full hover:bg-black/5 transition-colors touch-manipulation"
             style={{ color: styles.textMuted }}
-            aria-label={language === 'de' ? 'Suche schließen' : 'Close search'}
+            aria-label={t.closeSearch}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -174,9 +175,7 @@ export function UniversalSearchBar({
             border: `1px solid ${styles.border}`,
           }}
         >
-          {language === 'de'
-            ? 'Tipp: Suche nach Name, Beschreibung oder Nummer'
-            : 'Tip: Search by name, description, or number'}
+          {t.searchTip}
         </div>
       )}
     </div>

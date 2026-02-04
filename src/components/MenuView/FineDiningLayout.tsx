@@ -304,7 +304,7 @@ export function FineDiningLayout({
               }}
             >
               <p className="text-sm font-medium mb-2" style={{ color: theme.styles.primary }}>
-                {language === 'de' ? 'Reservierung erforderlich' : 'Reservation Required'}
+                {t.reservationRequired}
               </p>
               {restaurant.phone && (
                 <a
@@ -361,6 +361,7 @@ function FineDiningMenuItem({
   getLocalizedName,
   getLocalizedDescription,
 }: FineDiningMenuItemProps) {
+  const t = getTranslation(language);
   const itemName = getLocalizedName(item, language);
   const itemDescription = getLocalizedDescription(item, language);
 
@@ -428,17 +429,17 @@ function FineDiningMenuItem({
         <div className="flex items-center justify-center gap-3 mt-3">
           {item.is_vegan && (
             <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
-              🌱 Vegan
+              🌱 {t.vegan}
             </span>
           )}
           {item.is_vegetarian && !item.is_vegan && (
             <span className="text-xs tracking-wide" style={{ color: theme.styles.textMuted }}>
-              🥬 Vegetarian
+              🥬 {t.vegetarian}
             </span>
           )}
           {item.is_special && (
             <span className="text-xs tracking-wide" style={{ color: theme.styles.primary }}>
-              ✦ Chef&apos;s Special
+              ✦ {t.chefsSpecial}
             </span>
           )}
         </div>

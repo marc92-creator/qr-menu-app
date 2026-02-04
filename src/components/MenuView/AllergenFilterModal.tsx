@@ -107,12 +107,10 @@ export function AllergenFilterModal({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold" style={{ color: styles.text }}>
-                {language === 'de' ? 'Meine Allergien' : 'My Allergies'}
+                {t.myAllergies}
               </h2>
               <p className="text-sm mt-1" style={{ color: styles.textMuted }}>
-                {language === 'de'
-                  ? 'Gerichte mit diesen Allergenen werden ausgeblendet'
-                  : 'Items containing these allergens will be hidden'}
+                {t.excludeAllergens}
               </p>
             </div>
             <button
@@ -213,10 +211,10 @@ export function AllergenFilterModal({
           >
             {selectedAllergens.size > 0 ? (
               <>
-                {language === 'de' ? 'Anwenden' : 'Apply'} ({selectedAllergens.size})
+                {t.apply} ({selectedAllergens.size})
               </>
             ) : (
-              language === 'de' ? 'Schließen' : 'Close'
+              t.close
             )}
           </button>
         </div>

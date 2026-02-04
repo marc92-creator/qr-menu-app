@@ -1,7 +1,7 @@
 'use client';
 
 import { ThemeConfig } from '@/lib/themes';
-import { Language } from '@/lib/translations';
+import { Language, getTranslation } from '@/lib/translations';
 
 interface PrepTimeBadgeProps {
   minutes: number;
@@ -12,8 +12,8 @@ interface PrepTimeBadgeProps {
 export function PrepTimeBadge({ minutes, theme, language }: PrepTimeBadgeProps) {
   if (!minutes || minutes <= 0) return null;
 
+  const t = getTranslation(language);
   const styles = theme.styles;
-  const label = language === 'de' ? 'Min.' : 'min';
 
   return (
     <span
@@ -31,7 +31,7 @@ export function PrepTimeBadge({ minutes, theme, language }: PrepTimeBadgeProps) 
           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      {minutes} {label}
+      {minutes} {t.minutes}
     </span>
   );
 }

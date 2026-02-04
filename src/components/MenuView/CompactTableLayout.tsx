@@ -244,7 +244,7 @@ export function CompactTableLayout({
                                       color: theme.styles.badgeSoldOutText,
                                     }}
                                   >
-                                    Ausverkauft
+                                    {t.soldOut}
                                   </span>
                                 )}
                                 {item.is_vegan && (

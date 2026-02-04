@@ -19,6 +19,7 @@ export interface MenuTranslations {
   new: string;
   special: string;
   dailySpecial: string;
+  chefsSpecial: string;
   soldOut: string;
   upsellTip: string;
 
@@ -78,6 +79,18 @@ export interface MenuTranslations {
   apply: string;
   close: string;
   activeFilters: string;
+
+  // Additional UI elements
+  filters: string;
+  search: string;
+  dietary: string;
+  reservationRequired: string;
+  minutes: string;
+  openSearch: string;
+  closeSearch: string;
+  clearSearch: string;
+  openFilters: string;
+  nFilters: string;
 }
 
 export const translations: Record<Language, MenuTranslations> = {
@@ -97,6 +110,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'Neu',
     special: 'Angebot',
     dailySpecial: 'Tagesangebot',
+    chefsSpecial: 'Empfehlung des Küchenchefs',
     soldOut: 'Ausverkauft',
     upsellTip: 'Tipp',
 
@@ -156,6 +170,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Anwenden',
     close: 'Schließen',
     activeFilters: 'Aktive Filter',
+
+    // Additional UI elements
+    filters: 'Filter',
+    search: 'Suche',
+    dietary: 'Ernährung',
+    reservationRequired: 'Reservierung erforderlich',
+    minutes: 'Min.',
+    openSearch: 'Suche öffnen',
+    closeSearch: 'Suche schließen',
+    clearSearch: 'Suche leeren',
+    openFilters: 'Filter öffnen',
+    nFilters: '{n} Filter',
   },
   en: {
     // Header
@@ -173,6 +199,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'New',
     special: 'Special',
     dailySpecial: 'Daily Special',
+    chefsSpecial: "Chef's Special",
     soldOut: 'Sold Out',
     upsellTip: 'Tip',
 
@@ -232,6 +259,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Apply',
     close: 'Close',
     activeFilters: 'Active filters',
+
+    // Additional UI elements
+    filters: 'Filters',
+    search: 'Search',
+    dietary: 'Dietary',
+    reservationRequired: 'Reservation Required',
+    minutes: 'min',
+    openSearch: 'Open search',
+    closeSearch: 'Close search',
+    clearSearch: 'Clear search',
+    openFilters: 'Open filters',
+    nFilters: '{n} Filters',
   },
   fr: {
     // Header
@@ -249,6 +288,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'Nouveau',
     special: 'Offre',
     dailySpecial: 'Plat du jour',
+    chefsSpecial: 'Spécialité du chef',
     soldOut: 'Épuisé',
     upsellTip: 'Astuce',
 
@@ -308,6 +348,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Appliquer',
     close: 'Fermer',
     activeFilters: 'Filtres actifs',
+
+    // Additional UI elements
+    filters: 'Filtres',
+    search: 'Recherche',
+    dietary: 'Régime',
+    reservationRequired: 'Réservation requise',
+    minutes: 'min',
+    openSearch: 'Ouvrir la recherche',
+    closeSearch: 'Fermer la recherche',
+    clearSearch: 'Effacer la recherche',
+    openFilters: 'Ouvrir les filtres',
+    nFilters: '{n} Filtres',
   },
   it: {
     // Header
@@ -325,6 +377,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'Nuovo',
     special: 'Offerta',
     dailySpecial: 'Piatto del giorno',
+    chefsSpecial: 'Specialità dello chef',
     soldOut: 'Esaurito',
     upsellTip: 'Consiglio',
 
@@ -384,6 +437,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Applica',
     close: 'Chiudi',
     activeFilters: 'Filtri attivi',
+
+    // Additional UI elements
+    filters: 'Filtri',
+    search: 'Cerca',
+    dietary: 'Dieta',
+    reservationRequired: 'Prenotazione richiesta',
+    minutes: 'min',
+    openSearch: 'Apri ricerca',
+    closeSearch: 'Chiudi ricerca',
+    clearSearch: 'Cancella ricerca',
+    openFilters: 'Apri filtri',
+    nFilters: '{n} Filtri',
   },
   es: {
     // Header
@@ -401,6 +466,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'Nuevo',
     special: 'Oferta',
     dailySpecial: 'Plato del día',
+    chefsSpecial: 'Especialidad del chef',
     soldOut: 'Agotado',
     upsellTip: 'Consejo',
 
@@ -460,6 +526,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Aplicar',
     close: 'Cerrar',
     activeFilters: 'Filtros activos',
+
+    // Additional UI elements
+    filters: 'Filtros',
+    search: 'Buscar',
+    dietary: 'Dieta',
+    reservationRequired: 'Reserva requerida',
+    minutes: 'min',
+    openSearch: 'Abrir búsqueda',
+    closeSearch: 'Cerrar búsqueda',
+    clearSearch: 'Borrar búsqueda',
+    openFilters: 'Abrir filtros',
+    nFilters: '{n} Filtros',
   },
   tr: {
     // Header
@@ -477,6 +555,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'Yeni',
     special: 'Teklif',
     dailySpecial: 'Günün Yemeği',
+    chefsSpecial: 'Şefin Önerisi',
     soldOut: 'Tükendi',
     upsellTip: 'İpucu',
 
@@ -536,6 +615,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Uygula',
     close: 'Kapat',
     activeFilters: 'Aktif filtreler',
+
+    // Additional UI elements
+    filters: 'Filtreler',
+    search: 'Ara',
+    dietary: 'Diyet',
+    reservationRequired: 'Rezervasyon gerekli',
+    minutes: 'dk',
+    openSearch: 'Aramayı aç',
+    closeSearch: 'Aramayı kapat',
+    clearSearch: 'Aramayı temizle',
+    openFilters: 'Filtreleri aç',
+    nFilters: '{n} Filtre',
   },
   pl: {
     // Header
@@ -553,6 +644,7 @@ export const translations: Record<Language, MenuTranslations> = {
     new: 'Nowość',
     special: 'Promocja',
     dailySpecial: 'Danie dnia',
+    chefsSpecial: 'Specjalność szefa kuchni',
     soldOut: 'Wyprzedane',
     upsellTip: 'Wskazówka',
 
@@ -612,6 +704,18 @@ export const translations: Record<Language, MenuTranslations> = {
     apply: 'Zastosuj',
     close: 'Zamknij',
     activeFilters: 'Aktywne filtry',
+
+    // Additional UI elements
+    filters: 'Filtry',
+    search: 'Szukaj',
+    dietary: 'Dieta',
+    reservationRequired: 'Wymagana rezerwacja',
+    minutes: 'min',
+    openSearch: 'Otwórz wyszukiwanie',
+    closeSearch: 'Zamknij wyszukiwanie',
+    clearSearch: 'Wyczyść wyszukiwanie',
+    openFilters: 'Otwórz filtry',
+    nFilters: '{n} Filtry',
   },
 };
 

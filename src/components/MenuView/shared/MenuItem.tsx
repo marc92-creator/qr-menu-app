@@ -163,7 +163,7 @@ export function MenuItem({
             {itemName}
             {item.is_sold_out && (
               <span className="ml-3 text-sm font-normal text-red-600">
-                Ausverkauft
+                {t.soldOut}
               </span>
             )}
           </h3>
@@ -179,30 +179,30 @@ export function MenuItem({
             {item.is_special && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700">
                 <span>⭐</span>
-                <span>Tagesangebot</span>
+                <span>{t.dailySpecial}</span>
               </span>
             )}
             {item.is_popular && !item.is_special && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-red-700">
                 <span>❤️</span>
-                <span>Beliebt</span>
+                <span>{t.popular}</span>
               </span>
             )}
             {item.is_vegan && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700">
                 <span>🌱</span>
-                <span>Vegan</span>
+                <span>{t.vegan}</span>
               </span>
             )}
             {item.is_vegetarian && !item.is_vegan && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700">
                 <span>🥬</span>
-                <span>Vegetarisch</span>
+                <span>{t.vegetarian}</span>
               </span>
             )}
             {showAllergens && itemAllergens.length > 0 && (
               <span className="text-xs text-gray-500">
-                Allergene: {itemAllergens.map((a) => a.name).join(', ')}
+                {t.allergens}: {itemAllergens.map((a) => getAllergenName(a.id, language)).join(', ')}
               </span>
             )}
           </div>

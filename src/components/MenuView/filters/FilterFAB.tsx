@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ThemeConfig } from '@/lib/themes';
-import { Language } from '@/lib/translations';
+import { Language, getTranslation } from '@/lib/translations';
 import { MenuFiltersReturn } from '@/hooks/useMenuFilters';
 import { haptics } from '@/lib/haptics';
 
@@ -23,6 +23,7 @@ export function FilterFAB({
 }: FilterFABProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const t = getTranslation(language);
 
   const { activeFilterCount } = filters;
 
@@ -72,7 +73,7 @@ export function FilterFAB({
         backgroundColor: theme.styles.primary,
         boxShadow: `0 4px 20px ${theme.styles.primary}30`,
       }}
-      aria-label={language === 'de' ? 'Filter öffnen' : 'Open filters'}
+      aria-label={t.openFilters}
     >
       {/* Filter Icon */}
       <svg

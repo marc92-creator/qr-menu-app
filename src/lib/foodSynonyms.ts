@@ -19,54 +19,83 @@ export const FOOD_SYNONYMS: SynonymGroup[] = [
   {
     canonical: 'döner',
     variants: [
-      'doner', 'doener', 'donner', 'dönar', 'donar',
-      'kebab', 'kebap', 'kepap', 'kabab', 'kabob',
-      'shawarma', 'gyros döner', 'türkischer döner',
-      'fleisch döner', 'kalb döner', 'lamm döner'
+      'doner', 'doener', 'donner', 'dönar', 'donar', 'dönner', 'donör',
+      'kebab', 'kebap', 'kepap', 'kabab', 'kabob', 'kebob',
+      'shawarma', 'schawarma', 'shawerma', 'schawurma',
+      'gyros döner', 'türkischer döner', 'döners',
+      'fleisch döner', 'kalb döner', 'lamm döner', 'hühnerdöner',
+      'dönerfleisch', 'döner fleisch', 'kebabfleisch'
     ]
   },
   {
     canonical: 'dürüm',
     variants: [
-      'durum', 'dürum', 'duruem', 'durüm',
-      'wrap', 'yufka', 'lavash', 'rolle',
-      'döner wrap', 'türkischer wrap', 'yufka döner'
+      'durum', 'dürum', 'duruem', 'durüm', 'dueruem', 'dürums',
+      'wrap', 'wraps', 'yufka', 'lavash', 'rolle', 'rollen',
+      'döner wrap', 'türkischer wrap', 'yufka döner',
+      'dürüm döner', 'döner dürüm', 'dürümrolle'
     ]
   },
   {
     canonical: 'lahmacun',
     variants: [
-      'lahmajun', 'lahmajo', 'lahmaçun',
-      'türkische pizza', 'arabische pizza', 'fleischfladen'
+      'lahmajun', 'lahmajo', 'lahmaçun', 'lamacun', 'lahmadschu',
+      'türkische pizza', 'arabische pizza', 'fleischfladen',
+      'lahmacuns', 'armenische pizza'
     ]
   },
   {
     canonical: 'pide',
     variants: [
-      'türkisches fladenbrot', 'türkische pizza',
-      'pita', 'pidé', 'türkisches boot'
+      'türkisches fladenbrot', 'türkische pizza', 'pides',
+      'pita', 'pidé', 'türkisches boot', 'fladenbrot',
+      'türkisches brot', 'pide brot'
     ]
   },
   {
     canonical: 'köfte',
     variants: [
-      'koefte', 'kofte', 'köftesi', 'kofta',
+      'koefte', 'kofte', 'köftesi', 'kofta', 'köftes', 'koftas',
       'fleischbällchen', 'hackbällchen', 'türkische frikadellen',
-      'inegöl köfte', 'izgara köfte'
+      'inegöl köfte', 'izgara köfte', 'köftespieß',
+      'türkische buletten', 'cevapcici', 'cevapi'
     ]
   },
   {
     canonical: 'iskender',
     variants: [
       'iskender kebab', 'iskender kebap', 'alexander kebab',
-      'döner mit joghurt', 'joghurt döner'
+      'döner mit joghurt', 'joghurt döner', 'iskender teller'
     ]
   },
   {
     canonical: 'adana',
     variants: [
-      'adana kebab', 'adana kebap', 'adana spiess',
-      'hackfleisch spiess', 'scharfer kebab'
+      'adana kebab', 'adana kebap', 'adana spiess', 'adana spieß',
+      'hackfleisch spiess', 'scharfer kebab', 'adana köfte',
+      'urfa kebab', 'urfa kebap'
+    ]
+  },
+  {
+    canonical: 'börek',
+    variants: [
+      'borek', 'boerek', 'böreks', 'boreks', 'sigara börek',
+      'su börek', 'tepsi börek', 'blätterteig türkisch',
+      'börekchen', 'sigara', 'zigarrenbörek'
+    ]
+  },
+  {
+    canonical: 'gözleme',
+    variants: [
+      'gozleme', 'goezleme', 'gözlemes', 'türkischer pfannkuchen',
+      'türkische pfannkuchen', 'yufka pfannkuchen'
+    ]
+  },
+  {
+    canonical: 'çorba',
+    variants: [
+      'corba', 'chorba', 'türkische suppe', 'mercimek çorba',
+      'mercimek', 'linsensuppe türkisch'
     ]
   },
 
@@ -76,30 +105,35 @@ export const FOOD_SYNONYMS: SynonymGroup[] = [
   {
     canonical: 'pommes',
     variants: [
-      'pommes frites', 'fritten', 'friten', 'frites',
-      'french fries', 'chips', 'kartoffelstäbchen',
-      'pommfrit', 'pommfritz', 'pomm', 'pom',
-      'fritjes', 'patat'
+      'pommes frites', 'fritten', 'friten', 'frites', 'frittes',
+      'french fries', 'fries', 'chips', 'kartoffelstäbchen',
+      'pommfrit', 'pommfritz', 'pomm', 'pom', 'pomes', 'poms',
+      'fritjes', 'patat', 'frietjes', 'kartoffelfritten',
+      'goldene pommes', 'knusprige fritten'
     ]
   },
   {
     canonical: 'süßkartoffel pommes',
     variants: [
-      'sweet potato fries', 'süsskartoffel pommes',
-      'süßkartoffelfritten', 'süsskartoffelpommes'
+      'sweet potato fries', 'süsskartoffel pommes', 'süßkartoffeln',
+      'süßkartoffelfritten', 'süsskartoffelpommes', 'batata pommes',
+      'süßkartoffel fritten', 'sweet potato fritten'
     ]
   },
 
   // ============================================
-  // CHICKEN / HÄHNCHEN
+  // CHICKEN / HÄHNCHEN (Many regional German variants!)
   // ============================================
   {
     canonical: 'hähnchen',
     variants: [
-      'haehnchen', 'hahnchen', 'hendl', 'broiler',
-      'chicken', 'poulet', 'pollo', 'tavuk',
-      'grillhähnchen', 'brathähnchen', 'huhn',
-      'hühnchen', 'haehnchen', 'geflügel'
+      'haehnchen', 'hahnchen', 'hendl', 'hendel', 'broiler',
+      'chicken', 'poulet', 'pollo', 'tavuk', 'polletto',
+      'grillhähnchen', 'brathähnchen', 'huhn', 'hühner',
+      'hühnchen', 'huehnchen', 'geflügel', 'gefluegel',
+      'brathendl', 'backhendl', 'gockel', 'göckele', 'gickel',
+      'hähnchenfleisch', 'hühnerfleisch', 'hähnchenkeule',
+      'chickenfilet', 'hähnchenfilet', 'hähnchenbrust'
     ]
   },
   {
@@ -142,102 +176,244 @@ export const FOOD_SYNONYMS: SynonymGroup[] = [
   },
 
   // ============================================
-  // BURGER
+  // BURGER - EXPANDED
   // ============================================
   {
     canonical: 'burger',
     variants: [
-      'hamburger', 'beefburger', 'hackfleisch brötchen',
-      'bulette im brot', 'patty'
+      'hamburger', 'hamburguer', 'burgers', 'beefburger', 'beef burger',
+      'hackfleisch brötchen', 'bulette im brot', 'patty', 'burger classic',
+      'klassischer burger', 'american burger', 'amerikanischer burger',
+      'single burger', 'einfacher burger', 'rindsburger'
     ]
   },
   {
     canonical: 'cheeseburger',
     variants: [
-      'cheese burger', 'käseburger', 'burger mit käse',
-      'käse burger'
+      'cheese burger', 'cheseburger', 'cheesburger', 'cheezburger',
+      'käseburger', 'kaeseburger', 'burger mit käse', 'käse burger',
+      'käse-burger', 'double cheese', 'doppelt käse'
+    ]
+  },
+  {
+    canonical: 'chicken burger',
+    variants: [
+      'chickenburger', 'hähnchen burger', 'hähnchenburger', 'hühnchen burger',
+      'crispy chicken burger', 'chicken sandwich', 'poulet burger',
+      'huhn burger', 'geflügel burger'
+    ]
+  },
+  {
+    canonical: 'bacon burger',
+    variants: [
+      'baconburger', 'bacon cheeseburger', 'speck burger', 'speckburger',
+      'burger mit bacon', 'burger mit speck', 'bbq bacon burger'
+    ]
+  },
+  {
+    canonical: 'double burger',
+    variants: [
+      'doubleburger', 'doppelburger', 'doppel burger', 'double patty',
+      'xxl burger', 'xl burger', 'big burger', 'mega burger', 'jumbo burger'
     ]
   },
   {
     canonical: 'veggie burger',
     variants: [
-      'vegetarischer burger', 'vegan burger', 'gemüseburger',
-      'beyond burger', 'impossible burger', 'plant based burger'
+      'veggieburger', 'vegetarischer burger', 'vegetarisch burger',
+      'vegan burger', 'veganburger', 'gemüseburger', 'gemüse burger',
+      'beyond burger', 'impossible burger', 'plant based burger',
+      'pflanzlicher burger', 'fleischlos burger'
+    ]
+  },
+  {
+    canonical: 'fish burger',
+    variants: [
+      'fishburger', 'fisch burger', 'fischburger', 'backfisch burger',
+      'fish sandwich', 'filet o fish', 'fisch sandwich'
+    ]
+  },
+  {
+    canonical: 'pulled pork burger',
+    variants: [
+      'pulled pork', 'pulledpork burger', 'pulled-pork burger',
+      'bbq burger', 'bbq pulled pork', 'geschmortes schwein burger'
     ]
   },
 
   // ============================================
-  // PIZZA
+  // PIZZA - EXPANDED
   // ============================================
   {
     canonical: 'pizza',
-    variants: ['piza', 'pizze', 'italian pizza', 'fladen']
+    variants: [
+      'piza', 'pitza', 'piizza', 'pizze', 'pizzas', 'pizzen',
+      'italian pizza', 'italienische pizza', 'fladen',
+      'steinofen pizza', 'holzofen pizza', 'ofenpizza'
+    ]
   },
   {
     canonical: 'pizza margherita',
     variants: [
-      'margherita', 'margerita', 'pizza margarita',
-      'pizza mozzarella', 'käsepizza', 'tomaten mozzarella pizza'
+      'margherita', 'margerita', 'margaritta', 'margarita',
+      'pizza margarita', 'pizza margaretha', 'pizza margerita',
+      'pizza mozzarella', 'käsepizza', 'tomaten mozzarella pizza',
+      'pizza mit käse', 'nur käse pizza', 'cheese pizza'
     ]
   },
   {
     canonical: 'pizza salami',
     variants: [
-      'salamipizza', 'pizza pepperoni', 'pepperoni pizza',
-      'pizza diavola', 'scharfe pizza'
+      'salamipizza', 'salami pizza', 'pizza mit salami',
+      'pizza pepperoni', 'pepperoni pizza', 'peperoni pizza',
+      'pizza diavola', 'diavola', 'scharfe pizza', 'pikante pizza'
     ]
   },
   {
     canonical: 'pizza hawaii',
     variants: [
-      'hawaii pizza', 'pizza ananas', 'pizza schinken ananas',
-      'tropical pizza'
+      'hawaii pizza', 'hawaii', 'hawai pizza', 'hawaiipizza',
+      'pizza ananas', 'pizza mit ananas', 'pizza schinken ananas',
+      'tropical pizza', 'pizza mit schinken und ananas'
+    ]
+  },
+  {
+    canonical: 'pizza tonno',
+    variants: [
+      'tonno', 'thunfischpizza', 'thunfisch pizza', 'pizza thunfisch',
+      'pizza tuna', 'tuna pizza', 'pizza mit thunfisch'
+    ]
+  },
+  {
+    canonical: 'pizza quattro stagioni',
+    variants: [
+      'quattro stagioni', '4 stagioni', 'vier jahreszeiten',
+      'pizza vier jahreszeiten', 'pizza 4 stagioni'
+    ]
+  },
+  {
+    canonical: 'pizza quattro formaggi',
+    variants: [
+      'quattro formaggi', '4 formaggi', 'vier käse', '4 käse',
+      'pizza vier käse', 'pizza 4 käse', 'vierkäsepizza',
+      'käse pizza', 'pizza mit vier käse'
+    ]
+  },
+  {
+    canonical: 'pizza funghi',
+    variants: [
+      'funghi', 'funghi pizza', 'pilzpizza', 'pilz pizza',
+      'pizza pilze', 'pizza mit pilzen', 'champignon pizza',
+      'pizza mit champignons'
+    ]
+  },
+  {
+    canonical: 'pizza prosciutto',
+    variants: [
+      'prosciutto', 'schinken pizza', 'schinkenpizza',
+      'pizza schinken', 'pizza mit schinken', 'ham pizza',
+      'prosciutto e funghi'
+    ]
+  },
+  {
+    canonical: 'pizza spinaci',
+    variants: [
+      'spinaci', 'spinat pizza', 'spinatpizza', 'pizza spinat',
+      'pizza mit spinat', 'popeye pizza', 'spinat feta pizza'
     ]
   },
   {
     canonical: 'calzone',
     variants: [
-      'pizza calzone', 'gefüllte pizza', 'geschlossene pizza',
-      'teigtasche'
+      'pizza calzone', 'calzon', 'calzzone', 'gefüllte pizza',
+      'geschlossene pizza', 'teigtasche', 'pizza tasche',
+      'klappizza', 'halbmondpizza'
     ]
   },
 
   // ============================================
-  // PASTA
+  // PASTA - EXPANDED
   // ============================================
   {
     canonical: 'pasta',
-    variants: ['nudeln', 'noodles', 'teigwaren', 'nudelgerichte']
+    variants: [
+      'nudeln', 'nudel', 'noodles', 'teigwaren', 'nudelgerichte',
+      'pasta gericht', 'italian pasta', 'italienische pasta'
+    ]
   },
   {
     canonical: 'spaghetti',
-    variants: ['spagetti', 'spagheti', 'spaghetty', 'lange nudeln']
+    variants: [
+      'spagetti', 'spagheti', 'spaghetty', 'spageti', 'spghetti',
+      'lange nudeln', 'spaghettis'
+    ]
   },
   {
     canonical: 'spaghetti bolognese',
     variants: [
-      'bolognese', 'spag bol', 'spaghetti mit fleischsoße',
-      'spaghetti hackfleisch', 'spagetti bolo', 'bolo',
-      'pasta bolognese', 'nudeln bolognese'
+      'bolognese', 'bolo', 'bolonese', 'bolognaise', 'bolognäse',
+      'spag bol', 'spaghetti mit fleischsoße', 'spaghetti fleischsauce',
+      'spaghetti hackfleisch', 'spagetti bolo', 'spagetti bolognese',
+      'pasta bolognese', 'nudeln bolognese', 'ragu', 'ragù'
     ]
   },
   {
     canonical: 'spaghetti carbonara',
     variants: [
-      'carbonara', 'pasta carbonara', 'spagetti carbonara',
-      'spaghetti mit speck', 'spaghetti mit ei'
+      'carbonara', 'carbonarra', 'carbonera', 'carbonnara',
+      'pasta carbonara', 'spagetti carbonara', 'nudeln carbonara',
+      'spaghetti mit speck', 'spaghetti mit ei', 'spaghetti ei speck',
+      'carbonara sauce', 'alla carbonara'
+    ]
+  },
+  {
+    canonical: 'penne arrabiata',
+    variants: [
+      'arrabiata', 'arrabbiata', 'arabbiata', 'arrabiatta',
+      'penne arrabbiata', 'pasta arrabiata', 'nudeln arrabiata',
+      'penne scharf', 'scharfe penne', 'penne pikant'
     ]
   },
   {
     canonical: 'lasagne',
     variants: [
-      'lasagna', 'nudelauflauf', 'lasanja', 'lasanje'
+      'lasagna', 'lasange', 'lasanja', 'lasanje', 'lasagnen',
+      'nudelauflauf', 'pasta auflauf', 'italienischer auflauf',
+      'lasagne bolognese', 'lasagne al forno', 'klassische lasagne'
     ]
   },
   {
     canonical: 'penne',
     variants: [
-      'penne rigate', 'röhrennudeln', 'pennenudeln'
+      'penne rigate', 'röhrennudeln', 'pennenudeln', 'pene',
+      'pennepasta', 'penne pasta'
+    ]
+  },
+  {
+    canonical: 'tagliatelle',
+    variants: [
+      'tagliatele', 'tagliattelle', 'tagliatellen', 'bandnudeln',
+      'fettuccine', 'fettucine', 'fettuccini'
+    ]
+  },
+  {
+    canonical: 'rigatoni',
+    variants: [
+      'rigatone', 'röhrchen', 'große röhren', 'röhrennudeln groß'
+    ]
+  },
+  {
+    canonical: 'tortellini',
+    variants: [
+      'tortelini', 'tortelloni', 'tortellini pasta', 'gefüllte nudeln',
+      'tortellini mit sahne', 'tortellini panna'
+    ]
+  },
+  {
+    canonical: 'aglio e olio',
+    variants: [
+      'aglio olio', 'alio olio', 'aglio e olio', 'knoblauchpasta',
+      'spaghetti aglio olio', 'pasta knoblauch öl'
     ]
   },
   {
@@ -254,188 +430,397 @@ export const FOOD_SYNONYMS: SynonymGroup[] = [
   },
 
   // ============================================
-  // DEUTSCHE KÜCHE (German cuisine)
+  // DEUTSCHE KÜCHE (German cuisine) - EXPANDED
   // ============================================
   {
     canonical: 'schnitzel',
     variants: [
-      'schnitsl', 'cutlet', 'escalope', 'kotelett',
-      'paniertes schnitzel'
+      'schnitsl', 'schnizel', 'snitzel', 'cutlet', 'escalope',
+      'kotelett', 'paniertes schnitzel', 'paniertes',
+      'schnitzl', 'schnitzelchen', 'schnitzeli',
+      'schweineschnitzel', 'hähnchenschnitzel', 'putenschnitzel'
     ]
   },
   {
     canonical: 'wiener schnitzel',
     variants: [
       'wienerschnitzel', 'kalb schnitzel', 'kalbsschnitzel',
-      'original wiener'
+      'original wiener', 'wiener art', 'nach wiener art',
+      'wiener schnitzel vom kalb', 'wienerschnitzl'
     ]
   },
   {
     canonical: 'jägerschnitzel',
     variants: [
-      'jaegerschnitzel', 'schnitzel mit pilzsoße',
-      'schnitzel jäger art', 'pilzschnitzel'
+      'jaegerschnitzel', 'jäger schnitzel', 'schnitzel mit pilzsoße',
+      'schnitzel jäger art', 'pilzschnitzel', 'jäger art',
+      'schnitzel mit champignons', 'rahm schnitzel'
+    ]
+  },
+  {
+    canonical: 'zigeunerschnitzel',
+    variants: [
+      'zigeuner schnitzel', 'paprikaschnitzel', 'schnitzel balkan',
+      'schnitzel mit paprikasoße', 'balkan schnitzel'
+    ]
+  },
+  {
+    canonical: 'cordon bleu',
+    variants: [
+      'cordonbleu', 'cordon blue', 'gordon bleu', 'gordon blue',
+      'schnitzel gefüllt', 'gefülltes schnitzel',
+      'schnitzel mit schinken käse', 'schweinecordonbleu'
     ]
   },
   {
     canonical: 'currywurst',
     variants: [
-      'curry wurst', 'curywurst', 'wurst mit curry',
-      'bratwurst curry', 'bratwurst mit currysoße'
+      'curry wurst', 'curywurst', 'curiwurst', 'curyworst',
+      'wurst mit curry', 'bratwurst curry', 'bratwurst mit currysoße',
+      'currywurstpommes', 'currywurst mit pommes'
     ]
   },
   {
     canonical: 'bratwurst',
     variants: [
-      'rostbratwurst', 'grillwurst', 'wurst',
-      'thüringer', 'nürnberger', 'fränkische'
+      'rostbratwurst', 'grillwurst', 'wurst', 'würstchen', 'wurstel',
+      'thüringer', 'thüringer bratwurst', 'nürnberger', 'nürnberger würstchen',
+      'fränkische', 'fränkische bratwurst', 'coburger', 'bockwurst',
+      'weißwurst', 'weisswurst', 'knacker', 'wiener würstchen'
     ]
   },
   {
     canonical: 'käsespätzle',
     variants: [
       'kaesespaetzle', 'spätzle mit käse', 'allgäuer käsespätzle',
-      'kässpätzle', 'kassspatzen'
+      'kässpätzle', 'kassspatzen', 'käsespätzl', 'käsespaetzle',
+      'kaese spaetzle', 'emmentaler spätzle', 'bergkäse spätzle'
     ]
   },
   {
     canonical: 'spätzle',
     variants: [
-      'spaetzle', 'schwäbische spätzle', 'eierspätzle',
-      'knöpfle', 'nockerl'
+      'spaetzle', 'schwäbische spätzle', 'eierspätzle', 'spätzli',
+      'knöpfle', 'knöpfli', 'nockerl', 'nockerln', 'spätzla',
+      'hausgemachte spätzle', 'hand geschabte spätzle'
     ]
   },
   {
     canonical: 'maultaschen',
     variants: [
-      'schwäbische maultaschen', 'herrgottsbscheißerle',
-      'gefüllte teigtaschen', 'mauldaschen'
+      'schwäbische maultaschen', 'herrgottsbscheißerle', 'mauldaschen',
+      'gefüllte teigtaschen', 'schwäbische ravioli', 'mauldascha',
+      'maultaschensuppe', 'gebratene maultaschen'
     ]
   },
   {
     canonical: 'sauerbraten',
     variants: [
-      'rheinischer sauerbraten', 'marinierter braten',
-      'essigbraten'
+      'rheinischer sauerbraten', 'marinierter braten', 'essigbraten',
+      'sauer braten', 'saure braten', 'rheinischer'
     ]
   },
   {
     canonical: 'roulade',
     variants: [
-      'rinderroulade', 'rindsroulade', 'fleischroulade',
-      'kohlroulade', 'krautroulade'
+      'rinderroulade', 'rindsroulade', 'fleischroulade', 'rouladen',
+      'kohlroulade', 'krautroulade', 'rinderrouladen', 'krautwickel',
+      'wirsingroulade', 'kappes'
     ]
   },
   {
     canonical: 'gulasch',
     variants: [
-      'gulash', 'goulasch', 'rindergulasch',
-      'ungarisches gulasch', 'szegediner'
+      'gulash', 'goulasch', 'goulash', 'rindergulasch', 'schweinegulasch',
+      'ungarisches gulasch', 'szegediner', 'szegediner gulasch',
+      'gulaschsuppe', 'kesselgulasch', 'gulyás', 'gulyas'
     ]
   },
   {
-    canonical: 'eisbein',
+    canonical: 'frikadelle',
     variants: [
-      'schweinshaxe', 'haxe', 'haxn', 'stelze',
-      'grillhaxe', 'knusprige haxe'
+      'frikadellen', 'bulette', 'buletten', 'fleischpflanzerl',
+      'fleischküchle', 'fleischklops', 'klops', 'klopse',
+      'hackfleischbällchen', 'fleischbällchen', 'hackbällchen',
+      'bratklops', 'beefsteak', 'deutsches beefsteak'
+    ]
+  },
+  {
+    canonical: 'hackbraten',
+    variants: [
+      'falscher hase', 'fleischkäse', 'hackfleischbraten',
+      'hackfleischrolle', 'fleischrolle', 'meatloaf'
+    ]
+  },
+  {
+    canonical: 'kassler',
+    variants: [
+      'kasseler', 'kasseler nacken', 'kassler rippchen', 'kasseler rippchen',
+      'geräuchertes schweinefleisch', 'kasseler braten'
+    ]
+  },
+  {
+    canonical: 'königsberger klopse',
+    variants: [
+      'königsberger', 'klopse in kapernsauce', 'kapernklopse',
+      'saure klopse', 'königsberger fleischbällchen'
+    ]
+  },
+  {
+    canonical: 'schweinshaxe',
+    variants: [
+      'haxe', 'haxn', 'grillhaxe', 'schweinehaxe', 'eisbein',
+      'haxe vom grill', 'knusperhaxe', 'bayerische haxe',
+      'stelze', 'schweinestelze', 'hinterhaxe'
+    ]
+  },
+  {
+    canonical: 'schweinebraten',
+    variants: [
+      'schweinbraten', 'schweinsbraten', 'krustenbraten',
+      'bayerischer schweinebraten', 'braten vom schwein',
+      'schweinebauch', 'schweinenacken', 'nackenbraten'
+    ]
+  },
+  {
+    canonical: 'rollbraten',
+    variants: [
+      'roll braten', 'gefüllter braten', 'gefüllter schweinebraten',
+      'rollbraten gefüllt', 'rollbraten mit füllung'
+    ]
+  },
+  {
+    canonical: 'labskaus',
+    variants: [
+      'lapskaus', 'norddeutscher labskaus', 'hamburger labskaus',
+      'matjes labskaus', 'labskovs'
+    ]
+  },
+  {
+    canonical: 'grünkohl',
+    variants: [
+      'gruenkohl', 'grüne kohl', 'pinkel mit grünkohl',
+      'grünkohl mit pinkel', 'oldenburger grünkohl',
+      'kohl und pinkel', 'braunkohl'
+    ]
+  },
+  {
+    canonical: 'himmel und erde',
+    variants: [
+      'himmel un ääd', 'himmel und erde mit blutwurst',
+      'kartoffelpüree mit apfelmus', 'rheinisch'
+    ]
+  },
+  {
+    canonical: 'matjes',
+    variants: [
+      'matjeshering', 'matjesfilet', 'matjes hausfrauenart',
+      'matjes mit zwiebeln', 'holländischer matjes'
+    ]
+  },
+  {
+    canonical: 'bismarckhering',
+    variants: [
+      'bismarck hering', 'rollmops', 'rollmöpse', 'saurer hering',
+      'eingelegter hering', 'marinierter hering'
     ]
   },
   {
     canonical: 'leberkäse',
     variants: [
-      'leberkaese', 'fleischkäse', 'leberkäs',
-      'wurstkäse', 'bayerischer leberkäse'
+      'leberkaese', 'leberkäs', 'leberkas', 'fleischkäse', 'fleischkaese',
+      'wurstkäse', 'bayerischer leberkäse', 'leberkässemmel',
+      'leberkäsebrötchen', 'abgebräunter leberkäse'
     ]
   },
   {
     canonical: 'weißwurst',
     variants: [
-      'weisswurst', 'münchner weißwurst', 'bayerische weißwurst',
-      'weisswuerscht'
+      'weisswurst', 'weisswuerscht', 'weißwürstchen', 'weisswuerstchen',
+      'münchner weißwurst', 'bayerische weißwurst',
+      'weißwurstfrühstück', 'weisswurstfruehstueck'
     ]
   },
   {
     canonical: 'kartoffelsalat',
     variants: [
-      'erdäpfelsalat', 'grumbeersalat', 'potato salad',
-      'schwäbischer kartoffelsalat'
+      'erdäpfelsalat', 'erdaepfelsalat', 'grumbeersalat', 'potato salad',
+      'schwäbischer kartoffelsalat', 'bayerischer kartoffelsalat',
+      'warmer kartoffelsalat', 'kartoffelsalat mit speck'
     ]
   },
   {
     canonical: 'sauerkraut',
     variants: [
-      'kraut', 'weinkraut', 'bayrisch kraut',
-      'fermentierter kohl'
+      'kraut', 'weinkraut', 'bayrisch kraut', 'bayerisch kraut',
+      'fermentierter kohl', 'sauerkohl', 'elsässer sauerkraut',
+      'choucroute'
     ]
   },
   {
     canonical: 'knödel',
     variants: [
-      'knoedel', 'klöße', 'kloesse', 'semmelknödel',
-      'kartoffelknödel', 'böhmische knödel'
+      'knoedel', 'klöße', 'kloesse', 'klosse', 'semmelknödel',
+      'kartoffelknödel', 'böhmische knödel', 'serviettenknödel',
+      'speckknödel', 'leberknödel', 'spinatknödel', 'knödln'
     ]
   },
   {
     canonical: 'flammkuchen',
     variants: [
-      'tarte flambée', 'elsässer flammkuchen',
-      'dünner fladen', 'flammenkuchen'
+      'tarte flambée', 'tarte flambee', 'elsässer flammkuchen',
+      'dünner fladen', 'flammenkuchen', 'flammkuchen elsässer art',
+      'flambe', 'flammekueche'
+    ]
+  },
+  {
+    canonical: 'reibekuchen',
+    variants: [
+      'kartoffelpuffer', 'kartoffelpfannkuchen', 'rösti', 'roesti',
+      'reiberdatschi', 'dotsch', 'puffer', 'rievkooche',
+      'potato pancakes', 'hash browns', 'latkes'
+    ]
+  },
+  {
+    canonical: 'pellkartoffeln',
+    variants: [
+      'kartoffeln mit quark', 'pellkartoffel', 'kartoffeln mit kräuterquark',
+      'quetschkartoffeln', 'ofenkartoffel', 'baked potato',
+      'folienkartoffel', 'gebackene kartoffel'
+    ]
+  },
+  {
+    canonical: 'bratkartoffeln',
+    variants: [
+      'röstkartoffeln', 'roestkartoffeln', 'gebratene kartoffeln',
+      'lyonnaise kartoffeln', 'home fries', 'bauernkartoffeln'
+    ]
+  },
+  {
+    canonical: 'kartoffelpüree',
+    variants: [
+      'kartoffelpuree', 'kartoffelbrei', 'stampfkartoffeln', 'stampf',
+      'mashed potatoes', 'kartoffelstampf', 'erdäpfelpüree'
+    ]
+  },
+  {
+    canonical: 'eiergerichte',
+    variants: [
+      'eier', 'spiegelei', 'spiegeleier', 'rührei', 'ruehrei',
+      'omelette', 'omelett', 'strammer max', 'bauernfrühstück'
     ]
   },
 
   // ============================================
-  // SALAD
+  // SALAD - EXPANDED
   // ============================================
   {
     canonical: 'salat',
     variants: [
-      'salad', 'salade', 'insalata', 'blattsalat'
+      'salad', 'salade', 'insalata', 'blattsalat', 'salate',
+      'salats', 'grüner salat', 'gemischter salat', 'beilagensalat',
+      'bunter salat', 'salatvariationen'
     ]
   },
   {
     canonical: 'caesar salad',
     variants: [
-      'cäsar salat', 'caesar salat', 'caesarsalat',
-      'ceasar salad', 'cesar salat'
+      'cäsar salat', 'caesar salat', 'caesarsalat', 'cesarsalat',
+      'ceasar salad', 'cesar salat', 'caeser salat', 'cesar',
+      'römersalat', 'caesar dressing', 'chicken caesar'
     ]
   },
   {
     canonical: 'griechischer salat',
     variants: [
-      'greek salad', 'bauernsalat', 'hirtensalat',
-      'choriatiki', 'feta salat'
+      'greek salad', 'bauernsalat', 'hirtensalat', 'griechisch salat',
+      'choriatiki', 'feta salat', 'fetasalat', 'schafskäsesalat',
+      'tomaten gurken feta', 'village salat'
+    ]
+  },
+  {
+    canonical: 'krautsalat',
+    variants: [
+      'coleslaw', 'colslaw', 'kohlsalat', 'weißkrautsalat',
+      'rotkrautsalat', 'rotkohl salat', 'amerikanischer krautsalat'
+    ]
+  },
+  {
+    canonical: 'nudelsalat',
+    variants: [
+      'pasta salat', 'pastasalat', 'nudel salat', 'italienischer nudelsalat',
+      'kalter nudelsalat', 'nudelsalat mit mayo'
+    ]
+  },
+  {
+    canonical: 'wurstsalat',
+    variants: [
+      'fleischsalat', 'bayrischer wurstsalat', 'schwäbischer wurstsalat',
+      'wurst salat', 'schweizer wurstsalat', 'elsässer wurstsalat'
     ]
   },
 
   // ============================================
-  // FALAFEL & MIDDLE EASTERN
+  // FALAFEL & MIDDLE EASTERN - EXPANDED
   // ============================================
   {
     canonical: 'falafel',
     variants: [
-      'felafel', 'falefel', 'falaffel',
-      'kichererbsenbällchen', 'veggie balls'
+      'felafel', 'falefel', 'falaffel', 'falafl', 'falafeln',
+      'kichererbsenbällchen', 'veggie balls', 'falafelkugeln',
+      'falafel bällchen', 'falafel teller', 'falafel wrap'
     ]
   },
   {
     canonical: 'hummus',
     variants: [
-      'humus', 'hommus', 'kichererbsenpüree',
-      'hummusdip', 'houmous'
+      'humus', 'hommus', 'hoummus', 'hummous', 'houmous',
+      'kichererbsenpüree', 'kichererbsendip', 'hummusdip',
+      'hummus bi tahini', 'kichererbsen paste'
     ]
   },
   {
     canonical: 'shakshuka',
     variants: [
-      'schakschuka', 'shakshouka', 'eier in tomatensoße',
-      'israelisches frühstück'
+      'schakschuka', 'shakshouka', 'shakschouka', 'shaksuka',
+      'eier in tomatensoße', 'israelisches frühstück',
+      'türkische eier', 'menemen'
     ]
   },
   {
     canonical: 'baba ganoush',
     variants: [
-      'baba ghanoush', 'auberginenpüree', 'auberginendip',
-      'mutabbal'
+      'baba ghanoush', 'baba ganousch', 'babaganoush', 'babaghanoush',
+      'auberginenpüree', 'auberginendip', 'auberginen creme',
+      'mutabbal', 'mutabal'
+    ]
+  },
+  {
+    canonical: 'tabbouleh',
+    variants: [
+      'tabouleh', 'taboule', 'tabule', 'taboulé', 'bulgursalat',
+      'petersiliensalat', 'couscous salat arabisch'
+    ]
+  },
+  {
+    canonical: 'shawarma',
+    variants: [
+      'schawarma', 'shawerma', 'schawurma', 'shoarma', 'shwarma',
+      'arabischer döner', 'libanesischer döner', 'döner arabisch'
+    ]
+  },
+  {
+    canonical: 'fattoush',
+    variants: [
+      'fattousch', 'fatusch', 'fattusch', 'libanesischer salat',
+      'brotsalat arabisch'
+    ]
+  },
+  {
+    canonical: 'manakish',
+    variants: [
+      'manoush', 'manoushe', 'manaqish', 'zaatar pizza',
+      'arabisches fladenbrot', 'libanesische pizza'
     ]
   },
 
@@ -629,112 +1014,202 @@ export const FOOD_SYNONYMS: SynonymGroup[] = [
   },
 
   // ============================================
-  // ASIAN FOOD
+  // ASIAN FOOD - EXPANDED
   // ============================================
   {
     canonical: 'sushi',
-    variants: ['susi', 'suschi', 'japanese rolls']
+    variants: [
+      'susi', 'suschi', 'suushi', 'japanese rolls', 'sushis',
+      'sushi set', 'sushi platte', 'sushiplatte', 'sushi box'
+    ]
   },
   {
     canonical: 'maki',
-    variants: ['maki roll', 'makizushi', 'sushi rolle']
+    variants: [
+      'maki roll', 'maki rolls', 'makizushi', 'makis',
+      'sushi rolle', 'sushi rollen', 'inside out roll',
+      'california roll', 'california maki'
+    ]
   },
   {
     canonical: 'nigiri',
-    variants: ['nigiri sushi', 'hand sushi']
+    variants: [
+      'nigiri sushi', 'nigiris', 'hand sushi', 'nigrizushi',
+      'sushi nigiri'
+    ]
   },
   {
     canonical: 'ramen',
     variants: [
-      'ramennudeln', 'ramen noodles', 'nudelsuppe',
-      'japanische nudelsuppe'
+      'ramennudeln', 'ramen noodles', 'nudelsuppe', 'raman',
+      'japanische nudelsuppe', 'tonkotsu ramen', 'miso ramen',
+      'shoyu ramen', 'ramenschale'
     ]
   },
   {
     canonical: 'pho',
     variants: [
-      'pho bo', 'pho ga', 'vietnamesische suppe',
-      'pho suppe', 'reisnudelsuppe'
+      'pho bo', 'pho ga', 'vietnamesische suppe', 'fo suppe',
+      'pho suppe', 'reisnudelsuppe', 'vietnam suppe',
+      'pho vietnam', 'phở'
     ]
   },
   {
     canonical: 'pad thai',
     variants: [
-      'padthai', 'pad tai', 'thailändische nudeln',
-      'gebratene reisnudeln'
+      'padthai', 'pad tai', 'pat thai', 'thailändische nudeln',
+      'gebratene reisnudeln', 'thai nudeln', 'phad thai'
     ]
   },
   {
     canonical: 'fried rice',
     variants: [
-      'gebratener reis', 'reis gebraten', 'bratreis',
-      'chinesischer reis', 'asia reis', 'nasi goreng'
+      'gebratener reis', 'reis gebraten', 'bratreis', 'bratreis',
+      'chinesischer reis', 'asia reis', 'nasi goreng', 'nasi goreg',
+      'gebratene reis', 'china reis', 'asiatischer reis'
+    ]
+  },
+  {
+    canonical: 'gebratene nudeln',
+    variants: [
+      'fried noodles', 'chow mein', 'chow mien', 'lo mein',
+      'bami goreng', 'mie goreng', 'asia nudeln', 'bratnudeln',
+      'gebratene nudelns', 'wok nudeln', 'woknudeln'
     ]
   },
   {
     canonical: 'curry',
     variants: [
-      'thai curry', 'indisches curry', 'japanisches curry'
+      'curri', 'kari', 'kerry', 'thai curry', 'indisches curry',
+      'japanisches curry', 'currygericht', 'curry gericht'
     ]
   },
   {
     canonical: 'green curry',
     variants: [
-      'grünes curry', 'thai green curry', 'gaeng keow wan'
+      'grünes curry', 'gruenes curry', 'thai green curry',
+      'gaeng keow wan', 'grünes thai curry', 'green thai curry'
     ]
   },
   {
     canonical: 'red curry',
     variants: [
-      'rotes curry', 'thai red curry', 'gaeng phed'
+      'rotes curry', 'thai red curry', 'gaeng phed', 'panang curry',
+      'massaman curry', 'rotes thai curry', 'red thai curry'
+    ]
+  },
+  {
+    canonical: 'yellow curry',
+    variants: [
+      'gelbes curry', 'thai yellow curry', 'gaeng karee',
+      'gelbes thai curry'
     ]
   },
   {
     canonical: 'dim sum',
     variants: [
-      'dimsum', 'chinesische teigtaschen', 'yum cha'
+      'dimsum', 'dim sums', 'chinesische teigtaschen', 'yum cha',
+      'dim sum korb', 'gedämpfte teigtaschen'
     ]
   },
   {
     canonical: 'gyoza',
     variants: [
-      'jiaozi', 'potstickers', 'japanische teigtaschen',
-      'dumplings'
+      'gyozas', 'jiaozi', 'potstickers', 'pot stickers',
+      'japanische teigtaschen', 'dumplings', 'dumpling',
+      'japanische maultaschen'
     ]
   },
   {
     canonical: 'spring rolls',
     variants: [
-      'frühlingsrollen', 'frühlingsrolle', 'spring roll',
-      'sommerrollen', 'vietnamese rolls'
+      'frühlingsrollen', 'frühlingsrolle', 'spring roll', 'springrolls',
+      'sommerrollen', 'vietnamese rolls', 'vietnam rollen',
+      'knusprige frühlingsrollen', 'mini frühlingsrollen'
     ]
   },
   {
     canonical: 'bao',
     variants: [
-      'bao bun', 'gua bao', 'steamed bun',
-      'dampfbrötchen', 'gefüllte buns'
+      'bao bun', 'bao buns', 'gua bao', 'steamed bun', 'steamed buns',
+      'dampfbrötchen', 'gefüllte buns', 'baozi', 'mantou'
     ]
   },
   {
     canonical: 'bibimbap',
     variants: [
-      'bibimbab', 'koreanische reisschale',
-      'korean rice bowl'
+      'bibimbab', 'bi bim bap', 'koreanische reisschale',
+      'korean rice bowl', 'dolsot bibimbap', 'koreanisch reis'
     ]
   },
   {
     canonical: 'kimchi',
     variants: [
-      'kimchee', 'koreanisches sauerkraut',
-      'fermentierter kohl korean'
+      'kimchee', 'kim chi', 'koreanisches sauerkraut',
+      'fermentierter kohl korean', 'kimchi beilage'
     ]
   },
   {
     canonical: 'bulgogi',
     variants: [
-      'koreanisches bbq', 'korean bbq beef',
-      'gegrilltes rindfleisch koreanisch'
+      'bul gogi', 'koreanisches bbq', 'korean bbq beef',
+      'gegrilltes rindfleisch koreanisch', 'bulgogi beef'
+    ]
+  },
+  {
+    canonical: 'teriyaki',
+    variants: [
+      'teryaki', 'terriaki', 'teriyaki sauce', 'teriyaki chicken',
+      'teriyaki hähnchen', 'teriyaki lachs', 'teriyakisauce'
+    ]
+  },
+  {
+    canonical: 'donburi',
+    variants: [
+      'don', 'reis schüssel', 'japanische reisschale',
+      'katsudon', 'gyudon', 'oyakodon', 'tendon'
+    ]
+  },
+  {
+    canonical: 'udon',
+    variants: [
+      'udon nudeln', 'udonnudeln', 'dicke nudeln japan',
+      'udon suppe', 'yaki udon', 'kake udon'
+    ]
+  },
+  {
+    canonical: 'soba',
+    variants: [
+      'soba nudeln', 'sobanudeln', 'buchweizen nudeln',
+      'buchweizennudeln', 'zaru soba', 'kake soba'
+    ]
+  },
+  {
+    canonical: 'edamame',
+    variants: [
+      'edamamen', 'sojabohnen', 'grüne sojabohnen',
+      'edamame bohnen', 'japanische sojabohnen'
+    ]
+  },
+  {
+    canonical: 'miso',
+    variants: [
+      'miso suppe', 'misosuppe', 'miso soup', 'misoshiru',
+      'japanische suppe', 'miso paste'
+    ]
+  },
+  {
+    canonical: 'tempura',
+    variants: [
+      'tempra', 'tempuras', 'gemüse tempura', 'shrimp tempura',
+      'garnelen tempura', 'frittiertes gemüse japan'
+    ]
+  },
+  {
+    canonical: 'katsu',
+    variants: [
+      'tonkatsu', 'chicken katsu', 'katsu curry', 'katsucurry',
+      'paniertes schnitzel japan', 'japanisches schnitzel'
     ]
   },
 
@@ -1306,81 +1781,266 @@ export function extractMainIngredient(dishName: string): string | null {
   return null;
 }
 
+// ============================================
+// GERMAN COMPOUND WORD COMPONENTS
+// ============================================
+const COMPOUND_SUFFIXES = [
+  // Dish types
+  'braten', 'schnitzel', 'salat', 'suppe', 'kuchen', 'brot', 'brötchen',
+  'fleisch', 'steak', 'filet', 'wurst', 'würstchen', 'käse', 'soße', 'sauce',
+  'burger', 'pizza', 'teller', 'bowl', 'platte', 'spieß', 'spiess',
+  'auflauf', 'eintopf', 'ragout', 'gulasch', 'gericht', 'pfanne',
+  'nudeln', 'pasta', 'reis', 'kartoffeln', 'pommes', 'fritten',
+  'roulade', 'rouladen', 'frikadelle', 'frikadellen', 'klopse',
+  // Drinks
+  'schorle', 'saft', 'limonade', 'limo', 'tee', 'kaffee', 'shake', 'smoothie',
+  'bier', 'wein', 'wasser', 'cola',
+  // Desserts
+  'torte', 'eis', 'creme', 'mousse', 'pudding', 'strudel'
+];
+
+const COMPOUND_PREFIXES = [
+  // Meats
+  'schweine', 'rinder', 'rinds', 'kalbs', 'lamm', 'hähnchen', 'hühner', 'huhn',
+  'puten', 'enten', 'gänse', 'wild', 'hirsch', 'kaninchen',
+  // Fish
+  'lachs', 'thunfisch', 'forellen', 'fisch', 'garnelen', 'krabben',
+  // Vegetables
+  'kartoffel', 'tomate', 'tomaten', 'zwiebel', 'paprika', 'pilz', 'champignon',
+  'spinat', 'brokkoli', 'blumen', 'rosenkohl', 'grünkohl', 'rotkohl', 'weißkohl',
+  'kürbis', 'zucchini', 'auberginen', 'gurken', 'bohnen', 'erbsen', 'linsen',
+  // Cheese
+  'käse', 'mozzarella', 'feta', 'gouda', 'cheddar', 'parmesan', 'emmentaler',
+  // Fruit
+  'apfel', 'birnen', 'kirsch', 'erdbeer', 'himbeer', 'blaubeer', 'bananen',
+  'orangen', 'zitronen', 'ananas', 'mango',
+  // Other
+  'rahm', 'sahne', 'butter', 'knoblauch', 'kräuter', 'curry', 'chili',
+  'schokoladen', 'schoko', 'vanille', 'karamell', 'nuss', 'mandel'
+];
+
 /**
- * Split German compound words (basic implementation)
- * E.g., "Schweinebraten" → ["Schweine", "braten"]
+ * Split German compound words (enhanced implementation)
+ * E.g., "Schweinebraten" → ["Schweinebraten", "Schweine", "braten"]
+ * E.g., "Currywurst" → ["Currywurst", "Curry", "wurst"]
+ * E.g., "Käsespätzle" → ["Käsespätzle", "Käse", "spätzle"]
  */
 export function splitCompoundWord(word: string): string[] {
   const result: string[] = [word];
-
-  // Common German word endings that indicate compound words
-  const suffixes = [
-    'braten', 'schnitzel', 'salat', 'suppe', 'kuchen', 'brot',
-    'fleisch', 'steak', 'filet', 'wurst', 'käse', 'soße', 'sauce',
-    'burger', 'pizza', 'teller', 'bowl', 'platte', 'spieß'
-  ];
-
   const wordLower = word.toLowerCase();
 
-  for (const suffix of suffixes) {
+  // Try suffix-based splitting first
+  for (const suffix of COMPOUND_SUFFIXES) {
     if (wordLower.endsWith(suffix) && wordLower.length > suffix.length + 2) {
       const prefix = word.substring(0, word.length - suffix.length);
+      // Remove common linking letters (s, n, e, en)
+      const cleanPrefix = prefix.replace(/[sne]n?$/i, '');
       result.push(prefix, suffix);
+      if (cleanPrefix !== prefix && cleanPrefix.length > 1) {
+        result.push(cleanPrefix);
+      }
       break;
     }
   }
 
-  return result;
+  // Try prefix-based splitting
+  for (const prefix of COMPOUND_PREFIXES) {
+    if (wordLower.startsWith(prefix) && wordLower.length > prefix.length + 2) {
+      const suffix = word.substring(prefix.length);
+      // Remove common linking letters
+      const cleanSuffix = suffix.replace(/^[sne]n?/i, '');
+      if (!result.includes(suffix)) {
+        result.push(prefix, suffix);
+      }
+      if (cleanSuffix !== suffix && cleanSuffix.length > 2 && !result.includes(cleanSuffix)) {
+        result.push(cleanSuffix);
+      }
+      break;
+    }
+  }
+
+  return Array.from(new Set(result));
 }
 
 /**
- * Expand search terms with synonyms
+ * Handle German diminutives (-chen, -lein endings)
+ * E.g., "Würstchen" → ["Würstchen", "Wurst"]
+ * E.g., "Brötchen" → ["Brötchen", "Brot"]
+ */
+export function handleDiminutives(word: string): string[] {
+  const result: string[] = [word];
+  const wordLower = word.toLowerCase();
+
+  // Common diminutive endings
+  if (wordLower.endsWith('chen')) {
+    const base = word.substring(0, word.length - 4);
+    result.push(base);
+    // Handle umlaut reversal (Würstchen → Wurst)
+    const noUmlaut = base
+      .replace(/ä/g, 'a')
+      .replace(/ö/g, 'o')
+      .replace(/ü/g, 'u');
+    if (noUmlaut !== base) {
+      result.push(noUmlaut);
+    }
+  } else if (wordLower.endsWith('lein')) {
+    const base = word.substring(0, word.length - 4);
+    result.push(base);
+    const noUmlaut = base
+      .replace(/ä/g, 'a')
+      .replace(/ö/g, 'o')
+      .replace(/ü/g, 'u');
+    if (noUmlaut !== base) {
+      result.push(noUmlaut);
+    }
+  } else if (wordLower.endsWith('erl') || wordLower.endsWith('el')) {
+    // Austrian/Bavarian diminutives (Schnitzerl, Hendl)
+    const base = word.substring(0, word.length - (wordLower.endsWith('erl') ? 3 : 2));
+    if (base.length > 2) {
+      result.push(base);
+    }
+  }
+
+  return Array.from(new Set(result));
+}
+
+/**
+ * Parse "mit" and "und" constructions in German dish names
+ * E.g., "Döner mit Pommes" → ["Döner", "Pommes"]
+ * E.g., "Schnitzel mit Pommes und Salat" → ["Schnitzel", "Pommes", "Salat"]
+ * E.g., "Currywurst & Pommes" → ["Currywurst", "Pommes"]
+ */
+export function parseMitUndConstruction(dishName: string): string[] {
+  const result: string[] = [];
+
+  // Split by "mit", "und", "&", "+"
+  const parts = dishName
+    .toLowerCase()
+    .split(/\s+(?:mit|und|&|\+|,)\s+/i)
+    .map(p => p.trim())
+    .filter(p => p.length > 0);
+
+  for (const part of parts) {
+    result.push(part);
+    // Also split each part's words
+    const words = part.split(/\s+/);
+    if (words.length > 1) {
+      result.push(...words);
+    }
+  }
+
+  return Array.from(new Set(result));
+}
+
+/**
+ * Handle common German plural forms
+ * E.g., "Pommes" stays as "Pommes"
+ * E.g., "Nudeln" → ["Nudeln", "Nudel"]
+ * E.g., "Spätzle" stays (already a plural form treated as singular)
+ */
+export function handlePlurals(word: string): string[] {
+  const result: string[] = [word];
+  const wordLower = word.toLowerCase();
+
+  // Common German plural endings
+  if (wordLower.endsWith('n') && wordLower.length > 3) {
+    // -en, -n endings
+    result.push(word.substring(0, word.length - 1)); // Remove last n
+    if (wordLower.endsWith('en')) {
+      result.push(word.substring(0, word.length - 2)); // Remove -en
+    }
+  }
+  if (wordLower.endsWith('e') && wordLower.length > 3) {
+    // -e endings (e.g., Pilze → Pilz)
+    result.push(word.substring(0, word.length - 1));
+  }
+  if (wordLower.endsWith('er') && wordLower.length > 4) {
+    // -er endings (but careful not to break words like "Burger")
+    const base = word.substring(0, word.length - 2);
+    if (!['burg', 'burg'].includes(base.toLowerCase().slice(-4))) {
+      result.push(base);
+    }
+  }
+  if (wordLower.endsWith('s') && wordLower.length > 3) {
+    // English-style plurals common in German menus
+    result.push(word.substring(0, word.length - 1));
+  }
+
+  return Array.from(new Set(result));
+}
+
+/**
+ * Expand search terms with synonyms (enhanced version)
+ *
+ * This function provides comprehensive expansion:
+ * - Synonym expansion
+ * - Compound word splitting (Currywurst → Curry + Wurst)
+ * - Diminutive handling (Würstchen → Wurst)
+ * - "mit/und" construction parsing (Döner mit Pommes → Döner, Pommes)
+ * - Plural form handling (Nudeln → Nudel)
  */
 export function expandWithSynonyms(searchTerm: string): string[] {
   // First remove size modifiers
   const cleanedTerm = removeSizeModifiers(searchTerm);
-  const words = cleanedTerm.split(' ');
-  const expandedSets: string[][] = [];
 
-  // Get synonyms for each word
-  for (const word of words) {
-    const synonyms = getSynonyms(word);
+  // Parse "mit/und" constructions first
+  const mainParts = parseMitUndConstruction(cleanedTerm);
 
-    // Also try compound word splitting
-    const compounds = splitCompoundWord(word);
-    if (compounds.length > 1) {
-      for (const part of compounds) {
-        const partSynonyms = getSynonyms(part);
-        synonyms.push(...partSynonyms);
+  const allTerms: string[] = [cleanedTerm];
+
+  // Process each part (from mit/und splitting)
+  for (const part of mainParts) {
+    allTerms.push(part);
+
+    const words = part.split(' ').filter(w => w.length > 0);
+
+    for (const word of words) {
+      // Add the word itself
+      allTerms.push(word);
+
+      // Get synonyms
+      const synonyms = getSynonyms(word);
+      allTerms.push(...synonyms);
+
+      // Handle compound words
+      const compounds = splitCompoundWord(word);
+      for (const compound of compounds) {
+        allTerms.push(compound);
+        const compoundSynonyms = getSynonyms(compound);
+        allTerms.push(...compoundSynonyms);
+      }
+
+      // Handle diminutives
+      const diminutives = handleDiminutives(word);
+      for (const dim of diminutives) {
+        allTerms.push(dim);
+        const dimSynonyms = getSynonyms(dim);
+        allTerms.push(...dimSynonyms);
+      }
+
+      // Handle plurals
+      const plurals = handlePlurals(word);
+      for (const plural of plurals) {
+        allTerms.push(plural);
+        const pluralSynonyms = getSynonyms(plural);
+        allTerms.push(...pluralSynonyms);
       }
     }
-
-    expandedSets.push(Array.from(new Set(synonyms)));
   }
 
-  // If only one word, return all synonyms
-  if (expandedSets.length === 1) {
-    return expandedSets[0];
-  }
+  // Also try the full term as-is for exact matching
+  const fullTermSynonyms = getSynonyms(cleanedTerm);
+  allTerms.push(...fullTermSynonyms);
 
-  // For multi-word terms, create combinations
-  const combinations: string[] = [];
+  // Deduplicate and filter
+  const uniqueTerms = Array.from(new Set(
+    allTerms
+      .map(t => t.toLowerCase().trim())
+      .filter(t => t.length > 1)
+  ));
 
-  function generateCombinations(index: number, current: string[]) {
-    if (index === expandedSets.length) {
-      combinations.push(current.join(' '));
-      return;
-    }
-
-    for (const synonym of expandedSets[index]) {
-      generateCombinations(index + 1, [...current, synonym]);
-    }
-  }
-
-  generateCombinations(0, []);
-
-  // Limit combinations to avoid explosion
-  return combinations.slice(0, 50);
+  // Limit to avoid explosion (prioritize shorter terms which are usually more specific)
+  return uniqueTerms.slice(0, 100);
 }
 
 /**

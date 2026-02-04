@@ -72,7 +72,7 @@ export function ThumbZoneFilterBar({
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
-                placeholder={language === 'de' ? 'Suchen...' : 'Search...'}
+                placeholder={t.searchPlaceholder}
                 autoFocus
                 className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-colors"
                 style={{
@@ -127,7 +127,7 @@ export function ThumbZoneFilterBar({
                 {searchQuery ? (
                   <span className="max-w-16 truncate">{searchQuery}</span>
                 ) : (
-                  <span>{language === 'de' ? 'Suchen' : 'Search'}</span>
+                  <span>{t.search}</span>
                 )}
               </button>
 

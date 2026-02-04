@@ -85,7 +85,7 @@ export function EnhancedFilterBar({
               }}
             >
               <span>⚠️</span>
-              <span>{language === 'de' ? 'Allergene' : 'Allergens'}</span>
+              <span>{t.allergens}</span>
               {excludeAllergens.size > 0 && (
                 <span
                   className="flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold"
@@ -173,7 +173,7 @@ export function EnhancedFilterBar({
               }}
             >
               <span>⚠️</span>
-              <span>{language === 'de' ? 'Allergene' : 'Allergens'}</span>
+              <span>{t.allergens}</span>
               {excludeAllergens.size > 0 && (
                 <span
                   className="flex items-center justify-center min-w-5 h-5 px-1 rounded-full text-xs font-bold"

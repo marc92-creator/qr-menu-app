@@ -268,7 +268,7 @@ export function MinimalistLayout({
                                     color: theme.styles.badgeSoldOutText,
                                   }}
                                 >
-                                  {language === 'de' ? 'Ausverkauft' : 'Sold out'}
+                                  {t.soldOut}
                                 </span>
                               )}
                             </span>

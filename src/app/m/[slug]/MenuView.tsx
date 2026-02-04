@@ -25,14 +25,30 @@ interface MenuViewProps {
 const detectBrowserLanguage = (): Language => {
   if (typeof window === 'undefined') return 'de';
   const browserLang = navigator.language || (navigator as { userLanguage?: string }).userLanguage || 'de';
-  return browserLang.startsWith('en') ? 'en' : 'de';
+  const langCode = browserLang.split('-')[0].toLowerCase();
+
+  // Map browser language to supported languages
+  const langMap: Record<string, Language> = {
+    'de': 'de',
+    'en': 'en',
+    'fr': 'fr',
+    'it': 'it',
+    'es': 'es',
+    'tr': 'tr',
+    'pl': 'pl',
+  };
+
+  return langMap[langCode] || 'de';
 };
+
+// Valid languages
+const VALID_LANGUAGES: Language[] = ['de', 'en', 'fr', 'it', 'es', 'tr', 'pl'];
 
 // Get saved language preference from localStorage
 const getSavedLanguage = (restaurantId: string): Language | null => {
   if (typeof window === 'undefined') return null;
   const saved = localStorage.getItem(`menu_lang_${restaurantId}`);
-  return saved === 'en' || saved === 'de' ? saved : null;
+  return saved && VALID_LANGUAGES.includes(saved as Language) ? (saved as Language) : null;
 };
 
 // Save language preference to localStorage

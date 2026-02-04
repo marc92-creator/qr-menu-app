@@ -77,9 +77,9 @@ export function HiddenFilterTrigger({
                 />
               </svg>
               {activeFilterCount > 0 ? (
-                <span>{language === 'de' ? `${activeFilterCount} Filter` : `${activeFilterCount} Filters`}</span>
+                <span>{t.nFilters.replace('{n}', String(activeFilterCount))}</span>
               ) : (
-                <span>{language === 'de' ? 'Filter' : 'Filters'}</span>
+                <span>{t.filters}</span>
               )}
 
               {/* Badge */}
@@ -108,7 +108,7 @@ export function HiddenFilterTrigger({
             {/* Header with close button */}
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium" style={{ color: styles.text }}>
-                {language === 'de' ? 'Filter' : 'Filters'}
+                {t.filters}
               </span>
               <button
                 onClick={handleTriggerClick}
@@ -166,7 +166,7 @@ export function HiddenFilterTrigger({
                 }}
               >
                 <span>⚠️</span>
-                <span>{language === 'de' ? 'Allergene' : 'Allergens'}</span>
+                <span>{t.allergens}</span>
                 {excludeAllergens.size > 0 && (
                   <span
                     className="flex items-center justify-center min-w-4 h-4 px-1 rounded-full text-[10px] font-bold"

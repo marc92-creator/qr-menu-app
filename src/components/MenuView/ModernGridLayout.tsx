@@ -375,6 +375,7 @@ function ModernGridItem({
 }: ModernGridItemProps) {
   const [showHeartAnimation, setShowHeartAnimation] = useState(false);
   const [lastTap, setLastTap] = useState(0);
+  const t = getTranslation(language);
 
   const itemName = getLocalizedName(item, language);
   const itemDescription = getLocalizedDescription(item, language);
@@ -459,7 +460,7 @@ function ModernGridItem({
           {/* Sold out overlay */}
           {item.is_sold_out && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">Ausverkauft</span>
+              <span className="text-white font-bold text-lg">{t.soldOut}</span>
             </div>
           )}
 
@@ -523,7 +524,7 @@ function ModernGridItem({
                   color: theme.styles.badgeVeganText,
                 }}
               >
-                🌱 Vegan
+                🌱 {t.vegan}
               </span>
             )}
             {item.is_vegetarian && !item.is_vegan && (
@@ -534,7 +535,7 @@ function ModernGridItem({
                   color: theme.styles.badgeVeganText,
                 }}
               >
-                🥬 Vegetarisch
+                🥬 {t.vegetarian}
               </span>
             )}
           </div>
