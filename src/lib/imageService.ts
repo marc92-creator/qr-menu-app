@@ -44,12 +44,21 @@ export function getAutoImageByStrategy(
           label: realisticImage.label,
         };
       }
-      // Fallback: Use a generic food photo if no specific match found
-      // This ensures users who choose 'real' always see an image
+      // Fallback: Use generic food photos when no specific match found
+      // Multiple fallbacks for variety, selected by dish name hash
+      const fallbackImages = [
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop', // Salad bowl
+        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop', // Pancakes
+        'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop', // Pizza
+        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop', // Vegetables
+        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&h=300&fit=crop', // Fruit tart
+      ];
+      const hash = dishName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const fallbackUrl = fallbackImages[hash % fallbackImages.length];
       return {
-        url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+        url: fallbackUrl,
         style: 'real',
-        label: 'Food',
+        label: dishName,
       };
     }
 
