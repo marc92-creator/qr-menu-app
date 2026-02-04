@@ -1129,6 +1129,8 @@ const CATEGORY_TRANSLATIONS: Record<string, CategoryTranslation> = {
   'spezialitäten': { de: 'Spezialitäten', en: 'Specialties', fr: 'Spécialités', it: 'Specialità', es: 'Especialidades', tr: 'Özel Yemekler', pl: 'Specjały' },
   'specialties': { de: 'Spezialitäten', en: 'Specialties', fr: 'Spécialités', it: 'Specialità', es: 'Especialidades', tr: 'Özel Yemekler', pl: 'Specjały' },
   'empfehlungen': { de: 'Empfehlungen', en: 'Recommendations', fr: 'Recommandations', it: 'Raccomandazioni', es: 'Recomendaciones', tr: 'Öneriler', pl: 'Polecane' },
+  'ouvertüre': { de: 'Ouvertüre', en: 'Overture', fr: 'Ouverture', it: 'Ouverture', es: 'Obertura', tr: 'Açılış', pl: 'Uwertura' },
+  'overture': { de: 'Ouvertüre', en: 'Overture', fr: 'Ouverture', it: 'Ouverture', es: 'Obertura', tr: 'Açılış', pl: 'Uwertura' },
 
   // Kids
   'kindermenü': { de: 'Kindermenü', en: 'Kids Menu', fr: 'Menu enfant', it: 'Menù bambini', es: 'Menú infantil', tr: 'Çocuk Menüsü', pl: 'Menu dla dzieci' },

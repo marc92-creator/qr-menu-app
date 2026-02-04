@@ -154,11 +154,13 @@ export function EnhancedFilterBar({
 
         {/* Filter pills row */}
         <div
-          className="flex overflow-x-auto px-4 pb-3 gap-2 scrollbar-hide"
+          className="flex overflow-x-auto pb-3 gap-2 scrollbar-hide"
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
             WebkitOverflowScrolling: 'touch',
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
           }}
         >
           {/* Allergen filter button */}

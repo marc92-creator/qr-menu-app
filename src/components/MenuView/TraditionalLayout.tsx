@@ -131,7 +131,7 @@ export function TraditionalLayout({
 
         {/* Enhanced Filters with Search, Dietary, and Allergen Filters - Hide on Scroll */}
         <div
-          className={`overflow-hidden transition-[max-height] duration-300 ease-out ${
+          className={`overflow-y-hidden overflow-x-visible transition-[max-height] duration-300 ease-out ${
             isFilterBarVisible ? 'max-h-40' : 'max-h-0'
           }`}
         >
