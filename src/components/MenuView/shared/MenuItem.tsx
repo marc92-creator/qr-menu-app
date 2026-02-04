@@ -23,20 +23,6 @@ interface MenuItemProps {
   getLocalizedDescription: (item: MenuItemType, lang: Language) => string | null;
 }
 
-// Simple Image Component - matches dashboard rendering
-function MenuImage({ src, alt, className }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
-  return (
-    <div className={`overflow-hidden bg-gray-100 ${className || ''}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
-        className="w-full h-full object-cover"
-      />
-    </div>
-  );
-}
-
 export function MenuItem({
   item,
   theme,
@@ -57,13 +43,12 @@ export function MenuItem({
   const itemAllergens = getAllergensByIds(item.allergens || []);
   const itemName = getLocalizedName(item, language);
   const itemDescription = getLocalizedDescription(item, language);
-  const isSvgImage = imageUrl?.endsWith('.svg');
 
   // Table row variant for CompactLayout
   if (variant === 'table-row') {
     return (
       <div
-        className="flex items-center gap-3 py-2 px-3 -mx-3 rounded-lg hover:bg-gray-50/50 transition-colors"
+        className="flex items-center gap-3 py-2 px-3 -mx-3 rounded-lg hover:bg-gray-50/50"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -93,7 +78,7 @@ export function MenuItem({
   if (variant === 'grid') {
     return (
       <div
-        className="group rounded-xl overflow-hidden transition-all duration-300"
+        className="group rounded-xl overflow-hidden"
         style={{
           backgroundColor: styles.cardBg,
           border: `1px solid ${styles.cardBorder}`,
@@ -104,21 +89,18 @@ export function MenuItem({
       >
         {imageUrl && (
           <div className="aspect-video overflow-hidden">
-            {isSvgImage ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={imageUrl}
-                alt={itemName}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                style={{ backgroundColor: '#f9fafb' }}
-              />
-            ) : (
-              <MenuImage
-                src={imageUrl}
-                alt={itemName}
-                className="w-full h-full transition-transform duration-300 group-hover:scale-110"
-              />
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt={itemName}
+              loading="lazy"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                backgroundColor: '#374151',
+              }}
+            />
           </div>
         )}
         <div className="p-4">
@@ -140,7 +122,7 @@ export function MenuItem({
   if (variant === 'minimal') {
     return (
       <div
-        className="group hover:bg-gray-50/50 -mx-4 px-4 py-3 rounded-xl transition-all duration-200"
+        className="group hover:bg-gray-50/50 -mx-4 px-4 py-3 rounded-xl"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{
@@ -203,7 +185,7 @@ export function MenuItem({
   // Default: card variant (Traditional layout)
   return (
     <article
-      className={`rounded-2xl p-4 transition-all duration-300 hover:shadow-lg ${item.is_sold_out ? 'opacity-60' : ''}`}
+      className={`rounded-2xl p-4 hover:shadow-lg ${item.is_sold_out ? 'opacity-60' : ''}`}
       style={{
         backgroundColor: styles.cardBg,
         border: `1px solid ${styles.cardBorder}`,
@@ -215,23 +197,20 @@ export function MenuItem({
     >
       <div className="flex gap-4">
         {imageUrl && (
-          <div className="flex-shrink-0">
-            {isSvgImage ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={imageUrl}
-                alt={itemName}
-                className="w-20 h-20 rounded-lg object-cover"
-                style={{ backgroundColor: '#f9fafb' }}
-              />
-            ) : (
-              <MenuImage
-                src={imageUrl}
-                alt={itemName}
-                className="w-20 h-20 rounded-lg"
-              />
-            )}
-          </div>
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={imageUrl}
+            alt={itemName}
+            loading="lazy"
+            style={{
+              width: '80px',
+              height: '80px',
+              objectFit: 'cover',
+              borderRadius: '12px',
+              backgroundColor: '#374151',
+              flexShrink: 0,
+            }}
+          />
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
@@ -337,7 +316,7 @@ export function MenuItem({
                   <button
                     key={allergen.id}
                     onClick={() => onAllergenClick?.(allergen.id)}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-all duration-200 touch-manipulation active:scale-95"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium touch-manipulation active:scale-95"
                     style={isSelected ? {
                       background: styles.allergenSelectedBg,
                       color: styles.allergenSelectedText,
