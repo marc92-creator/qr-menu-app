@@ -205,9 +205,8 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1920px] mx-auto h-full auto-rows-max">
           {categoryItems.map((item) => {
             const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
-            // DEBUG: Test placeholder - remove after testing
-            const testPlaceholder = restaurant.image_strategy === 'real' ? 'https://via.placeholder.com/400x200/ff0000/ffffff?text=TEST' : null;
-            const imageUrl = testPlaceholder || imageResult?.url || null;
+            // DEBUG: ALWAYS show test placeholder to verify image rendering works - remove after testing
+            const imageUrl = 'https://via.placeholder.com/400x200/ff0000/ffffff?text=TEST';
             const isSvgImage = imageUrl?.endsWith('.svg');
 
             return (
