@@ -78,8 +78,7 @@ function LanguageDropdown({
           color: styles.text,
         }}
       >
-        <span>{currentOption.flag}</span>
-        <span className="uppercase">{currentLang}</span>
+        <span className="text-base">{currentOption.flag}</span>
         <svg
           className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"

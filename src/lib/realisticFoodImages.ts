@@ -465,7 +465,7 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
   {
     id: 'real-weisswein',
     keywords: ['weißwein', 'weisswein', 'white wine', 'vino bianco', 'wine white', 'vin blanc', 'chardonnay', 'riesling', 'pinot grigio'],
-    imageUrl: 'https://images.unsplash.com/photo-1558001373-7b93ee48ffa0?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1470158499416-75be9aa0c4db?w=400&h=300&fit=crop',
     label: 'Weißwein',
     category: 'getraenke',
   },

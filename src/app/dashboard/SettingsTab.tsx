@@ -689,6 +689,14 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
             </p>
           </div>
 
+          {/* Auto Translation Button */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Menü übersetzen
+            </label>
+            <TranslateMenuButton restaurantId={restaurant.id} disabled={isDemo} />
+          </div>
+
           {/* Auto Images Toggle */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -1165,6 +1173,93 @@ export function SettingsTab({ restaurant, subscription, onUpdate, onRestaurantUp
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// Translate Menu Button Component
+function TranslateMenuButton({ restaurantId, disabled }: { restaurantId: string; disabled: boolean }) {
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  const handleTranslate = async () => {
+    if (disabled || isTranslating) return;
+
+    setIsTranslating(true);
+    setResult(null);
+
+    try {
+      const response = await fetch('/api/menu/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ restaurant_id: restaurantId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setResult({
+          success: true,
+          message: `✅ ${data.translated.categories} Kategorien und ${data.translated.items} Gerichte übersetzt!`,
+        });
+      } else {
+        setResult({
+          success: false,
+          message: data.error || 'Übersetzung fehlgeschlagen',
+        });
+      }
+    } catch {
+      setResult({
+        success: false,
+        message: 'Netzwerkfehler bei der Übersetzung',
+      });
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <button
+        onClick={handleTranslate}
+        disabled={disabled || isTranslating}
+        className={`
+          flex items-center gap-3 w-full px-4 py-3 rounded-xl border-2 transition-all
+          ${disabled ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' :
+            isTranslating ? 'border-emerald-300 bg-emerald-50 cursor-wait' :
+            'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50 cursor-pointer'
+          }
+        `}
+      >
+        <span className="text-2xl">{isTranslating ? '⏳' : '🌍'}</span>
+        <div className="text-left flex-1">
+          <div className="font-semibold text-gray-900">
+            {isTranslating ? 'Übersetze...' : 'Menü automatisch übersetzen'}
+          </div>
+          <p className="text-sm text-gray-500">
+            Übersetzt alle Gerichte in EN, FR, IT, ES, TR, PL
+          </p>
+        </div>
+        {isTranslating && (
+          <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        )}
+      </button>
+
+      {result && (
+        <div
+          className={`p-3 rounded-lg text-sm ${
+            result.success
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}
+        >
+          {result.message}
+        </div>
+      )}
+
+      <p className="text-xs text-gray-500">
+        Nutzt KI um natürliche Übersetzungen zu erstellen. Eigennamen wie &quot;Margherita&quot; oder &quot;Döner&quot; bleiben erhalten.
+      </p>
     </div>
   );
 }
