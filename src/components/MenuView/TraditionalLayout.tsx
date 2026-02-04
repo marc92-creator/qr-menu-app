@@ -238,7 +238,7 @@ export function TraditionalLayout({
                   ) : (
                     <div className="space-y-3">
                       {categoryItems.map((item) => {
-                        const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
+                        const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false, categoryName);
                         const imageUrl = imageResult?.url || null;
                         const hasExtras = (showSpiceLevel && item.spice_level) ||
                                          (showPortionSizes && item.portion_size) ||

@@ -19,12 +19,60 @@ export interface ImageResult {
   label?: string;
 }
 
+// Category-based fallback images for 'real' strategy
+const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
+  // Beverages
+  getraenke: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop',
+  beverages: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop',
+  drinks: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop',
+  getränke: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop',
+  boissons: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop',
+  // Desserts
+  desserts: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=300&fit=crop',
+  dessert: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=300&fit=crop',
+  nachtisch: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=300&fit=crop',
+  süßes: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=300&fit=crop',
+  // Starters/Appetizers
+  starters: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+  vorspeisen: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+  antipasti: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+  entrées: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+  appetizers: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+  // Salads
+  salads: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
+  salate: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
+  salades: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
+  // Pizza
+  pizza: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+  pizzas: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+  // Pasta
+  pasta: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=300&fit=crop',
+  nudeln: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=300&fit=crop',
+  // Main courses
+  hauptgerichte: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+  main: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+  mains: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+  plats: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+};
+
+const GENERIC_FALLBACK = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop';
+
+/**
+ * Get a category-appropriate fallback image
+ */
+function getCategoryFallbackImage(categoryName?: string): string {
+  if (!categoryName) return GENERIC_FALLBACK;
+  const normalized = categoryName.toLowerCase().trim();
+  return CATEGORY_FALLBACK_IMAGES[normalized] || GENERIC_FALLBACK;
+}
+
 /**
  * Get an auto-matched image for a dish based on the image strategy
  */
 export function getAutoImageByStrategy(
   dishName: string,
-  strategy: ImageStrategy = 'ghibli'
+  strategy: ImageStrategy = 'ghibli',
+  categoryName?: string
 ): ImageResult | null {
   if (!dishName || dishName.trim().length === 0) {
     return null;
@@ -44,18 +92,9 @@ export function getAutoImageByStrategy(
           label: realisticImage.label,
         };
       }
-      // Fallback: Generic realistic food photos (NEVER Ghibli for 'real' strategy)
-      const genericPhotos = [
-        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop', // Healthy bowl
-        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop', // Pancakes
-        'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop', // Pizza
-        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop', // Vegetables
-        'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=300&fit=crop', // Pasta dish
-        'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop', // Gourmet plate
-      ];
-      const hash = dishName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      // Fallback: Use category-appropriate image (NEVER Ghibli for 'real' strategy)
       return {
-        url: genericPhotos[hash % genericPhotos.length],
+        url: getCategoryFallbackImage(categoryName),
         style: 'real',
         label: dishName,
       };
@@ -113,7 +152,8 @@ export function getItemImageByStrategy(
     image_mode?: 'auto' | 'library' | 'custom' | 'none';
   },
   imageStrategy: ImageStrategy = 'ghibli',
-  autoImagesEnabled: boolean = true
+  autoImagesEnabled: boolean = true,
+  categoryName?: string
 ): ImageResult | null {
   const mode = item.image_mode || 'auto';
 
@@ -150,7 +190,7 @@ export function getItemImageByStrategy(
 
     case 'auto':
     default:
-      return getAutoImageByStrategy(item.name, imageStrategy);
+      return getAutoImageByStrategy(item.name, imageStrategy, categoryName);
   }
 }
 

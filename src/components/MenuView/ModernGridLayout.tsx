@@ -252,7 +252,7 @@ export function ModernGridLayout({
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {categoryItems.map((item) => {
-                    const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
+                    const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false, categoryName);
                     const imageUrl = imageResult?.url || null;
                     const isLiked = likedItems.has(item.id);
                     return (

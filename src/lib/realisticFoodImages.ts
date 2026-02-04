@@ -474,6 +474,27 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
     label: 'Cocktail',
     category: 'getraenke',
   },
+  {
+    id: 'real-wasser',
+    keywords: ['wasser', 'water', 'mineralwasser', 'still', 'sparkling', 'aqua'],
+    imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=300&fit=crop',
+    label: 'Wasser',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-softdrink',
+    keywords: ['cola', 'fanta', 'sprite', 'softdrink', 'soda', 'limo', 'pepsi', 'mezzo mix'],
+    imageUrl: 'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400&h=300&fit=crop',
+    label: 'Softdrink',
+    category: 'getraenke',
+  },
+  {
+    id: 'real-saft',
+    keywords: ['saft', 'juice', 'orangensaft', 'apfelsaft', 'fruchtsaft', 'orange juice'],
+    imageUrl: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop',
+    label: 'Saft',
+    category: 'getraenke',
+  },
 
   // ============================================
   // MEXIKANISCH
