@@ -23,26 +23,37 @@ interface MenuItemProps {
   getLocalizedDescription: (item: MenuItemType, lang: Language) => string | null;
 }
 
-// Image Component for external URLs (Unsplash etc.)
+// Premium Image Component with loading state and blur effect
 function MenuImage({ src, alt, className, style }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
-  const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
-  if (failed) return null;
+  if (hasError) {
+    return (
+      <div className={`bg-gray-100 flex items-center justify-center ${className}`}>
+        <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+    );
+  }
 
   return (
-    <div className={`relative overflow-hidden ${className || ''}`} style={style}>
-      {/* Loading placeholder */}
-      {!loaded && (
-        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+    <div className={`relative overflow-hidden ${className}`} style={style}>
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
       )}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        onLoad={() => setLoaded(true)}
-        onError={() => setFailed(true)}
+        className={`w-full h-full object-cover transition-all duration-500 ${
+          isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+        }`}
+        style={style}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+        loading="lazy"
       />
     </div>
   );
@@ -163,7 +174,7 @@ export function MenuItem({
             {itemName}
             {item.is_sold_out && (
               <span className="ml-3 text-sm font-normal text-red-600">
-                {t.soldOut}
+                Ausverkauft
               </span>
             )}
           </h3>
@@ -179,30 +190,30 @@ export function MenuItem({
             {item.is_special && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700">
                 <span>⭐</span>
-                <span>{t.dailySpecial}</span>
+                <span>Tagesangebot</span>
               </span>
             )}
             {item.is_popular && !item.is_special && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-red-700">
                 <span>❤️</span>
-                <span>{t.popular}</span>
+                <span>Beliebt</span>
               </span>
             )}
             {item.is_vegan && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700">
                 <span>🌱</span>
-                <span>{t.vegan}</span>
+                <span>Vegan</span>
               </span>
             )}
             {item.is_vegetarian && !item.is_vegan && (
               <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700">
                 <span>🥬</span>
-                <span>{t.vegetarian}</span>
+                <span>Vegetarisch</span>
               </span>
             )}
             {showAllergens && itemAllergens.length > 0 && (
               <span className="text-xs text-gray-500">
-                {t.allergens}: {itemAllergens.map((a) => getAllergenName(a.id, language)).join(', ')}
+                Allergene: {itemAllergens.map((a) => a.name).join(', ')}
               </span>
             )}
           </div>

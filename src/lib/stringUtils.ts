@@ -4,87 +4,34 @@
  */
 
 /**
- * Common typos and character confusions in German food names
- */
-const COMMON_TYPO_CORRECTIONS: [RegExp, string][] = [
-  // Double letter issues
-  [/nn/g, 'n'],
-  [/mm/g, 'm'],
-  [/ll/g, 'l'],
-  [/ss/g, 's'],
-  [/tt/g, 't'],
-  [/pp/g, 'p'],
-  [/ff/g, 'f'],
-  // Common misspellings
-  [/ck/g, 'k'],
-  [/ph/g, 'f'],
-  [/th/g, 't'],
-  // German/English confusions
-  [/sch/g, 'sh'],
-  [/tsch/g, 'ch'],
-];
-
-/**
  * Normalize German text for better matching
- * - Removes diacritics (ä→ae, ö→oe, ü→ue, ß→ss)
+ * - Removes diacritics (ä→a, ö→o, ü→u, ß→ss)
  * - Converts to lowercase
  * - Removes extra whitespace
- * - Handles various special characters
  */
 export function normalizeText(text: string): string {
   return text
     .toLowerCase()
-    // German umlauts
     .replace(/ä/g, 'ae')
     .replace(/ö/g, 'oe')
     .replace(/ü/g, 'ue')
     .replace(/ß/g, 'ss')
-    // French accents
     .replace(/é/g, 'e')
     .replace(/è/g, 'e')
     .replace(/ê/g, 'e')
-    .replace(/ë/g, 'e')
     .replace(/á/g, 'a')
     .replace(/à/g, 'a')
     .replace(/â/g, 'a')
-    .replace(/ã/g, 'a')
     .replace(/í/g, 'i')
     .replace(/ì/g, 'i')
-    .replace(/î/g, 'i')
-    .replace(/ï/g, 'i')
     .replace(/ó/g, 'o')
     .replace(/ò/g, 'o')
-    .replace(/ô/g, 'o')
-    .replace(/õ/g, 'o')
     .replace(/ú/g, 'u')
     .replace(/ù/g, 'u')
-    .replace(/û/g, 'u')
-    // Other special characters
     .replace(/ç/g, 'c')
     .replace(/ñ/g, 'n')
-    .replace(/ý/g, 'y')
-    .replace(/ÿ/g, 'y')
-    // Turkish characters
-    .replace(/ğ/g, 'g')
-    .replace(/ı/g, 'i')
-    .replace(/ş/g, 's')
-    .replace(/ç/g, 'c')
-    // Remove punctuation that's not meaningful
-    .replace(/[''`´]/g, '')
-    .replace(/[-–—]/g, ' ')
     .trim()
     .replace(/\s+/g, ' ');
-}
-
-/**
- * Apply common typo corrections for fuzzy matching
- */
-export function applyTypoCorrections(text: string): string {
-  let result = text.toLowerCase();
-  for (const [pattern, replacement] of COMMON_TYPO_CORRECTIONS) {
-    result = result.replace(pattern, replacement);
-  }
-  return result;
 }
 
 /**
@@ -133,13 +80,6 @@ export function similarityScore(str1: string, str2: string): number {
 /**
  * Check if a string fuzzy-matches a keyword
  * Allows for typos and similar spellings
- *
- * Enhanced matching:
- * - Normalization (umlauts, accents)
- * - Typo correction
- * - Word-by-word matching
- * - Prefix matching for longer words
- * - Substring matching for compound words
  */
 export function fuzzyMatch(
   text: string,
@@ -151,13 +91,6 @@ export function fuzzyMatch(
 
   // Exact match after normalization
   if (normalizedText.includes(normalizedKeyword)) return true;
-  if (normalizedKeyword.includes(normalizedText)) return true;
-
-  // Try with typo corrections applied
-  const correctedText = applyTypoCorrections(normalizedText);
-  const correctedKeyword = applyTypoCorrections(normalizedKeyword);
-  if (correctedText.includes(correctedKeyword)) return true;
-  if (correctedKeyword.includes(correctedText)) return true;
 
   // Word-by-word fuzzy matching
   const textWords = normalizedText.split(' ');
@@ -165,33 +98,8 @@ export function fuzzyMatch(
 
   for (const textWord of textWords) {
     for (const keywordWord of keywordWords) {
-      // Skip very short words (less likely to be meaningful matches)
-      if (textWord.length < 3 || keywordWord.length < 3) continue;
-
-      // Exact word match
-      if (textWord === keywordWord) return true;
-
-      // Similarity score
       const score = similarityScore(textWord, keywordWord);
       if (score >= threshold) return true;
-
-      // Prefix matching for longer words (helpful for German compounds)
-      const minPrefixLength = Math.min(textWord.length, keywordWord.length, 4);
-      if (minPrefixLength >= 4) {
-        const textPrefix = textWord.substring(0, minPrefixLength);
-        const keywordPrefix = keywordWord.substring(0, minPrefixLength);
-        if (textPrefix === keywordPrefix) {
-          // Matching prefix - check overall similarity with lower threshold
-          if (score >= 0.7) return true;
-        }
-      }
-
-      // One word contains the other (for compound words)
-      if (textWord.length >= 5 && keywordWord.length >= 5) {
-        if (textWord.includes(keywordWord) || keywordWord.includes(textWord)) {
-          return true;
-        }
-      }
     }
   }
 

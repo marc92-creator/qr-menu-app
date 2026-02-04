@@ -44,22 +44,15 @@ export function getAutoImageByStrategy(
           label: realisticImage.label,
         };
       }
-      // Fallback: Use generic food photos when no specific match found
-      // Multiple fallbacks for variety, selected by dish name hash
-      const fallbackImages = [
-        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop', // Salad bowl
-        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop', // Pancakes
-        'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop', // Pizza
-        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop', // Vegetables
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&h=300&fit=crop', // Fruit tart
-      ];
-      const hash = dishName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const fallbackUrl = fallbackImages[hash % fallbackImages.length];
-      return {
-        url: fallbackUrl,
-        style: 'real',
-        label: dishName,
-      };
+      // Fallback to Ghibli if no realistic image found
+      const ghibliUrl = getAutoImage(dishName);
+      if (ghibliUrl && ghibliUrl !== '/food-images/default-food.svg') {
+        return {
+          url: ghibliUrl,
+          style: 'ghibli',
+        };
+      }
+      return null;
     }
 
     case 'mixed': {
@@ -111,12 +104,11 @@ export function getItemImageByStrategy(
     name: string;
     image_url?: string | null;
     image_library_key?: string | null;
-    image_mode?: 'auto' | 'library' | 'custom' | 'none' | null;
+    image_mode?: 'auto' | 'library' | 'custom' | 'none';
   },
   imageStrategy: ImageStrategy = 'ghibli',
   autoImagesEnabled: boolean = true
 ): ImageResult | null {
-  // Handle null or undefined as 'auto'
   const mode = item.image_mode || 'auto';
 
   // If restaurant has disabled auto images, only show custom images

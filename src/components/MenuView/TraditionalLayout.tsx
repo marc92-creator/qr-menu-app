@@ -240,7 +240,6 @@ export function TraditionalLayout({
                       {categoryItems.map((item) => {
                         const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
                         const imageUrl = imageResult?.url || null;
-
                         const hasExtras = (showSpiceLevel && item.spice_level) ||
                                          (showPortionSizes && item.portion_size) ||
                                          item.preparation_time;
