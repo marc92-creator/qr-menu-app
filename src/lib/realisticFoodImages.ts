@@ -453,44 +453,70 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
     label: 'Smoothie',
     category: 'getraenke',
   },
+  // ROTWEIN - spezifisch, muss VOR allgemeinem "wein" kommen!
+  {
+    id: 'real-rotwein',
+    keywords: ['rotwein', 'red wine', 'vino rosso', 'wine red', 'vin rouge', 'cabernet', 'merlot', 'chianti'],
+    imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop',
+    label: 'Rotwein',
+    category: 'getraenke',
+  },
+  // WEISSWEIN - spezifisch
+  {
+    id: 'real-weisswein',
+    keywords: ['weißwein', 'weisswein', 'white wine', 'vino bianco', 'wine white', 'vin blanc', 'chardonnay', 'riesling', 'pinot grigio'],
+    imageUrl: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop',
+    label: 'Weißwein',
+    category: 'getraenke',
+  },
+  // WEIN allgemein - Fallback für "House Wine" etc.
   {
     id: 'real-wein',
-    keywords: ['wein', 'wine', 'rotwein', 'weißwein', 'rosé'],
-    imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop',
+    keywords: ['wein', 'wine', 'rosé', 'prosecco', 'sekt', 'champagner'],
+    imageUrl: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400&h=300&fit=crop',
     label: 'Wein',
     category: 'getraenke',
   },
   {
     id: 'real-bier',
-    keywords: ['bier', 'beer', 'pils', 'weizen', 'craft beer'],
+    keywords: ['bier', 'beer', 'pils', 'weizen', 'craft beer', 'helles', 'dunkles', 'lager'],
     imageUrl: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400&h=300&fit=crop',
     label: 'Bier',
     category: 'getraenke',
   },
   {
     id: 'real-cocktail',
-    keywords: ['cocktail', 'longdrink', 'mojito', 'aperol', 'gin tonic'],
+    keywords: ['cocktail', 'longdrink', 'mojito', 'aperol', 'gin tonic', 'margarita', 'caipirinha'],
     imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop',
     label: 'Cocktail',
     category: 'getraenke',
   },
   {
     id: 'real-wasser',
-    keywords: ['wasser', 'water', 'mineralwasser', 'still', 'sparkling', 'aqua'],
+    keywords: ['wasser', 'water', 'mineralwasser', 'still', 'sparkling', 'aqua', 'sprudel'],
     imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=300&fit=crop',
     label: 'Wasser',
     category: 'getraenke',
   },
+  // COLA - spezifisches Bild mit Coca-Cola Flasche
+  {
+    id: 'real-cola',
+    keywords: ['cola', 'coca cola', 'coca-cola', 'coke', 'pepsi'],
+    imageUrl: 'https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400&h=300&fit=crop',
+    label: 'Cola',
+    category: 'getraenke',
+  },
+  // Andere Softdrinks
   {
     id: 'real-softdrink',
-    keywords: ['cola', 'fanta', 'sprite', 'softdrink', 'soda', 'limo', 'pepsi', 'mezzo mix'],
-    imageUrl: 'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400&h=300&fit=crop',
+    keywords: ['fanta', 'sprite', 'softdrink', 'soda', 'limo', 'limonade', 'mezzo mix', 'spezi', '7up'],
+    imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=300&fit=crop',
     label: 'Softdrink',
     category: 'getraenke',
   },
   {
     id: 'real-saft',
-    keywords: ['saft', 'juice', 'orangensaft', 'apfelsaft', 'fruchtsaft', 'orange juice'],
+    keywords: ['saft', 'juice', 'orangensaft', 'apfelsaft', 'fruchtsaft', 'orange juice', 'apfelschorle'],
     imageUrl: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop',
     label: 'Saft',
     category: 'getraenke',
@@ -688,27 +714,49 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
 
 /**
  * Get a realistic food image by matching keywords
+ * Matching priority:
+ * 1. Longer/more specific compound keywords (e.g., "red wine" > "wine")
+ * 2. Exact keyword match in dish name
+ * 3. Partial word matching as fallback
  */
 export function getRealisticFoodImage(dishName: string): RealisticFoodImage | null {
   const normalizedName = dishName.toLowerCase().trim();
 
-  // First try exact match
+  // Build a list of all matches with their specificity score
+  const matches: Array<{ image: RealisticFoodImage; score: number; keyword: string }> = [];
+
   for (const image of REALISTIC_FOOD_LIBRARY) {
     for (const keyword of image.keywords) {
-      if (normalizedName.includes(keyword.toLowerCase()) ||
-          keyword.toLowerCase().includes(normalizedName)) {
-        return image;
+      const keywordLower = keyword.toLowerCase();
+
+      // Check if keyword is found in dish name
+      if (normalizedName.includes(keywordLower)) {
+        // Score based on keyword length (longer = more specific = higher score)
+        const score = keywordLower.length * 10;
+        matches.push({ image, score, keyword: keywordLower });
+      }
+      // Also check reverse (dish name in keyword) for short dish names
+      else if (keywordLower.includes(normalizedName) && normalizedName.length > 3) {
+        const score = normalizedName.length * 5;
+        matches.push({ image, score, keyword: keywordLower });
       }
     }
   }
 
-  // Try partial word matching
-  const words = normalizedName.split(/\s+/);
+  // If we have matches, return the one with highest score (most specific)
+  if (matches.length > 0) {
+    matches.sort((a, b) => b.score - a.score);
+    return matches[0].image;
+  }
+
+  // Fallback: Try partial word matching
+  const words = normalizedName.split(/[\s,.\-_0-9]+/).filter(w => w.length > 2);
+
   for (const image of REALISTIC_FOOD_LIBRARY) {
     for (const keyword of image.keywords) {
       const keywordWords = keyword.toLowerCase().split(/\s+/);
       for (const word of words) {
-        if (word.length > 2 && keywordWords.some(kw => kw.includes(word) || word.includes(kw))) {
+        if (keywordWords.some(kw => kw === word || (word.length > 3 && kw.includes(word)))) {
           return image;
         }
       }
