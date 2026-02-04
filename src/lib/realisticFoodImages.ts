@@ -714,9 +714,12 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
 
 /**
  * Get a realistic food image by matching keywords
- * Matching priority:
- * 1. Longer/more specific compound keywords (e.g., "red wine" > "wine")
- * 2. Exact keyword match in dish name
+ *
+ * Matching priority (score-based, highest wins):
+ * 1. Longer/more specific compound keywords get higher scores
+ *    - "white wine" (100 pts) beats "wine" (40 pts)
+ *    - "red wine" (80 pts) beats "wine" (40 pts)
+ * 2. All matches are collected, then sorted by score
  * 3. Partial word matching as fallback
  */
 export function getRealisticFoodImage(dishName: string): RealisticFoodImage | null {
