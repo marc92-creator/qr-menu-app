@@ -44,8 +44,13 @@ export function getAutoImageByStrategy(
           label: realisticImage.label,
         };
       }
-      // No fallback to Ghibli - if user wants realistic, don't show illustrations
-      return null;
+      // Fallback: Use a generic food photo if no specific match found
+      // This ensures users who choose 'real' always see an image
+      return {
+        url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+        style: 'real',
+        label: 'Food',
+      };
     }
 
     case 'mixed': {
