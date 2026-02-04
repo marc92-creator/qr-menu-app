@@ -3,7 +3,7 @@
 import { Category, MenuItem as MenuItemType, Restaurant, MenuSchedule } from '@/types/database';
 import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
-import { Language, getTranslation } from '@/lib/translations';
+import { Language, getTranslation, getLocalizedCategoryName } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
 import { getItemImageByStrategy } from '@/lib/imageService';
 import { formatPrice } from '@/lib/utils';
@@ -33,17 +33,6 @@ interface ModernGridLayoutProps {
   isEmbedded?: boolean;
   activeSchedule?: MenuSchedule | null;
 }
-
-// Get localized category name
-const getLocalizedCategoryName = (category: Category, lang: Language): string => {
-  if (lang === 'de') {
-    return category.name;
-  }
-  if (category.name_en && category.name_en.trim() !== '') {
-    return category.name_en;
-  }
-  return category.name;
-};
 
 // Get localized item name
 const getLocalizedName = (item: MenuItemType, lang: Language): string => {

@@ -3,7 +3,7 @@
 import { Category, MenuItem as MenuItemType, Restaurant, MenuSchedule } from '@/types/database';
 import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
-import { Language, getTranslation } from '@/lib/translations';
+import { Language, getTranslation, getLocalizedCategoryName } from '@/lib/translations';
 import { getAllergensByIds } from '@/lib/allergens';
 import { getItemImageByStrategy } from '@/lib/imageService';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
@@ -34,17 +34,6 @@ interface TraditionalLayoutProps {
   isEmbedded?: boolean;
   activeSchedule?: MenuSchedule | null;
 }
-
-// Get localized category name
-const getLocalizedCategoryName = (category: Category, lang: Language): string => {
-  if (lang === 'de') {
-    return category.name;
-  }
-  if (category.name_en && category.name_en.trim() !== '') {
-    return category.name_en;
-  }
-  return category.name;
-};
 
 // Get localized item name
 const getLocalizedName = (item: MenuItemType, lang: Language): string => {
@@ -162,8 +151,8 @@ export function TraditionalLayout({
 
         {/* Enhanced Filters with Search, Dietary, and Allergen Filters - Hide on Scroll */}
         <div
-          className={`transition-all duration-300 ease-out overflow-hidden ${
-            isFilterBarVisible ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+          className={`overflow-hidden transition-[max-height] duration-300 ease-out ${
+            isFilterBarVisible ? 'max-h-40' : 'max-h-0'
           }`}
         >
           <EnhancedFilterBar

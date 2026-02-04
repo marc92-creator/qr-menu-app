@@ -1016,6 +1016,192 @@ export const LANGUAGE_OPTIONS: { id: Language; label: string; flag: string }[] =
 ];
 
 // ===========================================
+// CATEGORY NAME TRANSLATIONS
+// ===========================================
+// Maps normalized category names to all supported languages
+// Used when database doesn't have language-specific translation
+
+type CategoryTranslation = {
+  de: string;
+  en: string;
+  fr: string;
+  it: string;
+  es: string;
+  tr: string;
+  pl: string;
+};
+
+const CATEGORY_TRANSLATIONS: Record<string, CategoryTranslation> = {
+  // Starters/Appetizers
+  'vorspeisen': { de: 'Vorspeisen', en: 'Starters', fr: 'Entrées', it: 'Antipasti', es: 'Entrantes', tr: 'Başlangıçlar', pl: 'Przystawki' },
+  'starters': { de: 'Vorspeisen', en: 'Starters', fr: 'Entrées', it: 'Antipasti', es: 'Entrantes', tr: 'Başlangıçlar', pl: 'Przystawki' },
+  'appetizers': { de: 'Vorspeisen', en: 'Appetizers', fr: 'Entrées', it: 'Antipasti', es: 'Aperitivos', tr: 'Başlangıçlar', pl: 'Przystawki' },
+  'entrées': { de: 'Vorspeisen', en: 'Starters', fr: 'Entrées', it: 'Antipasti', es: 'Entrantes', tr: 'Başlangıçlar', pl: 'Przystawki' },
+  'antipasti': { de: 'Antipasti', en: 'Antipasti', fr: 'Antipasti', it: 'Antipasti', es: 'Antipasti', tr: 'Antipasti', pl: 'Antipasti' },
+
+  // Main courses
+  'hauptgerichte': { de: 'Hauptgerichte', en: 'Main Courses', fr: 'Plats principaux', it: 'Piatti principali', es: 'Platos principales', tr: 'Ana Yemekler', pl: 'Dania główne' },
+  'hauptspeisen': { de: 'Hauptspeisen', en: 'Main Dishes', fr: 'Plats principaux', it: 'Piatti principali', es: 'Platos principales', tr: 'Ana Yemekler', pl: 'Dania główne' },
+  'main courses': { de: 'Hauptgerichte', en: 'Main Courses', fr: 'Plats principaux', it: 'Piatti principali', es: 'Platos principales', tr: 'Ana Yemekler', pl: 'Dania główne' },
+  'main dishes': { de: 'Hauptspeisen', en: 'Main Dishes', fr: 'Plats principaux', it: 'Piatti principali', es: 'Platos principales', tr: 'Ana Yemekler', pl: 'Dania główne' },
+  'mains': { de: 'Hauptgerichte', en: 'Mains', fr: 'Plats', it: 'Secondi', es: 'Principales', tr: 'Ana Yemekler', pl: 'Dania główne' },
+
+  // Beverages/Drinks
+  'getränke': { de: 'Getränke', en: 'Beverages', fr: 'Boissons', it: 'Bevande', es: 'Bebidas', tr: 'İçecekler', pl: 'Napoje' },
+  'getraenke': { de: 'Getränke', en: 'Beverages', fr: 'Boissons', it: 'Bevande', es: 'Bebidas', tr: 'İçecekler', pl: 'Napoje' },
+  'beverages': { de: 'Getränke', en: 'Beverages', fr: 'Boissons', it: 'Bevande', es: 'Bebidas', tr: 'İçecekler', pl: 'Napoje' },
+  'drinks': { de: 'Getränke', en: 'Drinks', fr: 'Boissons', it: 'Bevande', es: 'Bebidas', tr: 'İçecekler', pl: 'Napoje' },
+  'boissons': { de: 'Getränke', en: 'Beverages', fr: 'Boissons', it: 'Bevande', es: 'Bebidas', tr: 'İçecekler', pl: 'Napoje' },
+  'alkoholfreie getränke': { de: 'Alkoholfreie Getränke', en: 'Non-Alcoholic Drinks', fr: 'Boissons sans alcool', it: 'Bevande analcoliche', es: 'Bebidas sin alcohol', tr: 'Alkolsüz İçecekler', pl: 'Napoje bezalkoholowe' },
+  'alkoholische getränke': { de: 'Alkoholische Getränke', en: 'Alcoholic Drinks', fr: 'Boissons alcoolisées', it: 'Bevande alcoliche', es: 'Bebidas alcohólicas', tr: 'Alkollü İçecekler', pl: 'Napoje alkoholowe' },
+  'heißgetränke': { de: 'Heißgetränke', en: 'Hot Drinks', fr: 'Boissons chaudes', it: 'Bevande calde', es: 'Bebidas calientes', tr: 'Sıcak İçecekler', pl: 'Napoje gorące' },
+  'hot drinks': { de: 'Heißgetränke', en: 'Hot Drinks', fr: 'Boissons chaudes', it: 'Bevande calde', es: 'Bebidas calientes', tr: 'Sıcak İçecekler', pl: 'Napoje gorące' },
+  'kaltgetränke': { de: 'Kaltgetränke', en: 'Cold Drinks', fr: 'Boissons froides', it: 'Bevande fredde', es: 'Bebidas frías', tr: 'Soğuk İçecekler', pl: 'Napoje zimne' },
+  'cold drinks': { de: 'Kaltgetränke', en: 'Cold Drinks', fr: 'Boissons froides', it: 'Bevande fredde', es: 'Bebidas frías', tr: 'Soğuk İçecekler', pl: 'Napoje zimne' },
+
+  // Desserts
+  'desserts': { de: 'Desserts', en: 'Desserts', fr: 'Desserts', it: 'Dolci', es: 'Postres', tr: 'Tatlılar', pl: 'Desery' },
+  'nachspeisen': { de: 'Nachspeisen', en: 'Desserts', fr: 'Desserts', it: 'Dolci', es: 'Postres', tr: 'Tatlılar', pl: 'Desery' },
+  'nachtisch': { de: 'Nachtisch', en: 'Dessert', fr: 'Dessert', it: 'Dolce', es: 'Postre', tr: 'Tatlı', pl: 'Deser' },
+  'süßspeisen': { de: 'Süßspeisen', en: 'Sweet Dishes', fr: 'Douceurs', it: 'Dolci', es: 'Dulces', tr: 'Tatlılar', pl: 'Słodycze' },
+
+  // Salads
+  'salate': { de: 'Salate', en: 'Salads', fr: 'Salades', it: 'Insalate', es: 'Ensaladas', tr: 'Salatalar', pl: 'Sałatki' },
+  'salads': { de: 'Salate', en: 'Salads', fr: 'Salades', it: 'Insalate', es: 'Ensaladas', tr: 'Salatalar', pl: 'Sałatki' },
+  'salades': { de: 'Salate', en: 'Salads', fr: 'Salades', it: 'Insalate', es: 'Ensaladas', tr: 'Salatalar', pl: 'Sałatki' },
+
+  // Soups
+  'suppen': { de: 'Suppen', en: 'Soups', fr: 'Soupes', it: 'Zuppe', es: 'Sopas', tr: 'Çorbalar', pl: 'Zupy' },
+  'soups': { de: 'Suppen', en: 'Soups', fr: 'Soupes', it: 'Zuppe', es: 'Sopas', tr: 'Çorbalar', pl: 'Zupy' },
+  'soupes': { de: 'Suppen', en: 'Soups', fr: 'Soupes', it: 'Zuppe', es: 'Sopas', tr: 'Çorbalar', pl: 'Zupy' },
+
+  // Pizza/Pasta
+  'pizza': { de: 'Pizza', en: 'Pizza', fr: 'Pizza', it: 'Pizza', es: 'Pizza', tr: 'Pizza', pl: 'Pizza' },
+  'pizzen': { de: 'Pizzen', en: 'Pizzas', fr: 'Pizzas', it: 'Pizze', es: 'Pizzas', tr: 'Pizzalar', pl: 'Pizze' },
+  'pasta': { de: 'Pasta', en: 'Pasta', fr: 'Pâtes', it: 'Pasta', es: 'Pasta', tr: 'Makarna', pl: 'Makaron' },
+  'nudelgerichte': { de: 'Nudelgerichte', en: 'Pasta Dishes', fr: 'Plats de pâtes', it: 'Primi piatti', es: 'Platos de pasta', tr: 'Makarna Yemekleri', pl: 'Dania makaronowe' },
+
+  // Burgers
+  'burger': { de: 'Burger', en: 'Burgers', fr: 'Burgers', it: 'Hamburger', es: 'Hamburguesas', tr: 'Burgerler', pl: 'Burgery' },
+  'burgers': { de: 'Burger', en: 'Burgers', fr: 'Burgers', it: 'Hamburger', es: 'Hamburguesas', tr: 'Burgerler', pl: 'Burgery' },
+
+  // Sides
+  'beilagen': { de: 'Beilagen', en: 'Side Dishes', fr: 'Accompagnements', it: 'Contorni', es: 'Guarniciones', tr: 'Yan Yemekler', pl: 'Dodatki' },
+  'sides': { de: 'Beilagen', en: 'Sides', fr: 'Accompagnements', it: 'Contorni', es: 'Guarniciones', tr: 'Yan Yemekler', pl: 'Dodatki' },
+  'side dishes': { de: 'Beilagen', en: 'Side Dishes', fr: 'Accompagnements', it: 'Contorni', es: 'Guarniciones', tr: 'Yan Yemekler', pl: 'Dodatki' },
+  'extras': { de: 'Extras', en: 'Extras', fr: 'Suppléments', it: 'Extra', es: 'Extras', tr: 'Ekstralar', pl: 'Dodatki' },
+
+  // Meat/Fish/Poultry
+  'fleisch': { de: 'Fleisch', en: 'Meat', fr: 'Viandes', it: 'Carne', es: 'Carnes', tr: 'Et Yemekleri', pl: 'Mięso' },
+  'fleischgerichte': { de: 'Fleischgerichte', en: 'Meat Dishes', fr: 'Plats de viande', it: 'Piatti di carne', es: 'Platos de carne', tr: 'Et Yemekleri', pl: 'Dania mięsne' },
+  'meat': { de: 'Fleisch', en: 'Meat', fr: 'Viandes', it: 'Carne', es: 'Carnes', tr: 'Et', pl: 'Mięso' },
+  'fisch': { de: 'Fisch', en: 'Fish', fr: 'Poissons', it: 'Pesce', es: 'Pescados', tr: 'Balık', pl: 'Ryby' },
+  'fischgerichte': { de: 'Fischgerichte', en: 'Fish Dishes', fr: 'Plats de poisson', it: 'Piatti di pesce', es: 'Platos de pescado', tr: 'Balık Yemekleri', pl: 'Dania rybne' },
+  'fish': { de: 'Fisch', en: 'Fish', fr: 'Poissons', it: 'Pesce', es: 'Pescados', tr: 'Balık', pl: 'Ryby' },
+  'meeresfrüchte': { de: 'Meeresfrüchte', en: 'Seafood', fr: 'Fruits de mer', it: 'Frutti di mare', es: 'Mariscos', tr: 'Deniz Ürünleri', pl: 'Owoce morza' },
+  'seafood': { de: 'Meeresfrüchte', en: 'Seafood', fr: 'Fruits de mer', it: 'Frutti di mare', es: 'Mariscos', tr: 'Deniz Ürünleri', pl: 'Owoce morza' },
+  'geflügel': { de: 'Geflügel', en: 'Poultry', fr: 'Volailles', it: 'Pollame', es: 'Aves', tr: 'Kümes Hayvanları', pl: 'Drób' },
+  'poultry': { de: 'Geflügel', en: 'Poultry', fr: 'Volailles', it: 'Pollame', es: 'Aves', tr: 'Kümes Hayvanları', pl: 'Drób' },
+
+  // Grill
+  'vom grill': { de: 'Vom Grill', en: 'From the Grill', fr: 'Grillades', it: 'Alla griglia', es: 'A la parrilla', tr: 'Izgara', pl: 'Z grilla' },
+  'grillgerichte': { de: 'Grillgerichte', en: 'Grilled Dishes', fr: 'Grillades', it: 'Grigliate', es: 'Parrilladas', tr: 'Izgara Yemekleri', pl: 'Dania z grilla' },
+  'steaks': { de: 'Steaks', en: 'Steaks', fr: 'Steaks', it: 'Bistecche', es: 'Filetes', tr: 'Biftek', pl: 'Steki' },
+
+  // Vegetarian/Vegan
+  'vegetarisch': { de: 'Vegetarisch', en: 'Vegetarian', fr: 'Végétarien', it: 'Vegetariano', es: 'Vegetariano', tr: 'Vejetaryen', pl: 'Wegetariańskie' },
+  'vegetarian': { de: 'Vegetarisch', en: 'Vegetarian', fr: 'Végétarien', it: 'Vegetariano', es: 'Vegetariano', tr: 'Vejetaryen', pl: 'Wegetariańskie' },
+  'vegetarische gerichte': { de: 'Vegetarische Gerichte', en: 'Vegetarian Dishes', fr: 'Plats végétariens', it: 'Piatti vegetariani', es: 'Platos vegetarianos', tr: 'Vejetaryen Yemekler', pl: 'Dania wegetariańskie' },
+  'vegan': { de: 'Vegan', en: 'Vegan', fr: 'Végan', it: 'Vegano', es: 'Vegano', tr: 'Vegan', pl: 'Wegańskie' },
+  'vegane gerichte': { de: 'Vegane Gerichte', en: 'Vegan Dishes', fr: 'Plats végans', it: 'Piatti vegani', es: 'Platos veganos', tr: 'Vegan Yemekler', pl: 'Dania wegańskie' },
+
+  // Breakfast/Lunch
+  'frühstück': { de: 'Frühstück', en: 'Breakfast', fr: 'Petit-déjeuner', it: 'Colazione', es: 'Desayuno', tr: 'Kahvaltı', pl: 'Śniadanie' },
+  'breakfast': { de: 'Frühstück', en: 'Breakfast', fr: 'Petit-déjeuner', it: 'Colazione', es: 'Desayuno', tr: 'Kahvaltı', pl: 'Śniadanie' },
+  'brunch': { de: 'Brunch', en: 'Brunch', fr: 'Brunch', it: 'Brunch', es: 'Brunch', tr: 'Brunch', pl: 'Brunch' },
+  'mittagstisch': { de: 'Mittagstisch', en: 'Lunch Menu', fr: 'Menu du midi', it: 'Menù pranzo', es: 'Menú del día', tr: 'Öğle Menüsü', pl: 'Menu lunchowe' },
+  'mittagsmenü': { de: 'Mittagsmenü', en: 'Lunch Menu', fr: 'Menu du midi', it: 'Menù pranzo', es: 'Menú del día', tr: 'Öğle Menüsü', pl: 'Menu lunchowe' },
+
+  // Specials
+  'tagesangebot': { de: 'Tagesangebot', en: 'Daily Special', fr: 'Plat du jour', it: 'Piatto del giorno', es: 'Plato del día', tr: 'Günün Yemeği', pl: 'Danie dnia' },
+  'tagesgerichte': { de: 'Tagesgerichte', en: 'Daily Specials', fr: 'Plats du jour', it: 'Piatti del giorno', es: 'Platos del día', tr: 'Günün Yemekleri', pl: 'Dania dnia' },
+  'daily special': { de: 'Tagesangebot', en: 'Daily Special', fr: 'Plat du jour', it: 'Piatto del giorno', es: 'Plato del día', tr: 'Günün Yemeği', pl: 'Danie dnia' },
+  'spezialitäten': { de: 'Spezialitäten', en: 'Specialties', fr: 'Spécialités', it: 'Specialità', es: 'Especialidades', tr: 'Özel Yemekler', pl: 'Specjały' },
+  'specialties': { de: 'Spezialitäten', en: 'Specialties', fr: 'Spécialités', it: 'Specialità', es: 'Especialidades', tr: 'Özel Yemekler', pl: 'Specjały' },
+  'empfehlungen': { de: 'Empfehlungen', en: 'Recommendations', fr: 'Recommandations', it: 'Raccomandazioni', es: 'Recomendaciones', tr: 'Öneriler', pl: 'Polecane' },
+
+  // Kids
+  'kindermenü': { de: 'Kindermenü', en: 'Kids Menu', fr: 'Menu enfant', it: 'Menù bambini', es: 'Menú infantil', tr: 'Çocuk Menüsü', pl: 'Menu dla dzieci' },
+  'kids menu': { de: 'Kindermenü', en: 'Kids Menu', fr: 'Menu enfant', it: 'Menù bambini', es: 'Menú infantil', tr: 'Çocuk Menüsü', pl: 'Menu dla dzieci' },
+  'kindergerichte': { de: 'Kindergerichte', en: 'Kids Dishes', fr: 'Plats enfants', it: 'Piatti bambini', es: 'Platos para niños', tr: 'Çocuk Yemekleri', pl: 'Dania dla dzieci' },
+  'für die kleinen': { de: 'Für die Kleinen', en: 'For the Little Ones', fr: 'Pour les petits', it: 'Per i piccoli', es: 'Para los pequeños', tr: 'Küçükler İçin', pl: 'Dla małych' },
+
+  // Snacks
+  'snacks': { de: 'Snacks', en: 'Snacks', fr: 'En-cas', it: 'Snack', es: 'Aperitivos', tr: 'Atıştırmalıklar', pl: 'Przekąski' },
+  'kleinigkeiten': { de: 'Kleinigkeiten', en: 'Small Bites', fr: 'Petites faims', it: 'Stuzzichini', es: 'Tapas', tr: 'Küçük Atıştırmalıklar', pl: 'Małe przekąski' },
+  'fingerfood': { de: 'Fingerfood', en: 'Finger Food', fr: 'Finger food', it: 'Finger food', es: 'Finger food', tr: 'Parmak Yiyecekler', pl: 'Finger food' },
+
+  // Turkish/Döner
+  'döner': { de: 'Döner', en: 'Döner', fr: 'Döner', it: 'Döner', es: 'Döner', tr: 'Döner', pl: 'Döner' },
+  'döner & wraps': { de: 'Döner & Wraps', en: 'Döner & Wraps', fr: 'Döner & Wraps', it: 'Döner & Wraps', es: 'Döner & Wraps', tr: 'Döner & Dürüm', pl: 'Döner & Wrapy' },
+  'kebab': { de: 'Kebab', en: 'Kebab', fr: 'Kebab', it: 'Kebab', es: 'Kebab', tr: 'Kebap', pl: 'Kebab' },
+  'pide': { de: 'Pide', en: 'Turkish Pide', fr: 'Pide turc', it: 'Pide turco', es: 'Pide turco', tr: 'Pide', pl: 'Pide' },
+  'lahmacun': { de: 'Lahmacun', en: 'Lahmacun', fr: 'Lahmacun', it: 'Lahmacun', es: 'Lahmacun', tr: 'Lahmacun', pl: 'Lahmacun' },
+
+  // Asian
+  'sushi': { de: 'Sushi', en: 'Sushi', fr: 'Sushi', it: 'Sushi', es: 'Sushi', tr: 'Suşi', pl: 'Sushi' },
+  'asiatisch': { de: 'Asiatisch', en: 'Asian', fr: 'Asiatique', it: 'Asiatico', es: 'Asiático', tr: 'Asya Mutfağı', pl: 'Azjatyckie' },
+  'asian': { de: 'Asiatisch', en: 'Asian', fr: 'Asiatique', it: 'Asiatico', es: 'Asiático', tr: 'Asya Mutfağı', pl: 'Azjatyckie' },
+  'wok': { de: 'Wok', en: 'Wok', fr: 'Wok', it: 'Wok', es: 'Wok', tr: 'Wok', pl: 'Wok' },
+
+  // Wraps/Sandwiches
+  'wraps': { de: 'Wraps', en: 'Wraps', fr: 'Wraps', it: 'Wrap', es: 'Wraps', tr: 'Dürüm', pl: 'Wrapy' },
+  'sandwiches': { de: 'Sandwiches', en: 'Sandwiches', fr: 'Sandwichs', it: 'Panini', es: 'Sándwiches', tr: 'Sandviçler', pl: 'Kanapki' },
+
+  // Classics
+  'klassiker': { de: 'Klassiker', en: 'Classics', fr: 'Classiques', it: 'Classici', es: 'Clásicos', tr: 'Klasikler', pl: 'Klasyki' },
+  'classics': { de: 'Klassiker', en: 'Classics', fr: 'Classiques', it: 'Classici', es: 'Clásicos', tr: 'Klasikler', pl: 'Klasyki' },
+  'hausmannskost': { de: 'Hausmannskost', en: 'Home Cooking', fr: 'Cuisine maison', it: 'Cucina casalinga', es: 'Cocina casera', tr: 'Ev Yemekleri', pl: 'Kuchnia domowa' },
+};
+
+/**
+ * Get localized category name with auto-translation fallback
+ * Checks database translations first, then falls back to standard category translations
+ */
+export function getLocalizedCategoryName(
+  category: { name: string; name_en?: string | null },
+  lang: Language
+): string {
+  // German: always return the original name
+  if (lang === 'de') {
+    return category.name;
+  }
+
+  // English: check for manual translation first
+  if (lang === 'en' && category.name_en && category.name_en.trim() !== '') {
+    return category.name_en;
+  }
+
+  // Try to find in our translation dictionary
+  const normalizedName = category.name.toLowerCase().trim();
+  const normalizedNameEn = (category.name_en || '').toLowerCase().trim();
+
+  // Check if we have a translation for this category
+  const translation = CATEGORY_TRANSLATIONS[normalizedName] || CATEGORY_TRANSLATIONS[normalizedNameEn];
+
+  if (translation && translation[lang]) {
+    return translation[lang];
+  }
+
+  // Fallback: return English translation if available, otherwise original name
+  if (category.name_en && category.name_en.trim() !== '') {
+    return category.name_en;
+  }
+
+  return category.name;
+}
+
+// ===========================================
 // AUTO-TRANSLATION DICTIONARY (500+ entries)
 // ===========================================
 // For menu items without manual translations
