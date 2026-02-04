@@ -91,6 +91,38 @@ export const REALISTIC_FOOD_LIBRARY: RealisticFoodImage[] = [
     label: 'Pizza Quattro',
     category: 'pizza',
   },
+  {
+    id: 'real-pizza-prosciutto',
+    keywords: ['prosciutto', 'rucola', 'prosciutto e rucola', 'schinken rucola', 'pizza prosciutto', 'pizza rucola', 'parma'],
+    imageUrl: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=400&h=300&fit=crop',
+    label: 'Pizza Prosciutto',
+    category: 'pizza',
+  },
+
+  // ============================================
+  // ANTIPASTI & VORSPEISEN
+  // ============================================
+  {
+    id: 'real-bruschetta',
+    keywords: ['bruschetta', 'antipasti', 'vorspeise', 'crostini', 'tomate brot'],
+    imageUrl: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
+    label: 'Bruschetta',
+    category: 'antipasti',
+  },
+  {
+    id: 'real-caprese',
+    keywords: ['caprese', 'tomate mozzarella', 'insalata caprese', 'tomaten salat'],
+    imageUrl: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&h=300&fit=crop',
+    label: 'Caprese',
+    category: 'antipasti',
+  },
+  {
+    id: 'real-carpaccio',
+    keywords: ['carpaccio', 'rindfleisch roh', 'beef carpaccio'],
+    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop',
+    label: 'Carpaccio',
+    category: 'antipasti',
+  },
 
   // ============================================
   // PASTA

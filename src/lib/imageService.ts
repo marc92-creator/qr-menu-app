@@ -44,15 +44,21 @@ export function getAutoImageByStrategy(
           label: realisticImage.label,
         };
       }
-      // Fallback to Ghibli if no realistic image found
-      const ghibliUrl = getAutoImage(dishName);
-      if (ghibliUrl && ghibliUrl !== '/food-images/default-food.svg') {
-        return {
-          url: ghibliUrl,
-          style: 'ghibli',
-        };
-      }
-      return null;
+      // Fallback: Generic realistic food photos (NEVER Ghibli for 'real' strategy)
+      const genericPhotos = [
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop', // Healthy bowl
+        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop', // Pancakes
+        'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop', // Pizza
+        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop', // Vegetables
+        'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=300&fit=crop', // Pasta dish
+        'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop', // Gourmet plate
+      ];
+      const hash = dishName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      return {
+        url: genericPhotos[hash % genericPhotos.length],
+        style: 'real',
+        label: dishName,
+      };
     }
 
     case 'mixed': {
