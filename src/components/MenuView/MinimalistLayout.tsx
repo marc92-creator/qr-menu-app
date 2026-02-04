@@ -3,7 +3,8 @@
 import { Category, MenuItem as MenuItemType, Restaurant, MenuSchedule } from '@/types/database';
 import { getCategoryIcon, MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
-import { Language, getTranslation } from '@/lib/translations';
+import { Language, getTranslation, getLocalizedCategoryName } from '@/lib/translations';
+import { getLocalizedItemName, getLocalizedItemDescription } from '@/lib/localization';
 import { getAllergensByIds } from '@/lib/allergens';
 import { formatPrice } from '@/lib/utils';
 import { useMenuNavigation } from '@/hooks/useMenuNavigation';
@@ -32,39 +33,7 @@ interface MinimalistLayoutProps {
   activeSchedule?: MenuSchedule | null;
 }
 
-// Get localized category name
-const getLocalizedCategoryName = (category: Category, lang: Language): string => {
-  if (lang === 'de') {
-    return category.name;
-  }
-  if (category.name_en && category.name_en.trim() !== '') {
-    return category.name_en;
-  }
-  return category.name;
-};
-
-// Get localized item name
-const getLocalizedName = (item: MenuItemType, lang: Language): string => {
-  if (lang === 'de') {
-    return item.name;
-  }
-  if (item.name_en && item.name_en.trim() !== '') {
-    return item.name_en;
-  }
-  return item.name;
-};
-
-// Get localized item description
-const getLocalizedDescription = (item: MenuItemType, lang: Language): string | null => {
-  if (!item.description) return null;
-  if (lang === 'de') {
-    return item.description;
-  }
-  if (item.description_en && item.description_en.trim() !== '') {
-    return item.description_en;
-  }
-  return item.description;
-};
+// Use centralized localization functions from @/lib/localization and @/lib/translations
 
 export function MinimalistLayout({
   restaurant,
@@ -248,7 +217,7 @@ export function MinimalistLayout({
                     /* Focus Mode - Ultra minimal, just name and price */
                     <div className="space-y-3">
                       {categoryItems.map((item) => {
-                        const itemName = getLocalizedName(item, language);
+                        const itemName = getLocalizedItemName(item, language);
                         return (
                           <div
                             key={item.id}
@@ -297,8 +266,8 @@ export function MinimalistLayout({
                           showBadges={template.density.showBadges}
                           selectedAllergen={selectedAllergen}
                           onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
-                          getLocalizedName={getLocalizedName}
-                          getLocalizedDescription={getLocalizedDescription}
+                          getLocalizedName={getLocalizedItemName}
+                          getLocalizedDescription={getLocalizedItemDescription}
                         />
                       ))}
                     </div>

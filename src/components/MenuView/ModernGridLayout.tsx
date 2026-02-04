@@ -4,6 +4,7 @@ import { Category, MenuItem as MenuItemType, Restaurant, MenuSchedule } from '@/
 import { MenuTemplate } from '@/lib/templates';
 import { ThemeConfig } from '@/lib/themes';
 import { Language, getTranslation, getLocalizedCategoryName } from '@/lib/translations';
+import { getLocalizedItemName, getLocalizedItemDescription } from '@/lib/localization';
 import { getAllergensByIds } from '@/lib/allergens';
 import { getItemImageByStrategy } from '@/lib/imageService';
 import { formatPrice } from '@/lib/utils';
@@ -34,28 +35,7 @@ interface ModernGridLayoutProps {
   activeSchedule?: MenuSchedule | null;
 }
 
-// Get localized item name
-const getLocalizedName = (item: MenuItemType, lang: Language): string => {
-  if (lang === 'de') {
-    return item.name;
-  }
-  if (item.name_en && item.name_en.trim() !== '') {
-    return item.name_en;
-  }
-  return item.name;
-};
-
-// Get localized item description
-const getLocalizedDescription = (item: MenuItemType, lang: Language): string | null => {
-  if (!item.description) return null;
-  if (lang === 'de') {
-    return item.description;
-  }
-  if (item.description_en && item.description_en.trim() !== '') {
-    return item.description_en;
-  }
-  return item.description;
-};
+// Use centralized localization functions from @/lib/localization
 
 // Hook for managing liked items
 function useLikedItems(restaurantSlug: string) {
@@ -254,11 +234,11 @@ export function ModernGridLayout({
                         template={template}
                         isLiked={isLiked}
                         onLike={() => toggleLike(item.id)}
-                        onImageClick={() => imageUrl && setFullscreenImage({ url: imageUrl, name: getLocalizedName(item, language) })}
+                        onImageClick={() => imageUrl && setFullscreenImage({ url: imageUrl, name: getLocalizedItemName(item, language) })}
                         selectedAllergen={selectedAllergen}
                         onAllergenClick={(id) => setSelectedAllergen(selectedAllergen === id ? null : id)}
-                        getLocalizedName={getLocalizedName}
-                        getLocalizedDescription={getLocalizedDescription}
+                        getLocalizedName={getLocalizedItemName}
+                        getLocalizedDescription={getLocalizedItemDescription}
                       />
                     );
                   })}

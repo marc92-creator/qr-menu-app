@@ -109,6 +109,11 @@ export interface Category {
   restaurant_id: string;
   name: string;
   name_en?: string | null;
+  name_fr?: string | null;
+  name_it?: string | null;
+  name_es?: string | null;
+  name_tr?: string | null;
+  name_pl?: string | null;
   position: number;
   created_at: string;
 }
@@ -135,8 +140,18 @@ export interface MenuItem {
   category_id: string;
   name: string;
   name_en?: string | null;
+  name_fr?: string | null;
+  name_it?: string | null;
+  name_es?: string | null;
+  name_tr?: string | null;
+  name_pl?: string | null;
   description: string | null;
   description_en?: string | null;
+  description_fr?: string | null;
+  description_it?: string | null;
+  description_es?: string | null;
+  description_tr?: string | null;
+  description_pl?: string | null;
   price: number;
   image_url: string | null;
   image_mode: ImageMode;

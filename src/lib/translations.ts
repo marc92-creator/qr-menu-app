@@ -1166,10 +1166,18 @@ const CATEGORY_TRANSLATIONS: Record<string, CategoryTranslation> = {
 
 /**
  * Get localized category name with auto-translation fallback
- * Checks database translations first, then falls back to standard category translations
+ * Priority: Database field → Translation dictionary → English → German
  */
 export function getLocalizedCategoryName(
-  category: { name: string; name_en?: string | null },
+  category: {
+    name: string;
+    name_en?: string | null;
+    name_fr?: string | null;
+    name_it?: string | null;
+    name_es?: string | null;
+    name_tr?: string | null;
+    name_pl?: string | null;
+  },
   lang: Language
 ): string {
   // German: always return the original name
@@ -1177,9 +1185,20 @@ export function getLocalizedCategoryName(
     return category.name;
   }
 
-  // English: check for manual translation first
-  if (lang === 'en' && category.name_en && category.name_en.trim() !== '') {
-    return category.name_en;
+  // Check for manual database translation for the requested language
+  const langFieldMap: Record<Language, keyof typeof category> = {
+    de: 'name',
+    en: 'name_en',
+    fr: 'name_fr',
+    it: 'name_it',
+    es: 'name_es',
+    tr: 'name_tr',
+    pl: 'name_pl',
+  };
+  const langField = langFieldMap[lang];
+  const dbTranslation = category[langField] as string | null | undefined;
+  if (dbTranslation && dbTranslation.trim() !== '') {
+    return dbTranslation;
   }
 
   // Try to find in our translation dictionary

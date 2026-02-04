@@ -23,23 +23,47 @@ export function TVMenuView({ restaurant, categories, menuItems }: TVMenuViewProp
   const lang = (restaurant.menu_language || 'de') as Language;
   const t = getTranslation(lang);
 
-  // Localization helpers with auto-translation fallback
+  // Localization helpers with database fields + auto-translation fallback
   const getLocalizedName = (item: MenuItem): string => {
     if (lang === 'de') return item.name;
+    // Check database field for requested language
+    const langFieldMap: Record<Language, keyof MenuItem> = {
+      de: 'name', en: 'name_en', fr: 'name_fr', it: 'name_it', es: 'name_es', tr: 'name_tr', pl: 'name_pl',
+    };
+    const dbValue = item[langFieldMap[lang]] as string | null | undefined;
+    if (dbValue && dbValue.trim() !== '') return dbValue;
+    // Fall back to English
     if (item.name_en && item.name_en.trim() !== '') return item.name_en;
+    // Fall back to auto-translate
     return autoTranslate(item.name);
   };
 
   const getLocalizedDescription = (item: MenuItem): string | null => {
     if (!item.description) return null;
     if (lang === 'de') return item.description;
+    // Check database field for requested language
+    const langFieldMap: Record<Language, keyof MenuItem> = {
+      de: 'description', en: 'description_en', fr: 'description_fr', it: 'description_it', es: 'description_es', tr: 'description_tr', pl: 'description_pl',
+    };
+    const dbValue = item[langFieldMap[lang]] as string | null | undefined;
+    if (dbValue && dbValue.trim() !== '') return dbValue;
+    // Fall back to English
     if (item.description_en && item.description_en.trim() !== '') return item.description_en;
+    // Fall back to auto-translate
     return autoTranslate(item.description);
   };
 
   const getLocalizedCategoryName = (category: Category): string => {
     if (lang === 'de') return category.name;
+    // Check database field for requested language
+    const langFieldMap: Record<Language, keyof Category> = {
+      de: 'name', en: 'name_en', fr: 'name_fr', it: 'name_it', es: 'name_es', tr: 'name_tr', pl: 'name_pl',
+    };
+    const dbValue = category[langFieldMap[lang]] as string | null | undefined;
+    if (dbValue && dbValue.trim() !== '') return dbValue;
+    // Fall back to English
     if (category.name_en && category.name_en.trim() !== '') return category.name_en;
+    // Fall back to auto-translate
     return autoTranslate(category.name);
   };
 
