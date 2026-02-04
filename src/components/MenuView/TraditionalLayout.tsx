@@ -239,7 +239,9 @@ export function TraditionalLayout({
                     <div className="space-y-3">
                       {categoryItems.map((item) => {
                         const imageResult = getItemImageByStrategy(item, restaurant.image_strategy || 'ghibli', restaurant.auto_images !== false);
-                        const imageUrl = imageResult?.url || null;
+                        // DEBUG: Test placeholder - remove after testing
+                        const testPlaceholder = restaurant.image_strategy === 'real' ? 'https://via.placeholder.com/80x80/ff0000/ffffff?text=TEST' : null;
+                        const imageUrl = testPlaceholder || imageResult?.url || null;
 
                         const hasExtras = (showSpiceLevel && item.spice_level) ||
                                          (showPortionSizes && item.portion_size) ||
